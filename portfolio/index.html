@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio | Eric Minish</title>
+  <meta name="description" content="Selected work by Eric Minish across public sites, workflow systems, and developer tooling.">
+  <link rel="stylesheet" href="/assets/site.css?v=20260420b">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Portfolio</h1>
+        <p class="lede">
+          Public projects and selected work items with just enough proof to show what they are.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div><h2>Featured</h2></div>
+      </div>
+
+      <div class="project-grid">
+        <article class="project-card">
+          <div class="project-visual">
+            <div class="repo-pane">
+              <div class="repo-pane-head">
+                <span class="repo-dot"></span>
+                <span>ericminish-site</span>
+              </div>
+              <div class="repo-tree">
+                <div class="repo-row"><span>/</span><strong>index.html</strong></div>
+                <div class="repo-row"><span>/portfolio</span><strong>index.html</strong></div>
+                <div class="repo-row repo-row-active"><span>/homelab</span><strong>index.html</strong></div>
+                <div class="repo-row"><span>/status</span><strong>index.html</strong></div>
+                <div class="repo-row"><span>/assets</span><strong>site.css</strong></div>
+              </div>
+            </div>
+            <div class="ui-pane">
+              <p class="ui-pane-label">Live surface</p>
+              <div class="ui-chip-row">
+                <span class="ui-chip">Portfolio</span>
+                <span class="ui-chip">Homelab</span>
+                <span class="ui-chip">Now</span>
+              </div>
+              <div class="ui-block"></div>
+              <div class="ui-block ui-block-short"></div>
+              <div class="ui-rule"></div>
+            </div>
+          </div>
+
+          <div class="project-body">
+            <h3>ericminish.com</h3>
+            <p class="project-desc">Personal site rebuilt as a cleaner identity layer for public work, current focus, and technical context.</p>
+            <p class="project-proof">What I did: rewrote the structure and copy so each surface has a clear job.</p>
+            <div class="tag-row">
+              <span class="tag">Personal Site</span>
+              <span class="tag">Static Build</span>
+              <span class="tag">Self-Hosted</span>
+            </div>
+            <p class="project-meta-line">HTML/CSS · Caddy · live on NUC2 / LXC 901</p>
+            <div class="inline-links project-card-links">
+              <a class="button-quiet" href="https://www.ericminish.com">Live</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-visual">
+            <div class="repo-pane">
+              <div class="repo-pane-head">
+                <span class="repo-dot"></span>
+                <span>well-driller-template</span>
+              </div>
+              <div class="repo-tree">
+                <div class="repo-row"><span>/src/pages</span><strong>index.astro</strong></div>
+                <div class="repo-row repo-row-active"><span>/clients/nmwelldrilling</span><strong>client.yml</strong></div>
+                <div class="repo-row"><span>/copy</span><strong>services.md</strong></div>
+                <div class="repo-row"><span>/infra/systemd</span><strong>welldriller-demo.service</strong></div>
+                <div class="repo-row"><span>/src/lib</span><strong>client.ts</strong></div>
+              </div>
+            </div>
+            <div class="ui-pane">
+              <p class="ui-pane-label">Reference build</p>
+              <div class="ui-chip-row">
+                <span class="ui-chip">Well drilling</span>
+                <span class="ui-chip">Service pages</span>
+              </div>
+              <div class="ui-block"></div>
+              <div class="ui-block"></div>
+              <div class="ui-block ui-block-short"></div>
+            </div>
+          </div>
+
+          <div class="project-body">
+            <h3>nmwelldrilling.com</h3>
+            <p class="project-desc">Disclosed reference site showing how a contractor-facing build can be designed, shipped, and kept truthful.</p>
+            <p class="project-proof">What I did: built the site surface and delivery path without hiding that it is a sample.</p>
+            <div class="tag-row">
+              <span class="tag">Reference Build</span>
+              <span class="tag">Astro</span>
+              <span class="tag">Public Site</span>
+            </div>
+            <p class="project-meta-line">Astro · Nginx · systemd · deployed on M710Q3</p>
+            <div class="inline-links project-card-links">
+              <a class="button-quiet" href="https://nmwelldrilling.com">Live</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-visual">
+            <div class="repo-pane">
+              <div class="repo-pane-head">
+                <span class="repo-dot"></span>
+                <span>frostline-site</span>
+              </div>
+              <div class="repo-tree">
+                <div class="repo-row"><span>/src/pages</span><strong>index.astro</strong></div>
+                <div class="repo-row"><span>/src/layouts</span><strong>BaseLayout.astro</strong></div>
+                <div class="repo-row repo-row-active"><span>/src/pages</span><strong>contact.astro</strong></div>
+                <div class="repo-row"><span>/astro.config</span><strong>astro.config.mjs</strong></div>
+                <div class="repo-row"><span>/package.json</span><strong>package.json</strong></div>
+              </div>
+            </div>
+            <div class="ui-pane">
+              <p class="ui-pane-label">Provider site</p>
+              <div class="ui-chip-row">
+                <span class="ui-chip">Outreach</span>
+                <span class="ui-chip">Managed Intake</span>
+              </div>
+              <div class="ui-block"></div>
+              <div class="ui-rule"></div>
+              <div class="ui-block ui-block-short"></div>
+            </div>
+          </div>
+
+          <div class="project-body">
+            <h3>thefrostlineco.com</h3>
+            <p class="project-desc">Provider-facing outreach site for managed intake work, kept separate from the personal site and sample builds.</p>
+            <p class="project-proof">What I did: gave the business surface its own identity and boundary instead of blending it into everything else.</p>
+            <div class="tag-row">
+              <span class="tag">Outreach Site</span>
+              <span class="tag">Astro</span>
+              <span class="tag">Public Site</span>
+            </div>
+            <p class="project-meta-line">Astro · copy system · separate business surface</p>
+            <div class="inline-links project-card-links">
+              <a class="button-quiet" href="https://thefrostlineco.com">Live</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div><h2>Listed</h2></div>
+      </div>
+
+      <div class="project-grid project-grid-listed">
+        <article class="project-card project-card-listed">
+          <div class="project-visual project-visual-compact">
+            <div class="repo-pane repo-pane-full">
+              <div class="repo-pane-head">
+                <span class="repo-dot"></span>
+                <span>RunEcho</span>
+              </div>
+              <div class="repo-tree">
+                <div class="repo-row"><span>/cmd</span><strong>session</strong></div>
+                <div class="repo-row"><span>/hooks</span><strong>session-governor.sh</strong></div>
+                <div class="repo-row repo-row-active"><span>/internal</span><strong>governor</strong></div>
+                <div class="repo-row"><span>/internal</span><strong>context</strong></div>
+                <div class="repo-row"><span>/.ai/agents</span><strong>explorer.yaml</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-body">
+            <h3>RunEcho</h3>
+            <p class="project-desc">Claude Code governance and routing layer for sessions, context, and handoffs.</p>
+            <p class="project-proof">Ended as Claude Code absorbed more of the core value directly through native hooks, subagents, slash commands, MCP, and memory.</p>
+            <div class="tag-row">
+              <span class="tag">Developer Tooling</span>
+              <span class="tag">Archived</span>
+              <span class="tag">Go</span>
+            </div>
+            <p class="project-meta-line">Private archived repo</p>
+          </div>
+        </article>
+
+        <article class="project-card project-card-listed">
+          <div class="project-visual project-visual-compact">
+            <div class="repo-pane repo-pane-full">
+              <div class="repo-pane-head">
+                <span class="repo-dot"></span>
+                <span>workflow state</span>
+              </div>
+              <div class="repo-tree">
+                <div class="repo-row repo-row-active"><span>lead_received</span><strong>new</strong></div>
+                <div class="repo-row"><span>contacted_owner</span><strong>acknowledged</strong></div>
+                <div class="repo-row"><span>appointment_set</span><strong>scheduled</strong></div>
+                <div class="repo-row"><span>waiting_on_customer</span><strong>pending_external</strong></div>
+                <div class="repo-row"><span>job_complete</span><strong>done</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-body">
+            <h3>Workflow state systems</h3>
+            <p class="project-desc">Internal ops work that turns messy handoffs into explicit states, next actions, and reporting paths.</p>
+            <p class="project-proof">What I did: made the language and state model clear enough that the work can actually be routed.</p>
+            <div class="tag-row">
+              <span class="tag">Internal Tooling</span>
+              <span class="tag">State Model</span>
+            </div>
+            <p class="project-meta-line">Private work item</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <p class="closing-line">
+      Email is the best way to reach me — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/homelab/">Homelab</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

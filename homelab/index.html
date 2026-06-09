@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Homelab | Eric Minish</title>
+  <meta name="description" content="Homelab notes from Eric Minish covering public-site routing, monitoring, and recovery habits behind live work.">
+  <link rel="stylesheet" href="/assets/site.css?v=20260419b">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/homelab/" aria-current="page">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Homelab</h1>
+        <p class="lede">
+          The lab exists to support live work: sites, routing, monitoring, storage, and the boring recovery paths that keep those surfaces usable.
+        </p>
+      </div>
+
+      <aside class="note">
+        <p>All physical nodes are listed below. Services are called out separately so the page does not blur boxes, LXCs, and public routes into one pile.</p>
+        <p>Last updated <strong>April 2026</strong>.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div><h2>Node map</h2></div>
+      </div>
+
+      <div class="gallery-grid">
+        <article class="panel">
+          <div class="artifact-grid">
+            <div class="code-window">
+              <div class="window-bar">
+                <span class="window-dot"></span>
+                <span class="window-dot"></span>
+                <span class="window-dot"></span>
+                physical nodes
+              </div>
+              <pre><code>nuc1     dev tooling / available
+nuc2     always-on core
+nuc3     dns backup
+nuc4     media
+m710q3   client hosting
+m93p     monitoring / intelligence
+optiplex observability / staging / repurpose
+nas      storage
+
+m710q2   offline
+m710q1   offline</code></pre>
+            </div>
+
+            <figure class="photo-slot status-surface">
+              <figcaption class="fine">Hardware / status surface</figcaption>
+              <div class="status-grid">
+                <div class="status-card">
+                  <strong>nuc1</strong>
+                  <span>available</span>
+                  <b class="status-pending">tracked</b>
+                </div>
+                <div class="status-card">
+                  <strong>nuc2</strong>
+                  <span>core</span>
+                  <b class="status-pending">tracked</b>
+                </div>
+                <div class="status-card">
+                  <strong>nuc3</strong>
+                  <span>dns backup</span>
+                  <b class="status-pending">tracked</b>
+                </div>
+                <div class="status-card">
+                  <strong>nuc4</strong>
+                  <span>media</span>
+                  <b class="status-pending">tracked</b>
+                </div>
+                <div class="status-card">
+                  <strong>m710q3</strong>
+                  <span>client hosting</span>
+                  <b class="status-pending">tracked</b>
+                </div>
+                <div class="status-card">
+                  <strong>m93p</strong>
+                  <span>monitoring</span>
+                  <b class="status-pending">tracked</b>
+                </div>
+                <div class="status-card">
+                  <strong>optiplex</strong>
+                  <span>staging</span>
+                  <b class="status-pending">tracked</b>
+                </div>
+                <div class="status-card">
+                  <strong>nas</strong>
+                  <span>storage</span>
+                  <b class="status-pending">tracked</b>
+                </div>
+                <div class="status-card">
+                  <strong>m710q2</strong>
+                  <span>parked</span>
+                  <b class="status-down">down</b>
+                </div>
+                <div class="status-card">
+                  <strong>m710q1</strong>
+                  <span>parked</span>
+                  <b class="status-down">down</b>
+                </div>
+              </div>
+              <p class="muted">This area should eventually become a live Proxmox-style view with CPU and memory overlays. For now it is the hardware/status surface instead of a fake photo prompt.</p>
+            </figure>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div><h2>Services</h2></div>
+      </div>
+
+      <div class="grid-2">
+        <article class="panel">
+          <h3>Public-facing services</h3>
+          <div class="code-window">
+            <div class="window-bar">
+              <span class="window-dot"></span>
+              <span class="window-dot"></span>
+              <span class="window-dot"></span>
+              routes and surfaces
+            </div>
+            <pre><code>ericminish.com
+  personal site
+
+nmwelldrilling.com
+  disclosed sample / reference implementation
+
+thefrostlineco.com
+  provider-facing business site</code></pre>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h3>Internal services</h3>
+          <div class="code-window">
+            <div class="window-bar">
+              <span class="window-dot"></span>
+              <span class="window-dot"></span>
+              <span class="window-dot"></span>
+              service layer
+            </div>
+            <pre><code>adguard primary
+adguard backup
+caddy edge
+nginx sites
+uptime kuma
+ntfy
+cups
+scraper_miwine</code></pre>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div><h2>Why It Matters</h2></div>
+      </div>
+
+      <div class="grid-2">
+        <article class="panel">
+          <h3>Separation helps</h3>
+          <p>The useful part of the lab is not the node count. It is having clear separation between boxes, services, and public surfaces so changes are easier to reason about and failures are easier to isolate.</p>
+        </article>
+
+        <article class="note">
+          <p>Uptime Kuma is the monitoring piece I most want to surface here. A better next version of this page would turn the hardware/status block above into a real status view instead of a static sketch.</p>
+        </article>
+      </div>
+    </section>
+
+    <p class="closing-line">
+      Email is the best way to reach me — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
