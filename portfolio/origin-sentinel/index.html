@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Origin Sentinel — case study | Eric Minish</title>
+  <meta name="description" content="Case study: an autonomous origin-health sentinel for Cloudflare-tunnelled services — catching the failure your uptime monitor can't see, with a do-no-harm rollout.">
+  <link rel="stylesheet" href="/assets/site.css?v=20260420b">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Case study · Platform / SRE</p>
+        <h1>When your edge is green but your service is dead</h1>
+        <p class="lede">
+          Cloudflare Tunnel can report a healthy edge while the service behind it is silently
+          broken. I built an autonomous sentinel that watches the origin, not the edge — and
+          deliberately shipped it without write access until it earned trust.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong> — autonomous origin-health detection, classification, and staged self-heal for Cloudflare-tunnelled services.</p>
+        <p><strong>Status</strong> — built and reviewed, 63 tests passing, staged for a report-only production rollout.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The failure nobody monitors for</h2></div></div>
+      <div class="prose">
+        <p>Edge and tunnel status answer one question: <em>is the tunnel connected?</em> They do not answer the only question that matters — <em>is the thing behind the tunnel actually alive?</em></p>
+        <p>A container reboots, DHCP hands it a new LAN IP, and the tunnel ingress still points at the old one. Now the edge serves errors — or worse, a different service — while every dashboard stays green. I call this the <strong>silent-origin-behind-healthy-edge</strong> class. Standard monitoring is structurally blind to it, because it probes the wrong layer.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Classify before you heal</h2></div></div>
+      <div class="grid-2">
+        <article class="panel">
+          <div class="prose">
+            <p>The sentinel probes each origin LAN-side, bypassing Access, and classifies the real state before it touches anything. Only when a container's IP has genuinely drifted does it propose a Cloudflare ingress repoint.</p>
+            <p>Everything it learns is written to a machine-readable <code>health.json</code>, so the next automated agent — or a human — inherits ground truth instead of re-diagnosing from scratch.</p>
+          </div>
+        </article>
+        <article class="code-window">
+          <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>origin state</div>
+          <pre><code>OK
+STALE_INGRESS_IP   -> propose repoint
+DEAD_ORIGIN
+TUNNEL_DOWN
+APP_UNHEALTHY
+NEEDS_HUMAN</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The part that matters: restraint</h2></div></div>
+      <div class="prose">
+        <p>Auto-remediation that can rewrite production ingress is a loaded gun. The engineering here is mostly about <em>not</em> firing it:</p>
+      </div>
+      <article class="note">
+        <ul>
+          <li><strong>Report-only v1.</strong> It proposes repoints into <code>health.json</code> and writes zero Cloudflare changes. Write access is a later, earned phase — not day one.</li>
+          <li><strong>Read-scoped token.</strong> It cannot mutate what it isn't authorized to.</li>
+          <li><strong>Blast-radius guards.</strong> Localhost origins are never auto-repointed; heal confirmation requires a stricter 2xx; a repoint preserves every existing config key and handles multi-rule hostnames; one origin's failure never aborts the run; heal-state writes are atomic.</li>
+          <li><strong>Testable by construction.</strong> A pure functional core — data in, data out, no I/O — with all side effects pushed to the shell edge, and 63 tests against the part where correctness is non-negotiable.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What this demonstrates</h2></div></div>
+      <div class="prose">
+        <p>Two things I bring to infrastructure work: I find the failure classes your current monitoring can't see, and I build remediation that defaults to <em>do no harm</em> — staged rollouts, least-privilege tokens, isolated failure domains, and an architecture where the risky logic is the tested logic.</p>
+        <p>If you run agents, tunnels, or self-healing systems in production, that combination is the difference between automation you trust at 3am and automation you switch off after it burns you once.</p>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Platform / SRE</span>
+        <span class="tag">Cloudflare</span>
+        <span class="tag">Python</span>
+        <span class="tag">Self-Heal</span>
+      </div>
+    </section>
+
+    <p class="closing-line">
+      Interested in this kind of work? Email is best — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

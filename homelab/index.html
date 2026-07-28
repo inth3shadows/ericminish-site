@@ -34,13 +34,13 @@
       <div class="hero-copy">
         <h1>Homelab</h1>
         <p class="lede">
-          The lab exists to support live work: sites, routing, monitoring, storage, and the boring recovery paths that keep those surfaces usable.
+          The lab exists to carry live work: sites, routing, monitoring, storage, and the boring recovery paths that keep those surfaces usable. It is where I find out whether something I believe about a system is actually true.
         </p>
       </div>
 
       <aside class="note">
         <p>All physical nodes are listed below. Services are called out separately so the page does not blur boxes, LXCs, and public routes into one pile.</p>
-        <p>Last updated <strong>April 2026</strong>.</p>
+        <p>Last updated <strong>July 2026</strong>.</p>
       </aside>
     </section>
 
@@ -168,14 +168,16 @@ thefrostlineco.com
               <span class="window-dot"></span>
               service layer
             </div>
-            <pre><code>adguard primary
-adguard backup
-caddy edge
-nginx sites
-uptime kuma
-ntfy
-cups
-scraper_miwine</code></pre>
+            <pre><code>adguard          primary + backup
+caddy            edge / tls
+nginx            client sites
+uptime kuma      monitoring
+ntfy             alerting
+proxmox backup   nightly, off-node
+postgres         knowledge graph
+searxng          private metasearch
+media stack      vpn-bound ingest
+cups             print</code></pre>
           </div>
         </article>
       </div>
@@ -188,8 +190,9 @@ scraper_miwine</code></pre>
 
       <div class="grid-2">
         <article class="panel">
-          <h3>Separation helps</h3>
-          <p>The useful part of the lab is not the node count. It is having clear separation between boxes, services, and public surfaces so changes are easier to reason about and failures are easier to isolate.</p>
+          <h3>What the lab is actually for</h3>
+          <p>The useful part is not the node count. It is clear separation between boxes, services, and public surfaces, so a change is easy to reason about and a failure is easy to isolate.</p>
+          <p>It is also where the quiet failures happen. One service spent weeks returning nothing because its config pinned an IP address the machine no longer held — everything was up, nothing was broken, and the results were simply empty. The fix was to stop referring to that machine by number at all. A workload sharing a VPN sidecar taught the same lesson: binding it to the tunnel interface by name is a control, and restarting things in the right order is only a habit that works until it doesn't.</p>
         </article>
 
         <article class="note">
