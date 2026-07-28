@@ -34,14 +34,72 @@
       <div class="hero-copy">
         <h1>Portfolio</h1>
         <p class="lede">
-          Public projects and selected work items with just enough proof to show what they are.
+          Infrastructure I built and run, written up with enough detail to check.
         </p>
       </div>
     </section>
 
     <section class="section">
       <div class="section-head">
-        <div><h2>Featured</h2></div>
+        <div><h2>Case studies</h2></div>
+      </div>
+
+      <div class="project-grid project-grid-listed">
+        <article class="project-card project-card-listed">
+          <div class="project-body">
+            <h3>terse</h3>
+            <p class="project-desc">A lossless compression proxy for AI-agent tool output — 30 to 50 percent fewer tokens, with a guaranteed exact round trip.</p>
+            <p class="project-proof">Fail-open and self-verifying: if a payload cannot be proven to reconstruct perfectly, the original goes through untouched.</p>
+            <div class="tag-row">
+              <span class="tag">AI Infra</span>
+              <span class="tag">Developer Tooling</span>
+              <span class="tag">Python</span>
+              <span class="tag">MCP</span>
+            </div>
+            <div class="inline-links project-card-links">
+              <a class="button-quiet" href="/portfolio/terse/">Read case study</a>
+              <a class="button-quiet" href="https://github.com/inth3shadows/terse">Source</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card project-card-listed">
+          <div class="project-body">
+            <h3>Origin Sentinel</h3>
+            <p class="project-desc">Origin-health detection and staged self-heal for Cloudflare-tunnelled services — the failure edge monitoring cannot see.</p>
+            <p class="project-proof">The interesting constraint was restraint: it shipped without write access and only earned remediation once its classifications held up.</p>
+            <div class="tag-row">
+              <span class="tag">Platform / SRE</span>
+              <span class="tag">Cloudflare</span>
+              <span class="tag">Python</span>
+            </div>
+            <div class="inline-links project-card-links">
+              <a class="button-quiet" href="/portfolio/origin-sentinel/">Read case study</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card project-card-listed">
+          <div class="project-body">
+            <h3>Multi-provider LLM gateway</h3>
+            <p class="project-desc">Routes one coding agent across several model providers by task, with keyless-at-rest secrets and live cost tracking against a budget.</p>
+            <p class="project-proof">Cheap open models absorb the mechanical bulk; the frontier model is reserved for the calls that actually need it, and the spend is measured rather than estimated.</p>
+            <div class="tag-row">
+              <span class="tag">AI Infra</span>
+              <span class="tag">LiteLLM</span>
+              <span class="tag">Python</span>
+            </div>
+            <div class="inline-links project-card-links">
+              <a class="button-quiet" href="/portfolio/llm-gateway/">Read case study</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div><h2>Live sites</h2></div>
       </div>
 
       <div class="project-grid">
@@ -75,8 +133,8 @@
 
           <div class="project-body">
             <h3>ericminish.com</h3>
-            <p class="project-desc">Personal site rebuilt as a cleaner identity layer for public work, current focus, and technical context.</p>
-            <p class="project-proof">What I did: rewrote the structure and copy so each surface has a clear job.</p>
+            <p class="project-desc">This site — six static files, no build step, rsynced into a container on my own hardware.</p>
+            <p class="project-proof">Every page has one job, and nothing on it is aspirational.</p>
             <div class="tag-row">
               <span class="tag">Personal Site</span>
               <span class="tag">Static Build</span>
@@ -118,8 +176,8 @@
 
           <div class="project-body">
             <h3>nmwelldrilling.com</h3>
-            <p class="project-desc">Disclosed reference site showing how a contractor-facing build can be designed, shipped, and kept truthful.</p>
-            <p class="project-proof">What I did: built the site surface and delivery path without hiding that it is a sample.</p>
+            <p class="project-desc">A contractor-facing reference build — site surface, content model, and delivery path end to end.</p>
+            <p class="project-proof">It is labelled a sample on the page itself, because a demo that pretends to be a client is a lie with a deploy pipeline.</p>
             <div class="tag-row">
               <span class="tag">Reference Build</span>
               <span class="tag">Astro</span>
@@ -161,8 +219,8 @@
 
           <div class="project-body">
             <h3>thefrostlineco.com</h3>
-            <p class="project-desc">Provider-facing outreach site for managed intake work, kept separate from the personal site and sample builds.</p>
-            <p class="project-proof">What I did: gave the business surface its own identity and boundary instead of blending it into everything else.</p>
+            <p class="project-desc">The business surface for managed intake work, deliberately kept off this site.</p>
+            <p class="project-proof">Separate identity, separate stack, separate promises — a personal site that doubles as a sales page is trusted as neither.</p>
             <div class="tag-row">
               <span class="tag">Outreach Site</span>
               <span class="tag">Astro</span>
@@ -202,14 +260,14 @@
 
           <div class="project-body">
             <h3>RunEcho</h3>
-            <p class="project-desc">Claude Code governance and routing layer for sessions, context, and handoffs.</p>
-            <p class="project-proof">Ended as Claude Code absorbed more of the core value directly through native hooks, subagents, slash commands, MCP, and memory.</p>
+            <p class="project-desc">A Go guard layer for coding-agent sessions: symbol lookup, edit-scope contracts, and pre-commit checks that run before a change lands.</p>
+            <p class="project-proof">Its parser design turns on one question per language — whether a cheap masker would guess wrong. Rust gets a real grammar because a lifetime and a character literal are indistinguishable without parsing, and a wrong guess drops symbols silently.</p>
             <div class="tag-row">
               <span class="tag">Developer Tooling</span>
-              <span class="tag">Archived</span>
               <span class="tag">Go</span>
+              <span class="tag">Tree-sitter</span>
             </div>
-            <p class="project-meta-line">Private archived repo</p>
+            <p class="project-meta-line">Private repo · active</p>
           </div>
         </article>
 
@@ -233,12 +291,42 @@
           <div class="project-body">
             <h3>Workflow state systems</h3>
             <p class="project-desc">Internal ops work that turns messy handoffs into explicit states, next actions, and reporting paths.</p>
-            <p class="project-proof">What I did: made the language and state model clear enough that the work can actually be routed.</p>
+            <p class="project-proof">Most automation failures I have cleaned up were not automation failures. They were ambiguous state with a scheduler on top.</p>
             <div class="tag-row">
               <span class="tag">Internal Tooling</span>
               <span class="tag">State Model</span>
             </div>
             <p class="project-meta-line">Private work item</p>
+          </div>
+        </article>
+
+        <article class="project-card project-card-listed">
+          <div class="project-visual project-visual-compact">
+            <div class="repo-pane repo-pane-full">
+              <div class="repo-pane-head">
+                <span class="repo-dot"></span>
+                <span>knowledge graph</span>
+              </div>
+              <div class="repo-tree">
+                <div class="repo-row"><span>agent</span><strong>propose</strong></div>
+                <div class="repo-row repo-row-active"><span>reviewer</span><strong>accept / reject</strong></div>
+                <div class="repo-row"><span>postgres</span><strong>nodes · decisions</strong></div>
+                <div class="repo-row"><span>tunnel</span><strong>kb.ericminish.com</strong></div>
+                <div class="repo-row"><span>sidecar</span><strong>embeddings</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-body">
+            <h3>Knowledge graph</h3>
+            <p class="project-desc">A durable memory layer my agents read from and write into by proposal — hosts, architectural decisions, and standing rules, on Postgres behind a tunnel.</p>
+            <p class="project-proof">Every write is reviewed before it lands. Uncurated scraping into a knowledge base was the obvious cheap alternative and it was rejected: at volume the important things stop being findable.</p>
+            <div class="tag-row">
+              <span class="tag">AI Infra</span>
+              <span class="tag">Postgres</span>
+              <span class="tag">MCP</span>
+            </div>
+            <p class="project-meta-line">Python · Postgres · Cloudflare Tunnel · self-hosted</p>
           </div>
         </article>
       </div>

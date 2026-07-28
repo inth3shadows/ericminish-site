@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multi-provider LLM gateway — case study | Eric Minish</title>
+  <meta name="description" content="Case study: a personal multi-provider LLM gateway that routes a coding-agent front-end across model providers by task, with keyless-at-rest secrets and live cost observability.">
+  <link rel="stylesheet" href="/assets/site.css?v=20260420b">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Case study · AI infrastructure</p>
+        <h1>One agent front-end, many model providers, one budget</h1>
+        <p class="lede">
+          A coding agent doesn't need a frontier model for every call — most of the work
+          is mechanical. I built a personal gateway that routes a single agent front-end
+          across a subscription frontier model and several cheaper open models, with
+          keyless-at-rest secrets and a live view of what it's costing me.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong> — a multi-provider LLM gateway that lets one coding-agent front-end switch model/provider per task, with budget guardrails and spend history.</p>
+        <p><strong>Status</strong> — running in my personal daily use.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The problem with one model for everything</h2></div></div>
+      <div class="prose">
+        <p>A subscription frontier model is the right tool for hard reasoning, but a lot of what an agent actually does — grepping a repo, summarizing a diff, running a mechanical refactor — doesn't need it. Paying frontier-model rates for that work is a waste, but hand-picking a cheaper model for each task by hand defeats the point of having an agent in the first place. The answer was one front-end that routes per task instead of one fixed model for every call.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The gateway</h2></div></div>
+      <div class="grid-2">
+        <article class="panel">
+          <div class="prose">
+            <p>An OpenAI-compatible proxy (LiteLLM) sits in front of every provider I use — the subscription frontier model plus cheaper open models like DeepSeek, GLM, and Kimi — so the agent talks to one endpoint regardless of which model actually answers.</p>
+            <p>A lightweight router lets me switch provider/model mid-session without restarting the agent, and I also run an alternate agent harness (OpenCode) with a browser UI for the same pool, so the routing isn't locked to one client.</p>
+          </div>
+        </article>
+        <article class="code-window">
+          <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>router config</div>
+          <pre><code>routes:
+  default:      frontier/claude
+  bulk-edit:    open/deepseek-chat
+  summarize:    open/glm
+  quick-search: open/kimi
+
+# keys injected at runtime, never written here
+providers:
+  frontier: ${FRONTIER_KEY}
+  open:     ${OPEN_KEY}</code></pre>
+        </article>
+      </div>
+      <div class="prose">
+        <p>The switch is the point: cheap models absorb the bulk, mechanical calls, and the frontier model gets reserved for the calls that actually need it.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Watching the spend, not guessing at it</h2></div></div>
+      <div class="prose">
+        <p>Routing to cheaper models only helps if I can see whether it's working. A status-line readout shows live spend against a per-key budget with color thresholds — green while there's headroom, amber approaching the limit, red over it — so the signal is visible on every prompt, not buried in a monthly invoice.</p>
+      </div>
+      <article class="code-window">
+        <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>status line</div>
+        <pre><code>[frontier: $3.40 / $10.00]  [open-pool: $0.85 / $25.00]</code></pre>
+      </article>
+      <div class="prose">
+        <p>A small poller snapshots key spend into a Postgres table every few minutes, so the cost history is queryable over time instead of vanishing the moment a dashboard refreshes. That turns "did the routing actually save money" from a guess into a query.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Secret hygiene</h2></div></div>
+      <article class="note">
+        <ul>
+          <li><strong>Keyless at rest.</strong> The gateway and router configs hold no plaintext keys, ever, on disk.</li>
+          <li><strong>Runtime injection.</strong> Keys are pulled from a secret broker at process start and live only in memory.</li>
+          <li><strong>Scrubbed on exit.</strong> When the process ends, the config is written back to its keyless stub — the invariant is that config at rest is always keyless, not just usually.</li>
+        </ul>
+      </article>
+      <div class="prose">
+        <p>This isn't a "don't commit .env" rule bolted on after the fact — it's the config format itself refusing to hold a secret.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What this demonstrates</h2></div></div>
+      <div class="prose">
+        <p>This is production-grade platform thinking applied to a personal agent stack: provider abstraction so the front-end isn't locked to one vendor, secret hygiene so no key sits at rest, cost observability so spend is a queryable fact instead of a surprise, and budget guardrails so a runaway session can't quietly become a runaway bill.</p>
+      </div>
+      <div class="tag-row">
+        <span class="tag">AI Infra</span>
+        <span class="tag">LiteLLM</span>
+        <span class="tag">Observability</span>
+        <span class="tag">Python</span>
+      </div>
+    </section>
+
+    <p class="closing-line">
+      Questions or a use case in mind? Email is best — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>About | Eric Minish</title>
-  <meta name="description" content="About Eric Minish.">
+  <meta name="description" content="Eric Minish — agent and data infrastructure, reached through operational systems rather than research.">
   <link rel="stylesheet" href="/assets/site.css?v=20260419b">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -34,7 +34,8 @@
       <div class="hero-copy">
         <h1>About Eric Minish</h1>
         <p class="lede">
-          Based in Central Lake, Michigan. Most of my work sits between software, infrastructure, and operational pressure.
+          Central Lake, Michigan. I build agent and data infrastructure, and I came to it
+          through operational systems rather than through research.
         </p>
       </div>
 
@@ -49,17 +50,26 @@
       </div>
       <div class="prose">
         <p>
-          A lot of my professional energy has gone into operational systems: workflow state,
-          event handling, automation around CRM behavior, and the infrastructure needed to keep
-          those systems visible and dependable.
-        </p>
-        <p>
-          The part I care about most is usually not the UI layer. It is the point where
+          The professional work has been operational systems: workflow state, event handling,
+          automation around CRM behavior, and the reporting layer that has to make all of it
+          legible afterward. The part I care about is rarely the interface. It is the point where
           somebody needs to know what happened, what happens next, and whether they can trust it.
         </p>
         <p>
-          More recently, I have been applying that same mindset to my own live surfaces:
-          personal identity here, business activity on Frostline, and disclosed reference work where it belongs.
+          That question turns out to be the whole problem in AI infrastructure too, which is how I
+          ended up here. An agent is a system that acts on state it cannot see directly, so the
+          interesting work is in the layer that decides what it is allowed to know, what it is
+          allowed to write, and what happens when a piece of that goes wrong. My knowledge graph
+          takes proposals from agents and puts every one through review before it lands. The
+          compression proxy in front of my tool servers forwards the original payload untouched
+          the moment it cannot prove a perfect round trip. Neither of those is a clever trick;
+          both are just refusing to let a convenient default quietly become a correctness bug.
+        </p>
+        <p>
+          I use these tools all day, which is the only reason I trust my own opinions about them.
+          The homelab is the same argument in hardware — ten machines carrying real routing,
+          deployment, monitoring, and recovery, so a claim about how something behaves under
+          failure is something I have watched rather than read.
         </p>
       </div>
     </section>
@@ -70,14 +80,22 @@
       </div>
       <div class="prose">
         <p>
-          I want explicit ownership, real states with clear transitions, and simple deploy and
-          rollback paths. Monitoring should catch actual drift, not produce decorative dashboards.
-          Public copy should say exactly what is true.
+          Explicit ownership, real states with clear transitions, simple deploy and rollback
+          paths. Monitoring that catches actual drift instead of producing decorative dashboards.
+          Public copy that says exactly what is true.
+        </p>
+        <p>
+          The rule I hold hardest is that a system should decline to answer rather than fabricate
+          one. A model in one of my pipelines is allowed to confirm or reject a candidate the
+          deterministic layer found; it is not allowed to invent a new one. A board with no
+          honest baseline to compare against returns null instead of a number that looks
+          authoritative. A modeling target that turned out to be a restatement of a variable I
+          already had got cut, even though the first test made it look like a win.
         </p>
         <p>
           Most of the trouble I see comes from automation sitting on top of ambiguous state, or
-          platforms built before anyone agrees on what the workflow actually is. I try not to add
-          to that pile.
+          platforms built before anyone agrees what the workflow actually is. I try not to add to
+          that pile.
         </p>
       </div>
     </section>

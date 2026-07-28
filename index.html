@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Eric Minish</title>
-  <meta name="description" content="Eric Minish: operations, software, infrastructure, and current work.">
+  <meta name="description" content="Eric Minish builds infrastructure for AI agents and the data work that runs on it. Central Lake, Michigan.">
   <link rel="stylesheet" href="/assets/site.css?v=20260419b">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -34,62 +34,51 @@
       <div class="hero-copy">
         <h1>Eric Minish</h1>
         <p class="lede">
-          Based in Central Lake, Michigan. I work on operations, software, and infrastructure.
+          I build the infrastructure AI agents run on, and the data work that runs on top of it.
+          Central Lake, Michigan.
         </p>
       </div>
 
       <aside class="note">
-        <p>Current public projects include this site, the homelab-backed reference build at <a href="https://nmwelldrilling.com">nmwelldrilling.com</a>, and <a href="https://thefrostlineco.com">The Frostline Co.</a>.</p>
+        <p>Live surfaces: this site, <a href="https://thefrostlineco.com">The Frostline Co.</a>, and the disclosed reference build at <a href="https://nmwelldrilling.com">nmwelldrilling.com</a> — all served out of my own rack.</p>
       </aside>
     </section>
 
     <section class="section">
       <div class="section-head">
-        <div><h2>What I work on</h2></div>
+        <div><h2>Recent work</h2></div>
       </div>
 
-      <div class="grid-3">
-        <article class="panel">
-          <div class="panel-icon" aria-hidden="true">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" stroke-linecap="round">
-              <polygon points="16,4 28,10 16,16 4,10"/>
-              <polyline points="4,16 16,22 28,16"/>
-              <polyline points="4,22 16,28 28,22"/>
-            </svg>
-          </div>
-          <h3>Platform operations</h3>
-          <p>
-            HubSpot administration, workflow design, and the reporting layer connecting CRM data to Snowflake, BigQuery, and PowerBI.
-          </p>
-        </article>
-
-        <article class="panel">
-          <div class="panel-icon" aria-hidden="true">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" stroke-linecap="round">
-              <polygon points="18,2 6,18 14,18 14,30 26,14 18,14"/>
-            </svg>
-          </div>
-          <h3>Automation & integration</h3>
-          <p>
-            Webhook handlers, Apps Scripts, and API pipelines between telephony, Gmail, and HubSpot.
-          </p>
-        </article>
-
-        <article class="panel">
-          <div class="panel-icon" aria-hidden="true">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="6" width="26" height="20" rx="2"/>
-              <polyline points="9,14 13,17 9,20"/>
-              <line x1="16" y1="20" x2="22" y2="20"/>
-            </svg>
-          </div>
-          <h3>Infrastructure & tooling</h3>
-          <p>
-            Homelab delivery, Cloud Run services, and CLI utilities for LLM routing and token tracking.
-          </p>
-        </article>
+      <div class="prose">
+        <p>
+          Most of this year has gone into the plumbing underneath AI agents.
+          <a href="/portfolio/terse/">terse</a> is a proxy that sits in front of MCP tool servers
+          and losslessly compresses what they return — typically 30 to 50 percent fewer tokens,
+          under a rule that anything it cannot perfectly reconstruct gets forwarded untouched
+          instead. Behind it is a knowledge graph on Postgres with a curated write path: an agent
+          proposes a fact, a reviewer accepts or rejects it, and nothing lands unreviewed. Moving
+          its embeddings to a sidecar took that service's production image from 2.14 GB to 442 MB.
+        </p>
+        <p>
+          The data side is spatial and statistical modeling where the answer has to hold up.
+          Working with fifty thousand Michigan well records, the most useful result last quarter
+          was a negative one: a promising prediction target turned out to be about 96 percent a
+          restatement of well depth, so it was cut instead of shipped. The same instinct shows up
+          in a fantasy-football auction board that returns null rather than a fabricated reference
+          value, and in a news pipeline where the language model may only confirm or deny
+          candidates a deterministic matcher already found — it is never allowed to invent one.
+        </p>
+        <p>
+          Under all of it is a ten-node rack running Proxmox, Caddy at the edge, redundant DNS,
+          monitoring, and backups. Public routes come through Cloudflare Tunnel; nothing is
+          port-forwarded. Before this — and still alongside it — the work was operational: CRM
+          workflow state, event handling, and the reporting layer into Snowflake, BigQuery, and
+          PowerBI. That is the part that taught me to care about what happened, what happens next,
+          and whether anyone can trust the answer.
+        </p>
       </div>
     </section>
+
 
     <p class="closing-line">
       Email is the best way to reach me — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.

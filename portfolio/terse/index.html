@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>terse — case study | Eric Minish</title>
+  <meta name="description" content="Case study: terse, a lossless compression proxy for AI-agent tool output — 30-50% fewer tokens with a guaranteed exact round-trip.">
+  <link rel="stylesheet" href="/assets/site.css?v=20260420b">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Case study · AI infrastructure</p>
+        <h1>Cutting agent token cost without losing a byte</h1>
+        <p class="lede">
+          Agent tool outputs are quietly one of the most expensive things in an AI stack.
+          terse is a drop-in proxy that losslessly compresses that output — typically 30-50%
+          fewer tokens — while keeping every single piece of information.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong> — a lossless compression proxy that sits in front of any MCP tool server and shrinks its output.</p>
+        <p><strong>Status</strong> — running in my own agent stack today, wrapping a code-intelligence server on every call.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The hidden cost</h2></div></div>
+      <div class="prose">
+        <p>Every search result, directory listing, and API response comes back as repetitive JSON — the same field names on every row, the same values over and over, padding everywhere. The model re-reads that bloat on every turn. Multiply it by every tool call, every turn, every session, and repetitive tool output becomes a line item you pay on continuously.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Why the usual fixes are the wrong trade</h2></div></div>
+      <div class="prose">
+        <ul>
+          <li><strong>Summarize or truncate</strong> — lossy. You lose data and can no longer trust the result for anything correctness-sensitive.</li>
+          <li><strong>Buy a bigger context window</strong> — you still pay per token; a longer window doesn't make the bloat cheaper, it just delays the ceiling.</li>
+        </ul>
+        <p>terse refuses the trade. Its one unbreakable rule: <strong>the compressed output can always be turned back into the exact original.</strong> If a payload ever couldn't round-trip perfectly, terse treats that as a failure and sends the original — not as an acceptable trade-off. Lossless is the default, not a mode.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>How it shrinks things</h2></div></div>
+      <div class="grid-2">
+        <article class="panel">
+          <div class="prose">
+            <ul>
+              <li><strong>Table form</strong> — repeated field names collapse to a header; rows become positional.</li>
+              <li><strong>Dictionary form</strong> — repeated values become short back-references to a legend.</li>
+              <li><strong>Cross-call diffs</strong> — when a tool returns something similar to last time, terse sends only the provable delta.</li>
+              <li><strong>Field offload</strong> — a huge value becomes a handle you fetch back exactly on demand, so it stops eating context until you need it.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="code-window">
+          <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>terse gate</div>
+          <pre><code>$ cat tool-output.json | terse gate -
+
+round-trip lossless: PASS
+cl100k tokens: 1810 -> 881 (51.3% saved)</code></pre>
+        </article>
+      </div>
+      <div class="prose">
+        <p>It is selective and honest: output that's already tidy is passed through untouched rather than churned for a rounding-error gain. A one-time primer — paid once per session, not per result — teaches the model to read the dense encoding directly, so there's no decoding step in your own code.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Built to be invisible and safe</h2></div></div>
+      <article class="note">
+        <ul>
+          <li><strong>Fail-open.</strong> If any compression goes wrong, terse forwards the original result. A tool call is never lost.</li>
+          <li><strong>Self-verifying.</strong> A diff is only sent when it provably reconstructs the result; the full form is always the fallback.</li>
+          <li><strong>Bounded.</strong> The compression logic is pure and testable; in-flight tracking is capped so a flaky server can't leak memory.</li>
+        </ul>
+      </article>
+      <div class="prose">
+        <p>From the outside, nothing changes except that token usage drops.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Who this is for</h2></div></div>
+      <div class="prose">
+        <p>If you run MCP servers, agent harnesses, or anything that pipes large tool outputs into an LLM on a loop, terse removes a third to a half of that cost with a guarantee that nothing is ever lost.</p>
+      </div>
+      <div class="tag-row">
+        <span class="tag">AI Infra</span>
+        <span class="tag">Developer Tooling</span>
+        <span class="tag">Python</span>
+        <span class="tag">MCP</span>
+      </div>
+      <div class="code-window" style="margin-top:16px">
+        <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>install</div>
+        <pre><code>uv tool install terse-mcp   # or: pipx install terse-mcp
+
+terse proxy -- uvx some-mcp-server --flags</code></pre>
+      </div>
+      <div class="inline-links" style="margin-top:16px">
+        <a class="button" href="https://github.com/inth3shadows/terse">Source on GitHub</a>
+      </div>
+      <p class="project-meta-line" style="margin-top:12px">MIT licensed, with a benchmark harness in the repo — measure the saving on your own tools before you believe mine.</p>
+    </section>
+
+    <p class="closing-line">
+      Questions or a use case in mind? Email is best — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

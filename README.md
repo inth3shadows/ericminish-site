@@ -11,6 +11,11 @@ Local source for the personal site served live from:
 
 This site is the personal identity layer for Eric Minish.
 
+Positioning (set 2026-07-28): **builder of agent and data infrastructure**,
+with operational and AI fluency as the second layer — not an ops/integration
+generalist. Rationale and voice contract:
+`~/.claude/plans/ericminish-site-builder-positioning-rewrite.md`.
+
 It should:
 
 - establish who Eric is
@@ -28,12 +33,15 @@ It should not:
 
 - `index.html` — home
 - `about/` — background and working style
-- `portfolio/` — selected work
+- `portfolio/` — case studies and selected work
+- `portfolio/terse/`, `portfolio/origin-sentinel/`, `portfolio/llm-gateway/` — long-form case studies
 - `homelab/` — practical lab notes
 - `status/` — what is current right now
 - `contact/` — direct contact path
-- `services/` — explicit boundary page that points contractor work to Frostline
 - `assets/` — shared CSS and SVG assets
+
+Contractor work is pointed at The Frostline Co. by link, not by a services
+page on this site.
 
 ## Deploy
 
