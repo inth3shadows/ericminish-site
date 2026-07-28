@@ -43,6 +43,11 @@ It should not:
 Contractor work is pointed at The Frostline Co. by link, not by a services
 page on this site.
 
+## Related Documentation
+
+- [Technical Reference](TECHNICAL.md) — architecture, deployment, known limitations
+- [Usage Guide](USAGE.md) — editing pages and publishing changes
+
 ## Deploy
 
 1. Back up the current live tree in `LXC 901`.
