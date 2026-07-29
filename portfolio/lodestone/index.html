@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lodestone — case study | Eric Minish</title>
+  <meta name="description" content="Case study: a local retrieval engine that beat keyword search at 1,000 documents and lost to it at 57,500 — and the evaluation that showed it.">
+  <link rel="stylesheet" href="/assets/site.css?v=20260728a">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="entry-stamp"><b>Entry 03</b><span>Retrieval · evaluation</span><span>2026</span></div>
+        <h1>My semantic search worked at 1,000 documents and failed at 57,000</h1>
+        <p class="lede">
+          I built a hybrid retrieval engine over years of my own working notes, measured it honestly,
+          and the measurement said half of it does not work. This is that result.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong> — keyword search and embeddings fused, then re-ranked. Entirely offline, on CPU.</p>
+        <p><strong>Status</strong> — private repository. The numbers below are the whole story.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="facts">
+        <div><span class="fk">corpus</span><span class="fv">57,500</span></div>
+        <div><span class="fk">useful answers</span><span class="fv">5 of 10</span></div>
+        <div><span class="fk">dev corpus, semantic</span><span class="fv good">0.731</span></div>
+        <div><span class="fk">dev corpus, keyword</span><span class="fv">0.436</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The result that argued against my own design</h2></div></div>
+      <div class="prose">
+        <p>
+          On a 1,271-chunk development corpus the semantic arm clearly beat keyword search on
+          paraphrased questions — the ones where you describe a memory in different words than you
+          originally used. That is what justified building a hybrid at all.
+        </p>
+        <p>
+          Measured at full scale for the first time, against ten real questions judged by hand, it
+          returned something useful five times. Every success was a keyword-shaped question. Four of
+          the five paraphrased questions — the exact case the semantic arm existed to solve —
+          returned nothing useful.
+        </p>
+      </div>
+
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Arm</th><th style="text-align:right">Rank of the correct answer · 5 paraphrase questions</th></tr>
+          <tr><td>Keyword (BM25)</td><td class="num win">3 · 1 · 1 · 5 · 1</td></tr>
+          <tr><td>Semantic</td><td class="num lose">&gt;200 · 7 · 2 · 107 · 1</td></tr>
+        </table>
+      </div>
+
+      <div class="prose">
+        <p>
+          The answers were being retrieved. The semantic arm was burying them. Keyword search alone
+          beat every hybrid configuration — the exact inverse of the small-corpus result. Similarity
+          stops discriminating as the candidate pool grows; rare words stay rare.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>How it got there</h2></div></div>
+      <ol class="beats">
+        <li><b>Small corpus, clear win.</b> 1,271 chunks. Semantic beat keyword on paraphrase, decisively.</li>
+        <li><b>Real scale, five of ten.</b> Judged by hand, no partial credit.</li>
+        <li><b>The obvious explanation was wrong.</b> "The bigger corpus is diluted" — tested by restricting
+          the search to the single highest-quality source. No improvement. Rejected in one run rather than argued about.</li>
+        <li><b>Recall or rank?</b> A diagnostic separated answers that were never retrieved from answers
+          that were retrieved and then buried. It was rank.</li>
+        <li><b>The tuning already shipped was a regression.</b> A query-adaptive router — use the expensive
+          re-ranker only when the query looks keyword-shaped — had been tuned on the small corpus and shipped
+          as the default. At full scale it measured worst of six configurations, scoring 0.000 on paraphrased
+          questions where always re-ranking scored 0.200. Removed as default the same day.</li>
+        <li><b>Then the evaluation itself had a bug.</b> A code review found the scorer retrieving deeper than
+          the judging pool went, so the re-ranked configuration was returning documents nobody had graded and
+          being marked wrong for it. Fixing it <b>improved</b> that configuration, 0.352 to 0.447 — it did not
+          rescue the conclusion.</li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The parts that are actually rare</h2></div></div>
+      <div class="subs">
+        <div><span class="st">Pre-registered kill gate</span><span class="sx">Written before anything was built: if a local re-ranker does not beat the existing baseline, the project stops at one session.</span></div>
+        <div><span class="st">Refused to fit anecdotes</span><span class="sx">A visibly underperforming threshold was left alone rather than re-tuned against eight unlabelled examples. Twice — and the refusal is recorded in the plan file both times.</span></div>
+        <div><span class="st">Negative controls</span><span class="sx">Two questions with no answer anywhere in the corpus. The semantic arm scored a nonsense query about sourdough hydration <b>95%</b> as highly as a real question. Its confidence carries almost no information.</span></div>
+        <div><span class="st">Pooled, blind judging</span><span class="sx">Candidates unioned across five retrieval configurations and shuffled, with no indication of which system found them — so the incumbent could not win by being graded only on its own results.</span></div>
+        <div><span class="st">The evaluator as a defect</span><span class="sx">Labels are stamped with who produced them, and a separate tool samples them to compute inter-rater agreement before they are trusted.</span></div>
+        <div><span class="st">The most damning finding</span><span class="sx">For several failed questions the answer sat in a file the index demonstrably returns for other questions. Not a coverage gap — a failure to connect a paraphrased need to a document it already holds.</span></div>
+      </div>
+      <div class="tag-row" style="margin-top:22px">
+        <span class="tag">Retrieval</span><span class="tag">Evaluation</span>
+        <span class="tag">Python</span><span class="tag">Offline / CPU</span>
+      </div>
+    </section>
+
+    <p class="closing-line">
+      Questions about the method? Email is best — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

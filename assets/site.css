@@ -906,3 +906,121 @@ h3 {
   color: var(--muted);
   margin-right: 4px;
 }
+
+/* ── Case-study entry template ───────────────────────────────────────────
+   An entry is stamped and dated: the portfolio grows by adding entries
+   rather than by rewriting a page. Mono measures, Newsreader argues. */
+
+.entry-stamp {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.entry-stamp b { color: var(--accent); font-weight: 500; }
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 34px;
+  padding: 16px 0;
+  margin: 26px 0 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.facts div { display: flex; flex-direction: column; gap: 3px; }
+
+.facts .fk {
+  font-size: 0.6rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.facts .fv { font-size: 1.05rem; color: var(--warn); letter-spacing: -0.02em; }
+.facts .fv.good { color: var(--accent); }
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  margin-top: 4px;
+}
+
+.data-table th {
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.6rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 0 9px;
+  border-bottom: 1px solid var(--line);
+}
+
+.data-table td { padding: 10px 0; border-bottom: 1px solid var(--line); }
+.data-table td.num { text-align: right; letter-spacing: 0.12em; }
+.data-table .win { color: var(--accent); }
+.data-table .lose { color: #c4705e; }
+
+.table-scroll { overflow-x: auto; }
+
+.beats { list-style: none; margin: 0; padding: 0; counter-reset: beat; }
+
+.beats li {
+  position: relative;
+  padding: 0 0 15px 32px;
+  line-height: 1.62;
+  color: var(--muted);
+  counter-increment: beat;
+}
+
+.beats li:before {
+  content: counter(beat, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 4px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--warn);
+}
+
+.beats b { color: var(--text); font-weight: 600; }
+
+.subs { margin-top: 4px; }
+
+.subs > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+@media (min-width: 680px) {
+  .subs > div { grid-template-columns: 200px minmax(0, 1fr); gap: 24px; }
+}
+
+.subs .st {
+  font-family: var(--mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.subs .sx { color: var(--muted); line-height: 1.6; }
+.subs .sx b { color: var(--text); font-weight: 600; }
