@@ -38,6 +38,7 @@
         <a href="/homelab/">Homelab</a>
         <a href="/status/">Now</a>
         <a href="/about/">About</a>
+        <a href="/resume/">Résumé</a>
         <a href="/contact/">Contact</a>
       </nav>
     </div>
@@ -222,6 +223,17 @@
         </article>
         <article class="node" tabindex="0">
           <div class="node-head">
+            <span class="node-name">Browser terminal</span>
+            <span class="node-spec">SSO · no open ports</span>
+            <span class="node-state">private</span>
+          </div>
+          <div class="node-detail">
+            <p>A persistent multiplexed shell published through an identity-proxied tunnel. Same live session from any device, nothing listening on the public internet, and no session survives without single sign-on.</p>
+          </div>
+        </article>
+
+        <article class="node" tabindex="0">
+          <div class="node-head">
             <span class="node-name">Workflow state systems</span>
             <span class="node-spec">private work</span>
             <span class="node-state">private</span>
@@ -231,6 +243,50 @@
           </div>
         </article>
       </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The terminal</h2></div></div>
+      <div class="prose">
+        <p>
+          My whole working environment is a browser tab. A terminal multiplexer runs on a machine at
+          home, fronted by a small web terminal, published through an identity-proxied tunnel — no
+          port is open to the internet and no session starts without single sign-on. Opening the same
+          address from a phone, a laptop or a borrowed machine attaches to the <em>same</em> live
+          session, so work does not have a device attached to it.
+        </p>
+        <p>
+          That is also why the agent work on this page is practical rather than theoretical: a long
+          job keeps running when I close the lid, and I can look in on it from anywhere without
+          leaving anything listening.
+        </p>
+      </div>
+
+      <div class="code-window" style="margin-top:20px">
+        <div class="window-bar">
+          <span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>
+          shared session — rendering, not a screenshot
+        </div>
+        <pre><code>$ tmux attach -t shared
+[attached to session: 2 clients, 3 windows]
+
+  0:agent*   1:logs   2:deploy
+
+~ $ ./deploy --verify
+  backup            ok      site.bak-2026-07-29
+  sync              ok      14 files
+  local health      200
+  public health     200
+  fonts             200     self-hosted, no cdn
+  done in 6.2s
+
+~ $ _</code></pre>
+      </div>
+      <p class="fine" style="margin-top:12px">
+        A rendering of the interface, not a capture of a real session. No host name, address, path or
+        session content from the actual environment appears here — the surface is worth describing,
+        its location is not.
+      </p>
     </section>
 
     <p class="closing-line">
