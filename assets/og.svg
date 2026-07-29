@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d1219"/><stop offset="55%" stop-color="#0b0f14"/><stop offset="100%" stop-color="#0a0d12"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#2c466e" stop-opacity="0.30"/><stop offset="100%" stop-color="#2c466e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <g font-family="'Azeret Mono', ui-monospace, monospace" fill="#9aa7b8" font-size="21" letter-spacing="7">
+    <text x="90" y="118">ERIC MINISH</text>
+  </g>
+  <line x1="90" y1="146" x2="376" y2="146" stroke="#98b2d6" stroke-opacity="0.22" stroke-width="1"/>
+  <g font-family="Newsreader, Georgia, serif" fill="#e9eef5" font-size="66" font-weight="600">
+    <text x="90" y="266">I build the infrastructure</text>
+    <text x="90" y="344">AI agents run on, and the</text>
+    <text x="90" y="422">data work that runs on it.</text>
+  </g>
+  <g font-family="'Azeret Mono', ui-monospace, monospace" font-size="22" letter-spacing="2">
+    <text x="90" y="516" fill="#ffd38a">30–50%</text><text x="212" y="516" fill="#67717e">fewer tokens</text>
+    <text x="410" y="516" fill="#ffd38a">50,083</text><text x="524" y="516" fill="#67717e">well records</text>
+    <text x="734" y="516" fill="#ffd38a">10</text><text x="790" y="516" fill="#67717e">nodes</text>
+  </g>
+  <line x1="90" y1="552" x2="1110" y2="552" stroke="#98b2d6" stroke-opacity="0.18" stroke-width="1"/>
+  <g font-family="'Azeret Mono', ui-monospace, monospace" font-size="19" letter-spacing="3" fill="#18e699">
+    <text x="90" y="588">ericminish.com</text>
+  </g>
+</svg>
