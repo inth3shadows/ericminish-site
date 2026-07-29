@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RunEcho — case study | Eric Minish</title>
+  <meta name="description" content="Case study: a Go guard layer for coding-agent sessions, and what happened when its edit-scope contracts were used on the day they shipped.">
+  <link rel="stylesheet" href="/assets/site.css?v=20260728a">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="entry-stamp"><b>Entry 05</b><span>Developer tooling · Go</span><span>2026</span></div>
+        <h1>A guard that went stale in the session that wrote it</h1>
+        <p class="lede">
+          RunEcho watches what a coding agent is about to change and objects before the change
+          lands. The most useful thing it produced was evidence against one of its own designs.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong> — symbol lookup, edit-scope contracts, and pre-commit guards for agent-driven work.</p>
+        <p><strong>Status</strong> — active. Go, with a vendored tree-sitter runtime.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="facts">
+        <div><span class="fk">false positives removed</span><span class="fv good">91%</span></div>
+        <div><span class="fk">guard overhead</span><span class="fv">0.36 ms</span></div>
+        <div><span class="fk">was</span><span class="fv">9.5 ms</span></div>
+        <div><span class="fk">languages parsed</span><span class="fv">5</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The contract that expired before the day did</h2></div></div>
+      <div class="prose">
+        <p>
+          An edit-scope contract declares what a piece of work is allowed to touch, so a guard can
+          object when an agent wanders outside it. The obvious next step was to bind a contract
+          automatically when a session starts. Dogfooding the guard on the day it merged killed that
+          idea: the contract describing the work went stale <strong>within the same session</strong>,
+          at the moment the work it described was merged.
+        </p>
+        <p>
+          A session routinely spans several unrelated pieces of work. A contract belongs to a
+          <strong>task</strong>, not to a session, and between tasks the correct state is no active
+          contract at all — the free, silent, abstaining default. Automatic session binding would
+          have produced a guard that was confidently wrong most of the time, which is worse than no
+          guard.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Choosing a parser by what a shortcut would get wrong</h2></div></div>
+      <div class="prose">
+        <p>
+          Each language gets a parser engine chosen on one question: are there constructs a cheap
+          length-preserving masker cannot disambiguate without actually parsing? If yes, it earns a
+          real grammar. If no, a grammar is overkill.
+        </p>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Language</th><th>Engine</th><th style="text-align:right">Why</th></tr>
+          <tr><td>Rust</td><td>tree-sitter grammar</td><td class="num">lifetimes vs char literals; nested block comments</td></tr>
+          <tr><td>Shell</td><td>regex + masker</td><td class="num">quoting and heredocs resolve in one stateful pass</td></tr>
+        </table>
+      </div>
+      <div class="prose">
+        <p>
+          The asymmetry is what makes ambiguity the right test. A masker that guesses wrong fails
+          <em>silently</em> and loses every symbol after the mistake — indistinguishable from a file
+          with no symbols in it, which is the worst possible failure for a guard. In Rust,
+          <code>'a</code> is a lifetime in one line and a character literal in the next, and nothing
+          short of parsing tells them apart.
+        </p>
+        <p>
+          Visibility follows the same principle rather than a house convention. Go extracts only
+          exported names, because an unexported Go name cannot be referenced from outside its
+          package. Rust extracts everything, because a same-crate reference to a private function is
+          completely ordinary — filtering it out would produce false negatives on the common case.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Guards have to be cheap or they get turned off</h2></div></div>
+      <div class="subs">
+        <div><span class="st">Duplicate-symbol warnings</span><span class="sx">Build-constraint pairs — the same function defined once per platform — produced <b>91% false positives</b>. Suppressing only when both files are constrained removed all of them, without a toolchain shell-out. A constrained-versus-unconstrained pair still asks.</span></div>
+        <div><span class="st">Store access</span><span class="sx">Checking the contract meant opening the store a second time, measured at <b>+9.5 ms per edit</b>. Sharing the handle with the symbol lookup already running brought it to <b>+0.36 ms</b>.</span></div>
+        <div><span class="st">Threat model</span><span class="sx">Local execution behind a firewall, so no web attack surface — but the binaries are distributed publicly, which puts the release pipeline in scope even though authentication and rate limiting are not.</span></div>
+      </div>
+      <div class="tag-row" style="margin-top:22px">
+        <span class="tag">Developer Tooling</span><span class="tag">Go</span>
+        <span class="tag">Tree-sitter</span><span class="tag">Agent Safety</span>
+      </div>
+      <div class="inline-links" style="margin-top:18px">
+        <a class="button" href="https://github.com/inth3shadows/runecho">Source on GitHub</a>
+      </div>
+    </section>
+
+    <p class="closing-line">
+      Questions about the approach? Email is best — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+      
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
