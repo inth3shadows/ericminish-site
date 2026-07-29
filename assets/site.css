@@ -1045,3 +1045,64 @@ h3 {
   text-wrap: balance;
   max-width: 24ch;
 }
+
+/* ── Public commit history ───────────────────────────────────────────────
+   A snapshot, not a live feed: the numbers are stamped with the date they
+   were captured, the same rule the Now page follows. */
+
+.gitstrip {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 20px 0 16px;
+  margin-top: 30px;
+}
+
+.gitstrip-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+
+.gitstrip-head b {
+  color: var(--warn);
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.gitstrip-head .grow { margin-left: auto; }
+
+.bars {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 5px;
+  align-items: end;
+  height: 90px;
+}
+
+.bar { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; gap: 5px; }
+
+.bar i {
+  display: block;
+  background: var(--warn);
+  border-radius: 1px;
+  opacity: 0.75;
+  min-height: 2px;
+}
+
+.bar.now i { background: var(--accent); opacity: 1; }
+
+.bar span {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  text-align: center;
+}
