@@ -1117,3 +1117,61 @@ h3 {
   .bars { gap: 3px; }
   .bar span { font-size: 0.5rem; }
 }
+
+/* ── Grid maps ───────────────────────────────────────────────────────────
+   Rendered from the project's own well table, not an illustration of it. */
+
+.maps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 22px;
+  margin: 26px 0 24px;
+}
+
+@media (min-width: 720px) {
+  .maps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.mapfig { margin: 0; }
+
+.mapfig figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  padding-bottom: 9px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.mapfig figcaption span {
+  color: var(--warn);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.mapfig canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #070a0e;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+}
+
+.mapread {
+  margin: 9px 0 0;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  min-height: 1.2em;
+}
+
+.mapread b { color: var(--warn); font-weight: 500; }
