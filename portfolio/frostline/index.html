@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Frostline — case study | Eric Minish</title>
+  <meta name="description" content="Case study: spatial models over 50,000 Michigan well records — depth is predictable from location, yield is not, and the most useful result was the one that got cut.">
+  <link rel="stylesheet" href="/assets/site.css?v=20260728a">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="entry-stamp"><b>Entry 04</b><span>Frostline · spatial modelling</span><span>2026</span></div>
+        <h1>The most useful result was the one I threw out</h1>
+        <p class="lede">
+          Depth is predictable from location. Yield is not. Both of those took real work to
+          establish, and only one of them is a finding anybody wants to hear.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong> — spatial models over the public Michigan well record, and the contractor-intake business built around them.</p>
+        <p><strong>Status</strong> — active. Private repository; the numbers below are the substance.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="facts">
+        <div><span class="fk">well records</span><span class="fv">50,000</span></div>
+        <div><span class="fk">apparent gain</span><span class="fv">+38.8%</span></div>
+        <div><span class="fk">actually a restatement</span><span class="fv">~96%</span></div>
+        <div><span class="fk">target</span><span class="fv">cut</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What a well record can and cannot tell you</h2></div></div>
+      <div class="prose">
+        <p>
+          A drilling record carries where the hole is, how deep it went, what the driller hit on the
+          way down, and what it produced. The commercially interesting question is the last one — how
+          much water will this location give — and that is the one the data refuses to answer.
+        </p>
+        <p>
+          Depth behaves. Neighbouring wells agree with each other, so location carries real
+          information and a model can use it. Yield does not behave. A well's output is not predicted
+          by its neighbours, and no amount of feature work changed that. Establishing the negative
+          took as long as establishing the positive, and it is the more valuable of the two: it says
+          which promises the business must not make.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The target that looked like a win</h2></div></div>
+      <div class="prose">
+        <p>
+          The aquifer-interval fields are unusually well populated — top and bottom depths present on
+          roughly nine in ten records — and had never been modelled. A leave-one-out skill test put
+          local prediction <strong>38.8% better</strong> than the global median. That looked like a
+          new signal.
+        </p>
+        <p>
+          It was not. The global median is the wrong baseline for a variable that sits at about
+          three-quarters of the well depth. Measured against a depth-derived null instead, the
+          apparent skill disappeared: the aquifer interval is roughly <strong>96% a restatement of
+          the well depth already in hand</strong>. It was cut rather than shipped, and if the
+          interval is surfaced at all it should be a derived ratio off the existing depth band, not a
+          modelled target.
+        </p>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Baseline</th><th style="text-align:right">Apparent skill</th></tr>
+          <tr><td>Against the global median</td><td class="num lose">+38.8%</td></tr>
+          <tr><td>Against a depth-derived null</td><td class="num">no signal</td></tr>
+        </table>
+      </div>
+      <p class="fine" style="margin-top:12px">
+        The first row is not a mistake anyone would notice from the outside. Choosing the null is the
+        whole experiment.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What is still open, stated honestly</h2></div></div>
+      <div class="subs">
+        <div><span class="st">Lithology — untouched</span><span class="sx">Two hundred thousand-odd logged intervals across the same wells, describing what the driller actually hit. Genuinely independent of depth, and therefore the one place a new signal could still be. <b>Not yet modelled.</b></span></div>
+        <div><span class="st">Static water level — untested</span><span class="sx">A first pass scored badly, but the data is dirty enough that the number means nothing: sentinel values standing in for missing readings, and hundreds of wells recording a water level deeper than the well itself. <b>Untested, not disproven</b> — and the first-pass figure must not be quoted as a finding.</span></div>
+        <div><span class="st">What the business may claim</span><span class="sx">Depth and cost bands, with an interval rather than a point estimate. Not yield. A model that cannot predict output is not permitted to imply that it can.</span></div>
+      </div>
+      <div class="tag-row" style="margin-top:22px">
+        <span class="tag">Spatial modelling</span><span class="tag">Null result</span>
+        <span class="tag">Python</span><span class="tag">Public records</span>
+      </div>
+    </section>
+
+    <p class="closing-line">
+      Questions about the method? Email is best — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+      
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
