@@ -130,7 +130,7 @@ grep -rhoE 'href="/[a-z-]*/?[a-z-]*/"' --include=*.html . | sort -u \
 <!-- docvet:anchors
 newsreader.woff2 -> assets/site.css
 azeret-mono.woff2 -> assets/site.css
-bump-cachebust.py -> tools/bump-cachebust.py
+sha256 -> tools/bump-cachebust.py
 hi@ericminish.com -> contact/index.html
 uv tool install terse-mcp -> portfolio/terse/index.html
 -->
