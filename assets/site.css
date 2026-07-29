@@ -20,6 +20,19 @@
 }
 
 :root {
+  /* spacing scale — 4px base; every gap and pad is one of these */
+  --s-2: 2px;
+  --s-4: 4px;
+  --s-8: 8px;
+  --s-12: 12px;
+  --s-16: 16px;
+  --s-20: 20px;
+  --s-24: 24px;
+  --s-32: 32px;
+  --s-40: 40px;
+  --s-48: 48px;
+  --s-56: 56px;
+
   /* type scale — every size on the site is one of these */
   --t-micro: 0.62rem;
   --t-label: 0.72rem;
@@ -105,13 +118,13 @@ figure {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 18px 0;
+  padding: 16px 0;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   color: var(--text);
 }
 
@@ -183,12 +196,12 @@ main {
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.8fr);
-  gap: 28px;
+  gap: 24px;
   align-items: start;
 }
 
 .eyebrow {
-  margin: 0 0 14px;
+  margin: 0 0 12px;
   color: var(--signal);
 }
 
@@ -215,7 +228,7 @@ h3 {
 }
 
 .lede {
-  margin: 0 0 18px;
+  margin: 0 0 16px;
   max-width: 46rem;
   font-size: var(--t-sub);
   color: #d6dfeb;
@@ -229,7 +242,7 @@ h3 {
 .contact-panel p,
 .prose p,
 .bridge p {
-  margin: 0 0 14px;
+  margin: 0 0 12px;
 }
 
 .hero-actions,
@@ -247,7 +260,7 @@ h3 {
   align-items: center;
   justify-content: center;
   min-height: 42px;
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 12px;
   border: 1px solid var(--line);
   font-weight: 500;
@@ -284,7 +297,7 @@ h3 {
 .bridge,
 .code-window,
 .photo-slot {
-  padding: 22px;
+  padding: 20px;
 }
 
 .note {
@@ -297,24 +310,24 @@ h3 {
 .timeline ul,
 .prose ul {
   margin: 0;
-  padding-left: 18px;
+  padding-left: 16px;
 }
 
 .section {
-  margin-top: 44px;
+  margin-top: 40px;
 }
 
 .section-head {
   display: flex;
   align-items: end;
   justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 18px;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .closing-line {
   margin: 56px 0 0;
-  padding-top: 28px;
+  padding-top: 24px;
   border-top: 1px solid var(--line);
   color: var(--muted);
   font-size: var(--t-lead);
@@ -325,7 +338,7 @@ h3 {
 .contact-grid,
 .gallery-grid {
   display: grid;
-  gap: 18px;
+  gap: 16px;
 }
 
 .grid-2,
@@ -370,7 +383,7 @@ h3 {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--t-fine);
@@ -428,7 +441,7 @@ h3 {
 
 .site-footer {
   border-top: 1px solid var(--line);
-  padding: 22px 0 40px;
+  padding: 20px 0 40px;
 }
 
 .footer-row {
@@ -467,10 +480,10 @@ h3 {
     align-items: stretch;
   }
   .site-nav {
-    gap: 10px 14px;
+    gap: 8px 12px;
   }
   main {
-    padding-top: 30px;
+    padding-top: 32px;
   }
 }
 
@@ -480,14 +493,14 @@ h3 {
 
 .plist {
   border-top: 1px solid var(--line);
-  margin-top: 26px;
+  margin-top: 24px;
 }
 
 .prow {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 4px;
-  padding: 18px 0;
+  padding: 16px 0;
   border-bottom: 1px solid var(--line);
 }
 
@@ -510,7 +523,7 @@ h3 {
 .prow-name a:hover { color: var(--accent); }
 
 .prow-desc {
-  margin: 3px 0 0;
+  margin: 2px 0 0;
   color: var(--muted);
   line-height: 1.6;
 }
@@ -518,7 +531,7 @@ h3 {
 .prow-right {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
 }
 
 @media (min-width: 720px) {
@@ -574,14 +587,14 @@ h3 {
 .entry-stamp {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 16px;
+  gap: 4px 16px;
   align-items: baseline;
   font-family: var(--mono);
   font-size: var(--t-micro);
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .entry-stamp b { color: var(--accent); font-weight: 500; }
@@ -589,16 +602,16 @@ h3 {
 .facts {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px 34px;
+  gap: 12px 32px;
   padding: 16px 0;
-  margin: 26px 0 0;
+  margin: 24px 0 0;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   font-family: var(--mono);
   font-variant-numeric: tabular-nums;
 }
 
-.facts div { display: flex; flex-direction: column; gap: 3px; }
+.facts div { display: flex; flex-direction: column; gap: 2px; }
 
 .facts .fk {
   font-size: var(--t-micro);
@@ -627,11 +640,11 @@ h3 {
   letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--muted);
-  padding: 0 0 9px;
+  padding: 0 0 8px;
   border-bottom: 1px solid var(--line);
 }
 
-.data-table td { padding: 10px 0; border-bottom: 1px solid var(--line); }
+.data-table td { padding: 8px 0; border-bottom: 1px solid var(--line); }
 
 .data-table td.num { text-align: right; letter-spacing: 0.12em; }
 
@@ -645,7 +658,7 @@ h3 {
 
 .beats li {
   position: relative;
-  padding: 0 0 15px 32px;
+  padding: 0 0 16px 32px;
   line-height: 1.62;
   color: var(--muted);
   counter-increment: beat;
@@ -669,8 +682,8 @@ h3 {
 .subs > div {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 3px;
-  padding: 14px 0;
+  gap: 2px;
+  padding: 12px 0;
   border-bottom: 1px solid var(--line);
 }
 
@@ -700,9 +713,9 @@ h3 {
   font-weight: 500;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  margin: 0 0 18px;
+  margin: 0 0 16px;
   color: var(--muted);
-  padding-bottom: 14px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--line);
   display: inline-block;
 }
@@ -724,20 +737,20 @@ h3 {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   padding: 20px 0 16px;
-  margin-top: 30px;
+  margin-top: 32px;
 }
 
 .gitstrip-head {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 24px;
+  gap: 4px 24px;
   align-items: baseline;
   font-family: var(--mono);
   font-size: var(--t-micro);
   letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .gitstrip-head b {
@@ -752,12 +765,12 @@ h3 {
 .bars {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 5px;
+  gap: 4px;
   align-items: end;
   height: 90px;
 }
 
-.bar { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; gap: 5px; }
+.bar { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; gap: 4px; }
 
 .bar i {
   display: block;
@@ -779,7 +792,7 @@ h3 {
 }
 
 @media (max-width: 520px) {
-  .bars { gap: 3px; }
+  .bars { gap: 2px; }
   .bar span { font-size: 0.5rem; }
 }
 
@@ -789,8 +802,8 @@ h3 {
 .maps {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 22px;
-  margin: 26px 0 24px;
+  gap: 20px;
+  margin: 24px 0 24px;
 }
 
 @media (min-width: 720px) {
@@ -809,8 +822,8 @@ h3 {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text);
-  padding-bottom: 9px;
-  margin-bottom: 10px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -831,7 +844,7 @@ h3 {
 }
 
 .mapread {
-  margin: 9px 0 0;
+  margin: 8px 0 0;
   font-family: var(--mono);
   font-size: var(--t-label);
   color: var(--muted);
@@ -852,7 +865,7 @@ h3 {
   color: var(--accent);
   font-family: var(--mono);
   font-size: var(--t-fine);
-  padding: 10px 16px;
+  padding: 8px 16px;
   border: 1px solid var(--line-strong);
   border-radius: 0 0 3px 0;
 }
@@ -869,7 +882,7 @@ h3 {
 
 .nodes {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 @media (min-width: 900px) {
@@ -882,7 +895,7 @@ h3 {
   border: 1px solid var(--line);
   border-radius: 3px;
   background: var(--bg-soft);
-  padding: 15px 16px;
+  padding: 16px 16px;
   transition: border-color 150ms ease, background 150ms ease;
   outline-offset: 2px;
 }
@@ -914,7 +927,7 @@ h3 {
 .node-head {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -980,7 +993,7 @@ h3 {
 
 .node-detail p {
   margin: 0;
-  padding-top: 10px;
+  padding-top: 8px;
   color: var(--muted);
   font-size: var(--t-body);
   line-height: 1.6;
@@ -992,10 +1005,10 @@ h3 {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--warn);
-  padding-top: 10px !important;
+  padding-top: 8px !important;
 }
 
-.node-board + p { padding-top: 5px; }
+.node-board + p { padding-top: 4px; }
 
 @media (prefers-reduced-motion: reduce) {
   .node,
@@ -1018,4 +1031,23 @@ h3 {
   .subs .st { color: #111; }
   .subs .sx, .prose p, .prose li { color: #222; }
   .section { page-break-inside: avoid; }
+}
+
+/* ── Vertical rhythm ─────────────────────────────────────────────────────
+   Sections are the unit. One gap between sections, one between a heading
+   and its content, one between paragraphs — no page sets its own. */
+
+.section { margin-top: 48px; }
+.section:first-of-type { margin-top: 40px; }
+.section-head { margin-bottom: 20px; }
+.prose > p + p { margin-top: 16px; }
+.prose > p + ul,
+.prose > ul + p { margin-top: 16px; }
+.prose li + li { margin-top: 8px; }
+.hero { margin-bottom: 8px; }
+.closing-line { margin-top: 48px; }
+
+@media (max-width: 620px) {
+  .section { margin-top: 32px; }
+  .closing-line { margin-top: 32px; }
 }
