@@ -114,8 +114,10 @@ grep -rhoE 'href="/[a-z-]*/?[a-z-]*/"' --include=*.html . | sort -u \
 - **Dated pages rot silently.** `homelab/` and `status/` both state a
   last-updated month in their own copy. Nothing checks whether that date is
   still honest — it went three months stale before anyone noticed.
-- **The homelab status grid is a static sketch**, not live data. Its own copy
-  says a real monitoring-backed view would be better.
+- **The homelab node table is hand-maintained**, not live data. It says so on
+  the page. Uptime Kuma holds the real state; nothing pipes it here yet.
+- **The home page's commit strip is a hand-taken snapshot.** Regenerate it
+  with `gh api graphql` and edit the bars when the capture date gets old.
 - **No automated deploy.** Deployment is a manual rsync, so the live tree can
   drift from `main` with no signal.
 

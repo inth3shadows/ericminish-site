@@ -34,170 +34,87 @@
       <div class="hero-copy">
         <h1>Homelab</h1>
         <p class="lede">
-          The lab exists to carry live work: sites, routing, monitoring, storage, and the boring recovery paths that keep those surfaces usable. It is where I find out whether something I believe about a system is actually true.
+          Ten machines carrying live work — sites, routing, monitoring, storage, and the boring
+          recovery paths that keep those surfaces usable. It is where I find out whether something
+          I believe about a system is actually true.
         </p>
       </div>
-
       <aside class="note">
-        <p>All physical nodes are listed below. Services are called out separately so the page does not blur boxes, LXCs, and public routes into one pile.</p>
+        <p>Public routes come through Cloudflare Tunnel. Nothing is port-forwarded.</p>
         <p>Last updated <strong>July 2026</strong>.</p>
       </aside>
     </section>
 
     <section class="section">
-      <div class="section-head">
-        <div><h2>Node map</h2></div>
-      </div>
-
-      <div class="gallery-grid">
-        <article class="panel">
-          <div class="artifact-grid">
-            <div class="code-window">
-              <div class="window-bar">
-                <span class="window-dot"></span>
-                <span class="window-dot"></span>
-                <span class="window-dot"></span>
-                physical nodes
-              </div>
-              <pre><code>nuc1     dev tooling / available
-nuc2     always-on core
-nuc3     dns backup
-nuc4     media
-m710q3   client hosting
-m93p     monitoring / intelligence
-optiplex observability / staging / repurpose
-nas      storage
-
-m710q2   offline
-m710q1   offline</code></pre>
-            </div>
-
-            <figure class="photo-slot status-surface">
-              <figcaption class="fine">Hardware / status surface</figcaption>
-              <div class="status-grid">
-                <div class="status-card">
-                  <strong>nuc1</strong>
-                  <span>available</span>
-                  <b class="status-pending">tracked</b>
-                </div>
-                <div class="status-card">
-                  <strong>nuc2</strong>
-                  <span>core</span>
-                  <b class="status-pending">tracked</b>
-                </div>
-                <div class="status-card">
-                  <strong>nuc3</strong>
-                  <span>dns backup</span>
-                  <b class="status-pending">tracked</b>
-                </div>
-                <div class="status-card">
-                  <strong>nuc4</strong>
-                  <span>media</span>
-                  <b class="status-pending">tracked</b>
-                </div>
-                <div class="status-card">
-                  <strong>m710q3</strong>
-                  <span>client hosting</span>
-                  <b class="status-pending">tracked</b>
-                </div>
-                <div class="status-card">
-                  <strong>m93p</strong>
-                  <span>monitoring</span>
-                  <b class="status-pending">tracked</b>
-                </div>
-                <div class="status-card">
-                  <strong>optiplex</strong>
-                  <span>staging</span>
-                  <b class="status-pending">tracked</b>
-                </div>
-                <div class="status-card">
-                  <strong>nas</strong>
-                  <span>storage</span>
-                  <b class="status-pending">tracked</b>
-                </div>
-                <div class="status-card">
-                  <strong>m710q2</strong>
-                  <span>parked</span>
-                  <b class="status-down">down</b>
-                </div>
-                <div class="status-card">
-                  <strong>m710q1</strong>
-                  <span>parked</span>
-                  <b class="status-down">down</b>
-                </div>
-              </div>
-              <p class="muted">This area should eventually become a live Proxmox-style view with CPU and memory overlays. For now it is the hardware/status surface instead of a fake photo prompt.</p>
-            </figure>
-          </div>
-        </article>
+      <div class="facts">
+        <div><span class="fk">machines</span><span class="fv">10</span></div>
+        <div><span class="fk">live</span><span class="fv good">8</span></div>
+        <div><span class="fk">public surfaces</span><span class="fv">3</span></div>
+        <div><span class="fk">backups</span><span class="fv">nightly</span></div>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head">
-        <div><h2>Services</h2></div>
+      <div class="section-head"><div><h2>Nodes</h2></div></div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Host</th><th>Role</th><th style="text-align:right">State</th></tr>
+          <tr><td>nuc1</td><td>Dev tooling, knowledge-graph host</td><td class="num win">live</td></tr>
+          <tr><td>nuc2</td><td>Always-on core — this site, edge routing</td><td class="num win">live</td></tr>
+          <tr><td>nuc3</td><td>Secondary DNS</td><td class="num win">live</td></tr>
+          <tr><td>nuc4</td><td>Media</td><td class="num win">live</td></tr>
+          <tr><td>m710q3</td><td>Client site hosting</td><td class="num win">live</td></tr>
+          <tr><td>m93p</td><td>Monitoring and intelligence workloads</td><td class="num win">live</td></tr>
+          <tr><td>optiplex</td><td>Observability and staging</td><td class="num win">live</td></tr>
+          <tr><td>nas</td><td>Storage</td><td class="num win">live</td></tr>
+          <tr><td>m710q1</td><td>Parked</td><td class="num lose">offline</td></tr>
+          <tr><td>m710q2</td><td>Parked</td><td class="num lose">offline</td></tr>
+        </table>
       </div>
+      <p class="fine" style="margin-top:12px">
+        Roles are stable; state is written by hand and checked when this page is edited. It is not a
+        live view — Uptime Kuma has the real one, and until that is wired through, a table that
+        admits it is honest beats a dashboard that looks live and is not.
+      </p>
+    </section>
 
-      <div class="grid-2">
-        <article class="panel">
-          <h3>Public-facing services</h3>
-          <div class="code-window">
-            <div class="window-bar">
-              <span class="window-dot"></span>
-              <span class="window-dot"></span>
-              <span class="window-dot"></span>
-              routes and surfaces
-            </div>
-            <pre><code>ericminish.com
-  personal site
-
-nmwelldrilling.com
-  disclosed sample / reference implementation
-
-thefrostlineco.com
-  provider-facing business site</code></pre>
-          </div>
-        </article>
-
-        <article class="panel">
-          <h3>Internal services</h3>
-          <div class="code-window">
-            <div class="window-bar">
-              <span class="window-dot"></span>
-              <span class="window-dot"></span>
-              <span class="window-dot"></span>
-              service layer
-            </div>
-            <pre><code>adguard          primary + backup
-caddy            edge / tls
-nginx            client sites
-uptime kuma      monitoring
-ntfy             alerting
-proxmox backup   nightly, off-node
-postgres         knowledge graph
-searxng          private metasearch
-media stack      vpn-bound ingest
-cups             print</code></pre>
-          </div>
-        </article>
+    <section class="section">
+      <div class="section-head"><div><h2>Services</h2></div></div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Service</th><th>Job</th></tr>
+          <tr><td>AdGuard</td><td>Primary and backup DNS</td></tr>
+          <tr><td>Caddy</td><td>Edge, TLS, public routing</td></tr>
+          <tr><td>Nginx</td><td>Client sites</td></tr>
+          <tr><td>Uptime Kuma</td><td>Monitoring</td></tr>
+          <tr><td>ntfy</td><td>Alerting</td></tr>
+          <tr><td>Proxmox Backup</td><td>Nightly, off-node</td></tr>
+          <tr><td>Postgres</td><td>Knowledge graph</td></tr>
+          <tr><td>SearXNG</td><td>Private metasearch</td></tr>
+          <tr><td>Media stack</td><td>VPN-bound ingest</td></tr>
+          <tr><td>CUPS</td><td>Print</td></tr>
+        </table>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head">
-        <div><h2>Why It Matters</h2></div>
-      </div>
-
-      <div class="grid-2">
-        <article class="panel">
-          <h3>What the lab is actually for</h3>
-          <p>The useful part is not the node count. It is clear separation between boxes, services, and public surfaces, so a change is easy to reason about and a failure is easy to isolate.</p>
-          <p>It is also where the quiet failures happen. One service spent weeks returning nothing because its config pinned an IP address the machine no longer held — everything was up, nothing was broken, and the results were simply empty. The fix was to stop referring to that machine by number at all. A workload sharing a VPN sidecar taught the same lesson: binding it to the tunnel interface by name is a control, and restarting things in the right order is only a habit that works until it doesn't.</p>
-        </article>
-
-        <article class="note">
-          <p>Uptime Kuma is the monitoring piece I most want to surface here. A better next version of this page would turn the hardware/status block above into a real status view instead of a static sketch.</p>
-        </article>
+      <div class="section-head"><div><h2>What it has taught me</h2></div></div>
+      <div class="prose">
+        <p>
+          The useful part is not the node count. It is clear separation between machines, services
+          and public surfaces, so a change is easy to reason about and a failure is easy to isolate.
+        </p>
+        <p>
+          It is also where the quiet failures happen. One service spent weeks returning nothing
+          because its configuration pinned an address the machine no longer held — everything was up,
+          nothing errored, and the results were simply empty. The fix was to stop referring to that
+          machine by number at all.
+        </p>
+        <p>
+          A workload sharing a VPN sidecar taught the same lesson from the other direction. Binding
+          it to the tunnel interface by name is a control. Restarting things in the right order is a
+          habit, and a habit works right up until the moment it does not.
+        </p>
       </div>
     </section>
 
