@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Portfolio | Eric Minish</title>
   <meta name="description" content="Selected work by Eric Minish across public sites, workflow systems, and developer tooling.">
-  <link rel="stylesheet" href="/assets/site.css?v=a7c05ec5">
+  <link rel="stylesheet" href="/assets/site.css?v=5af5c883">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
@@ -293,7 +293,7 @@ testdata/             101 Go test files across the tree</code></pre>
           </div>
           <div class="node-detail">
             <div class="node-detail-inner">
-            <p>A persistent multiplexed shell published through an identity-proxied tunnel. Same live session from any device, nothing listening on the public internet, and no session survives without single sign-on.</p>
+            <p>A persistent multiplexed shell published through an identity-proxied tunnel. Same live session from any device, nothing listening on the public internet, and no session survives without single sign-on. It is also why the agent work on this page is routine rather than theoretical — a long job keeps running when the laptop closes, and I can look in on it from anywhere without leaving anything listening.</p>
           </div>
           </div>
         </article>
@@ -324,36 +324,93 @@ testdata/             101 Go test files across the tree</code></pre>
           session, so work does not have a device attached to it.
         </p>
         <p>
-          That is also why the agent work on this page is practical rather than theoretical: a long
-          job keeps running when I close the lid, and I can look in on it from anywhere without
-          leaving anything listening.
+          Below is a model of that console on an ordinary day — a rail of agent sessions beside
+          the one that is open. Hover it, or give it focus, to watch it fill in.
         </p>
       </div>
 
-      <div class="code-window" style="margin-top:20px">
-        <div class="window-bar">
-          <span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>
-          shared session — rendering, not a screenshot
-        </div>
-        <pre><code>$ tmux attach -t shared
-[attached to session: 2 clients, 3 windows]
+            <div class="code-window aui" tabindex="0" role="img"
+     aria-label="A model of the browser terminal: a rail of coding-agent sessions on the left, each card showing its state, model, mode, context use and diff size, beside one open session on the right — a transcript of tool calls and agent replies, a prompt line, a status line and a row of key shortcuts.">
+  <div class="window-bar">
+    <span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>
+    the browser terminal — a model, hover to run
+  </div>
+  <div class="aui-frame">
 
-  0:agent*   1:logs   2:deploy
-
-~ $ ./deploy --verify
-  backup            ok      site.bak-2026-07-29
-  sync              ok      14 files
-  local health      200
-  public health     200
-  fonts             200     self-hosted, no cdn
-  done in 6.2s
-
-~ $ _</code></pre>
+    <aside class="aui-rail">
+      <p class="aui-brand aui-line" style="--i:0">termi<span>nal</span></p>
+      <p class="aui-sub aui-line" style="--i:1">7 sessions &middot; 7 agents</p>
+      <div class="aui-strip aui-line" style="--i:2">on pace <b>~12.38B</b> &middot; projected this month</div>
+      <div class="aui-filters aui-line" style="--i:3">
+        <span class="aui-pill is-live">3 working</span>
+        <span class="aui-pill">4 idle</span>
       </div>
+
+      <article class="aui-card aui-line" style="--i:4">
+        <p class="aui-state is-working">&#9679; working</p>
+        <p class="aui-title">site &middot; rebuild the terminal section</p>
+        <p class="aui-chips">
+          <span class="aui-chip">opus</span>
+          <span class="aui-chip is-mode">accept-edits</span>
+          <span class="aui-bar"><i style="width:22%"></i></span>
+          <span>ctx 13%</span>
+        </p>
+        <p class="aui-chips aui-diff"><span class="plus">+318</span> <span class="minus">&minus;56</span> &middot; 6 files</p>
+      </article>
+
+      <article class="aui-card aui-line" style="--i:5">
+        <p class="aui-state is-working">&#9679; working</p>
+        <p class="aui-title">wells &middot; review open issues</p>
+        <p class="aui-chips">
+          <span class="aui-chip">opus</span>
+          <span class="aui-chip is-mode">accept-edits</span>
+          <span class="aui-bar"><i style="width:45%"></i></span>
+          <span>ctx 45%</span>
+        </p>
+        <p class="aui-chips aui-diff"><span class="plus">+341</span> <span class="minus">&minus;91</span> &middot; 17 files</p>
+      </article>
+
+      <article class="aui-card is-selected aui-line" style="--i:6">
+        <p class="aui-state">&#9679; idle</p>
+        <p class="aui-title">proxy &middot; benchmark the codec</p>
+        <p class="aui-chips">
+          <span class="aui-chip">opus</span>
+          <span class="aui-chip is-mode">accept-edits</span>
+          <span class="aui-bar"><i style="width:15%"></i></span>
+          <span>ctx 15%</span>
+        </p>
+        <p class="aui-slot">awaiting instruction</p>
+      </article>
+    </aside>
+
+    <section class="aui-main">
+      <p class="aui-head aui-line" style="--i:0">site &middot; rebuild the terminal section</p>
+      <p class="aui-tabs aui-line" style="--i:1">
+        <span class="aui-tab">shared</span>
+        <span class="aui-tab is-active">3: site &middot; rebuild the terminal section</span>
+      </p>
+      <pre class="aui-stream"><code><span class="aui-line" style="--i:2"><span class="dim">&gt; make the hover demo match the real console</span></span><span class="aui-line aui-gap" style="--i:3"><b>&#9679;</b> I'll read the component that's there now before changing it.</span><span class="aui-line" style="--i:4"><b>&#9679;</b> <strong>Read</strong>(portfolio/index.html)</span><span class="aui-line" style="--i:5">  <span class="dim">&#9492;  Read 377 lines</span></span><span class="aui-line" style="--i:6"><b>&#9679;</b> <strong>Search</strong>(pattern: "code-window", path: "assets")</span><span class="aui-line" style="--i:7">  <span class="dim">&#9492;  Found 24 matches</span></span><span class="aui-line" style="--i:8"><b>&#9679;</b> <strong>Update</strong>(assets/site.css)</span><span class="aui-line" style="--i:9">  <span class="dim">&#9492;  Updated with 62 additions and 18 removals</span></span><span class="aui-line aui-gap" style="--i:10"><b>&#9679;</b> Replaced the pane grid with the rail-and-session layout.</span><span class="aui-line" style="--i:11"><b class="is-warn">&#10035;</b> <span class="dim">Running&#8230; (esc to interrupt)</span></span></code></pre>
+      <p class="aui-prompt aui-line" style="--i:12">&gt; <span class="aui-cursor"></span></p>
+      <p class="aui-status aui-line" style="--i:13">opus &middot; <span class="live">ctx 15%</span> &middot; <span class="cost">$9.07</span> &middot; attached from two devices</p>
+      <p class="aui-mode aui-line" style="--i:14">&#9654;&#9654; auto mode on (shift+tab to cycle)</p>
+      <p class="aui-keys aui-line" style="--i:15">
+        <span class="aui-key">scroll</span>
+        <span class="aui-key">live</span>
+        <span class="aui-key">agents</span>
+        <span class="aui-key">tab</span>
+        <span class="aui-key">cancel</span>
+        <span class="aui-key is-send">send</span>
+        <span class="aui-key">stop</span>
+      </p>
+    </section>
+
+  </div>
+</div>
       <p class="fine" style="margin-top:12px">
-        A rendering of the interface, not a capture of a real session. No host name, address, path or
-        session content from the actual environment appears here — the surface is worth describing,
-        its location is not.
+        A model of the shared session, not a capture of a real one. The panes and their output are
+        illustrative — generic paths, generic counts — and no host name, address, path or session
+        content from the actual environment appears here. The surface is worth describing, its
+        location is not.
       </p>
     </section>
 
