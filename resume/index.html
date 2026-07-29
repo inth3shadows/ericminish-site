@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Résumé — Eric Minish</title>
+  <title>Resume — Eric Minish</title>
   <meta name="description" content="Eric Minish — systems engineer. I build the checks that catch what is breaking quietly.">
   <link rel="stylesheet" href="/assets/site.css?v=20260728a">
   <link rel="canonical" href="https://www.ericminish.com/resume/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
-  <meta property="og:title" content="Résumé — Eric Minish">
+  <meta property="og:title" content="Resume — Eric Minish">
   <meta property="ogdescription" content="Systems engineer. I build the checks that catch what is breaking quietly.">
   <meta property="og:url" content="https://www.ericminish.com/resume/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Résumé — Eric Minish">
+  <meta name="twitter:title" content="Resume — Eric Minish">
   <meta name="twitterdescription" content="Systems engineer. I build the checks that catch what is breaking quietly.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
@@ -38,7 +38,7 @@
         <a href="/homelab/">Homelab</a>
         <a href="/status/">Now</a>
         <a href="/about/">About</a>
-        <a href="/resume/" aria-current="page">Résumé</a>
+        <a href="/resume/" aria-current="page">Resume</a>
         <a href="/contact/">Contact</a>
       </nav>
     </div>
@@ -59,11 +59,13 @@
     <section class="section">
       <div class="prose">
         <p>
-          I notice what is about to go wrong before it does — a customer about to churn, a bug that
-          only appears under a race condition, an agent about to act on a claim nobody checked — and
-          I build the system that catches it. I did that with churn risk-scoring in a real-estate
-          transaction business, taking churn from 30% to under 10%. I do the same thing now for the
-          AI tooling I build and run myself.
+          I find the thing that is quietly breaking and build the check that catches it the next
+          time. At Transactly that was account risk: churn went from 30% to under 10% because the
+          system flagged customers before they left rather than explaining them afterwards. Lately
+          it has been my own tooling — a proxy that refuses to compress anything it cannot rebuild
+          exactly, a search engine whose evaluation told me half of it did not work, and a
+          well-depth model that lost its most promising variable the moment it was measured against
+          the right baseline.
         </p>
       </div>
     </section>
@@ -75,14 +77,34 @@
         <div class="entry-stamp"><b>Sep 2020 — present</b><span>Transactly</span><span>Tech-enabled real-estate transaction coordination</span></div>
         <h3>Lead Systems &amp; Automation Specialist</h3>
         <div class="prose">
+          <p>
+            I own the internal systems layer: the workflow logic, the integrations between it and
+            everything else, and the reporting that has to make the result legible to people who
+            were not in the room. Most of it is work nobody assigned — roughly sixty active project
+            directories, two-thirds of them touched in the last month, so it is a maintained estate
+            rather than a pile of scripts.
+          </p>
           <ul>
-            <li>Cut churn from <strong>30% to under 10%</strong> by building a system that scored account risk in real time, before customers left.</li>
+            <li>Cut churn from <strong>30% to under 10%</strong> by scoring account risk in real time, so the intervention happened before the customer left.</li>
             <li>Halved support resolution time by giving tickets clear owners and automating the queue.</li>
-            <li>Built the SQL and reporting stack the company uses for billing, onboarding and retention decisions.</li>
+            <li>Built the SQL and reporting stack used for billing, onboarding and retention decisions.</li>
             <li>Automated onboarding for small accounts, returning about <strong>20%</strong> of the customer-success team's time.</li>
             <li>Kept every system running through a 30% headcount reduction. Nothing broke.</li>
-            <li>Write and maintain the internal tooling nobody assigned: dozens of Python and SQL services for CRM syncing, database access, reporting, and most recently an LLM-assisted service that audits call recordings against a compliance rubric — deterministic checks first, human review after.</li>
           </ul>
+          <p>
+            The engineering underneath, described categorically: CRM integration and lead-management
+            APIs; ingestion services and scheduled jobs on managed cloud infrastructure;
+            warehouse-backed reporting dashboards behind access control; spreadsheet-platform
+            automation; a handful of React front ends; and operational microservices. Python
+            dominates, with TypeScript for anything user-facing and shell for the glue. Around
+            <strong>140 test files</strong> across the estate — systematic rather than ad hoc.
+          </p>
+          <p>
+            One service is LLM-assisted: it transcribes calls and scores them against a compliance
+            rubric, deterministic checks first and human review after, with the model never given
+            the last word. That is the same shape as the independent work below, which is why the
+            two halves of this resume are one job rather than two.
+          </p>
         </div>
       </article>
 
@@ -146,7 +168,7 @@
     </section>
 
     <p class="closing-line">
-      A PDF version is available on request — <a href="mailto:hi@ericminish.com?subject=Resume">hi@ericminish.com</a>.
+      <a class="button" href="/resume/eric-minish-resume.pdf" download>Download PDF</a> &nbsp; or email me — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
     </p>
   </main>
 

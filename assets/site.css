@@ -1199,113 +1199,157 @@ h3 {
   outline-offset: 2px;
 }
 
-/* ── Node cards: collapsed by default, detail on hover or focus ───────── */
+/* ── Expandable rows (portfolio + homelab) ───────────────────────────────
+   A card at rest; hovering or focusing one expands that card only. */
 
-.nodes { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.nodes {
+  display: grid;
+  gap: 10px;
+}
+
+@media (min-width: 900px) {
+  .nodes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nodes.nodes-wide { grid-template-columns: minmax(0, 1fr); }
+}
 
 .node {
-  border-bottom: 1px solid var(--line);
-  padding: 14px 12px 14px 0;
-  transition: background 140ms ease;
-  outline-offset: -2px;
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--bg-soft);
+  padding: 15px 16px;
+  transition: border-color 150ms ease, background 150ms ease;
+  outline-offset: 2px;
+}
+
+.node:before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  bottom: -1px;
+  width: 2px;
+  background: var(--accent);
+  border-radius: 3px 0 0 3px;
+  opacity: 0;
+  transition: opacity 150ms ease;
 }
 
 .node:hover,
-.node:focus-visible { background: rgba(24, 230, 153, 0.035); }
+.node:focus-visible,
+.node:focus-within {
+  border-color: var(--line-strong);
+  background: var(--bg-elevated);
+}
+
+.node:hover:before,
+.node:focus-visible:before,
+.node:focus-within:before { opacity: 1; }
 
 .node-head {
-  display: grid;
-  grid-template-columns: 30px minmax(0, 1fr) auto;
-  gap: 12px;
-  align-items: center;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-@media (min-width: 640px) {
-  .node-head { grid-template-columns: 30px 140px minmax(0, 1fr) auto; }
+.node-icon {
+  color: var(--muted);
+  flex: 0 0 auto;
+  align-self: center;
+  line-height: 0;
 }
 
-.node-icon { color: var(--muted); display: flex; }
-.node-icon svg { width: 26px; height: 26px; }
+.node-icon svg { width: 22px; height: 22px; display: block; }
+
 .node:hover .node-icon,
-.node:focus-visible .node-icon { color: var(--accent); }
+.node:focus-within .node-icon { color: var(--accent); }
 
 .node-name {
-  font-family: var(--mono);
-  font-size: 0.92rem;
-  letter-spacing: 0.04em;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--text);
+  margin-right: auto;
 }
+
+.node-name a { color: var(--text); }
+.node-name a:hover { color: var(--accent); }
 
 .node-spec {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   letter-spacing: 0.06em;
-  color: var(--muted);
-  display: none;
+  color: var(--warn);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
-
-@media (min-width: 640px) { .node-spec { display: block; } }
 
 .node-state {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.56rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap;
 }
 
 .node-detail {
   display: grid;
   grid-template-rows: 0fr;
-  opacity: 0;
-  transition: grid-template-rows 180ms ease, opacity 180ms ease;
+  transition: grid-template-rows 200ms ease;
 }
 
-.node-detail > * { overflow: hidden; }
+.node-detail > .node-detail-inner {
+  overflow: hidden;
+  min-height: 0;
+}
 
 .node:hover .node-detail,
 .node:focus-visible .node-detail,
-.node:focus-within .node-detail {
-  grid-template-rows: 1fr;
-  opacity: 1;
-}
+.node:focus-within .node-detail { grid-template-rows: 1fr; }
 
 .node-detail p {
   margin: 0;
+  padding-top: 10px;
   color: var(--muted);
+  font-size: 0.94rem;
   line-height: 1.6;
-  max-width: 62ch;
-  padding-left: 42px;
 }
-
-.node-detail p:first-child { padding-top: 10px; }
 
 .node-board {
-  font-family: var(--mono) !important;
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--warn) !important;
-  padding-bottom: 4px;
+  color: var(--warn);
+  padding-top: 10px !important;
 }
 
+.node-board + p { padding-top: 5px; }
+
 @media (prefers-reduced-motion: reduce) {
+  .node,
+  .node:before,
   .node-detail { transition: none; }
 }
 
-.nodes .node-head { grid-template-columns: minmax(0, 1fr) auto; }
+/* ── Print: the resume page should print as a clean single column ─────── */
 
-@media (min-width: 640px) {
-  .nodes .node-head:not(:has(.node-icon)) {
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
-  }
-  .nodes .node-head:has(.node-icon) {
-    grid-template-columns: 30px 140px minmax(0, 1fr) auto;
-  }
+@media print {
+  body { background: #fff; color: #111; }
+  .site-header, .site-footer, .skip-link, .closing-line { display: none; }
+  .shell { max-width: none; padding: 0; }
+  a { color: #111; text-decoration: none; }
+  .hero-home .name { color: #444; border-color: #ccc; }
+  .hero-home .lede { color: #111; font-size: 1.4rem; }
+  .entry-stamp { color: #555; }
+  .entry-stamp b { color: #111; }
+  .subs > div { border-color: #ddd; }
+  .subs .st { color: #111; }
+  .subs .sx, .prose p, .prose li { color: #222; }
+  .section { page-break-inside: avoid; }
 }
-
-.node-head:not(:has(.node-icon)) + .node-detail p { padding-left: 0; }
-
-.node-name a { color: var(--text); }
-.node-name a:hover { color: var(--accent); }
-.node-state { white-space: nowrap; }

@@ -38,7 +38,7 @@
         <a href="/homelab/">Homelab</a>
         <a href="/status/">Now</a>
         <a href="/about/">About</a>
-        <a href="/resume/">Résumé</a>
+        <a href="/resume/">Resume</a>
         <a href="/contact/">Contact</a>
       </nav>
     </div>
@@ -66,7 +66,9 @@
             <span class="node-state">open</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>A proxy in front of MCP tool servers that losslessly compresses what they return. If a payload cannot be proven to reconstruct exactly, the original is forwarded untouched — lossless is the default, not a mode. Public, MIT, with a benchmark harness in the repo so you can measure the saving on your own tools.</p>
+          </div>
           </div>
         </article>
         <article class="node" tabindex="0">
@@ -76,7 +78,9 @@
             <span class="node-state">open</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>Local retrieval over years of my own notes. Semantic search beat keyword search at 1,271 documents and lost to it at 57,500; the write-up leads with that. Includes a pre-registered kill gate, negative controls, and pooled blind judging.</p>
+          </div>
           </div>
         </article>
         <article class="node" tabindex="0">
@@ -86,7 +90,9 @@
             <span class="node-state">open</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>Spatial models over the public Michigan well record. Depth is predictable from location — Moran's I 0.393 — and yield is not, at 0.089. A promising target was cut once it proved to be ~96% a restatement of depth.</p>
+          </div>
           </div>
         </article>
         <article class="node" tabindex="0">
@@ -96,7 +102,9 @@
             <span class="node-state">open</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>A guard layer for coding-agent sessions: symbol lookup, edit-scope contracts, pre-commit checks. Its parser engine is chosen per language by one test — whether a cheap shortcut would guess wrong, because a wrong guess fails silently.</p>
+          </div>
           </div>
         </article>
         <article class="node" tabindex="0">
@@ -106,7 +114,9 @@
             <span class="node-state">open</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>Origin-health detection for tunnelled services — the failure a healthy edge hides. It shipped without write access and earned remediation only once its classifications held up in the field.</p>
+          </div>
           </div>
         </article>
         <article class="node" tabindex="0">
@@ -116,7 +126,9 @@
             <span class="node-state">open</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>Routes one coding agent across several model providers by task, with secrets kept out of the environment and cost tracked against a budget rather than estimated after the fact.</p>
+          </div>
           </div>
         </article>
       </div>
@@ -132,7 +144,9 @@
             <span class="node-state">open</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>This site. Static files, no build step, no third-party requests, rsynced into a container on my own hardware and served by Caddy behind a tunnel.</p>
+          </div>
           </div>
         </article>
         <article class="node" tabindex="0">
@@ -142,7 +156,9 @@
             <span class="node-state">open</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>A contractor-facing reference build, end to end. It is labelled a sample on the page itself — a demo that pretends to be a client is a lie with a deploy pipeline.</p>
+          </div>
           </div>
         </article>
         <article class="node" tabindex="0">
@@ -152,7 +168,9 @@
             <span class="node-state">open</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>The business surface for managed intake work, deliberately kept off this site. Separate identity, separate stack, separate promises.</p>
+          </div>
           </div>
         </article>
       </div>
@@ -168,7 +186,9 @@
             <span class="node-state">private</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>Durable memory my agents write into by proposal only, every fact reviewed before it lands. Moving embeddings to a sidecar took the production image from 2.14 GB to 442 MB; trimming the tool surface cut one response from 271 KB to 26 KB.</p>
+          </div>
           </div>
         </article>
         <article class="node" tabindex="0">
@@ -178,7 +198,9 @@
             <span class="node-state">private</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>A weekly market-intelligence pipeline. The model may never author a source — every citation is backfilled from the collector that actually fetched it, and a test fails the build if a client name is ever hard-coded into the repository.</p>
+          </div>
           </div>
         </article>
         <article class="node" tabindex="0">
@@ -188,7 +210,9 @@
             <span class="node-state">private</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>Projection and auction-price engine for fantasy football. Players with no honest baseline to compare against return null rather than a fabricated number that looks authoritative.</p>
+          </div>
           </div>
         </article>
         <article class="node" tabindex="0">
@@ -198,7 +222,9 @@
             <span class="node-state">private</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>Links winery news to a known entity list. A deterministic matcher proposes candidates and the language model may only confirm or reject them — it is never allowed to invent one.</p>
+          </div>
           </div>
         </article>
         <article class="node" tabindex="0">
@@ -208,7 +234,9 @@
             <span class="node-state">private</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>A small scheduling app — FastAPI, a Svelte front end and Postgres — running in its own container behind a tunnel. Built to be used rather than demonstrated.</p>
+          </div>
           </div>
         </article>
         <article class="node" tabindex="0">
@@ -218,7 +246,9 @@
             <span class="node-state">open</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>Ten machines under Proxmox carrying real routing, monitoring and backups — where a claim about how something fails is something I have watched rather than read.</p>
+          </div>
           </div>
         </article>
         <article class="node" tabindex="0">
@@ -228,7 +258,9 @@
             <span class="node-state">private</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>A persistent multiplexed shell published through an identity-proxied tunnel. Same live session from any device, nothing listening on the public internet, and no session survives without single sign-on.</p>
+          </div>
           </div>
         </article>
 
@@ -239,7 +271,9 @@
             <span class="node-state">private</span>
           </div>
           <div class="node-detail">
+            <div class="node-detail-inner">
             <p>Internal operations work turning messy handoffs into explicit states and next actions. Most automation failures I have cleaned up were not automation failures — they were ambiguous state with a scheduler on top.</p>
+          </div>
           </div>
         </article>
       </div>
