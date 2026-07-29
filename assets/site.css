@@ -1078,3 +1078,46 @@ h3 {
   .section { margin-top: 32px; }
   .closing-line { margin-top: 32px; }
 }
+
+/* ── Repository trees ────────────────────────────────────────────────────
+   Generated from the repository at a named commit. Only public repos get
+   one: for private work a tree is a map of the method and the surface, and
+   its absence says the same thing the entry already says. */
+
+.tree {
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: rgba(8, 11, 15, 0.55);
+}
+
+.tree-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tree pre {
+  margin: 0;
+  padding: 12px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  line-height: 1.75;
+  color: #aebac6;
+}
+
+.tree-note {
+  margin: 0;
+  padding: 8px 12px 12px;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  color: var(--muted);
+}

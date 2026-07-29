@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Portfolio | Eric Minish</title>
   <meta name="description" content="Selected work by Eric Minish across public sites, workflow systems, and developer tooling.">
-  <link rel="stylesheet" href="/assets/site.css?v=2e9ad47b">
+  <link rel="stylesheet" href="/assets/site.css?v=a7c05ec5">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
@@ -68,6 +68,17 @@
           <div class="node-detail">
             <div class="node-detail-inner">
             <p>A proxy in front of MCP tool servers that losslessly compresses what they return. If a payload cannot be proven to reconstruct exactly, the original is forwarded untouched — lossless is the default, not a mode. Public, MIT, with a benchmark harness in the repo so you can measure the saving on your own tools.</p>
+            <div class="tree">
+              <div class="tree-head"><span>terse</span><span>2bf2951 · 106 files</span></div>
+              <pre><code>src/terse/            the codec, proxy and policy
+scripts/bench/        the TOON comparison in this page
+tests/                32 test files
+corpus/               pinned benchmark payloads
+BENCHMARKS.md         every figure, dated
+VERIFY.md             how to check the claims</code></pre>
+              <p class="tree-note">Generated from the repository, not drawn. <a href="https://github.com/inth3shadows/terse">Browse it</a>.</p>
+            </div>
+
           </div>
           </div>
         </article>
@@ -104,6 +115,17 @@
           <div class="node-detail">
             <div class="node-detail-inner">
             <p>A guard layer for coding-agent sessions: symbol lookup, edit-scope contracts, pre-commit checks. Its parser engine is chosen per language by one test — whether a cheap shortcut would guess wrong, because a wrong guess fails silently.</p>
+            <div class="tree">
+              <div class="tree-head"><span>RunEcho</span><span>ec138df · 238 files</span></div>
+              <pre><code>cmd/                  runecho-guard, -ir, -mcp
+internal/guard/       the pre-commit dimension
+internal/contract/    edit-scope contracts
+internal/claims/      claim verification
+bench/                token-cost measurements
+testdata/             101 Go test files across the tree</code></pre>
+              <p class="tree-note">Generated from the repository, not drawn. <a href="https://github.com/inth3shadows/runecho">Browse it</a>.</p>
+            </div>
+
           </div>
           </div>
         </article>
