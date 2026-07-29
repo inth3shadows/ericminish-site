@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Résumé — Eric Minish</title>
+  <meta name="description" content="Eric Minish — systems engineer. I build the checks that catch what is breaking quietly.">
+  <link rel="stylesheet" href="/assets/site.css?v=20260728a">
+  <link rel="canonical" href="https://www.ericminish.com/resume/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Eric Minish">
+  <meta property="og:title" content="Résumé — Eric Minish">
+  <meta property="ogdescription" content="Systems engineer. I build the checks that catch what is breaking quietly.">
+  <meta property="og:url" content="https://www.ericminish.com/resume/">
+  <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Résumé — Eric Minish">
+  <meta name="twitterdescription" content="Systems engineer. I build the checks that catch what is breaking quietly.">
+  <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/resume/" aria-current="page">Résumé</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell" id="main">
+    <section class="hero hero-home">
+      <h2 class="name">Eric Minish</h2>
+      <h1 class="lede">I build the checks that catch what is breaking quietly.</h1>
+      <p class="fine" style="margin-top:14px">
+        <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> ·
+        <a href="https://github.com/inth3shadows">github.com/inth3shadows</a> ·
+        <a href="https://www.linkedin.com/in/ericminish">linkedin.com/in/ericminish</a> ·
+        Central Lake, Michigan
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="prose">
+        <p>
+          I notice what is about to go wrong before it does — a customer about to churn, a bug that
+          only appears under a race condition, an agent about to act on a claim nobody checked — and
+          I build the system that catches it. I did that with churn risk-scoring in a real-estate
+          transaction business, taking churn from 30% to under 10%. I do the same thing now for the
+          AI tooling I build and run myself.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Experience</h2></div></div>
+
+      <article style="margin-bottom:34px">
+        <div class="entry-stamp"><b>Sep 2020 — present</b><span>Transactly</span><span>Tech-enabled real-estate transaction coordination</span></div>
+        <h3>Lead Systems &amp; Automation Specialist</h3>
+        <div class="prose">
+          <ul>
+            <li>Cut churn from <strong>30% to under 10%</strong> by building a system that scored account risk in real time, before customers left.</li>
+            <li>Halved support resolution time by giving tickets clear owners and automating the queue.</li>
+            <li>Built the SQL and reporting stack the company uses for billing, onboarding and retention decisions.</li>
+            <li>Automated onboarding for small accounts, returning about <strong>20%</strong> of the customer-success team's time.</li>
+            <li>Kept every system running through a 30% headcount reduction. Nothing broke.</li>
+            <li>Write and maintain the internal tooling nobody assigned: dozens of Python and SQL services for CRM syncing, database access, reporting, and most recently an LLM-assisted service that audits call recordings against a compliance rubric — deterministic checks first, human review after.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article style="margin-bottom:34px">
+        <div class="entry-stamp"><b>2025 — present</b><span>Independent</span><span>Built, shipped and run</span></div>
+        <h3>Agent and data infrastructure</h3>
+        <div class="prose">
+          <ul>
+            <li><a href="/portfolio/runecho/">RunEcho</a> — checks whether a coding agent's claims about code are actually true instead of trusting them. Used daily for five months.</li>
+            <li><a href="/portfolio/terse/">terse</a> — compresses what AI tools send back and forth without losing information, with an exact round trip guaranteed or the original forwarded untouched. Public, MIT.</li>
+            <li><a href="/portfolio/lodestone/">Lodestone</a> — local retrieval over years of working notes, and the evaluation that showed half of it did not work. Published the null result.</li>
+            <li><a href="/portfolio/frostline/">Frostline</a> — spatial models over 50,083 well records, and a business built around what they can honestly predict.</li>
+            <li>Found and reported <strong>32 bugs</strong> in a code-analysis tool I use daily. Two were race conditions that would not reproduce reliably, so I built harnesses that trigger them on demand and filed them with the proof attached.</li>
+            <li>Two servers other tools talk to: one hands out credentials without ever exposing the value to the calling process, one stores decisions and refuses anything that has not passed review.</li>
+            <li>Three applications deployed end to end, not prototypes — a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a small-business client.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article style="margin-bottom:34px">
+        <div class="entry-stamp"><b>Jun 2017 — Jun 2020</b><span>Geotix</span></div>
+        <h3>Customer Success Manager</h3>
+        <div class="prose">
+          <ul>
+            <li>Supported 70+ partners and roughly 3,000 clients across onboarding and troubleshooting.</li>
+            <li>Built the triage flow the support team still uses to escalate to product.</li>
+            <li>Wrote the team's onboarding and training playbooks.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article>
+        <div class="entry-stamp"><b>Mar 2013 — Jun 2017</b><span>Independent e-commerce</span></div>
+        <h3>Founder</h3>
+        <div class="prose">
+          <ul>
+            <li>Ran fulfilment, returns, payments and support across three storefronts, solo.</li>
+            <li>Built the refund and inventory logic that kept it running without hiring.</li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Skills</h2></div></div>
+      <div class="subs">
+        <div><span class="st">Automation &amp; systems</span><span class="sx">Workflow design, durable lifecycle systems for onboarding, billing and risk, internal tooling.</span></div>
+        <div><span class="st">AI tooling</span><span class="sx">MCP server development, LLM evaluation and benchmarking, agent verification.</span></div>
+        <div><span class="st">Data &amp; APIs</span><span class="sx">SQL — PostgreSQL, BigQuery — REST APIs, webhooks.</span></div>
+        <div><span class="st">Platforms</span><span class="sx">Python, TypeScript, Docker, Postgres, Cloudflare, Stripe, HubSpot Ops Hub, Proxmox.</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Education &amp; certifications</h2></div></div>
+      <div class="subs">
+        <div><span class="st">Central Michigan University</span><span class="sx">B.A. Sociology, emphasis in institutional systems.</span></div>
+        <div><span class="st">Gainsight</span><span class="sx">Customer Success Certified, Level 1 and Advanced (2021–2022). Customer Success Leader Certified (2022).</span></div>
+        <div><span class="st">PostgreSQL &amp; SQL</span><span class="sx">Bootcamp, 2023.</span></div>
+      </div>
+    </section>
+
+    <p class="closing-line">
+      A PDF version is available on request — <a href="mailto:hi@ericminish.com?subject=Resume">hi@ericminish.com</a>.
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/status/">Now</a>
+        <a href="/contact/">Contact</a>
+      
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
