@@ -133,6 +133,22 @@ out+=b'xref\n0 %d\n'%maxn+b'0000000000 65535 f \n'
 for i in range(1,maxn):
     out+=b'%010d 00000 n \n'%offs.get(i,0)
 out+=b'trailer\n<< /Size %d /Root 1 0 R >>\nstartxref\n%d\n%%%%EOF\n'%(maxn,xref)
-os.makedirs('resume',exist_ok=True)
-open('resume/eric-minish-resume.pdf','wb').write(bytes(out))
-print('pages',n_pages,'bytes',len(out))
+# Content-addressed filename: the URL changes whenever the PDF does, so a CDN
+# or a browser cannot serve a stale copy. The download attribute in the page
+# gives the visitor a clean filename regardless of what the URL says.
+import hashlib, glob, re, pathlib
+os.makedirs('resume', exist_ok=True)
+data = bytes(out)
+tag = hashlib.sha256(data).hexdigest()[:8]
+name = f'eric-minish-resume-{tag}.pdf'
+for stale in glob.glob('resume/eric-minish-resume*.pdf'):
+    if os.path.basename(stale) != name:
+        os.remove(stale)
+pathlib.Path('resume', name).write_bytes(data)
+
+page = pathlib.Path('resume/index.html')
+html = page.read_text()
+html2 = re.sub(r'/resume/eric-minish-resume[0-9a-z-]*\.pdf', f'/resume/{name}', html)
+if html2 != html:
+    page.write_text(html2)
+print(f'{name} — {n_pages} pages, {len(data)} bytes (link {"updated" if html2 != html else "already current"})')

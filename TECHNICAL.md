@@ -105,6 +105,10 @@ grep -rhoE 'href="/[a-z-]*/?[a-z-]*/"' --include=*.html . | sort -u \
 
 ## Known Limitations
 
+- **The resume PDF is content-addressed.** `tools/make-resume-pdf.py` names it
+  `eric-minish-resume-<hash>.pdf`, deletes the previous one, and rewrites the
+  link. The visitor still saves it as `Eric-Minish-Resume.pdf` via the
+  `download` attribute. Cloudflare served a stale copy once before this.
 - **The cache-bust is derived, not typed.** `tools/bump-cachebust.py` hashes
   `assets/site.css` and rewrites the `?v=` query on every page. It must be run
   before a deploy — nothing runs it automatically, and shipping a stylesheet
