@@ -11,18 +11,28 @@ add('tag','Systems Engineer — I build the checks that catch what is breaking q
 add('meta','hi@ericminish.com  |  ericminish.com  |  github.com/inth3shadows  |  linkedin.com/in/ericminish')
 add('gap')
 add('h','SUMMARY')
-add('p','I find the thing that is quietly breaking and build the check that catches it the next time. At Transactly that was account risk: churn went from 30% to under 10% because the system flagged customers before they left rather than explaining them afterwards. Lately it has been my own tooling - a proxy that refuses to compress anything it cannot rebuild exactly, a search engine whose evaluation told me half of it did not work, and a well-depth model that lost its most promising variable the moment it was measured against the right baseline.')
+add('p','I find the thing that is quietly breaking and build the check that catches it the next time. In customer-success operations that was account risk: churn went from 30% to under 10% because the system flagged customers before they left rather than explaining them afterwards. Lately it has been my own tooling - a proxy that refuses to compress anything it cannot rebuild exactly, a search engine whose evaluation told me half of it did not work, and a well-depth model that lost its most promising variable the moment it was measured against the right baseline.')
 add('gap')
 add('h','EXPERIENCE')
-add('role','Lead Systems & Automation Specialist')
-add('sub','Transactly  |  Sep 2020 - Present  |  Tech-enabled real estate transaction coordination')
-for b in ["Cut churn from 30% to under 10% by scoring account risk in real time, so the intervention happened before the customer left.",
-          "Halved support resolution time by giving tickets clear owners and automating the queue.",
-          "Built the SQL and reporting stack used for billing, onboarding, and retention decisions.",
-          "Automated onboarding for small accounts, returning about 20% of the customer-success team's time.",
-          "Kept every system running through a 30% headcount reduction. Nothing broke.",
-          "Own roughly sixty active internal project directories - CRM integration and lead-management APIs, ingestion services and scheduled jobs on managed cloud infrastructure, warehouse-backed reporting behind access control, and operational microservices. Python-dominant, TypeScript for user-facing work, ~140 test files across the estate.",
+add('role','Systems & Automation Lead')
+add('sub','Transactly  |  Jul 2023 - Present  |  Remote  |  Internal title: Lead Customer Account Specialist')
+for b in ["Own the internal systems layer: workflow logic, the integrations around it, and the reporting that makes the result legible. Roughly sixty active project directories, two-thirds touched in the last month.",
+          "Scope and deploy technical workflows across customer success, onboarding, and internal operations using SQL, CRM APIs, and multi-department tooling.",
+          "Built and maintain SQL-backed reporting for subscription logic and billing reconciliation.",
+          "Lead employee onboarding and offboarding workflows tied to access control and system provisioning.",
+          "Design and implement CRM automations across customer success, sales, and partnerships.",
+          "Support internal infrastructure through custom development: ingestion services and scheduled jobs on managed cloud infrastructure, warehouse-backed reporting behind access control, and operational microservices. Python-dominant, TypeScript for user-facing work, ~140 test files.",
           "Built an LLM-assisted compliance service: transcribes calls and scores them against a rubric, deterministic checks first and human review after, with the model never given the last word."]:
+    add('li',b)
+add('gap')
+add('role','Customer Success Operations Manager')
+add('sub','Transactly  |  Sep 2020 - Apr 2023  |  Previously Client Success Operations Lead, Success Coach, Success Support Specialist')
+for b in ["Cut client churn from 30% to under 10% through process and engagement redesign backed by real-time risk scoring.",
+          "Built and ran SQL-driven credit, billing, and subscription reporting.",
+          "Coordinated ticket workflows across success and transaction-coordination operations, halving issue resolution time.",
+          "Served as the customer-success stakeholder for CRM, internal tooling, and platform workflows.",
+          "Wrote and deployed the customer-success playbooks and onboarding documentation.",
+          "Kept every system running through a 30% headcount reduction. Nothing broke."]:
     add('li',b)
 add('gap')
 add('role','Agent and data infrastructure (independent)')
@@ -37,16 +47,22 @@ for b in ["RunEcho - checks whether a coding agent's claims about code are true 
     add('li',b)
 add('gap')
 add('role','Customer Success Manager')
-add('sub','Geotix  |  Jun 2017 - Jun 2020')
-for b in ["Supported 70+ partners and roughly 3,000 clients across onboarding and troubleshooting.",
-          "Built the triage flow the support team still uses to escalate to product.",
-          "Wrote the team's onboarding and training playbooks."]:
+add('sub','Geotix  |  Jun 2017 - Jun 2020  |  Traverse City, Michigan')
+for b in ["Handled customer service for 70+ partners, 3,000+ partner clients, and 400,000+ end customers, responding to every ticket within two hours.",
+          "Tested issues for reproducibility before escalating, documented what would not reproduce, and ran the weekly session feeding that back to product.",
+          "Wrote the FAQ and knowledge-base documentation, and carried customer feedback into product recommendations."]:
     add('li',b)
 add('gap')
-add('role','Founder')
-add('sub','Independent E-Commerce Systems  |  Mar 2013 - Jun 2017')
-for b in ["Ran fulfilment, returns, payments, and support across three storefronts, solo.",
-          "Built the refund and inventory logic that kept it running without hiring."]:
+add('role','Owner and Founder')
+add('sub','Independent, contract  |  Apr 2013 - Jun 2017  |  Bellaire, Michigan')
+for b in ["Ran day-to-day operations under five service contracts, handling up to 70 calls and 100 emails a day.",
+          "Created and documented the processes underneath - refunds, chargebacks, phone sales, fulfilment."]:
+    add('li',b)
+add('gap')
+add('role','District Court Legal Assistant II')
+add('sub',"4th Judicial District Attorney's Office  |  Apr 2010 - Mar 2013")
+for b in ["Managed complex caseloads for four attorneys.",
+          "Worked across departments to keep discovery moving so attorneys had time to prepare for hearings."]:
     add('li',b)
 add('gap')
 add('h','SKILLS')
