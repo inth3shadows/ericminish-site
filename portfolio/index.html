@@ -56,139 +56,180 @@
 
     <section class="section">
       <div class="section-head"><div><h2>Case studies</h2></div></div>
-      <div class="plist">
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="/portfolio/terse/">terse</a></div>
-            <p class="prow-desc">A proxy in front of MCP tool servers. It compresses what they return and forwards the original untouched whenever a perfect round trip cannot be proven.</p>
+      <p class="fine" style="margin:-6px 0 16px">Hover or focus any row for the short version.</p>
+      <div class="nodes">
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name"><a href="/portfolio/terse/">terse</a></span>
+            <span class="node-spec">30–50% fewer tokens</span>
+            <span class="node-state">open</span>
           </div>
-          <div class="prow-right">
-            <span class="prow-value">30–50% fewer tokens</span>
-            <span class="prow-meta"><em>public</em> · MIT ·  <a href="https://github.com/inth3shadows/terse">source</a></span>
+          <div class="node-detail">
+            <p>A proxy in front of MCP tool servers that losslessly compresses what they return. If a payload cannot be proven to reconstruct exactly, the original is forwarded untouched — lossless is the default, not a mode. Public, MIT, with a benchmark harness in the repo so you can measure the saving on your own tools.</p>
           </div>
-        </div>
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="/portfolio/lodestone/">Lodestone</a></div>
-            <p class="prow-desc">Local retrieval over years of my own notes. It beat keyword search at a thousand documents and lost to it at fifty-seven thousand, and the write-up leads with that.</p>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name"><a href="/portfolio/lodestone/">Lodestone</a></span>
+            <span class="node-spec">5 of 10 at real scale</span>
+            <span class="node-state">open</span>
           </div>
-          <div class="prow-right">
-            <span class="prow-value">5 of 10 at real scale</span>
-            <span class="prow-meta">null result</span>
+          <div class="node-detail">
+            <p>Local retrieval over years of my own notes. Semantic search beat keyword search at 1,271 documents and lost to it at 57,500; the write-up leads with that. Includes a pre-registered kill gate, negative controls, and pooled blind judging.</p>
           </div>
-        </div>
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="/portfolio/origin-sentinel/">Origin Sentinel</a></div>
-            <p class="prow-desc">Origin-health detection for tunnelled services — the failure a healthy edge hides. It shipped without write access and earned remediation only once its classifications held up.</p>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name"><a href="/portfolio/frostline/">Frostline</a></span>
+            <span class="node-spec">50,083 well records</span>
+            <span class="node-state">open</span>
           </div>
-          <div class="prow-right">
-            <span class="prow-value">staged self-heal</span>
-            <span class="prow-meta">private</span>
+          <div class="node-detail">
+            <p>Spatial models over the public Michigan well record. Depth is predictable from location — Moran's I 0.393 — and yield is not, at 0.089. A promising target was cut once it proved to be ~96% a restatement of depth.</p>
           </div>
-        </div>
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="/portfolio/llm-gateway/">Multi-provider LLM gateway</a></div>
-            <p class="prow-desc">Routes one coding agent across several model providers by task, with keyless-at-rest secrets and spend measured against a budget rather than estimated.</p>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name"><a href="/portfolio/runecho/">RunEcho</a></span>
+            <span class="node-spec">Go · tree-sitter</span>
+            <span class="node-state">open</span>
           </div>
-          <div class="prow-right">
-            <span class="prow-value">cost per task</span>
-            <span class="prow-meta">private</span>
+          <div class="node-detail">
+            <p>A guard layer for coding-agent sessions: symbol lookup, edit-scope contracts, pre-commit checks. Its parser engine is chosen per language by one test — whether a cheap shortcut would guess wrong, because a wrong guess fails silently.</p>
           </div>
-        </div>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name"><a href="/portfolio/origin-sentinel/">Origin Sentinel</a></span>
+            <span class="node-spec">staged self-heal</span>
+            <span class="node-state">open</span>
+          </div>
+          <div class="node-detail">
+            <p>Origin-health detection for tunnelled services — the failure a healthy edge hides. It shipped without write access and earned remediation only once its classifications held up in the field.</p>
+          </div>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name"><a href="/portfolio/llm-gateway/">Multi-provider LLM gateway</a></span>
+            <span class="node-spec">spend measured</span>
+            <span class="node-state">open</span>
+          </div>
+          <div class="node-detail">
+            <p>Routes one coding agent across several model providers by task, with secrets kept out of the environment and cost tracked against a budget rather than estimated after the fact.</p>
+          </div>
+        </article>
       </div>
     </section>
 
     <section class="section">
       <div class="section-head"><div><h2>Live sites</h2></div></div>
-      <div class="plist">
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="https://www.ericminish.com">ericminish.com</a></div>
-            <p class="prow-desc">This site. Static files, no build step, rsynced into a container on my own hardware and served by Caddy.</p>
+      <div class="nodes">
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name"><a href="https://www.ericminish.com">ericminish.com</a></span>
+            <span class="node-spec">self-hosted</span>
+            <span class="node-state">open</span>
           </div>
-          <div class="prow-right">
-            <span class="prow-value">nine pages</span>
-            <span class="prow-meta">self-hosted</span>
+          <div class="node-detail">
+            <p>This site. Static files, no build step, no third-party requests, rsynced into a container on my own hardware and served by Caddy behind a tunnel.</p>
           </div>
-        </div>
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="https://nmwelldrilling.com">nmwelldrilling.com</a></div>
-            <p class="prow-desc">A contractor-facing reference build, end to end. It is labelled a sample on the page itself — a demo that pretends to be a client is a lie with a deploy pipeline.</p>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name"><a href="https://nmwelldrilling.com">nmwelldrilling.com</a></span>
+            <span class="node-spec">reference build</span>
+            <span class="node-state">open</span>
           </div>
-          <div class="prow-right">
-            <span class="prow-value">reference build</span>
-            <span class="prow-meta">astro · nginx</span>
+          <div class="node-detail">
+            <p>A contractor-facing reference build, end to end. It is labelled a sample on the page itself — a demo that pretends to be a client is a lie with a deploy pipeline.</p>
           </div>
-        </div>
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="https://thefrostlineco.com">thefrostlineco.com</a></div>
-            <p class="prow-desc">The business surface for managed intake work, deliberately kept off this site. Separate identity, separate stack, separate promises.</p>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name"><a href="https://thefrostlineco.com">thefrostlineco.com</a></span>
+            <span class="node-spec">business surface</span>
+            <span class="node-state">open</span>
           </div>
-          <div class="prow-right">
-            <span class="prow-value">business surface</span>
-            <span class="prow-meta">astro</span>
+          <div class="node-detail">
+            <p>The business surface for managed intake work, deliberately kept off this site. Separate identity, separate stack, separate promises.</p>
           </div>
-        </div>
+        </article>
       </div>
     </section>
 
     <section class="section">
       <div class="section-head"><div><h2>Also running</h2></div></div>
-      <div class="plist">
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="/portfolio/runecho/">RunEcho</a></div>
-            <p class="prow-desc">A guard layer for coding-agent sessions — symbol lookup, edit-scope contracts, pre-commit checks. Its parser engine is chosen per language by one test: whether a cheap masker would guess wrong.</p>
+      <div class="nodes">
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name">Knowledge graph</span>
+            <span class="node-spec">442 MB image</span>
+            <span class="node-state">private</span>
           </div>
-          <div class="prow-right">
-            <span class="prow-value">Go · tree-sitter</span>
-            <span class="prow-meta"><em>public</em> ·  <a href="https://github.com/inth3shadows/runecho">source</a></span>
+          <div class="node-detail">
+            <p>Durable memory my agents write into by proposal only, every fact reviewed before it lands. Moving embeddings to a sidecar took the production image from 2.14 GB to 442 MB; trimming the tool surface cut one response from 271 KB to 26 KB.</p>
           </div>
-        </div>
-        <div class="prow">
-          <div>
-            <div class="prow-name">Knowledge graph</div>
-            <p class="prow-desc">Durable memory my agents write into by proposal only, every fact reviewed before it lands. Uncurated ingestion was the cheap alternative and it was rejected: at volume the important things stop being findable.</p>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name">Competitive intelligence</span>
+            <span class="node-spec">private client</span>
+            <span class="node-state">private</span>
           </div>
-          <div class="prow-right">
-            <span class="prow-value">442 MB image</span>
-            <span class="prow-meta">was 2.14 GB</span>
+          <div class="node-detail">
+            <p>A weekly market-intelligence pipeline. The model may never author a source — every citation is backfilled from the collector that actually fetched it, and a test fails the build if a client name is ever hard-coded into the repository.</p>
           </div>
-        </div>
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="/portfolio/frostline/">Frostline modelling</a></div>
-            <p class="prow-desc">Spatial models over fifty thousand Michigan well records. Depth is predictable from location; yield is not. A promising target was cut when it proved to be a restatement of depth.</p>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name">NFLsignal</span>
+            <span class="node-spec">auction board</span>
+            <span class="node-state">private</span>
           </div>
-          <div class="prow-right">
-            <span class="prow-value">50,000 records</span>
-            <span class="prow-meta">null result</span>
+          <div class="node-detail">
+            <p>Projection and auction-price engine for fantasy football. Players with no honest baseline to compare against return null rather than a fabricated number that looks authoritative.</p>
           </div>
-        </div>
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="/homelab/">Homelab</a></div>
-            <p class="prow-desc">Ten machines under Proxmox carrying real routing, monitoring and backups — where a claim about how something fails is something I have watched rather than read.</p>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name">miwine</span>
+            <span class="node-spec">news ingestion</span>
+            <span class="node-state">private</span>
           </div>
-          <div class="prow-right">
-            <span class="prow-value">10 nodes</span>
-            <span class="prow-meta">8 live · 2 parked</span>
+          <div class="node-detail">
+            <p>Links winery news to a known entity list. A deterministic matcher proposes candidates and the language model may only confirm or reject them — it is never allowed to invent one.</p>
           </div>
-        </div>
-        <div class="prow">
-          <div>
-            <div class="prow-name">Workflow state systems</div>
-            <p class="prow-desc">Internal operations work turning messy handoffs into explicit states and next actions. Most automation failures I have cleaned up were not automation failures — they were ambiguous state with a scheduler on top.</p>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name">Honeyslate</span>
+            <span class="node-spec">task scheduler</span>
+            <span class="node-state">private</span>
           </div>
-          <div class="prow-right">
-            <span class="prow-value">private work</span>
-            <span class="prow-meta">state model</span>
+          <div class="node-detail">
+            <p>A small scheduling app — FastAPI, a Svelte front end and Postgres — running in its own container behind a tunnel. Built to be used rather than demonstrated.</p>
           </div>
-        </div>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name"><a href="/homelab/">Homelab</a></span>
+            <span class="node-spec">10 nodes</span>
+            <span class="node-state">open</span>
+          </div>
+          <div class="node-detail">
+            <p>Ten machines under Proxmox carrying real routing, monitoring and backups — where a claim about how something fails is something I have watched rather than read.</p>
+          </div>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-name">Workflow state systems</span>
+            <span class="node-spec">private work</span>
+            <span class="node-state">private</span>
+          </div>
+          <div class="node-detail">
+            <p>Internal operations work turning messy handoffs into explicit states and next actions. Most automation failures I have cleaned up were not automation failures — they were ambiguous state with a scheduler on top.</p>
+          </div>
+        </article>
       </div>
     </section>
 

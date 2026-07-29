@@ -62,7 +62,7 @@
     <section class="section">
       <div class="facts">
         <div><span class="fk">machines</span><span class="fv">10</span></div>
-        <div><span class="fk">live</span><span class="fv good">8</span></div>
+        <div><span class="fk">all</span><span class="fv good">live</span></div>
         <div><span class="fk">public surfaces</span><span class="fv">3</span></div>
         <div><span class="fk">backups</span><span class="fv">nightly</span></div>
       </div>
@@ -70,25 +70,133 @@
 
     <section class="section">
       <div class="section-head"><div><h2>Nodes</h2></div></div>
-      <div class="table-scroll">
-        <table class="data-table">
-          <tr><th>Host</th><th>Role</th><th style="text-align:right">State</th></tr>
-          <tr><td>nuc1</td><td>Dev tooling, knowledge-graph host</td><td class="num win">live</td></tr>
-          <tr><td>nuc2</td><td>Always-on core — this site, edge routing</td><td class="num win">live</td></tr>
-          <tr><td>nuc3</td><td>Secondary DNS</td><td class="num win">live</td></tr>
-          <tr><td>nuc4</td><td>Media</td><td class="num win">live</td></tr>
-          <tr><td>m710q3</td><td>Client site hosting</td><td class="num win">live</td></tr>
-          <tr><td>m93p</td><td>Monitoring and intelligence workloads</td><td class="num win">live</td></tr>
-          <tr><td>optiplex</td><td>Observability and staging</td><td class="num win">live</td></tr>
-          <tr><td>nas</td><td>Storage</td><td class="num win">live</td></tr>
-          <tr><td>m710q1</td><td>Parked</td><td class="num lose">offline</td></tr>
-          <tr><td>m710q2</td><td>Parked</td><td class="num lose">offline</td></tr>
-        </table>
+      <p class="fine" style="margin:-6px 0 16px">Hover or focus a machine to see what it is and what it carries.</p>
+      <div class="nodes">
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="26" height="14" rx="3"/><circle cx="9" cy="16" r="1.6"/><line x1="15" y1="16" x2="24" y2="16"/></svg></span>
+            <span class="node-name">nuc1</span>
+            <span class="node-spec">Core i7-5557U · 2c/4t</span>
+            <span class="node-state">live</span>
+          </div>
+          <div class="node-detail">
+            <p class="node-board">Intel NUC5i7RYB</p>
+            <p>Knowledge graph and a task-scheduler app, each in its own container.</p>
+          </div>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="26" height="14" rx="3"/><circle cx="9" cy="16" r="1.6"/><line x1="15" y1="16" x2="24" y2="16"/></svg></span>
+            <span class="node-name">nuc2</span>
+            <span class="node-spec">Core i5-3427U · 2c/4t · 15 GB</span>
+            <span class="node-state">live</span>
+          </div>
+          <div class="node-detail">
+            <p class="node-board">Intel D53427RKE</p>
+            <p>The always-on core: primary DNS, this website, a fantasy-football projection UI, a weekly competitive-intelligence pipeline, and the print server.</p>
+          </div>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="26" height="14" rx="3"/><circle cx="9" cy="16" r="1.6"/><line x1="15" y1="16" x2="24" y2="16"/></svg></span>
+            <span class="node-name">nuc3</span>
+            <span class="node-spec">Core i5-5250U · 2c/4t</span>
+            <span class="node-state">live</span>
+          </div>
+          <div class="node-detail">
+            <p class="node-board">Intel NUC5i5RYB</p>
+            <p>Media playback — film, television and music servers — plus backup DNS and the internal HTTPS proxy that fronts every LAN service.</p>
+          </div>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="26" height="14" rx="3"/><circle cx="9" cy="16" r="1.6"/><line x1="15" y1="16" x2="24" y2="16"/></svg></span>
+            <span class="node-name">nuc4</span>
+            <span class="node-spec">Proxmox host</span>
+            <span class="node-state">live</span>
+          </div>
+          <div class="node-detail">
+            <p class="node-board">ECS mini PC</p>
+            <p>Media library storage and processing, kept off the public network entirely.</p>
+          </div>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="22" height="22" rx="2.5"/><circle cx="11" cy="11" r="1.6"/><line x1="16" y1="11" x2="22" y2="11"/><line x1="10" y1="21" x2="22" y2="21"/></svg></span>
+            <span class="node-name">m710q1</span>
+            <span class="node-spec">Tiny desktop</span>
+            <span class="node-state">live</span>
+          </div>
+          <div class="node-detail">
+            <p class="node-board">Lenovo ThinkCentre M710q</p>
+            <p>Runs the origin-health sentinel — the watchdog that checks services from behind the edge rather than in front of it.</p>
+          </div>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="22" height="22" rx="2.5"/><circle cx="11" cy="11" r="1.6"/><line x1="16" y1="11" x2="22" y2="11"/><line x1="10" y1="21" x2="22" y2="21"/></svg></span>
+            <span class="node-name">m710q2</span>
+            <span class="node-spec">Tiny desktop</span>
+            <span class="node-state">live</span>
+          </div>
+          <div class="node-detail">
+            <p class="node-board">Lenovo ThinkCentre M710q</p>
+            <p>Reserve capacity. Deliberately unassigned so there is somewhere to move a workload in a hurry.</p>
+          </div>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="22" height="22" rx="2.5"/><circle cx="11" cy="11" r="1.6"/><line x1="16" y1="11" x2="22" y2="11"/><line x1="10" y1="21" x2="22" y2="21"/></svg></span>
+            <span class="node-name">m710q3</span>
+            <span class="node-spec">Core i5-7500T · 4c/4t · 35 W</span>
+            <span class="node-state">live</span>
+          </div>
+          <div class="node-detail">
+            <p class="node-board">Lenovo ThinkCentre M710q</p>
+            <p>Client site hosting: the edge proxy and the web server behind it.</p>
+          </div>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="22" height="22" rx="2.5"/><circle cx="11" cy="11" r="1.6"/><line x1="16" y1="11" x2="22" y2="11"/><line x1="10" y1="21" x2="22" y2="21"/></svg></span>
+            <span class="node-name">m93p</span>
+            <span class="node-spec">Core i5 · tiny desktop</span>
+            <span class="node-state">live</span>
+          </div>
+          <div class="node-detail">
+            <p class="node-board">Lenovo ThinkCentre M93p</p>
+            <p>Scraping and data-collection jobs, and the push-notification server that alerts me when one of them stops.</p>
+          </div>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="20" rx="2"/><rect x="22" y="12" width="6" height="8" rx="1"/><circle cx="9" cy="11" r="1.5"/><line x1="8" y1="20" x2="16" y2="20"/></svg></span>
+            <span class="node-name">optiplex</span>
+            <span class="node-spec">Small form factor</span>
+            <span class="node-state">live</span>
+          </div>
+          <div class="node-detail">
+            <p class="node-board">Dell OptiPlex</p>
+            <p>Staging and odd jobs — currently a time-tracking app that never found a permanent home.</p>
+          </div>
+        </article>
+        <article class="node" tabindex="0">
+          <div class="node-head">
+            <span class="node-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="20" rx="2"/><rect x="22" y="12" width="6" height="8" rx="1"/><circle cx="9" cy="11" r="1.5"/><line x1="8" y1="20" x2="16" y2="20"/></svg></span>
+            <span class="node-name">nas</span>
+            <span class="node-spec">871 GB local · 787 GB pool</span>
+            <span class="node-state">live</span>
+          </div>
+          <div class="node-detail">
+            <p class="node-board">HP ProDesk 600 G3 SFF</p>
+            <p>Storage. Network shares for media, backups and a lab scratch area.</p>
+          </div>
+        </article>
       </div>
-      <p class="fine" style="margin-top:12px">
-        Roles are stable; state is written by hand and checked when this page is edited. It is not a
-        live view — Uptime Kuma has the real one, and until that is wired through, a table that
-        admits it is honest beats a dashboard that looks live and is not.
+      <p class="fine" style="margin-top:14px">
+        Roles move around; this is written by hand and checked when the page is edited. Uptime Kuma
+        holds the live view. A table that admits it is hand-maintained beats a dashboard that looks
+        live and is not.
       </p>
     </section>
 
@@ -97,16 +205,15 @@
       <div class="table-scroll">
         <table class="data-table">
           <tr><th>Service</th><th>Job</th></tr>
-          <tr><td>AdGuard</td><td>Primary and backup DNS</td></tr>
-          <tr><td>Caddy</td><td>Edge, TLS, public routing</td></tr>
+          <tr><td>AdGuard Home</td><td>Primary and backup DNS, on separate machines</td></tr>
+          <tr><td>Caddy</td><td>Public edge, TLS, and the internal HTTPS proxy</td></tr>
           <tr><td>Nginx</td><td>Client sites</td></tr>
           <tr><td>Uptime Kuma</td><td>Monitoring</td></tr>
-          <tr><td>ntfy</td><td>Alerting</td></tr>
-          <tr><td>Proxmox Backup</td><td>Nightly, off-node</td></tr>
-          <tr><td>Postgres</td><td>Knowledge graph</td></tr>
-          <tr><td>SearXNG</td><td>Private metasearch</td></tr>
-          <tr><td>Media stack</td><td>VPN-bound ingest</td></tr>
-          <tr><td>CUPS</td><td>Print</td></tr>
+          <tr><td>ntfy</td><td>Push alerts when something stops</td></tr>
+          <tr><td>Proxmox Backup Server</td><td>Nightly, written to a different machine than the one it backs up</td></tr>
+          <tr><td>Postgres</td><td>Knowledge graph behind the agent tooling</td></tr>
+          <tr><td>SearXNG</td><td>Private metasearch for the scraping jobs</td></tr>
+          <tr><td>CUPS</td><td>Print server bridging two VLANs</td></tr>
         </table>
       </div>
     </section>
@@ -125,9 +232,10 @@
           machine by number at all.
         </p>
         <p>
-          A workload sharing a VPN sidecar taught the same lesson from the other direction. Binding
-          it to the tunnel interface by name is a control. Restarting things in the right order is a
-          habit, and a habit works right up until the moment it does not.
+          Another taught the same lesson from the other direction: a workload that has to leave the
+          house through a specific interface must be bound to that interface by name. Restarting
+          things in the right order is a habit, and a habit works right up until the moment it does
+          not.
         </p>
       </div>
     </section>
