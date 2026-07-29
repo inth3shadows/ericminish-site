@@ -53,9 +53,9 @@ forms, and no analytics. Contact happens through a `mailto:` link.
 No environment variables and no config files. The two values that behave like
 configuration are both inline in the HTML:
 
-- **Stylesheet cache-bust** — the `?v=` query on the `assets/site.css` link.
-  Bump it on every page when the stylesheet changes, or returning visitors
-  keep the old CSS.
+- **Stylesheet cache-bust** — the `?v=` query on the `assets/site.css` link,
+  derived from the stylesheet's own hash. Run `python tools/bump-cachebust.py`
+  after any CSS change and before deploying.
 - **Contact address** — `hi@ericminish.com`, repeated in every page footer and
   closing line.
 
@@ -105,9 +105,10 @@ grep -rhoE 'href="/[a-z-]*/?[a-z-]*/"' --include=*.html . | sort -u \
 
 ## Known Limitations
 
-- **The cache-bust string is manual.** Every page links
-  `site.css?v=20260728a`; a stylesheet change means editing that query on all
-  of them, and nothing enforces it. They drifted once already.
+- **The cache-bust is derived, not typed.** `tools/bump-cachebust.py` hashes
+  `assets/site.css` and rewrites the `?v=` query on every page. It must be run
+  before a deploy — nothing runs it automatically, and shipping a stylesheet
+  change behind a stale query served three rounds of CSS work to nobody.
 - **Header, nav, and footer are duplicated in every file.** A nav change is a
   mechanical edit across all pages, and nothing enforces that they stay in
   sync.
@@ -129,7 +130,7 @@ grep -rhoE 'href="/[a-z-]*/?[a-z-]*/"' --include=*.html . | sort -u \
 <!-- docvet:anchors
 newsreader.woff2 -> assets/site.css
 azeret-mono.woff2 -> assets/site.css
-v=20260728a -> index.html
+bump-cachebust.py -> tools/bump-cachebust.py
 hi@ericminish.com -> contact/index.html
 uv tool install terse-mcp -> portfolio/terse/index.html
 -->
