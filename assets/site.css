@@ -704,30 +704,57 @@ h3 {
 .subs .sx b { color: var(--text); font-weight: 600; }
 
 /* ── Home hero ───────────────────────────────────────────────────────────
-   The name is a label, not the argument. On the index the positioning line
-   is what a first-time reader needs, so it carries the visual weight. */
+   The name is an identifier, so it is set in the mono face and kept small.
+   The thesis carries the display size, split across its two real clauses —
+   what I build, then what runs on it — with the second clause stepped back
+   so the shape of the sentence is visible before it is read. Location and
+   contact are metadata and belong under the line, not inside it. */
 
 .hero-home .name {
   font-family: var(--mono);
-  font-size: var(--t-fine);
+  font-size: var(--t-label);
   font-weight: 500;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  margin: 0 0 16px;
+  margin: 0 0 20px;
   color: var(--muted);
-  padding-bottom: 12px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--line);
   display: inline-block;
 }
 
 .hero-home .lede {
-  font-size: clamp(1.5rem, 3.4vw, 2.15rem);
-  line-height: 1.24;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.75rem, 4.6vw, 3rem);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
   color: var(--text);
-  text-wrap: balance;
-  max-width: 24ch;
+  max-width: 18ch;
+  margin: 0;
+  font-weight: 600;
 }
+
+.hero-home .lede-a,
+.hero-home .lede-b { display: block; text-wrap: balance; }
+
+.hero-home .lede-b {
+  color: var(--muted);
+  font-weight: 400;
+  margin-top: 4px;
+}
+
+.hero-meta {
+  margin: 24px 0 0;
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: baseline;
+}
+
+.hero-meta span { color: var(--line-strong); }
 
 /* ── Public commit history ───────────────────────────────────────────────
    A snapshot, not a live feed: the numbers are stamped with the date they
