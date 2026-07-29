@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Eric Minish</title>
   <meta name="description" content="Eric Minish builds infrastructure for AI agents and the data work that runs on it. Central Lake, Michigan.">
-  <link rel="stylesheet" href="/assets/site.css?v=20260419b">
+  <link rel="stylesheet" href="/assets/site.css?v=20260728a">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
 <body>
@@ -40,7 +40,7 @@
       </div>
 
       <aside class="note">
-        <p>Live surfaces: this site, <a href="https://thefrostlineco.com">The Frostline Co.</a>, and the disclosed reference build at <a href="https://nmwelldrilling.com">nmwelldrilling.com</a> — all served out of my own rack.</p>
+        <p>Live surfaces: this site, <a href="https://thefrostlineco.com">The Frostline Co.</a>, and the disclosed reference build at <a href="https://nmwelldrilling.com">nmwelldrilling.com</a> — all served from my own homelab.</p>
       </aside>
     </section>
 
@@ -49,36 +49,64 @@
         <div><h2>Recent work</h2></div>
       </div>
 
-      <div class="prose">
-        <p>
-          Most of this year has gone into the plumbing underneath AI agents.
-          <a href="/portfolio/terse/">terse</a> is a proxy that sits in front of MCP tool servers
-          and losslessly compresses what they return — typically 30 to 50 percent fewer tokens,
-          under a rule that anything it cannot perfectly reconstruct gets forwarded untouched
-          instead. Behind it is a knowledge graph on Postgres with a curated write path: an agent
-          proposes a fact, a reviewer accepts or rejects it, and nothing lands unreviewed. Moving
-          its embeddings to a sidecar took that service's production image from 2.14 GB to 442 MB.
-        </p>
-        <p>
-          The data side is spatial and statistical modeling where the answer has to hold up.
-          Working with fifty thousand Michigan well records, the most useful result last quarter
-          was a negative one: a promising prediction target turned out to be about 96 percent a
-          restatement of well depth, so it was cut instead of shipped. The same instinct shows up
-          in a fantasy-football auction board that returns null rather than a fabricated reference
-          value, and in a news pipeline where the language model may only confirm or deny
-          candidates a deterministic matcher already found — it is never allowed to invent one.
-        </p>
-        <p>
-          Under all of it is a ten-node rack running Proxmox, Caddy at the edge, redundant DNS,
-          monitoring, and backups. Public routes come through Cloudflare Tunnel; nothing is
-          port-forwarded. Before this — and still alongside it — the work was operational: CRM
-          workflow state, event handling, and the reporting layer into Snowflake, BigQuery, and
-          PowerBI. That is the part that taught me to care about what happened, what happens next,
-          and whether anyone can trust the answer.
-        </p>
+      <div class="plist">
+        <div class="prow">
+          <div>
+            <div class="prow-name"><a href="/portfolio/terse/">terse</a></div>
+            <p class="prow-desc">A proxy in front of my agent's tool servers. It compresses what they
+              return and forwards the original untouched whenever a perfect round trip cannot be proven.</p>
+          </div>
+          <div class="prow-right">
+            <span class="prow-value">30–50% fewer tokens</span>
+            <span class="prow-meta"><em>public</em> · MIT</span>
+          </div>
+        </div>
+
+        <div class="prow">
+          <div>
+            <div class="prow-name">Lodestone</div>
+            <p class="prow-desc">Local retrieval over years of my own working notes. It beat keyword
+              search at a thousand documents and lost to it at fifty-seven thousand — so I published that.</p>
+          </div>
+          <div class="prow-right">
+            <span class="prow-value">5 of 10 at real scale</span>
+            <span class="prow-meta">null result</span>
+          </div>
+        </div>
+
+        <div class="prow">
+          <div>
+            <div class="prow-name">Frostline</div>
+            <p class="prow-desc">Spatial models over Michigan well records, and the contractor-intake
+              business built around them. Depth is predictable from location. Yield is not.</p>
+          </div>
+          <div class="prow-right">
+            <span class="prow-value">50,000 records</span>
+            <span class="prow-meta">modelled</span>
+          </div>
+        </div>
+
+        <div class="prow">
+          <div>
+            <div class="prow-name">RunEcho</div>
+            <p class="prow-desc">A guard layer for coding-agent sessions. I shipped edit-scope contracts,
+              used them the same day, and found they go stale inside the session that writes them.</p>
+          </div>
+          <div class="prow-right">
+            <span class="prow-value">Go · tree-sitter</span>
+            <span class="prow-meta"><em>public</em></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="also">
+        <span class="also-label">Also running</span>
+        <a href="/homelab/">Homelab</a>
+        <a href="/portfolio/origin-sentinel/">Origin Sentinel</a>
+        <a href="/portfolio/llm-gateway/">LLM gateway</a>
+        <a href="/portfolio/">Everything else</a>
       </div>
     </section>
-
 
     <p class="closing-line">
       Email is the best way to reach me — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
