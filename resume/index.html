@@ -60,7 +60,7 @@
       <div class="prose">
         <p>
           I find the thing that is quietly breaking and build the check that catches it the next
-          time. At Transactly that was account risk: churn went from 30% to under 10% because the
+          time. In customer-success operations that was account risk: churn went from 30% to under 10% because the
           system flagged customers before they left rather than explaining them afterwards. Lately
           it has been my own tooling — a proxy that refuses to compress anything it cannot rebuild
           exactly, a search engine whose evaluation told me half of it did not work, and a
@@ -74,37 +74,45 @@
       <div class="section-head"><div><h2>Experience</h2></div></div>
 
       <article style="margin-bottom:32px">
-        <div class="entry-stamp"><b>Sep 2020 — present</b><span>Transactly</span><span>Tech-enabled real-estate transaction coordination</span></div>
-        <h3>Lead Systems &amp; Automation Specialist</h3>
+        <div class="entry-stamp"><b>Jul 2023 — present</b><span>Transactly</span><span>Remote</span></div>
+        <h3>Systems &amp; Automation Lead</h3>
+        <p class="fine" style="margin:0 0 12px">Internal title: Lead Customer Account Specialist. At Transactly since Sep 2020.</p>
         <div class="prose">
           <p>
             I own the internal systems layer: the workflow logic, the integrations between it and
             everything else, and the reporting that has to make the result legible to people who
-            were not in the room. Most of it is work nobody assigned — roughly sixty active project
-            directories, two-thirds of them touched in the last month, so it is a maintained estate
-            rather than a pile of scripts.
+            were not in the room. Roughly sixty active project directories, two-thirds of them
+            touched in the last month — a maintained estate rather than a pile of scripts.
           </p>
           <ul>
-            <li>Cut churn from <strong>30% to under 10%</strong> by scoring account risk in real time, so the intervention happened before the customer left.</li>
-            <li>Halved support resolution time by giving tickets clear owners and automating the queue.</li>
-            <li>Built the SQL and reporting stack used for billing, onboarding and retention decisions.</li>
-            <li>Automated onboarding for small accounts, returning about <strong>20%</strong> of the customer-success team's time.</li>
+            <li>Scope and deploy technical workflows across customer success, onboarding and internal operations using SQL, CRM APIs and multi-department tooling.</li>
+            <li>Built and maintain SQL-backed reporting for subscription logic and billing reconciliation.</li>
+            <li>Lead employee onboarding and offboarding workflows tied to access control and system provisioning.</li>
+            <li>Design and implement CRM automations across customer success, sales and partnerships.</li>
+            <li>Support internal infrastructure through custom workflow development and scripting — ingestion services and scheduled jobs on managed cloud infrastructure, warehouse-backed reporting behind access control, and operational microservices. Python-dominant, TypeScript for user-facing work, around 140 test files across the estate.</li>
+            <li>Built an LLM-assisted compliance service: it transcribes calls and scores them against a rubric, deterministic checks first and human review after, with the model never given the last word.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article style="margin-bottom:32px">
+        <div class="entry-stamp"><b>Sep 2020 — Apr 2023</b><span>Transactly</span></div>
+        <h3>Customer Success Operations Manager</h3>
+        <p class="fine" style="margin:0 0 12px">Previously Client Success Operations Lead, Success Coach, Success Support Specialist.</p>
+        <div class="prose">
+          <p>
+            Owned cross-department process infrastructure and automation across customer success,
+            product, sales and operations — the reporting, tooling and workflow design that made
+            churn something the company could see before it happened.
+          </p>
+          <ul>
+            <li>Cut client churn from <strong>30% to under 10%</strong> through process and engagement redesign backed by real-time risk scoring.</li>
+            <li>Built and ran SQL-driven credit, billing and subscription reporting.</li>
+            <li>Coordinated ticket workflows across success and transaction-coordination operations, <strong>halving</strong> issue resolution time.</li>
+            <li>Served as the customer-success stakeholder for CRM, internal tooling and platform workflows.</li>
+            <li>Wrote and deployed the customer-success playbooks and onboarding documentation.</li>
             <li>Kept every system running through a 30% headcount reduction. Nothing broke.</li>
           </ul>
-          <p>
-            The engineering underneath, described categorically: CRM integration and lead-management
-            APIs; ingestion services and scheduled jobs on managed cloud infrastructure;
-            warehouse-backed reporting dashboards behind access control; spreadsheet-platform
-            automation; a handful of React front ends; and operational microservices. Python
-            dominates, with TypeScript for anything user-facing and shell for the glue. Around
-            <strong>140 test files</strong> across the estate — systematic rather than ad hoc.
-          </p>
-          <p>
-            One service is LLM-assisted: it transcribes calls and scores them against a compliance
-            rubric, deterministic checks first and human review after, with the model never given
-            the last word. That is the same shape as the independent work below, which is why the
-            two halves of this resume are one job rather than two.
-          </p>
         </div>
       </article>
 
@@ -114,35 +122,46 @@
         <div class="prose">
           <ul>
             <li><a href="/portfolio/runecho/">RunEcho</a> — checks whether a coding agent's claims about code are actually true instead of trusting them. Used daily for five months.</li>
-            <li><a href="/portfolio/terse/">terse</a> — compresses AI tool output losslessly — 58% fewer tokens across 365,144 tokens of real API payloads, measured against the TOON format, which regresses to −7% on the same corpus. Public, MIT.</li>
+            <li><a href="/portfolio/terse/">terse</a> — compresses AI tool output losslessly: 58% fewer tokens across 365,144 tokens of real API payloads, measured against the TOON format, which regresses to −7% on the same corpus. Public, MIT.</li>
             <li><a href="/portfolio/lodestone/">Lodestone</a> — local retrieval over years of working notes, and the evaluation that showed half of it did not work. Published the null result.</li>
             <li><a href="/portfolio/frostline/">Frostline</a> — spatial models over 50,083 well records, and a business built around what they can honestly predict.</li>
-            <li>Found and reported <strong>32 bugs</strong> in a code-analysis tool I use daily. Two were race conditions that would not reproduce reliably, so I built harnesses that trigger them on demand and filed them with the proof attached.</li>
-            <li>Two servers other tools talk to: one hands out credentials without ever exposing the value to the calling process, one stores decisions and refuses anything that has not passed review.</li>
-            <li>Three applications deployed end to end, not prototypes — a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a small-business client.</li>
+            <li>Reported <strong>32 bugs</strong> in a code-analysis tool I use daily, including two race conditions reproduced on demand with purpose-built harnesses.</li>
+            <li>Two servers other tools call: one issues credentials without exposing the value to the caller, one stores decisions and refuses anything unreviewed.</li>
+            <li>Three applications deployed end to end — a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client.</li>
           </ul>
         </div>
       </article>
 
       <article style="margin-bottom:32px">
-        <div class="entry-stamp"><b>Jun 2017 — Jun 2020</b><span>Geotix</span></div>
+        <div class="entry-stamp"><b>Jun 2017 — Jun 2020</b><span>Geotix</span><span>Traverse City, Michigan</span></div>
         <h3>Customer Success Manager</h3>
         <div class="prose">
           <ul>
-            <li>Supported 70+ partners and roughly 3,000 clients across onboarding and troubleshooting.</li>
-            <li>Built the triage flow the support team still uses to escalate to product.</li>
-            <li>Wrote the team's onboarding and training playbooks.</li>
+            <li>Handled customer service for 70+ partners, 3,000+ partner clients and 400,000+ end customers, responding to every ticket within two hours.</li>
+            <li>Tested issues for reproducibility before escalating, documented what would not reproduce, and ran the weekly session that fed that back to product.</li>
+            <li>Wrote the FAQ and knowledge-base documentation, and carried customer feedback into product recommendations.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article style="margin-bottom:32px">
+        <div class="entry-stamp"><b>Apr 2013 — Jun 2017</b><span>Independent, contract</span><span>Bellaire, Michigan</span></div>
+        <h3>Owner and founder</h3>
+        <div class="prose">
+          <ul>
+            <li>Ran day-to-day operations under five service contracts, handling up to 70 calls and 100 emails a day.</li>
+            <li>Created and documented the processes underneath — refunds, chargebacks, phone sales, fulfilment.</li>
           </ul>
         </div>
       </article>
 
       <article>
-        <div class="entry-stamp"><b>Mar 2013 — Jun 2017</b><span>Independent e-commerce</span></div>
-        <h3>Founder</h3>
+        <div class="entry-stamp"><b>Apr 2010 — Mar 2013</b><span>4th Judicial District Attorney's Office</span></div>
+        <h3>District Court Legal Assistant II</h3>
         <div class="prose">
           <ul>
-            <li>Ran fulfilment, returns, payments and support across three storefronts, solo.</li>
-            <li>Built the refund and inventory logic that kept it running without hiring.</li>
+            <li>Managed complex caseloads for four attorneys.</li>
+            <li>Worked across departments to keep discovery moving, so attorneys had time to prepare for hearings.</li>
           </ul>
         </div>
       </article>
