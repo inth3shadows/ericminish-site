@@ -46,66 +46,66 @@
   <main class="shell" id="main">
     <section class="hero">
       <div class="hero-copy">
-        <h1>About Eric Minish</h1>
+        <h1>About</h1>
         <p class="lede">
-          Central Lake, Michigan. I build agent and data infrastructure, and I came to it
-          through operational systems rather than through research.
+          I build agent and data infrastructure, and I came to it through operational systems
+          rather than through research. Central Lake, Michigan.
         </p>
       </div>
-
       <aside class="note">
-        <p>I am most comfortable in the parts of a system where ownership, state, and follow-through start to get muddy.</p>
+        <p>The short version: I am most useful in the part of a system where ownership, state and
+          follow-through start to get muddy.</p>
       </aside>
     </section>
 
     <section class="section">
-      <div class="section-head">
-        <div><h2>Background</h2></div>
+      <div class="section-head"><div><h2>The rule everything here follows</h2></div></div>
+      <div class="prose">
+        <p>
+          A system should decline to answer rather than guess. That sounds like a platitude until
+          it costs something, so the work on this site is chosen partly to show what it costs.
+        </p>
       </div>
+      <div class="subs">
+        <div><span class="st">It cost a design</span><span class="sx">A <a href="/portfolio/lodestone/">retrieval engine</a> I built beat keyword search on a small corpus and lost to it on a real one. The write-up leads with the loss, because a measurement that only ever confirms you is not a measurement.</span></div>
+        <div><span class="st">It cost a result</span><span class="sx">A <a href="/portfolio/frostline/">modelling target</a> scored 38.8% better than its baseline and got cut anyway, once the right baseline showed it was a restatement of a variable already in hand.</span></div>
+        <div><span class="st">It costs throughput</span><span class="sx">The <a href="/portfolio/terse/">compression proxy</a> in front of my tool servers forwards the original payload untouched the moment it cannot prove a perfect round trip. Slower, and never wrong.</span></div>
+        <div><span class="st">It costs convenience</span><span class="sx">My knowledge base takes proposals from agents and reviews every one before it lands. Uncurated ingestion was the cheap alternative and it was rejected: at volume, the important things stop being findable.</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>How I got here</h2></div></div>
       <div class="prose">
         <p>
           The professional work has been operational systems: workflow state, event handling,
-          automation around CRM behavior, and the reporting layer that has to make all of it
-          legible afterward. The part I care about is rarely the interface. It is the point where
+          automation around CRM behaviour, and the reporting layer that has to make all of it
+          legible afterwards. The part I care about is rarely the interface. It is the point where
           somebody needs to know what happened, what happens next, and whether they can trust it.
         </p>
         <p>
-          That question turns out to be the whole problem in AI infrastructure too, which is how I
-          ended up here. An agent is a system that acts on state it cannot see directly, so the
-          interesting work is in the layer that decides what it is allowed to know, what it is
-          allowed to write, and what happens when a piece of that goes wrong. My knowledge graph
-          takes proposals from agents and puts every one through review before it lands. The
-          <a href="/portfolio/terse/">compression proxy</a> in front of my tool servers forwards the original payload untouched
-          the moment it cannot prove a perfect round trip. Neither of those is a clever trick;
-          both are just refusing to let a convenient default quietly become a correctness bug.
+          That turns out to be the whole problem in AI infrastructure too. An agent acts on state
+          it cannot see directly, so the interesting work is the layer deciding what it is allowed
+          to know, what it is allowed to write, and what happens when part of that goes wrong.
+          Neither of those is a clever trick. Both are refusals to let a convenient default quietly
+          become a correctness bug.
         </p>
         <p>
-          I use these tools all day, which is the only reason I trust my own opinions about them.
-          The <a href="/homelab/">homelab</a> is the same argument in hardware — ten machines carrying real routing,
-          deployment, monitoring, and recovery, so a claim about how something behaves under
-          failure is something I have watched rather than read.
+          The <a href="/homelab/">homelab</a> is the same argument in hardware. Ten machines
+          carrying real routing, monitoring and recovery, so a claim about how something behaves
+          under failure is something I have watched rather than read.
         </p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head">
-        <div><h2>How I tend to work</h2></div>
-      </div>
+      <div class="section-head"><div><h2>How I tend to work</h2></div></div>
       <div class="prose">
         <p>
-          Explicit ownership, real states with clear transitions, simple deploy and rollback
-          paths. Monitoring that catches actual drift instead of producing decorative dashboards.
-          Public copy that says exactly what is true.
-        </p>
-        <p>
-          The rule I hold hardest is that a system should decline to answer rather than fabricate
-          one. A model in one of my pipelines is allowed to confirm or reject a candidate the
-          deterministic layer found; it is not allowed to invent a new one. A board with no honest
-          baseline to compare against returns null instead of a number that looks authoritative.
-          A <a href="/portfolio/lodestone/">retrieval engine I built</a> measured worse than the
-          keyword search it was meant to beat, and the write-up leads with that. A modeling target that turned out to be a restatement of a variable I
-          already had got cut, even though the first test made it look like a win.
+          Explicit ownership, real states with clear transitions, simple deploy and rollback paths.
+          Monitoring that catches actual drift instead of producing decorative dashboards. Public
+          copy that says exactly what is true — including on this site, where every figure links to
+          the thing it came from.
         </p>
         <p>
           Most of the trouble I see comes from automation sitting on top of ambiguous state, or
