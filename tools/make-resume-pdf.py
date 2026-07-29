@@ -28,7 +28,7 @@ add('gap')
 add('role','Agent and data infrastructure (independent)')
 add('sub','2025 - Present')
 for b in ["RunEcho - checks whether a coding agent's claims about code are true instead of trusting them. Used daily for five months.",
-          "terse - compresses AI tool output losslessly; if an exact round trip cannot be proven, the original is forwarded untouched. Public, MIT licensed.",
+          "terse - compresses AI tool output losslessly: 58% fewer tokens across 365,144 tokens of real API payloads, measured head-to-head against the TOON format, which regresses to -7% on the same corpus. Public, MIT licensed.",
           "Lodestone - local retrieval over years of working notes, and the evaluation that showed half of it did not work. Published the null result.",
           "Frostline - spatial models over 50,083 well records; depth is predictable from location, yield is not.",
           "Reported 32 bugs in a code-analysis tool, including two race conditions reproduced on demand with purpose-built harnesses.",
