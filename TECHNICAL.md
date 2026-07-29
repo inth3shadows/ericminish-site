@@ -19,7 +19,8 @@ pages, a templating layer would cost more than it saves, and the tradeoff is
 that a nav change is a find-and-replace across every file.
 
 All styling lives in one stylesheet, `assets/site.css`, linked with a manual
-cache-busting query string. Pages carry the class vocabulary that stylesheet
+cache-busting query string. Both typefaces are self-hosted from
+`assets/fonts/` — there is no third-party request on page load. Pages carry the class vocabulary that stylesheet
 defines (`shell`, `hero`, `section`, `panel`, `prose`, `project-card`,
 `code-window`, `timeline`, `note`); adding a page means reusing those classes
 rather than writing new CSS.
@@ -37,7 +38,9 @@ rather than writing new CSS.
 | `homelab/index.html` | Node map and service inventory. |
 | `status/index.html` | The "Now" page — current focus, dated. |
 | `contact/index.html` | Email and outbound links. |
-| `assets/site.css` | The entire stylesheet. |
+| `assets/site.css` | The entire stylesheet, including the two `@font-face` declarations. |
+| `assets/fonts/newsreader.woff2` | Newsreader, variable. Used for prose — anything argued. |
+| `assets/fonts/azeret-mono.woff2` | Azeret Mono, variable. Used for data and labels — anything measured. |
 | `assets/mark.svg`, `assets/favicon.svg` | Brand mark and favicon. |
 
 ## API Integrations
@@ -55,6 +58,9 @@ configuration are both inline in the HTML:
   keep the old CSS.
 - **Contact address** — `hi@ericminish.com`, repeated in every page footer and
   closing line.
+
+Typography follows one rule: **Newsreader argues, Azeret Mono measures**, and
+the two are never mixed inside a sentence.
 
 ## Deployment
 
@@ -99,10 +105,9 @@ grep -rhoE 'href="/[a-z-]*/?[a-z-]*/"' --include=*.html . | sort -u \
 
 ## Known Limitations
 
-- **The cache-bust string has drifted.** The portfolio pages link
-  `site.css?v=20260420b` while the rest of the site links `?v=20260419b`.
-  Harmless today because both resolve to the same stylesheet, but it means the
-  bump is already not being applied uniformly.
+- **The cache-bust string is manual.** Every page links
+  `site.css?v=20260728a`; a stylesheet change means editing that query on all
+  of them, and nothing enforces it. They drifted once already.
 - **Header, nav, and footer are duplicated in every file.** A nav change is a
   mechanical edit across all pages, and nothing enforces that they stay in
   sync.
@@ -120,8 +125,9 @@ grep -rhoE 'href="/[a-z-]*/?[a-z-]*/"' --include=*.html . | sort -u \
 - [Usage Guide](USAGE.md) — updating and publishing the site
 
 <!-- docvet:anchors
-v=20260419b -> index.html
-v=20260420b -> portfolio/index.html
+newsreader.woff2 -> assets/site.css
+azeret-mono.woff2 -> assets/site.css
+v=20260728a -> index.html
 hi@ericminish.com -> contact/index.html
 uv tool install terse-mcp -> portfolio/terse/index.html
 -->

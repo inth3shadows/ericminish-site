@@ -1,4 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+/* Self-hosted variable faces. Newsreader argues, Azeret Mono measures.
+   Replaces the Google Fonts @import — no third-party request on page load. */
+@font-face {
+  font-family: 'Newsreader';
+  src: url('/assets/fonts/newsreader.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Azeret Mono';
+  src: url('/assets/fonts/azeret-mono.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --bg: #0b0f14;
@@ -13,8 +28,8 @@
   --signal: #18e699;
   --warn: #ffd38a;
   --max: 1040px;
-  --sans: 'IBM Plex Sans', sans-serif;
-  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Newsreader', Georgia, serif;            /* argued */
+  --mono: 'Azeret Mono', ui-monospace, monospace; /* measured */
 }
 
 * {
@@ -798,4 +813,96 @@ h3 {
   main {
     padding-top: 30px;
   }
+}
+
+/* ── Home index: two tiers ───────────────────────────────────────────────
+   Four projects carry a sentence and a number; everything else is one line
+   of links beneath them. Adding a project must not dilute the first four. */
+
+.plist {
+  border-top: 1px solid var(--line);
+  margin-top: 26px;
+}
+
+.prow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+@media (min-width: 720px) {
+  .prow {
+    grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: baseline;
+  }
+}
+
+.prow-name {
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.prow-name a { color: var(--text); }
+.prow-name a:hover { color: var(--accent); }
+
+.prow-desc {
+  margin: 3px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.prow-right {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+@media (min-width: 720px) {
+  .prow-right {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+.prow-value {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: var(--warn);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.prow-meta {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.prow-meta em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.also {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  padding: 20px 0 0;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+
+.also-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-right: 4px;
 }
