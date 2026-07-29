@@ -398,6 +398,297 @@ h3 {
   background: var(--line-strong);
 }
 
+/* The browser-terminal model on /portfolio/ — a front-end rendering of the
+   agent console: a rail of session cards beside one live transcript. No
+   network, no live data, no credentials; lines reveal on hover/focus and
+   nothing is fetched. */
+.aui {
+  border: 1px solid var(--line);
+  border-radius: var(--s-8);
+  padding: 0;
+  margin-top: var(--s-20);
+  background: rgba(8, 11, 15, 0.6);
+  cursor: default;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: var(--t-fine);
+  line-height: 1.55;
+}
+
+.aui:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: var(--s-2);
+}
+
+.aui-frame {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 720px) {
+  .aui-frame { grid-template-columns: 232px minmax(0, 1fr); }
+  .aui-rail { border-right: 1px solid var(--line); border-bottom: 0 !important; }
+}
+
+/* ---- left rail ---- */
+
+.aui-rail {
+  padding: var(--s-12);
+  border-bottom: 1px solid var(--line);
+  background: rgba(11, 15, 20, 0.72);
+  display: grid;
+  gap: var(--s-8);
+  align-content: start;
+}
+
+.aui-brand {
+  margin: 0;
+  font-size: var(--t-body);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.aui-brand span { color: var(--accent); }
+
+.aui-sub,
+.aui-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--t-micro);
+}
+
+.aui-strip b { color: var(--text); font-weight: 600; }
+
+.aui-strip {
+  padding: var(--s-8);
+  border: 1px solid var(--line);
+  border-radius: var(--s-4);
+  color: var(--muted);
+  font-size: var(--t-micro);
+}
+
+.aui-filters { display: flex; gap: var(--s-8); }
+
+.aui-pill {
+  padding: 0 var(--s-8);
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--t-micro);
+  line-height: 1.9;
+}
+
+.aui-pill.is-live { color: var(--accent); border-color: rgba(24, 230, 153, 0.35); }
+
+.aui-card {
+  padding: var(--s-8);
+  border: 1px solid var(--line);
+  border-radius: var(--s-4);
+  background: rgba(18, 24, 33, 0.7);
+  display: grid;
+  gap: var(--s-4);
+}
+
+.aui-card.is-selected { border-color: var(--accent); }
+
+.aui-state {
+  margin: 0;
+  font-size: var(--t-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.aui-state.is-working { color: var(--accent); }
+
+.aui-title {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--t-fine);
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.aui-title b { color: var(--text); font-weight: 600; }
+
+.aui-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4);
+  font-size: var(--t-micro);
+  color: var(--muted);
+}
+
+.aui-chip {
+  padding: 0 var(--s-4);
+  border-radius: var(--s-2);
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.aui-chip.is-mode { color: var(--accent); border-color: rgba(24, 230, 153, 0.35); }
+
+.aui-bar {
+  flex: 1 1 40px;
+  min-width: 28px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.aui-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--line-strong);
+}
+
+.aui-diff .plus { color: var(--accent); }
+.aui-diff .minus { color: #ff9b9b; }
+
+.aui-slot {
+  padding: var(--s-4) var(--s-8);
+  border: 1px solid var(--line);
+  border-radius: var(--s-2);
+  color: var(--muted);
+  font-size: var(--t-micro);
+}
+
+/* ---- right session view ---- */
+
+.aui-main {
+  display: grid;
+  gap: var(--s-8);
+  padding: var(--s-12);
+  align-content: start;
+  min-width: 0;
+}
+
+.aui-head {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--t-fine);
+  font-weight: 600;
+}
+
+.aui-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-8);
+  font-size: var(--t-micro);
+  color: var(--muted);
+}
+
+.aui-tab {
+  padding: 0 var(--s-4);
+  border-radius: var(--s-2);
+  background: rgba(152, 178, 214, 0.12);
+  color: var(--muted);
+}
+
+.aui-tab.is-active { background: var(--accent); color: #06231a; }
+
+.aui-stream {
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  font-family: inherit;
+  font-size: var(--t-fine);
+  line-height: 1.6;
+  color: #dbe8ff;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.aui-stream code { font-family: inherit; }
+
+.aui-line { opacity: 0; }
+.aui-stream .aui-line { display: block; }
+.aui-line.aui-gap { margin-top: var(--s-8); }
+.aui-line b { color: var(--accent); font-weight: inherit; }
+.aui-line b.is-warn { color: var(--warn); }
+.aui-line strong { color: var(--text); font-weight: 600; }
+.aui-line .dim { color: var(--muted); }
+.aui-line .link { color: #7cc4ff; }
+
+.aui-prompt {
+  padding: var(--s-4) var(--s-8);
+  border: 1px solid var(--line);
+  border-radius: var(--s-4);
+  color: var(--text);
+}
+
+.aui-status,
+.aui-mode {
+  margin: 0;
+  font-size: var(--t-micro);
+  color: var(--muted);
+}
+
+.aui-status .live { color: var(--accent); }
+.aui-status .cost { color: var(--warn); }
+.aui-mode { color: var(--warn); }
+
+.aui-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+}
+
+.aui-key {
+  padding: var(--s-2) var(--s-8);
+  border: 1px solid var(--line);
+  border-radius: var(--s-4);
+  color: var(--muted);
+  font-size: var(--t-micro);
+}
+
+.aui-key.is-send { color: var(--accent); border-color: rgba(24, 230, 153, 0.35); }
+
+.aui-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  vertical-align: text-bottom;
+  background: var(--accent);
+}
+
+/* Each region streams at its own rate, so the rail and the transcript
+   progress together rather than in lockstep. */
+.aui-rail { --rate: 0.2s; --offset: 0s; }
+.aui-main { --rate: 0.26s; --offset: 0.3s; }
+
+.aui:hover .aui-line,
+.aui:focus .aui-line,
+.aui:focus-within .aui-line {
+  animation: term-reveal 0.14s steps(1, end) forwards;
+  animation-delay: calc(var(--i) * var(--rate) + var(--offset));
+}
+
+.aui:hover .aui-cursor,
+.aui:focus .aui-cursor,
+.aui:focus-within .aui-cursor {
+  animation: term-blink 1.2s steps(1, end) infinite;
+}
+
+@keyframes term-reveal { to { opacity: 1; } }
+@keyframes term-blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+
+/* Touch has no hover, and reduced motion asks for no staged reveal: in both
+   cases the whole console is simply present. */
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .aui-line { opacity: 1; }
+  .aui:hover .aui-line,
+  .aui:focus .aui-line,
+  .aui:focus-within .aui-line { animation: none; }
+  .aui:hover .aui-cursor,
+  .aui:focus .aui-cursor,
+  .aui:focus-within .aui-cursor { animation: none; }
+}
+
 .photo-slot p,
 .code-window p {
   margin: 0;
