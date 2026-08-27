@@ -19,9 +19,9 @@
     <text x="90" y="422">data work that runs on it.</text>
   </g>
   <g font-family="'Azeret Mono', ui-monospace, monospace" font-size="22" letter-spacing="2">
-    <text x="90" y="516" fill="#ffd38a">30–50%</text><text x="212" y="516" fill="#67717e">fewer tokens</text>
-    <text x="410" y="516" fill="#ffd38a">50,083</text><text x="524" y="516" fill="#67717e">well records</text>
-    <text x="734" y="516" fill="#ffd38a">10</text><text x="790" y="516" fill="#67717e">nodes</text>
+    <text x="90" y="516" fill="#ffd38a">58%</text><text x="155" y="516" fill="#67717e">fewer tokens</text>
+    <text x="510" y="516" fill="#ffd38a">50,083</text><text x="624" y="516" fill="#67717e">well records</text>
+    <text x="980" y="516" fill="#ffd38a">10</text><text x="1028" y="516" fill="#67717e">nodes</text>
   </g>
   <line x1="90" y1="552" x2="1110" y2="552" stroke="#98b2d6" stroke-opacity="0.18" stroke-width="1"/>
   <g font-family="'Azeret Mono', ui-monospace, monospace" font-size="19" letter-spacing="3" fill="#18e699">
