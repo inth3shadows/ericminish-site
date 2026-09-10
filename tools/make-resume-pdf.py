@@ -38,12 +38,13 @@ for b in ["Cut client churn from 30% to under 10% through process and engagement
 add('gap')
 add('role','Agent and data infrastructure (independent)')
 add('sub','2025 - Present')
-for b in ["RunEcho - checks whether a coding agent's claims about code are true instead of trusting them. Used daily for five months.",
-          "terse - compresses AI tool output losslessly: 58% fewer tokens across 365,144 tokens of real API payloads, measured head-to-head against the TOON format, which regresses to -7% on the same corpus. Public, MIT licensed.",
+for b in ["RunEcho - stops a coding agent writing a call to a function the repo does not have, before the write lands. ~12 ms, no model, no network, no context cost on a clean check. Public, MIT licensed.",
+          "terse - compresses AI tool output losslessly: 59% fewer tokens across 365,144 tokens of real API payloads, measured head-to-head against the TOON format, which regresses to -7% on the same corpus. Public, MIT licensed.",
+          "testgraph - given a diff, names the user journeys it could have broken. Comparable tools answer in tests and need coverage from a prior run; this answers on a repo that has never run its suite. Public, MIT licensed, on PyPI.",
+          "modelbench - benchmarks models on real bug-fix commits mined from my own repos, three runs per pair, scored on cost per solved task - and publishes its own corrections.",
           "Lodestone - local retrieval over years of working notes, and the evaluation that showed half of it did not work. Published the null result.",
           "Frostline - spatial models over 50,083 well records; depth is predictable from location, yield is not.",
           "Reported 32 bugs in a code-analysis tool, including two race conditions reproduced on demand with purpose-built harnesses.",
-          "Two servers other tools call: one issues credentials without exposing the value to the caller, one stores decisions and refuses anything unreviewed.",
           "Three applications deployed end to end: a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client."]:
     add('li',b)
 add('gap')

@@ -34,7 +34,10 @@ It should not:
 - `index.html` — home
 - `about/` — background and working style
 - `portfolio/` — case studies and selected work
-- `portfolio/terse/`, `portfolio/origin-sentinel/`, `portfolio/llm-gateway/` — long-form case studies
+- long-form case studies, one directory each: `portfolio/terse/`, `portfolio/runecho/`,
+  `portfolio/testgraph/`, `portfolio/harness/`, `portfolio/modelbench/`,
+  `portfolio/lodestone/`, `portfolio/frostline/`, `portfolio/origin-sentinel/`,
+  `portfolio/llm-gateway/`
 - `homelab/` — practical lab notes
 - `status/` — what is current right now
 - `contact/` — direct contact path

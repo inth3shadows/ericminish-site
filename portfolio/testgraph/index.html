@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>testgraph — case study | Eric Minish</title>
+  <meta name="description" content="Case study: testgraph, journey-level test selection over a static call graph — it answers which user journeys a diff could have broken, on a repo that has never run its tests.">
+  <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
+  <link rel="canonical" href="https://www.ericminish.com/portfolio/testgraph/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Eric Minish">
+  <meta property="og:title" content="testgraph — Eric Minish">
+  <meta property="og:description" content="Given a diff, which user journeys could it have broken? Answered from a static call graph, with no coverage history required.">
+  <meta property="og:url" content="https://www.ericminish.com/portfolio/testgraph/">
+  <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="testgraph — Eric Minish">
+  <meta name="twitter:description" content="Given a diff, which user journeys could it have broken? Answered from a static call graph, with no coverage history required.">
+  <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/resume/">Resume</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell" id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="entry-stamp"><b>Entry 08</b><span>Verification · static analysis</span><span>2026</span></div>
+        <h1>Which user journeys could this change have broken?</h1>
+        <p class="lede">
+          Every test-impact tool on the market answers in tests, and every one of them needs
+          coverage from a previous run to do it. testgraph answers in user journeys, from a
+          static call graph, on a repository that has never run its suite once.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong> — a diff goes in, a short ranked list of user journeys comes out, each with a confidence.</p>
+        <p><strong>Status</strong> — public, MIT, on PyPI. Standard library only, no third-party dependencies.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="facts">
+        <div><span class="fk">answers in</span><span class="fv">journeys</span></div>
+        <div><span class="fk">coverage required</span><span class="fv good">none</span></div>
+        <div><span class="fk">dependencies</span><span class="fv good">0</span></div>
+        <div><span class="fk">idle MCP server</span><span class="fv">15.2 MB</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The question a test suite cannot answer</h2></div></div>
+      <div class="prose">
+        <p>
+          An agent finishes a change and has to decide whether it is done. Running the whole suite
+          is the safe answer and the slow one; running nothing is fast and dishonest. The tools built
+          for that gap — SeaLights, Datadog&rsquo;s test impact analysis, pytest-testmon, Ekstazi —
+          all narrow the suite by watching which tests touched which lines on a previous run.
+        </p>
+        <p>
+          That mechanism is also their prerequisite. Coverage is something you have only after you
+          have run the thing, which means none of them can say anything at all about a repository on
+          its first day, or about the parts of a repository nobody has exercised yet.
+        </p>
+        <p>
+          And they answer the wrong unit. <code>test_resolve_backfill</code> failing tells you a
+          test failed. It does not tell you that a claimant can no longer submit a signed form.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>How it answers</h2></div></div>
+      <div class="grid-2">
+        <article class="panel">
+          <div class="prose">
+            <ul>
+              <li><strong>A journey registry</strong> names each user-facing flow and the symbols it enters through — a route handler, a scheduler sweep, a CLI entry point.</li>
+              <li><strong>Seeds</strong> — the changed line ranges in a diff are mapped to the symbols that own them.</li>
+              <li><strong>Reverse walk</strong> — the call graph is walked backwards, transitively, to every symbol that depends on a seed.</li>
+              <li><strong>Rank</strong> — the journeys whose entry symbols land in that set are reported, ordered by fan-in.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="code-window">
+          <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>git push</div>
+          <pre><code>testgraph[&#8230;]: 11 journey(s) this push could break,
+d9174b7e1..0305ada6f, ranked:
+
+  [ 23] J1   claimant submits a signed form
+  [ 16] J10  staff regenerates and downloads the signed PDF
+  &#8230;</code></pre>
+        </article>
+      </div>
+      <p class="fine">Real hook output from a private repository, its name removed. The two figures are the fan-in rank and the journey&rsquo;s identifier in that repository&rsquo;s registry.</p>
+      <div class="prose">
+        <p>
+          Confidence is the strongest path that reached the journey: the maximum, over every path,
+          of the weakest edge on that path. A chain is only as trustworthy as its worst hop, but one
+          solid route through is enough. A journey reached only through weak or synthesized edges is
+          labelled <code>VERIFY MANUALLY</code> — it is never silently dropped from the list.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Recall-first, and what that costs</h2></div></div>
+      <div class="prose">
+        <p>
+          The failure modes are not symmetric. Flagging a journey that turns out to be fine costs a
+          few minutes. Silently dropping a journey a change really did break costs a production
+          incident and the user&rsquo;s trust in the tool at the same time. So testgraph
+          over-selects on purpose: edit a shared config file and it fans out to almost everything,
+          because that is the truth about a shared config file.
+        </p>
+        <p>
+          The same asymmetry drives the integrity guard. Before answering, testgraph refuses to run
+          off a stale or corrupted index — a wrong graph produces a confidently wrong
+          &ldquo;you don&rsquo;t need to test that&rdquo;, which is the one output a test selector
+          must never produce. Seeds come from line ranges, so an index built before the code moved
+          resolves the diff against spans that no longer mean anything. If a changed file&rsquo;s
+          bytes still disagree with the indexed copy after a re-sync, the answer degrades to
+          <code>RECALL DEGRADED</code> and names the file.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What I will not claim</h2></div></div>
+      <div class="prose">
+        <p>
+          The obvious pitch is suite reduction, and I am not making it. The regression-test-selection
+          literature is directionally unkind to static selection: measured against a dynamic
+          baseline, the static tool STARTS reduced suites 68.3% against Ekstazi&rsquo;s 84.1%, and
+          carried a 5.9% safety-violation rate doing it. Dynamic beat static on both size and safety.
+        </p>
+        <p>
+          testgraph has selectivity numbers of its own across four repositories, and they are not
+          published here, because it has no measured missed-fault rate at those scales to put beside
+          them. Recall 1.00 was established on exactly one target — five hand-labelled real commits
+          and roughly twenty seeded mutation sites — and a recall figure from one repository is not
+          a property of the tool.
+        </p>
+        <p>
+          What is defensible is narrower and still decisive: <strong>it answers cold.</strong> Zero
+          coverage, zero CI, zero prior runs. That is a positioning advantage rather than a moat —
+          an incumbent could collect coverage on build one, or bolt static analysis on — and it is
+          not free either, because a maintained journey registry is real hand-authored judgement
+          that nothing derives for you.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>A selector nobody calls cannot be wrong</h2></div></div>
+      <article class="note">
+        <ul>
+          <li><strong>It runs on push.</strong> <code>pre-push</code> is the only git hook handed a real base — the remote sha is exactly the &ldquo;what they don&rsquo;t have yet&rdquo; boundary the question wants.</li>
+          <li><strong>It never fails a push.</strong> Every path exits zero: a blocked integrity guard, a missing index, a missing registry, a traceback, a timeout. Advice that can stop a push stops being advice.</li>
+          <li><strong>It records itself.</strong> Every run appends a row to a local ledger, which is how &ldquo;is anything actually calling this?&rdquo; gets answered with a number instead of a guess.</li>
+          <li><strong>Agents can ask it directly.</strong> An MCP server exposes the ranked journeys as a tool — stdlib only, lazily imported, 15.2 MB resident when idle against 62–69 MB for a typical SDK-based server. That gap is multiplied by every editor window you have open, not paid once.</li>
+        </ul>
+      </article>
+      <div class="prose">
+        <p>
+          The other half of that ledger is what running a journey then <em>found</em>. Joined on
+          repository and commit, the two halves produce the one number the project has so far
+          asserted rather than measured: a journey that failed on a commit whose selection never
+          named it.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Try it</h2></div></div>
+      <div class="tag-row">
+        <span class="tag">Static analysis</span>
+        <span class="tag">Test selection</span>
+        <span class="tag">Python</span>
+        <span class="tag">MCP</span>
+      </div>
+      <div class="code-window" style="margin-top:16px">
+        <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>install</div>
+        <pre><code>pip install testgraph
+
+python3 -m testgraph.propose --repo &lt;path&gt;   # draft a journey registry
+python3 -m testgraph.select  --repo &lt;path&gt;   # rank the journeys a diff touches</code></pre>
+      </div>
+      <div class="inline-links" style="margin-top:16px">
+        <a class="button" href="https://github.com/inth3shadows/testgraph">Source on GitHub</a>
+      </div>
+      <p class="project-meta-line" style="margin-top:12px">MIT licensed. A drafted registry is marked unapproved until a human reads it — an unapproved registry runs, loudly, but never silently.</p>
+    </section>
+
+    <p class="closing-line">
+      Questions or a use case in mind? Email is best — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

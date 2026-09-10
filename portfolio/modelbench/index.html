@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>modelbench — case study | Eric Minish</title>
+  <meta name="description" content="Case study: a personal LLM benchmark built on real bug-fix commits from my own repositories, reporting cost per solved task — and publishing the four figures it got wrong.">
+  <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
+  <link rel="canonical" href="https://www.ericminish.com/portfolio/modelbench/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Eric Minish">
+  <meta property="og:title" content="modelbench — Eric Minish">
+  <meta property="og:description" content="A benchmark on my own code, scored by cost per solved task — including the four published numbers it later had to correct.">
+  <meta property="og:url" content="https://www.ericminish.com/portfolio/modelbench/">
+  <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="modelbench — Eric Minish">
+  <meta name="twitter:description" content="A benchmark on my own code, scored by cost per solved task — including the four published numbers it later had to correct.">
+  <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/resume/">Resume</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell" id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="entry-stamp"><b>Entry 10</b><span>Measurement · model routing</span><span>2026</span></div>
+        <h1>A benchmark on my own code, that corrects itself in public</h1>
+        <p class="lede">
+          A public benchmark tells you how a model does on somebody else&rsquo;s repositories, once.
+          Neither half of that survives contact with a real routing decision, so this one mines real
+          bug-fix commits out of my own repositories and runs each task several times.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong> — harvest, run, grade, report. A task is a real commit; a pass is its real test suite going green.</p>
+        <p><strong>Status</strong> — private repository, in use for routing decisions across a local model gateway.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="facts">
+        <div><span class="fk">repositories surveyed</span><span class="fv">100</span></div>
+        <div><span class="fk">runs per model per task</span><span class="fv">3</span></div>
+        <div><span class="fk">published figures corrected</span><span class="fv bad">4</span></div>
+        <div><span class="fk">scored on</span><span class="fv">$ / solved task</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Two things a public benchmark cannot tell me</h2></div></div>
+      <div class="prose">
+        <p>
+          <strong>Whose code.</strong> A SWE-bench score says nothing about how a model behaves in a
+          specific Go, Python or TypeScript codebase with its own conventions. So the harvester walks
+          this machine&rsquo;s own git history for commits that touch both a test file and a source
+          file and are small enough to be a fair single-shot task. The model is measured on the code
+          it will actually be asked to work on.
+        </p>
+        <p>
+          <strong>How many times.</strong> Public benchmarks run each task once and report a single
+          pass or fail. That hides a real failure mode: a model that passes a task once and fails it
+          twice more is not &ldquo;80% reliable&rdquo; in any useful sense when you only get one shot
+          in production. Every model-task pair runs three times here, and the report carries an
+          agreement rate and a bootstrap confidence interval, so a gap between two models can be
+          called noise or called real instead of asserted from one sample.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The number that decides anything is cost per solved task</h2></div></div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Model tier</th><th style="text-align:right">pass@1</th><th style="text-align:right">tasks solved</th><th style="text-align:right">timeouts</th><th style="text-align:right">$ / solved task</th></tr>
+          <tr><td>large</td><td class="num win">1.00</td><td class="num">15 / 15</td><td class="num">0 / 30</td><td class="num">$2.09</td></tr>
+          <tr><td>mid</td><td class="num">0.83</td><td class="num">14 / 15</td><td class="num lose">4 / 30</td><td class="num">$1.26</td></tr>
+          <tr><td>small</td><td class="num">0.57</td><td class="num">10 / 15</td><td class="num">0 / 30</td><td class="num win">$0.51</td></tr>
+        </table>
+      </div>
+      <div class="prose">
+        <p>
+          Fifteen tasks a cheaper model had already failed, each run twice per tier, every pass
+          integrity-verified: the test had to fail before the patch and pass after it, with no writes
+          to the test file. The small tier solves two thirds of what the large tier does at a quarter
+          of the price per success, which is a routing decision rather than a ranking.
+        </p>
+        <p>
+          The dollar levels are inflated — a large system preamble rides on every call — but it rides
+          on all three equally. <strong>Ratios hold; levels do not.</strong> A benchmark that only
+          reported the flattering half of that would not be one.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Four numbers it published, and had to take back</h2></div></div>
+      <div class="prose">
+        <p>
+          One task failed for every tier: zero passes out of two, three times over, with no timeouts
+          and no variance. Zero spread across three capability tiers is a signature of a broken task,
+          not a hard one — a genuinely hard problem separates a large model from a small one.
+        </p>
+        <p>
+          It was the harness. The graded test was asynchronous, the repository declared its async
+          plugin as an optional extra, and the command the benchmark ran did not install extras. So
+          the test could not execute at all. The decisive check cost no model calls: check out the
+          real fix commit — the change that <em>is</em> the answer — and run the graded command
+          against it. It scored zero. No patch any model could write would have passed.
+        </p>
+        <p>
+          Three tiers had been reported a full capability step lower than they were, on the strength
+          of a task nothing could pass. The task was repaired and re-run rather than dropped, and the
+          findings file now carries each wrong figure inline beside the one that replaced it.
+        </p>
+      </div>
+      <p class="fine">
+        Three of the four corrections cost zero model calls — they were recomputations of data
+        already on disk, which is itself the finding: the write-up had drifted from its own results
+        because nothing regenerated it. That file is generated from the graded runs now.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The scores do not transfer, and that is the design</h2></div></div>
+      <div class="prose">
+        <p>
+          Rejecting public benchmarks for scoring models on somebody else&rsquo;s code has an honest
+          consequence, and it applies here first: <strong>a score from this project is a statement
+          about one model, one corpus, one revision and one date.</strong> It is not a leaderboard
+          entry, and two scores from different repositories do not rank the models against each other.
+        </p>
+        <p>
+          That is not a gap waiting to be closed. A benchmark whose numbers <em>were</em> comparable
+          across corpora would have had to abstract away the codebase — its conventions, its test
+          shapes, its commit habits — and the codebase is the entire thing being measured.
+        </p>
+        <p>
+          The corpora are already different instruments before a single model is called. Across a
+          hundred repositories on two machines, the share of a repository&rsquo;s history that
+          qualifies as a task ranges from <strong>4.0% to 74.5%</strong> among the thirty that yield
+          anything at all. One repository measured 60.8% when its corpus was first built and 40.6%
+          under identical criteria today — twenty points of drift from history growth alone, most of
+          it automated release commits entering the denominator.
+        </p>
+      </div>
+      <article class="note">
+        <ul>
+          <li><strong>Never pool.</strong> One headline score over several repositories averages instruments that do not measure the same thing.</li>
+          <li><strong>Cite the revision and the date.</strong> A number without them is not reproducible, it is remembered.</li>
+          <li><strong>Re-harvest before comparing.</strong> Each run records its own qualification funnel, precisely so a stale ratio cannot be quietly compared against a fresh one.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What else it measures</h2></div></div>
+      <div class="prose">
+        <ul>
+          <li><strong>Patch</strong> — coding ability, graded by running the model&rsquo;s fix against a real test suite.</li>
+          <li><strong>Reading</strong> — effective context length, graded by exact retrieval of a real fact planted in real repository content.</li>
+          <li><strong>Discovery</strong> — bug finding, graded by whether the reported line range intersects the real fix.</li>
+          <li><strong>Scout</strong> — symbol-location accuracy, run through a real tool loop rather than a plain chat completion, and graded against a deterministic symbol index.</li>
+        </ul>
+        <p>
+          Two failure modes are scored as real failures rather than retried away: determinism decays
+          with output length, so identical prompts stop returning identical prose past a few hundred
+          tokens; and a reasoning model can return an empty response when its whole token budget went
+          to reasoning it never shows you. A retry would have hidden both.
+        </p>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Evaluation</span>
+        <span class="tag">Model routing</span>
+        <span class="tag">Python</span>
+        <span class="tag">Statistics</span>
+      </div>
+      <p class="project-meta-line" style="margin-top:12px">Private repository — half the corpus is other people&rsquo;s code. The method is described here in full; the numbers are regenerable rather than reachable.</p>
+    </section>
+
+    <p class="closing-line">
+      Questions or a use case in mind? Email is best — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

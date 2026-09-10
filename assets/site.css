@@ -915,6 +915,8 @@ h3 {
 
 .facts .fv.good { color: var(--accent); }
 
+.facts .fv.bad { color: #c4705e; }
+
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -944,6 +946,12 @@ h3 {
 .data-table .lose { color: #c4705e; }
 
 .table-scroll { overflow-x: auto; }
+
+/* A table and the prose that reads it are separate groups: give them
+   more air between than the rows have within. */
+.table-scroll + .prose,
+.table-scroll + .fine,
+.data-table + .prose { margin-top: var(--s-16); }
 
 .beats { list-style: none; margin: 0; padding: 0; counter-reset: beat; }
 
@@ -1196,7 +1204,9 @@ h3 {
 }
 
 /* ── Expandable rows (portfolio + homelab) ───────────────────────────────
-   A card at rest; hovering or focusing one expands that card only. */
+   A card at rest, opened by tap, click, Enter or Space. Native <details>,
+   so touch and assistive tech get the same behaviour as a mouse and there
+   is no JavaScript involved. */
 
 .nodes {
   display: grid;
@@ -1213,9 +1223,7 @@ h3 {
   border: 1px solid var(--line);
   border-radius: 3px;
   background: var(--bg-soft);
-  padding: 16px 16px;
   transition: border-color 150ms ease, background 150ms ease;
-  outline-offset: 2px;
 }
 
 .node:before {
@@ -1232,21 +1240,45 @@ h3 {
 }
 
 .node:hover,
-.node:focus-visible,
-.node:focus-within {
+.node:focus-within,
+.node[open] {
   border-color: var(--line-strong);
   background: var(--bg-elevated);
 }
 
 .node:hover:before,
-.node:focus-visible:before,
-.node:focus-within:before { opacity: 1; }
+.node:focus-within:before,
+.node[open]:before { opacity: 1; }
+
+/* The row itself is the control: a native <summary>, so it opens on tap,
+   Enter and Space, and announces its own expanded state. */
 
 .node-head {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center;
+  gap: var(--s-8);
   flex-wrap: wrap;
+  min-height: 44px;
+  padding: var(--s-8) var(--s-16);
+  cursor: pointer;
+  list-style: none;
+  outline-offset: 2px;
+}
+
+.node-head::-webkit-details-marker { display: none; }
+
+.node-head:after {
+  content: "+";
+  font-family: var(--mono);
+  font-size: var(--t-fine);
+  color: var(--muted);
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
+.node[open] > .node-head:after {
+  content: "\2212";
+  color: var(--accent);
 }
 
 .node-icon {
@@ -1259,7 +1291,7 @@ h3 {
 .node-icon svg { width: 22px; height: 22px; display: block; }
 
 .node:hover .node-icon,
-.node:focus-within .node-icon { color: var(--accent); }
+.node[open] .node-icon { color: var(--accent); }
 
 .node-name {
   font-size: var(--t-body);
@@ -1290,32 +1322,22 @@ h3 {
   color: var(--muted);
   border: 1px solid var(--line);
   border-radius: 999px;
-  padding: 2px 8px;
+  padding: var(--s-2) var(--s-8);
   white-space: nowrap;
 }
 
 .node-detail {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 200ms ease;
+  padding: 0 var(--s-16) var(--s-16);
 }
-
-.node-detail > .node-detail-inner {
-  overflow: hidden;
-  min-height: 0;
-}
-
-.node:hover .node-detail,
-.node:focus-visible .node-detail,
-.node:focus-within .node-detail { grid-template-rows: 1fr; }
 
 .node-detail p {
   margin: 0;
-  padding-top: 8px;
   color: var(--muted);
   font-size: var(--t-body);
   line-height: 1.6;
 }
+
+.node-detail p + p { margin-top: var(--s-8); }
 
 .node-board {
   font-family: var(--mono);
@@ -1323,16 +1345,33 @@ h3 {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--warn);
-  padding-top: 8px !important;
 }
 
-.node-board + p { padding-top: 4px; }
+.node-board + p { margin-top: var(--s-4) !important; }
 
-@media (prefers-reduced-motion: reduce) {
-  .node,
-  .node:before,
-  .node-detail { transition: none; }
+/* Two named halves of one list, so nine entries read as chunks rather than
+   a wall. The label sits tight to its own group and loose from the last. */
+
+.node-group + .node-group { margin-top: var(--s-24); }
+
+.node-group-label {
+  margin: 0 0 var(--s-8);
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .node[open] .node-detail { animation: node-open 180ms ease both; }
+}
+
+@keyframes node-open {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+
 
 /* ── Print: the resume page should print as a clean single column ─────── */
 

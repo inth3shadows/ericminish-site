@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RunEcho — case study | Eric Minish</title>
-  <meta name="description" content="Case study: a Go guard layer for coding-agent sessions, and what happened when its edit-scope contracts were used on the day they shipped.">
-  <link rel="stylesheet" href="/assets/site.css?v=5af5c883">
+  <meta name="description" content="Case study: RunEcho, a deterministic pre-write guard that stops a coding agent referencing a symbol your repository does not have — ~12 ms, no model, and zero context cost on a clean check.">
+  <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/runecho/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="RunEcho — Eric Minish">
-  <meta property="og:description" content="A Go guard layer for coding-agent sessions, and the contract design its own dogfooding disproved.">
+  <meta property="og:description" content="A deterministic guard that stops an agent calling a function your repo does not have, before the write lands.">
   <meta property="og:url" content="https://www.ericminish.com/portfolio/runecho/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="RunEcho — Eric Minish">
-  <meta name="twitter:description" content="A Go guard layer for coding-agent sessions, and the contract design its own dogfooding disproved.">
+  <meta name="twitter:description" content="A deterministic guard that stops an agent calling a function your repo does not have, before the write lands.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -48,29 +48,103 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 05</b><span>Developer tooling · Go</span><span>2026</span></div>
-        <h1>A guard that went stale in the session that wrote it</h1>
+        <h1>Stopping a call to a function that does not exist</h1>
         <p class="lede">
-          RunEcho watches what a coding agent is about to change and objects before the change
-          lands. The most useful thing it produced was evidence against one of its own designs.
+          RunEcho checks every edit an agent is about to write against the symbols your code actually
+          declares, and stops the ones that reference something imaginary. It is one cheap layer
+          against one class of mistake — deliberately not an attempt at the whole problem.
         </p>
       </div>
       <aside class="note">
-        <p><strong>What it is</strong> — symbol lookup, edit-scope contracts, and pre-commit guards for agent-driven work.</p>
-        <p><strong>Status</strong> — active. Go, with a vendored tree-sitter runtime.</p>
+        <p><strong>What it is</strong> — a pre-write hook inside the agent loop, plus the deterministic symbol index behind it.</p>
+        <p><strong>Status</strong> — public, MIT. Go, with a vendored tree-sitter runtime. Windows, macOS and Linux.</p>
       </aside>
     </section>
 
     <section class="section">
       <div class="facts">
-        <div><span class="fk">false positives removed</span><span class="fv good">91%</span></div>
-        <div><span class="fk">guard overhead</span><span class="fv">0.36 ms</span></div>
-        <div><span class="fk">was</span><span class="fv">9.5 ms</span></div>
-        <div><span class="fk">languages parsed</span><span class="fv">5</span></div>
+        <div><span class="fk">per check</span><span class="fv">~12 ms</span></div>
+        <div><span class="fk">context cost, clean check</span><span class="fv good">0 tokens</span></div>
+        <div><span class="fk">false positive rate</span><span class="fv">15.3%</span></div>
+        <div><span class="fk">models, keys, network</span><span class="fv good">none</span></div>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The contract that expired before the day did</h2></div></div>
+      <div class="section-head"><div><h2>Deterministic, so it is a gate and not an opinion</h2></div></div>
+      <div class="prose">
+        <p>
+          Every check is a parse and a lookup. The same code produces the same answer on every run,
+          every machine and every agent — there is no model to sample from and nothing to re-roll.
+          No API keys, no network, no build, no language server.
+        </p>
+        <p>
+          <strong>A clean check costs zero context tokens</strong>, measured rather than asserted: it
+          writes nothing at all unless it actually stops an edit, and then about a hundred tokens.
+          Because it runs as a hook, the agent never spends context deciding whether to call it. The
+          companion server that answers structural questions on demand is a separate surface and is
+          <em>not</em> free — its tool schemas cost around 968 tokens at session start. Both figures,
+          including the unflattering one, are published in the repository.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>How often it is wrong, and how that was measured</h2></div></div>
+      <div class="prose">
+        <p>
+          The obvious measurement is how often the user overrides it. That turned out to have no
+          variance to measure: across thirty days of real traffic, 308 of 308 gated edits were
+          approved and none denied. A rate computed from that would have said the guard was perfect,
+          and it would have been measuring the user&rsquo;s patience.
+        </p>
+        <p>
+          So each flagged symbol is judged against <strong>dated git history</strong> instead — was
+          it defined when the guard objected, and is it defined now:
+        </p>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Verdict on a flag</th><th style="text-align:right">Share</th><th>Meaning</th></tr>
+          <tr><td>Stands</td><td class="num win">51.0%</td><td>a real reference to something that does not exist</td></tr>
+          <tr><td>Premature</td><td class="num">33.7%</td><td>correct, but fired before the symbol existed — an agent writing a caller ahead of its callee</td></tr>
+          <tr><td>False positive</td><td class="num lose">15.3%</td><td>the symbol was there; the guard was wrong</td></tr>
+        </table>
+      </div>
+      <div class="prose">
+        <p>
+          The 51% is not a claim that half of an agent&rsquo;s output is hallucinated — it is a share
+          of the edits that were flagged, not of the edits that were written.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The scope, stated before you ask</h2></div></div>
+      <div class="prose">
+        <p>
+          RunEcho reads <em>unqualified</em> references: bare calls, constant references, and type
+          annotations. Measured against a corpus of real model hallucinations mined from live session
+          transcripts — fifteen hand-verified cases, each backed by a compiler or runtime error as
+          independent ground truth — that catches <strong>four of nine</strong>.
+        </p>
+        <p>
+          The other five sit in qualified positions: <code>df.groupby(&hellip;)</code>,
+          <code>tree.Root()</code>. Resolving those needs receiver-type inference, which is the
+          semantic analysis this tool deliberately does not do. Indexing also covers more languages
+          than the guard checks — shell, Rust and Ruby feed the index but are not validated at edit
+          time.
+        </p>
+        <p>
+          That is the honest shape of it: run it the way you run a type checker. One layer that
+          removes one class of mistake completely, alongside the tests and the review that catch the
+          rest.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The design its own dogfood killed</h2></div></div>
       <div class="prose">
         <p>
           An edit-scope contract declares what a piece of work is allowed to touch, so a guard can

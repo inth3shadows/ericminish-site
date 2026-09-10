@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>harness — case study | Eric Minish</title>
+  <meta name="description" content="Case study: a one-man agent harness whose verdict on a code change is mechanical — four deterministic checks, no language model in the judge, and no auto-commit.">
+  <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
+  <link rel="canonical" href="https://www.ericminish.com/portfolio/harness/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Eric Minish">
+  <meta property="og:title" content="harness — Eric Minish">
+  <meta property="og:description" content="An agent harness where the judge is mechanical: four deterministic checks, no model in the verdict, no auto-commit.">
+  <meta property="og:url" content="https://www.ericminish.com/portfolio/harness/">
+  <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="harness — Eric Minish">
+  <meta name="twitter:description" content="An agent harness where the judge is mechanical: four deterministic checks, no model in the verdict, no auto-commit.">
+  <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/resume/">Resume</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell" id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="entry-stamp"><b>Entry 09</b><span>Agent infrastructure · verification</span><span>2026</span></div>
+        <h1>The model writes the code. Something else has to say whether it worked.</h1>
+        <p class="lede">
+          A solo harness cannot beat a lab on agent count or model quality. What it can have is a
+          real verification oracle for the repositories it actually runs against — so the judge here
+          is mechanical, deterministic, and has no language model in it anywhere.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong> — two halves: a model-free verdict on a code change, and the runtime that drives the loop producing those changes.</p>
+        <p><strong>Status</strong> — private repository. The gate and the role runtime are built and in use; the self-driving loop is the work in progress.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="facts">
+        <div><span class="fk">checks in the verdict</span><span class="fv">4</span></div>
+        <div><span class="fk">model calls in the verdict</span><span class="fv good">0</span></div>
+        <div><span class="fk">auto-commits</span><span class="fv good">0</span></div>
+        <div><span class="fk">runtime dependencies</span><span class="fv">stdlib</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The invariant everything is arranged around</h2></div></div>
+      <div class="prose">
+        <p>
+          An agent that writes code is model-driven by definition. The interesting question is what
+          decides whether what it wrote is acceptable — and the common answer, a second model
+          reviewing the first, inherits every failure mode of the first. It is confident on a bad
+          diff, it is not reproducible, and it cannot be re-run to the same answer tomorrow.
+        </p>
+        <p>
+          So: <strong>the language model is never the judge.</strong> The verdict is four stateless
+          checks, each one a program with an exit code. Run it twice on the same tree and you get the
+          same answer, on any machine, with no network and nothing to re-roll.
+        </p>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Check</th><th>Fails when</th></tr>
+          <tr><td><code>tests</code></td><td>the project&rsquo;s own suite does not pass</td></tr>
+          <tr><td><code>ir_contract</code></td><td>a change leaves its declared scope, or removes a symbol without opting in</td></tr>
+          <tr><td><code>secrets</code></td><td>a credential is found in the staged change</td></tr>
+          <tr><td><code>cve</code></td><td>a <em>reachable</em> vulnerability is found — not merely a listed one</td></tr>
+        </table>
+      </div>
+      <div class="prose">
+        <p>
+          The symbol contract is the interesting one. It is the same deterministic index that powers
+          <a href="/portfolio/runecho/">RunEcho</a>: a change declares the scope it intends to touch,
+          and the gate compares the actual structural diff against that declaration. An agent that
+          quietly deletes a function on its way past is caught by a hash comparison, not by someone
+          noticing in review.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>A pass is not a merge</h2></div></div>
+      <div class="prose">
+        <p>
+          When all four checks pass, the harness leaves the branch sitting there for a human to
+          commit. <strong>There is no auto-commit.</strong> That is a deliberate guardrail rather
+          than an unfinished feature, and it is the boundary that production agent tooling has
+          converged on after the fully-autonomous-to-merge pitch was walked back — Devin repositioned
+          from &ldquo;builds anything on its own&rdquo; to &ldquo;human on the loop required&rdquo;
+          once real unattended completion rates landed at 14–15%.
+        </p>
+        <p>
+          &ldquo;Autonomous&rdquo; here means the plan, produce and verify cycle runs unattended. It
+          does not mean nobody sees the result. The gate&rsquo;s value is highest exactly when nobody
+          is watching each step — in an interactive tool the human is already judging every diff,
+          which is precisely where a mechanical oracle earns least.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Roles, not models</h2></div></div>
+      <div class="grid-2">
+        <article class="panel">
+          <div class="prose">
+            <p>
+              The second half is the runtime. A <em>role</em> is a job — consult, scout, builder,
+              reviewer, scribe — and a gateway resolves each role to whatever model currently does
+              that job well. Swapping a model is a gateway configuration change; it is never a code
+              change here.
+            </p>
+            <p>
+              Roles carry tools, and the runtime runs the full request, tool call, result, request
+              loop against them. The two tool sets are a code-intelligence set and a retrieval set,
+              and <strong>every tool in them is read-only</strong>. It can find, trace, fetch and
+              reason. It cannot yet edit a file or run a command — that gap is the honest distance
+              between what exists and a self-driving loop.
+            </p>
+          </div>
+        </article>
+        <article class="code-window">
+          <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>the four checks &#8212; a model, not a capture</div>
+          <pre><code>tests        the suite passes
+ir_contract  scope held, no silent symbol removal
+secrets      nothing credential-shaped is staged
+cve          no reachable vulnerability
+
+any failure  &#8594;  exit 1, nothing proceeds
+all four     &#8594;  the branch waits for a human</code></pre>
+        </article>
+      </div>
+      <div class="prose">
+        <p>
+          The code-intelligence set picks its index by the question being asked: one index answers
+          <em>where a symbol is</em>, live and never stale; another answers <em>how things
+          connect</em>, stored and able to lag uncommitted edits. A structural answer costs a few
+          hundred tokens where the file it was derived from costs thousands.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Where the loop actually lives</h2></div></div>
+      <div class="prose">
+        <p>
+          The orchestration that ties plan, produce and verify together does not yet run inside this
+          project. It runs in a foreign agent runtime, with each phase as an agent call, so today the
+          harness supplies the judge and the tools while somebody else supplies the loop.
+        </p>
+        <p>
+          The sharpest edge of that is embarrassing enough to be worth naming: even the harness&rsquo;s
+          own event emissions are currently written by asking a model to run a shell command. That
+          violates the project&rsquo;s own invariant on the write side, and it is the first thing
+          being fixed — before the event bus grows a read side, and well before any write-capable
+          tool set exists.
+        </p>
+      </div>
+      <p class="fine">
+        Runtime state lives outside the repository entirely; code lives here, state never does.
+        Every step of a run is appended to a local event log as newline-delimited JSON.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Why this and not a better chat interface</h2></div></div>
+      <div class="prose">
+        <p>
+          The alternative direction was live and got rejected: make this a model-agnostic interactive
+          tool you sit and drive. Matching an interactive coding assistant means matching its write
+          tools, session loop, approval layer and context management — pure catch-up against teams
+          orders of magnitude larger, with no edge anywhere in it for one person.
+        </p>
+        <p>
+          The mechanical verdict has no equivalent in any of those tools. That is the thing worth
+          building, so it is what the roadmap points at.
+        </p>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Agent infrastructure</span>
+        <span class="tag">Verification</span>
+        <span class="tag">Python</span>
+        <span class="tag">LiteLLM</span>
+      </div>
+      <p class="project-meta-line" style="margin-top:12px">Private repository. The oracle it verifies against is public: <a href="https://github.com/inth3shadows/runecho">RunEcho</a>.</p>
+    </section>
+
+    <p class="closing-line">
+      Questions or a use case in mind? Email is best — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

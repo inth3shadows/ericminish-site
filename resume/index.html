@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Resume — Eric Minish</title>
   <meta name="description" content="Eric Minish — systems engineer. I build the checks that catch what is breaking quietly.">
-  <link rel="stylesheet" href="/assets/site.css?v=5af5c883">
+  <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
   <link rel="canonical" href="https://www.ericminish.com/resume/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
@@ -125,15 +125,26 @@
 
       <article style="margin-bottom:32px">
         <div class="entry-stamp"><b>2025 — present</b><span>Independent</span><span>Built, shipped and run</span></div>
-        <h3>Agent and data infrastructure</h3>
+        <h3>Agent infrastructure</h3>
         <div class="prose">
           <ul>
-            <li><a href="/portfolio/runecho/">RunEcho</a> — checks whether a coding agent's claims about code are actually true instead of trusting them. Used daily for five months.</li>
-            <li><a href="/portfolio/terse/">terse</a> — compresses AI tool output losslessly: 58% fewer tokens across 365,144 tokens of real API payloads, measured against the TOON format, which regresses to −7% on the same corpus. Public, MIT.</li>
+            <li><a href="/portfolio/runecho/">RunEcho</a> — stops a coding agent writing a call to a function the repo does not have, before the write lands. ~12 ms, no model, no network, and zero context cost on a clean check. Public, MIT.</li>
+            <li><a href="/portfolio/terse/">terse</a> — compresses AI tool output losslessly: 59% fewer tokens across 365,144 tokens of real API payloads, measured against the TOON format, which regresses to −7% on the same corpus. Public, MIT.</li>
+            <li><a href="/portfolio/testgraph/">testgraph</a> — given a diff, names the user journeys it could have broken. Comparable tools answer in tests and need coverage from a prior run; this answers on a repository that has never run its suite. Public, MIT, on PyPI.</li>
+            <li><a href="/portfolio/modelbench/">modelbench</a> — benchmarks models on real bug-fix commits mined from my own repositories, three runs per pair, scored on cost per solved task — and publishes its own corrections.</li>
+            <li><a href="/portfolio/harness/">harness</a> — an agent harness whose verdict on a change is four deterministic checks with no model in them, and no auto-commit at the end.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article style="margin-bottom:32px">
+        <div class="entry-stamp"><b>2025 — present</b><span>Independent</span><span>Data, delivery and evidence</span></div>
+        <h3>Data work and shipped applications</h3>
+        <div class="prose">
+          <ul>
             <li><a href="/portfolio/lodestone/">Lodestone</a> — local retrieval over years of working notes, and the evaluation that showed half of it did not work. Published the null result.</li>
             <li><a href="/portfolio/frostline/">Frostline</a> — spatial models over 50,083 well records, and a business built around what they can honestly predict.</li>
             <li>Reported <strong>32 bugs</strong> in a code-analysis tool I use daily, including two race conditions reproduced on demand with purpose-built harnesses.</li>
-            <li>Two servers other tools call: one issues credentials without exposing the value to the caller, one stores decisions and refuses anything unreviewed.</li>
             <li>Three applications deployed end to end — a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client.</li>
           </ul>
         </div>
@@ -199,7 +210,7 @@
     </section>
 
     <p class="closing-line">
-      <a class="button" href="/resume/eric-minish-resume-27ce7525.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
+      <a class="button" href="/resume/eric-minish-resume-f04848eb.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
     </p>
   </main>
 
