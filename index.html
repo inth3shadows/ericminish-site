@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Eric Minish</title>
   <meta name="description" content="Eric Minish builds infrastructure for AI agents and the data work that runs on it. Central Lake, Michigan.">
-  <link rel="stylesheet" href="/assets/site.css?v=5af5c883">
+  <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
   <link rel="canonical" href="https://www.ericminish.com/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
@@ -77,12 +77,49 @@
         <div class="prow">
           <div>
             <div class="prow-name"><a href="/portfolio/terse/">terse</a></div>
-            <p class="prow-desc">A proxy in front of my agent's tool servers. It compresses what they
+            <p class="prow-desc">A proxy in front of my agent&rsquo;s tool servers. It compresses what they
               return and forwards the original untouched whenever a perfect round trip cannot be proven.</p>
           </div>
           <div class="prow-right">
-            <span class="prow-value">58% fewer tokens</span>
+            <span class="prow-value">59% fewer tokens</span>
             <span class="prow-meta"><em>public</em> · MIT</span>
+          </div>
+        </div>
+
+        <div class="prow">
+          <div>
+            <div class="prow-name"><a href="/portfolio/testgraph/">testgraph</a></div>
+            <p class="prow-desc">Given a diff, it names the user journeys the change could have broken.
+              Everything comparable answers in tests and needs coverage first; this answers on a repo
+              that has never run its suite.</p>
+          </div>
+          <div class="prow-right">
+            <span class="prow-value">journeys, not tests</span>
+            <span class="prow-meta"><em>public</em> · MIT</span>
+          </div>
+        </div>
+
+        <div class="prow">
+          <div>
+            <div class="prow-name"><a href="/portfolio/runecho/">RunEcho</a></div>
+            <p class="prow-desc">Stops an agent writing a call to a function the repo does not have, before
+              the write lands. No model, no network, ~12&nbsp;ms — and a clean check costs no context at all.</p>
+          </div>
+          <div class="prow-right">
+            <span class="prow-value">0 context tokens</span>
+            <span class="prow-meta"><em>public</em></span>
+          </div>
+        </div>
+
+        <div class="prow">
+          <div>
+            <div class="prow-name"><a href="/portfolio/modelbench/">modelbench</a></div>
+            <p class="prow-desc">Replays real bug-fix commits from my own repos against cheap models, several
+              times each, and reports cost per solved task. It publishes its own corrections.</p>
+          </div>
+          <div class="prow-right">
+            <span class="prow-value">cost per solved task</span>
+            <span class="prow-meta">private</span>
           </div>
         </div>
 
@@ -109,53 +146,43 @@
             <span class="prow-meta">modelled</span>
           </div>
         </div>
-
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="/portfolio/runecho/">RunEcho</a></div>
-            <p class="prow-desc">A guard layer for coding-agent sessions. I shipped edit-scope contracts,
-              used them the same day, and found they go stale inside the session that writes them.</p>
-          </div>
-          <div class="prow-right">
-            <span class="prow-value">Go · tree-sitter</span>
-            <span class="prow-meta"><em>public</em></span>
-          </div>
-        </div>
       </div>
 
       <div class="gitstrip">
         <div class="gitstrip-head">
           <span>Public commit history</span>
-          <span><b>1,054</b> contributions</span>
-          <span><b>525</b> commits</span>
-          <span><b>5</b> repositories</span>
+          <span><b>1,834</b> contributions</span>
+          <span><b>804</b> commits</span>
+          <span><b>8</b> repositories</span>
           <span class="grow"><a href="https://github.com/inth3shadows">github.com/inth3shadows</a></span>
         </div>
         <div class="bars">
-          <div class="bar" title="2025-08 — 0 contributions"><i style="height:2%"></i><span>Aug</span></div>
-          <div class="bar" title="2025-09 — 0 contributions"><i style="height:2%"></i><span>Sep</span></div>
           <div class="bar" title="2025-10 — 0 contributions"><i style="height:2%"></i><span>Oct</span></div>
           <div class="bar" title="2025-11 — 0 contributions"><i style="height:2%"></i><span>Nov</span></div>
           <div class="bar" title="2025-12 — 0 contributions"><i style="height:2%"></i><span>Dec</span></div>
           <div class="bar" title="2026-01 — 0 contributions"><i style="height:2%"></i><span>Jan</span></div>
           <div class="bar" title="2026-02 — 7 contributions"><i style="height:2%"></i><span>Feb</span></div>
-          <div class="bar" title="2026-03 — 54 contributions"><i style="height:8%"></i><span>Mar</span></div>
+          <div class="bar" title="2026-03 — 54 contributions"><i style="height:6%"></i><span>Mar</span></div>
           <div class="bar" title="2026-04 — 7 contributions"><i style="height:2%"></i><span>Apr</span></div>
-          <div class="bar" title="2026-05 — 17 contributions"><i style="height:3%"></i><span>May</span></div>
-          <div class="bar" title="2026-06 — 324 contributions"><i style="height:50%"></i><span>Jun</span></div>
-          <div class="bar now" title="2026-07 — 645 contributions"><i style="height:100%"></i><span>Jul</span></div>
+          <div class="bar" title="2026-05 — 17 contributions"><i style="height:2%"></i><span>May</span></div>
+          <div class="bar" title="2026-06 — 324 contributions"><i style="height:37%"></i><span>Jun</span></div>
+          <div class="bar" title="2026-07 — 872 contributions"><i style="height:100%"></i><span>Jul</span></div>
+          <div class="bar" title="2026-08 — 413 contributions"><i style="height:47%"></i><span>Aug</span></div>
+          <div class="bar now" title="2026-09 — 140 contributions, to 9 September"><i style="height:16%"></i><span>Sep</span></div>
         </div>
         <p class="fine" style="margin-top:12px">
-          August 2025 to July 2026, public repositories only. A snapshot taken by hand, not a
-          live feed — if the date above is old, so is the chart.
+          October 2025 to September 2026, public repositories only, and the last bar is nine days
+          long. Read from the GitHub API on 9 September 2026 and pasted in by hand — if that date
+          is old, so is the chart.
         </p>
       </div>
 
       <div class="also">
         <span class="also-label">Also running</span>
-        <a href="/homelab/">Homelab</a>
+        <a href="/portfolio/harness/">harness</a>
         <a href="/portfolio/origin-sentinel/">Origin Sentinel</a>
         <a href="/portfolio/llm-gateway/">LLM gateway</a>
+        <a href="/homelab/">Homelab</a>
         <a href="/portfolio/">Everything else</a>
       </div>
     </section>

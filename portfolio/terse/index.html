@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>terse — case study | Eric Minish</title>
-  <meta name="description" content="Case study: terse, a lossless compression proxy for AI-agent tool output — 58% fewer tokens with a guaranteed exact round-trip.">
-  <link rel="stylesheet" href="/assets/site.css?v=5af5c883">
+  <meta name="description" content="Case study: terse, a lossless compression proxy for AI-agent tool output — 59% fewer tokens with a guaranteed exact round-trip.">
+  <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/terse/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="terse — Eric Minish">
-  <meta property="og:description" content="A lossless compression proxy for AI-agent tool output: 58% fewer tokens, exact round trip guaranteed.">
+  <meta property="og:description" content="A lossless compression proxy for AI-agent tool output: 59% fewer tokens, exact round trip guaranteed.">
   <meta property="og:url" content="https://www.ericminish.com/portfolio/terse/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="terse — Eric Minish">
-  <meta name="twitter:description" content="A lossless compression proxy for AI-agent tool output: 58% fewer tokens, exact round trip guaranteed.">
+  <meta name="twitter:description" content="A lossless compression proxy for AI-agent tool output: 59% fewer tokens, exact round trip guaranteed.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -51,7 +51,7 @@
         <h1>Cutting agent token cost without losing a byte</h1>
         <p class="lede">
           Agent tool outputs are quietly one of the most expensive things in an AI stack.
-          terse is a drop-in proxy that losslessly compresses that output — 58% fewer tokens on a real corpus — while keeping every single piece of information.
+          terse is a drop-in proxy that losslessly compresses that output — 59% fewer tokens on a real corpus — while keeping every single piece of information.
         </p>
       </div>
       <aside class="note">
@@ -120,13 +120,13 @@ cl100k tokens: 1810 -> 881 (51.3% saved)</code></pre>
           <tr><th>Payload</th><th style="text-align:right">Raw tokens</th><th style="text-align:right">terse</th><th style="text-align:right">TOON</th></tr>
           <tr><td>gh_workflow_runs</td><td class="num">76,032</td><td class="num win">80.3%</td><td class="num lose">−7.5%</td></tr>
           <tr><td>gh_pulls</td><td class="num">151,165</td><td class="num win">76.1%</td><td class="num lose">−8.4%</td></tr>
-          <tr><td>gh_issues</td><td class="num">48,032</td><td class="num win">32.7%</td><td class="num lose">−8.0%</td></tr>
+          <tr><td>gh_issues</td><td class="num">48,032</td><td class="num win">38.8%</td><td class="num lose">−8.0%</td></tr>
           <tr><td>gh_dir_listing</td><td class="num">6,736</td><td class="num win">31.4%</td><td class="num lose">−7.7%</td></tr>
           <tr><td>gh_commits</td><td class="num">69,652</td><td class="num win">26.5%</td><td class="num lose">−4.5%</td></tr>
           <tr><td>gh_labels</td><td class="num">632</td><td class="num">15.2%</td><td class="num win">19.0%</td></tr>
           <tr><td>gh_rate_limit</td><td class="num">357</td><td class="num win">13.4%</td><td class="num lose">−36.7%</td></tr>
           <tr><td>gh_repo_single</td><td class="num">1,652</td><td class="num">0.0%</td><td class="num lose">−4.4%</td></tr>
-          <tr><td><strong>Weighted total</strong></td><td class="num"><strong>365,144</strong></td><td class="num win"><strong>58.3%</strong></td><td class="num lose"><strong>−7.1%</strong></td></tr>
+          <tr><td><strong>Weighted total</strong></td><td class="num"><strong>365,144</strong></td><td class="num win"><strong>59.1%</strong></td><td class="num lose"><strong>−7.1%</strong></td></tr>
         </table>
       </div>
       <div class="prose">
@@ -144,9 +144,11 @@ cl100k tokens: 1810 -> 881 (51.3% saved)</code></pre>
         </p>
       </div>
       <p class="fine">
-        Re-run on 29 July 2026 and unchanged from the published figures: the corpus is pinned and
-        the encoder version is locked, so the number is reproducible rather than remembered.
-        <code>uv run scripts/bench/benchmark.py</code> in the repository reproduces this table.
+        Re-measured on 4 August 2026 against a pinned corpus. One row moved and the total moved with
+        it — <code>gh_issues</code> from 32.7% to 38.8%, the weighted total from 58.3% to 59.1%, when
+        the encoder learned to build one schema across a union of record shapes. Every other row is
+        byte-identical to the previous measurement, and <code>uv run scripts/bench/benchmark.py</code>
+        in the repository reproduces the table.
       </p>
     </section>
 
