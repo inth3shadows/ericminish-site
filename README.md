@@ -39,25 +39,9 @@ page on this site.
 
 ## Editorial Rules
 
-This site is the personal identity layer for Eric Minish.
-
-Positioning (set 2026-07-28): **builder of agent and data infrastructure**,
-with operational and AI fluency as the second layer — not an ops/integration
-generalist. Rationale and voice contract:
-`~/.claude/plans/ericminish-site-builder-positioning-rewrite.md`.
-
-It should:
-
-- establish who Eric is
-- explain what he is doing now
-- bridge cleanly to The Frostline Co.
-- feel truthful, current, and direct
-
-It should not:
-
-- duplicate the Frostline sales site
-- present a generic consulting menu
-- contain placeholders or fake proof
+The site's positioning and editorial rules are a recorded decision in the
+private knowledge base (decision #496, "ericminish.com positions Eric as a
+builder of agent and data infrastructure"), not here: this repo is public.
 
 ## Related Documentation
 
