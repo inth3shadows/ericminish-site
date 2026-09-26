@@ -8,8 +8,8 @@ files that get served.
 
 ```
 repo (git)
-  └── rsync ──▶ LXC 901 on nuc2 (192.168.9.9)
-                  └── Docker + Caddy ──▶ /opt/ericminish/site
+  └── copy ──▶ self-hosted container
+                  └── Docker + Caddy ──▶ live document root
                         └── Cloudflare ──▶ ericminish.com
 ```
 
@@ -66,8 +66,12 @@ the two are never mixed inside a sentence.
 
 Per `README.md`:
 
-1. Back up the current live tree inside LXC 901.
-2. Rsync this repo's site contents into `/opt/ericminish/site`.
+Host details and the full runbook live in the private homelab knowledge base
+(`host-ericminish.com`).
+
+1. Back up the current live tree.
+2. Copy this repo's site contents *into* the live document root. Never swap
+   the directory: Caddy's bind mount follows the inode, and a swap 404s every path.
 3. Verify inside the container at `http://127.0.0.1:8080`.
 4. Verify publicly at `ericminish.com`.
 
