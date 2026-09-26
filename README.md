@@ -1,11 +1,11 @@
 # ericminish.com
 
-Local source for the personal site served live from:
+Local source for the personal site, served as static files by Caddy in a
+self-hosted container behind a Cloudflare tunnel.
 
-- Proxmox host: `nuc2` (`192.168.9.9`)
-- Container: `LXC 901`
-- Runtime: Docker + Caddy
-- Live document root: `/opt/ericminish/site`
+Host, container, document root and the deploy runbook (including its
+gotchas) are kept in the private homelab knowledge base under
+`host-ericminish.com`, not here: this repo is public.
 
 ## Purpose
 
@@ -53,7 +53,12 @@ page on this site.
 
 ## Deploy
 
-1. Back up the current live tree in `LXC 901`.
-2. Sync this folder's site contents into `/opt/ericminish/site`.
+Host, container, document root and the deploy runbook (including its
+gotchas) are kept in the private homelab knowledge base under
+`host-ericminish.com`, not here: this repo is public.
+
+1. Back up the current live tree.
+2. Copy this folder's site contents *into* the live document root (never swap
+   the directory itself; the runbook says why).
 3. Verify locally inside the container at `http://127.0.0.1:8080`.
 4. Verify publicly through `ericminish.com`.
