@@ -32,6 +32,8 @@ gotchas) are kept in the private homelab knowledge base under
 - `homelab/` — practical lab notes
 - `status/` — what is current right now
 - `contact/` — direct contact path
+- `resume/` — résumé page and its content-addressed PDF
+- `tools/` — build-time helpers (`bump-cachebust.py`, `make-resume-pdf.py`), not shipped to the live site
 - `assets/` — shared CSS and SVG assets
 
 Contractor work is pointed at The Frostline Co. by link, not by a services

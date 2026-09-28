@@ -7,9 +7,10 @@ working on now, and shows the infrastructure work in enough detail that a
 reader can check it. It is deliberately not a sales page — contractor work is
 pointed at The Frostline Co. by link.
 
-The site is six main pages plus three long-form case studies. Nothing on it is
-generated or automatic: what is written in this repo is exactly what visitors
-see.
+The site is a handful of main pages — home, about, portfolio, homelab, status,
+contact, résumé — plus a set of long-form case studies under `/portfolio`.
+Nothing on it is generated or automatic: what is written in this repo is
+exactly what visitors see.
 
 ## How to Use It
 
@@ -24,9 +25,15 @@ edited, that month has to be changed too, or the page starts quietly claiming
 to be more current than it is. This is the single most common way this site
 goes wrong.
 
-**Adding a case study.** Copy one of the three existing case-study folders
-inside `portfolio/`, rename it, replace the words, and add a card linking to
-it on the portfolio page. The layout comes along with the copy.
+**Adding a case study.** Copy one of the existing case-study folders inside
+`portfolio/`, rename it, replace the words, and add a card linking to it on
+the portfolio page. The layout comes along with the copy.
+
+**Updating the résumé.** Edit `resume/index.html` for the page text. If the
+PDF itself needs to change, ask the operator to run
+`python tools/make-resume-pdf.py` — it regenerates the file under a new
+content-addressed name, deletes the old one, and rewrites the download link,
+so the file on the page always matches what was last built.
 
 **Publishing.** Changes are not live until the site is deployed. Deployment
 copies the files onto the server that hosts the site, and is a manual step —
