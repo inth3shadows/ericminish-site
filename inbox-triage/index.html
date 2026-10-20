@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>inbox-triage | Eric Minish</title>
+  <meta name="description" content="inbox-triage: a personal tool that archives promotional mail and newsletters in Gmail.">
+  <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
+  <link rel="canonical" href="https://www.ericminish.com/inbox-triage/">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/resume/">Resume</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell" id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>inbox-triage</h1>
+        <p class="lede">
+          A small personal tool that keeps a Gmail inbox clear of promotions and newsletters.
+        </p>
+      </div>
+      <aside class="note">
+        <p>Used by me and my family. It is not a commercial product and is not offered to the public.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <h2>What it does</h2>
+      <p>
+        Once a day it signs in to the account owner's Gmail over IMAP, looks at the sender of each
+        message in the inbox, and sorts senders into five groups: receipts, alerts, newsletters,
+        promotions, and everything else. Newsletters and promotions are labelled and moved out of the
+        inbox (archived). Everything else stays where it is. It never deletes mail and never sends mail.
+      </p>
+      <p>
+        It writes a short digest of what it archived, so nothing disappears without a record.
+      </p>
+      <h2>Why it asks for Gmail access</h2>
+      <p>
+        Archiving and labelling mail over IMAP requires Google's <code>https://mail.google.com/</code>
+        scope; it is the only scope Gmail accepts for IMAP sign-in. The tool uses that access only to
+        read message headers, apply labels, and archive.
+      </p>
+      <p>
+        <a href="/inbox-triage/privacy/">Privacy policy</a> ·
+        <a href="https://github.com/inth3shadows/inbox-triage">Source code</a> ·
+        Contact: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/about/">About</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/status/">Now</a>
+      
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
