@@ -9,8 +9,11 @@ pointed at The Frostline Co. by link.
 
 The site is a handful of main pages — home, about, portfolio, homelab, status,
 contact, résumé — plus a set of long-form case studies under `/portfolio`.
-Nothing on it is generated or automatic: what is written in this repo is
-exactly what visitors see.
+Almost everything is hand-written: what is in this repo is what visitors see.
+The one exception is the commit strip on the home page, between the
+`<!-- auto:start gitstrip -->` markers. A daily job regenerates it from the
+GitHub API and deploys the latest `main` with it, so edit outside those
+markers. Anything merged to `main` goes live within a day.
 
 ## How to Use It
 
