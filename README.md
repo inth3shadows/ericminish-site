@@ -28,7 +28,7 @@ gotchas) are kept in the private homelab knowledge base under
 - long-form case studies, one directory each: `portfolio/terse/`, `portfolio/runecho/`,
   `portfolio/testgraph/`, `portfolio/harness/`, `portfolio/modelbench/`,
   `portfolio/lodestone/`, `portfolio/frostline/`, `portfolio/origin-sentinel/`,
-  `portfolio/llm-gateway/`
+  `portfolio/llm-gateway/`, `portfolio/flight-recorder/`
 - `homelab/` — practical lab notes
 - `status/` — what is current right now
 - `contact/` — direct contact path
