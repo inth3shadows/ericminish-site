@@ -80,7 +80,7 @@
           used. That justified building a hybrid.
         </p>
         <p>
-          Measured at full scale for the first time, against ten questions judged by hand, it
+          Measured at full scale for the first time, against ten questions whose results were labelled by Claude (an AI model) and not yet checked by me, it
           returned something useful five times. Every success was a keyword-shaped question. Four of
           the five paraphrased questions, the case the semantic arm was built for, returned nothing
           useful.
@@ -109,7 +109,7 @@
       <div class="section-head"><div><h2>How the investigation went</h2></div></div>
       <ol class="beats">
         <li><b>Small corpus.</b> 1,271 chunks. Semantic beat keyword on paraphrase.</li>
-        <li><b>Full scale, five of ten.</b> Judged by hand, no partial credit.</li>
+        <li><b>Full scale, five of ten.</b> Labelled by Claude, no partial credit; I have not yet re-checked the labels.</li>
         <li><b>First hypothesis tested.</b> The hypothesis was that the bigger corpus was diluted. I tested it by restricting
           the search to the single highest-quality source. There was no improvement, so the hypothesis was rejected in one run.</li>
         <li><b>Recall versus rank.</b> A diagnostic separated answers that were never retrieved (a recall problem) from answers
@@ -132,7 +132,7 @@
         <div><span class="st">Restraint in tuning</span><span class="sx">A threshold that visibly underperformed was left alone instead of being re-tuned against eight unlabelled examples. This happened twice, and the plan file records the decision both times.</span></div>
         <div><span class="st">Negative controls</span><span class="sx">Two questions with no answer anywhere in the corpus, used to check that the system does not invent matches. The semantic arm scored a nonsense query about sourdough hydration <b>95%</b> as highly as an answerable question. Its confidence score carries almost no information.</span></div>
         <div><span class="st">Pooled, blind judging</span><span class="sx">Candidates were pooled from five retrieval configurations and shuffled, with no indication of which system found them. This stops the incumbent from winning by being graded only on its own results.</span></div>
-        <div><span class="st">Judge reliability</span><span class="sx">Labels are stamped with who produced them, and a separate tool samples them to compute inter-rater agreement (how often two judges give the same label) before they are trusted.</span></div>
+        <div><span class="st">Judge reliability</span><span class="sx">Each label records who produced it. All 194 labels so far came from Claude, and the agreement check against my own labels has not been run yet. A November 2026 re-test, which I judge myself, will replace them.</span></div>
         <div><span class="st">Answers in files the index already returns</span><span class="sx">For several failed questions the answer was in a file the index returns for other questions. The corpus covered them, and the system failed to connect a paraphrased need to a document it already holds.</span></div>
       </div>
       <div class="tag-row" style="margin-top:20px">
