@@ -49,18 +49,17 @@
       <div class="hero-copy">
         <h1>About</h1>
         <p class="lede">
-          I build infrastructure for AI agents and the data work that runs on it. I came to this
-          from operations work, not research. I live in Central Lake, Michigan.
+          I build infrastructure for AI agents and the data work that runs on it. I came to this work from operations. I live in Central Lake, Michigan.
         </p>
       </div>
       <aside class="note">
-        <p>In short: I work on systems where it is unclear who owns a task, what state it is in,
+        <p>I work on systems where it is unclear who owns a task, what state it is in,
           or whether it was finished, and I make those things clear.</p>
       </aside>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The rule I build to</h2></div></div>
+      <div class="section-head"><div><h2>My design rule</h2></div></div>
       <div class="prose">
         <p>
           A system should decline to answer rather than guess. Following that rule has a cost each
@@ -68,21 +67,20 @@
         </p>
       </div>
       <div class="subs">
-        <div><span class="st">A design I gave up</span><span class="sx">A <a href="/portfolio/lodestone/">retrieval engine</a> I built beat keyword search on a small set of documents and lost to it on the full set. The write-up starts with the loss.</span></div>
-        <div><span class="st">A result I cut</span><span class="sx">A <a href="/portfolio/frostline/">modelling target</a> scored 38.8% better than its baseline. Measured against the right baseline, it turned out to repeat a variable the model already had, so I dropped it.</span></div>
-        <div><span class="st">Speed I gave up</span><span class="sx">The <a href="/portfolio/terse/">compression proxy</a> in front of my agent&rsquo;s tool servers sends the original, uncompressed output whenever it cannot prove the compressed version decodes back exactly. That is slower, but the agent never receives a damaged copy.</span></div>
-        <div><span class="st">Convenience I gave up</span><span class="sx">My knowledge base accepts proposals from agents and reviews each one before saving it. Saving everything unreviewed was the cheaper option. I rejected it because, at volume, the important entries become hard to find.</span></div>
+        <div><span class="st">Lodestone, a search engine</span><span class="sx">A <a href="/portfolio/lodestone/">retrieval engine</a> I built beat keyword search on 1,271 documents and lost to it on 57,500. The write-up starts with the loss.</span></div>
+        <div><span class="st">Frostline, a well-depth model</span><span class="sx">A <a href="/portfolio/frostline/">modelling target</a> scored 38.8% better than its baseline. Measured against the right baseline, it turned out to repeat a variable the model already had, so I dropped it.</span></div>
+        <div><span class="st">terse, a compression proxy</span><span class="sx">The <a href="/portfolio/terse/">compression proxy</a> in front of my agent&rsquo;s tool servers sends the original, uncompressed output whenever it cannot prove the compressed version decodes back exactly. That is slower, but the agent never receives a damaged copy.</span></div>
+        <div><span class="st">kb, an agent knowledge base</span><span class="sx">My knowledge base accepts proposals from agents and reviews each one before saving it. Saving everything unreviewed was the cheaper option. I rejected it because past about 2,000 entries the important ones became hard to find.</span></div>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>How I got here</h2></div></div>
+      <div class="section-head"><div><h2>Background</h2></div></div>
       <div class="prose">
         <p>
           My professional work has been in operational systems: tracking the state of workflows,
           handling events, automating CRM processes, and building the reports that show afterwards
-          what happened. The parts I spend most time on are not the interface. They are the places
-          where someone needs to know what happened, what happens next, and whether the record can be trusted.
+          what happened. I spend most of my time on the places where someone needs to know what happened, what happens next, and whether the record can be trusted.
         </p>
         <p>
           AI agents have the same problem. An agent acts on information it cannot check directly,
@@ -91,7 +89,7 @@
         </p>
         <p>
           I run these systems on my own <a href="/homelab/">homelab</a>: ten machines handling routing,
-          monitoring and recovery. When I describe how something behaves when it fails, I have seen it fail there.
+          monitoring and recovery. I test how these systems fail on that hardware.
         </p>
       </div>
     </section>
