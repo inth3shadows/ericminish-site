@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Now | Eric Minish</title>
   <meta name="description" content="What Eric Minish is focused on right now.">
-  <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
+  <link rel="stylesheet" href="/assets/site.css?v=b2e34a03">
   <link rel="canonical" href="https://www.ericminish.com/status/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="Now — Eric Minish">
-  <meta property="og:description" content="What has my attention right now, and roughly why.">
+  <meta property="og:description" content="What I am working on right now.">
   <meta property="og:url" content="https://www.ericminish.com/status/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Now — Eric Minish">
-  <meta name="twitter:description" content="What has my attention right now, and roughly why.">
+  <meta name="twitter:description" content="What I am working on right now.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -49,7 +49,7 @@
       <div class="hero-copy">
         <h1>Current work</h1>
         <p class="lede">
-          What has my attention right now, and roughly why.
+          What I am working on right now.
         </p>
       </div>
 
@@ -66,31 +66,31 @@
       <div class="grid-2">
         <article class="timeline">
           <h3>Day job</h3>
-          <p>Integration and data-pipeline engineering: CRM workflow automation, ingestion services and scheduled jobs on managed cloud infrastructure, and warehouse-backed reporting behind access control. One of those services is LLM-assisted — it scores call transcripts against a rubric, deterministic checks first, human review after, with the model never given the last word. Categorical on purpose: the interesting part is the shape of the work, not whose it is.</p>
+          <p>Integration and data-pipeline engineering: CRM workflow automation, ingestion services and scheduled jobs on managed cloud infrastructure, and warehouse-backed reporting behind access control. One of those services uses a language model to score call transcripts against a rubric. Fixed rule-based checks run first, and a person reviews the result afterward, so the model does not make the final decision.</p>
         </article>
         <article class="timeline">
           <h3><a href="/portfolio/terse/">terse</a></h3>
-          <p>A lossless compression proxy for MCP tool output — 59 percent fewer tokens, with the original forwarded untouched whenever a perfect round trip cannot be proven. Recent work has been on the security edges: credentials must not survive a cross-origin redirect, and a config generator that measures performance is never allowed to overwrite a safety setting. <a href="/portfolio/terse/">Case study</a>.</p>
+          <p>A compression proxy for MCP (Model Context Protocol, the standard that connects tools to AI agents) tool output. It cuts tokens by 59 percent without losing information, and it forwards the original output unchanged whenever it cannot prove the compressed version restores exactly. Recent work has been on security: credentials must not follow a redirect to another site, and a config generator that tunes for speed is not allowed to overwrite a safety setting. <a href="/portfolio/terse/">Case study</a>.</p>
         </article>
         <article class="timeline">
           <h3><a href="/portfolio/testgraph/">testgraph</a></h3>
-          <p>Given a diff, it names the user journeys the change could have broken, walking a static call graph rather than a coverage report — so it answers on a repository that has never run its tests. Just went public and onto PyPI. The current work is the honest half: joining what it selected against what running the journey then found, so the miss rate becomes a number instead of an assertion. <a href="/portfolio/testgraph/">Case study</a>.</p>
+          <p>Given a code change, it names the user journeys the change could have broken. It traces a static call graph (a map of which code calls which) instead of reading a test coverage report, so it works on a repository that has never run its tests. It was recently made public and published on PyPI. Current work compares the journeys it selected against what running them found, so its miss rate can be reported as a number. <a href="/portfolio/testgraph/">Case study</a>.</p>
         </article>
         <article class="timeline">
           <h3><a href="/portfolio/harness/">harness</a></h3>
-          <p>An agent harness whose verdict on a change is four deterministic checks with no model anywhere in the judge, and no auto-commit at the end of them. The loop that drives it still runs in someone else&rsquo;s runtime; moving it in — with a write-capable tool set behind an isolation contract — is what is being built. <a href="/portfolio/harness/">Case study</a>.</p>
+          <p>An agent harness that judges a code change with four fixed checks. No language model takes part in the judgment, and nothing is committed automatically afterward. The loop that drives it still runs inside someone else&rsquo;s runtime. The current build moves that loop in, with tools that can write files running under defined isolation rules. <a href="/portfolio/harness/">Case study</a>.</p>
         </article>
         <article class="timeline">
           <h3>Knowledge graph</h3>
-          <p>A personal knowledge base on Postgres that agents write into by proposal only, with every proposal reviewed before it lands. This quarter it moved off local embeddings onto a sidecar — production image down from 2.14 GB to 442 MB — and shed half its tool surface, because response bytes turned out to be the real constraint, not tool count.</p>
+          <p>A personal knowledge base on Postgres that agents write into by proposal only, with every proposal reviewed before it lands. This quarter it moved its embeddings (the numeric text representations used for search) into a separate sidecar service, which cut the production image from 2.14 GB to 442 MB. It also dropped half its tools, because the size of each response mattered more than the number of tools.</p>
         </article>
         <article class="timeline">
           <h3><a href="/portfolio/frostline/">Frostline</a></h3>
-          <p>Spatial modeling over fifty thousand Michigan well records, and the contractor-intake business built around it. Depth is predictable from location; yield is not. Both of those are useful to know, and the second one took longer to accept.</p>
+          <p>Spatial modeling over fifty thousand Michigan well records, and the contractor-intake business built around it. Well depth can be predicted from location. Well yield (how much water a well produces) cannot.</p>
         </article>
         <article class="timeline">
           <h3><a href="/homelab/">Homelab</a></h3>
-          <p>Ten machines under Proxmox carrying real routing, monitoring, and backup — plus the recurring lesson that ordering and detection are not controls. A VPN-bound workload gets pinned to the tunnel interface by name, because restarting things in the right order only works until it doesn't.</p>
+          <p>Ten machines under Proxmox (a server virtualization platform) running live routing, monitoring and backups. A workload that must go out through a VPN is bound to the VPN interface by name, because starting services in the right order does not guarantee it.</p>
         </article>
       </div>
     </section>

@@ -104,6 +104,7 @@ class P(HTMLParser):
     def __init__(s): super().__init__(); s.st=[]; s.err=[]
     def handle_starttag(s,t,a):
         if t not in VOID: s.st.append(t)
+    def handle_startendtag(s,t,a): pass  # <rect/> etc. open and close in one tag
     def handle_endtag(s,t):
         if s.st and s.st[-1]==t: s.st.pop()
         else: s.err.append(t)
