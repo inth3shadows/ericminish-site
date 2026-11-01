@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Homelab | Eric Minish</title>
   <meta name="description" content="Homelab notes from Eric Minish covering public-site routing, monitoring, and recovery habits behind live work.">
-  <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
+  <link rel="stylesheet" href="/assets/site.css?v=b2e34a03">
   <link rel="canonical" href="https://www.ericminish.com/homelab/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="Homelab — Eric Minish">
-  <meta property="og:description" content="Ten machines carrying live routing, monitoring and backups — and what their quiet failures taught me.">
+  <meta property="og:description" content="Ten machines running live routing, monitoring and backups, and what their silent failures taught me.">
   <meta property="og:url" content="https://www.ericminish.com/homelab/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Homelab — Eric Minish">
-  <meta name="twitter:description" content="Ten machines carrying live routing, monitoring and backups — and what their quiet failures taught me.">
+  <meta name="twitter:description" content="Ten machines running live routing, monitoring and backups, and what their silent failures taught me.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -49,9 +49,8 @@
       <div class="hero-copy">
         <h1>Homelab</h1>
         <p class="lede">
-          Ten machines carrying live work — sites, routing, monitoring, storage, and the boring
-          recovery paths that keep those surfaces usable. It is where I find out whether something
-          I believe about a system is actually true.
+          Ten machines that run live work: websites, routing, monitoring, storage, and the backup
+          and recovery setup that keeps them usable.
         </p>
       </div>
       <aside class="note">
@@ -130,7 +129,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Lenovo ThinkCentre M710q</p>
-            <p>Runs the origin-health sentinel — the watchdog that checks services from behind the edge rather than in front of it.</p>
+            <p>Runs the origin-health sentinel, a watchdog that checks services from behind the public edge (the Cloudflare layer visitors reach first).</p>
           </div>
         </details>
         <details class="node">
@@ -142,7 +141,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Lenovo ThinkCentre M710q</p>
-            <p>Reserve capacity. Deliberately unassigned so there is somewhere to move a workload in a hurry.</p>
+            <p>Reserve capacity. It is left unassigned so there is somewhere to move a workload in a hurry.</p>
           </div>
         </details>
         <details class="node">
@@ -178,7 +177,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Dell OptiPlex</p>
-            <p>Staging and odd jobs — currently a time-tracking app that never found a permanent home.</p>
+            <p>Staging and odd jobs. It currently runs a time-tracking app that has no permanent home.</p>
           </div>
         </details>
         <details class="node">
@@ -195,9 +194,8 @@
         </details>
       </div>
       <p class="fine" style="margin-top:12px">
-        Roles move around; this is written by hand and checked when the page is edited. Uptime Kuma
-        holds the live view. A table that admits it is hand-maintained beats a dashboard that looks
-        live and is not.
+        Roles move around. This table is written by hand and checked when the page is edited.
+        Uptime Kuma, the monitoring tool, holds the live view.
       </p>
     </section>
 
@@ -223,20 +221,19 @@
       <div class="section-head"><div><h2>What it has taught me</h2></div></div>
       <div class="prose">
         <p>
-          The useful part is not the node count. It is clear separation between machines, services
-          and public surfaces, so a change is easy to reason about and a failure is easy to isolate.
+          Machines, services and public surfaces are kept separate. A change is then easy to reason
+          about, and a failure stays contained to one place.
         </p>
         <p>
-          It is also where the quiet failures happen. One service spent weeks returning nothing
-          because its configuration pinned an address the machine no longer held — everything was up,
-          nothing errored, and the results were simply empty. The fix was to stop referring to that
-          machine by number at all.
+          Some failures give no error. One service spent weeks returning nothing because its
+          configuration pointed at an IP address the machine no longer held. Everything was up and
+          nothing errored, but the results were empty. The fix was to stop referring to that
+          machine by IP address.
         </p>
         <p>
-          Another taught the same lesson from the other direction: a workload that has to leave the
-          house through a specific interface must be bound to that interface by name. Restarting
-          things in the right order is a habit, and a habit works right up until the moment it does
-          not.
+          Another failure showed a related problem. A workload that has to reach the internet
+          through a specific network interface needs to be bound to that interface by name.
+          Restarting things in the right order is not enough to guarantee that.
         </p>
       </div>
     </section>

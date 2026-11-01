@@ -1032,14 +1032,7 @@ h3 {
   font-weight: 600;
 }
 
-.hero-home .lede-a,
-.hero-home .lede-b { display: block; text-wrap: balance; }
-
-.hero-home .lede-b {
-  color: var(--muted);
-  font-weight: 400;
-  margin-top: 4px;
-}
+.hero-home .lede { text-wrap: balance; }
 
 .hero-meta {
   margin: 24px 0 0;

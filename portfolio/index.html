@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Portfolio | Eric Minish</title>
   <meta name="description" content="Selected work by Eric Minish across public sites, workflow systems, and developer tooling.">
-  <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
+  <link rel="stylesheet" href="/assets/site.css?v=b2e34a03">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
@@ -49,8 +49,8 @@
       <div class="hero-copy">
         <h1>Portfolio</h1>
         <p class="lede">
-          Infrastructure I built and run. Each entry is written up with enough detail that a
-          sceptical reader can check it, and the ones that failed are written up too.
+          Infrastructure I built and run. Each entry has a write-up with enough detail to check
+          the claims, including the projects that failed.
         </p>
       </div>
     </section>
@@ -68,7 +68,7 @@
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>A proxy in front of MCP tool servers that losslessly compresses what they return. If a payload cannot be proven to reconstruct exactly, the original is forwarded untouched — lossless is the default, not a mode. Public, MIT, with a benchmark harness in the repo so you can measure the saving on your own tools.</p>
+            <p>A proxy in front of MCP tool servers that losslessly compresses what they return. If it cannot prove a compressed payload reconstructs exactly, it forwards the original unchanged, so it is always lossless. MCP is the Model Context Protocol, the standard that connects tools to AI agents. The project is public under the MIT license, and the repository includes a benchmark harness so you can measure the saving on your own tools.</p>
             <div class="tree">
               <div class="tree-head"><span>terse</span><span>9bd5ad3 · 161 files</span></div>
               <pre><code>src/terse/            the codec, proxy and policy
@@ -77,7 +77,7 @@ tests/                73 test files
 corpus/               pinned benchmark payloads
 BENCHMARKS.md         every figure, dated
 VERIFY.md             how to check the claims</code></pre>
-              <p class="tree-note">Generated from the repository, not drawn. <a href="https://github.com/inth3shadows/terse">Browse it</a>.</p>
+              <p class="tree-note">Generated automatically from the repository. <a href="https://github.com/inth3shadows/terse">Browse it</a>.</p>
             </div>
           </div>
         </details>
@@ -88,7 +88,7 @@ VERIFY.md             how to check the claims</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Stops an agent from writing a call to a function your repo does not have — before the write lands, not after the build fails. It runs as a hook inside the agent loop, checking every edit against the symbols the code actually declares: no model, no network, no build, and a clean check costs no context at all. How often it is wrong is measured against dated git history rather than against a user clicking approve: 15.3% false positive, 33.7% premature, 51.0% a real unbacked reference.</p>
+            <p>Stops an agent from writing a call to a function your repo does not have, before the edit is saved. It runs as a hook (a step the agent loop triggers automatically) and checks every edit against the functions and other symbols the code declares. It uses no language model, no network and no build, and a passing check adds nothing to the agent&rsquo;s context. Its accuracy is measured against dated git history. Of the cases it flagged, 15.3% were false positives, 33.7% were premature (the code was added later), and 51.0% were references to something that did not exist.</p>
             <div class="tree">
               <div class="tree-head"><span>RunEcho</span><span>b117ffc · 332 files</span></div>
               <pre><code>cmd/                  runecho-guard, -ir, -mcp
@@ -97,18 +97,18 @@ bench/                TOKEN-COST.md, FPAUDIT.md, FINDINGS.md
 plugins/              the agent-side hook packaging
 scripts/              enrolment and release tooling
 docs/                 architecture and the scope statement</code></pre>
-              <p class="tree-note">Generated from the repository, not drawn. <a href="https://github.com/inth3shadows/runecho">Browse it</a>.</p>
+              <p class="tree-note">Generated automatically from the repository. <a href="https://github.com/inth3shadows/runecho">Browse it</a>.</p>
             </div>
           </div>
         </details>
         <details class="node">
           <summary class="node-head">
             <span class="node-name"><a href="/portfolio/testgraph/">testgraph</a></span>
-            <span class="node-spec">journeys, not tests</span>
+            <span class="node-spec">names journeys at risk</span>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Given a diff, it answers which user journeys the change could have broken, and in what order to test them. Every comparable tool answers in tests and needs coverage from a previous run; testgraph walks a static call graph backwards from the changed lines, so it answers on a repo that has never run its suite. Recall-first on purpose: it would rather flag a journey that turned out fine than quietly drop one that broke.</p>
+            <p>Given a diff, it answers which user journeys the change could have broken, and in what order to test them. Comparable tools answer with a list of tests and need coverage data from a previous run. testgraph walks a static call graph (a map of which code calls which) backwards from the changed lines, so it works on a repo that has never run its test suite. It is tuned to catch every journey that broke, so it will sometimes flag one that turned out fine.</p>
             <div class="tree">
               <div class="tree-head"><span>testgraph</span><span>a4baa9a · 68 files</span></div>
               <pre><code>testgraph/            graph traversal, integrity guard, registry, CLI
@@ -117,7 +117,7 @@ hooks/                the pre-push hook that runs it on every push
 journeys/             three hand-authored journey registries
 maps/                 generated symbol to journey maps
 skills/               the agent skill that reads a map pre-commit</code></pre>
-              <p class="tree-note">Generated from the repository, not drawn. <a href="https://github.com/inth3shadows/testgraph">Browse it</a>.</p>
+              <p class="tree-note">Generated automatically from the repository. <a href="https://github.com/inth3shadows/testgraph">Browse it</a>.</p>
             </div>
           </div>
         </details>
@@ -128,7 +128,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A one-man agent harness in two halves: a deterministic verdict on a code change, then the runtime that drives its own loop. The gate runs four stateless checks — the test suite, a symbol contract, staged secrets, reachable vulnerabilities — and a pass leaves the branch for a human to commit. There is no auto-commit, and the language model is never the judge.</p>
+            <p>A single-developer agent harness in two parts: a fixed-rule verdict on a code change, and the runtime that drives its own loop. The gate runs four stateless checks: the test suite, a symbol contract, staged secrets, and reachable vulnerabilities. A pass leaves the branch for a human to commit. Nothing is committed automatically, and no language model makes the judgment.</p>
           </div>
         </details>
         </div>
@@ -143,7 +143,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A personal benchmark that mines real bug-fix commits out of my own repositories and replays them against cheap models, several times each, so the gap between two models can be called noise or called real. It reports cost per solved task instead of a leaderboard score — and it publishes its own corrections: four figures it had already stated turned out to be a defective task dragging three capability tiers down at once.</p>
+            <p>A personal benchmark that takes bug-fix commits from my own repositories and replays them against cheap models, several times each, so a gap between two models can be judged as noise or as a genuine difference. Its headline figure is cost per solved task. It also publishes its own corrections: four figures it had stated earlier were pulled down by one defective task that affected three capability tiers.</p>
           </div>
         </details>
         <details class="node">
@@ -153,17 +153,17 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>Scores each coding-agent session on two things, kept separate: what it cost, from the transcript, and how much of its code was still in the repository later, from git. Every average comes with a 95% interval, and models are compared only on similar work, so a hard repository does not make a model look weak.</p>
+            <p>Scores each coding-agent session on two things, kept separate: what it cost, from the transcript, and how much of its code was still in the repository later, from git. Every average comes with a 95% confidence interval, and models are compared only on similar work, so a hard repository does not make a model look weak.</p>
           </div>
         </details>
         <details class="node">
           <summary class="node-head">
             <span class="node-name"><a href="/portfolio/lodestone/">Lodestone</a></span>
-            <span class="node-spec">5 of 10 at real scale</span>
+            <span class="node-spec">5 of 10 at full scale</span>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Local retrieval over years of my own notes. Semantic search beat keyword search at 1,271 documents and lost to it at 57,500; the write-up leads with that. Includes a pre-registered kill gate, negative controls, and pooled blind judging.</p>
+            <p>Local retrieval over years of my own notes. Semantic search beat keyword search at 1,271 documents and lost to it at 57,500, and the write-up starts with that result. The experiment set a kill gate in advance (a stated condition for stopping the project), and it also used negative controls (cases where the right answer is known to be nothing) and blind judging of pooled results.</p>
           </div>
         </details>
         </div>
@@ -178,7 +178,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Spatial models over the public Michigan well record. Depth is predictable from location — Moran&rsquo;s I 0.393 — and yield is not, at 0.089. A promising target was cut once it proved to be ~96% a restatement of depth.</p>
+            <p>Spatial models over the public Michigan well record. Depth is predictable from location, with a Moran&rsquo;s I of 0.393. Moran&rsquo;s I measures how strongly nearby wells resemble each other, from 0 (no pattern) to 1 (strong). Yield scores 0.089. One promising target was dropped after it turned out to be about 96% a restatement of depth.</p>
             <div class="tree">
               <div class="tree-head"><span>frostline</span><span>8ef8a4d · 145 files</span></div>
               <pre><code>template/scripts/     the Track B pipeline — export, backtest,
@@ -188,7 +188,7 @@ plans/                the planning record, including the
                       negative results that closed a line of work
 docs/                 architecture
 site/                 the public build</code></pre>
-              <p class="tree-note">Generated from the repository. Two directories are withheld: the lead and outreach trees are live business data, not engineering.</p>
+              <p class="tree-note">Generated from the repository. Two directories are withheld: the lead and outreach trees hold live business data.</p>
             </div>
           </div>
         </details>
@@ -199,7 +199,7 @@ site/                 the public build</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Origin-health detection for tunnelled services — the failure a healthy edge hides. It shipped without write access and earned remediation only once its classifications held up in the field.</p>
+            <p>Origin-health detection for services reached through a tunnel (a Cloudflare connection that exposes a machine without opening ports). It catches the failure where the public edge looks healthy but the service behind it is down. It first shipped without write access and was given the ability to fix problems once its classifications held up in the field.</p>
           </div>
         </details>
         <details class="node">
@@ -209,7 +209,7 @@ site/                 the public build</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Routes one coding agent across several model providers by task, with secrets kept out of the environment and cost tracked against a budget rather than estimated after the fact.</p>
+            <p>Routes one coding agent across several model providers by task, with secrets kept out of the environment and cost tracked against a budget as it accrues.</p>
           </div>
         </details>
         </div>
@@ -236,7 +236,7 @@ site/                 the public build</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>A contractor-facing reference build, end to end. It is labelled a sample on the page itself — a demo that pretends to be a client is a lie with a deploy pipeline.</p>
+            <p>A contractor-facing reference build, end to end. The page itself is labelled a sample.</p>
           </div>
         </details>
         <details class="node">
@@ -246,7 +246,7 @@ site/                 the public build</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>The business surface for managed intake work, deliberately kept off this site. Separate identity, separate stack, separate promises.</p>
+            <p>The business site for managed intake work. It is hosted separately from this site, with its own branding and technology stack.</p>
           </div>
         </details>
         <details class="node">
@@ -256,7 +256,7 @@ site/                 the public build</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>The Campaign Table — a tabletop RPG workspace built on extracted rulebook PDFs. FastAPI and a React SPA in one container on its own LXC, deployed by CI with a canary step and a rollback path, and two staging containers behind it so changes land somewhere else first.</p>
+            <p>The Campaign Table — a tabletop RPG workspace built on extracted rulebook PDFs. FastAPI and a React single-page app in one container on its own LXC (a lightweight Linux container), deployed by CI with a canary step (a trial release to check health first) and a rollback path, and two staging containers behind it so changes land somewhere else first.</p>
           </div>
         </details>
       </div>
@@ -284,7 +284,7 @@ site/                 the public build</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A weekly market-intelligence pipeline. The model may never author a source — every citation is backfilled from the collector that actually fetched it, and a test fails the build if a client name is ever hard-coded into the repository.</p>
+            <p>A weekly market-intelligence pipeline. The model may not write a source. Every citation is filled in from the collector that fetched it, and a test fails the build if a client name is hard-coded into the repository.</p>
           </div>
         </details>
         <details class="node">
@@ -294,7 +294,7 @@ site/                 the public build</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>Projection and auction-price engine for fantasy football. Players with no honest baseline to compare against return null rather than a fabricated number that looks authoritative.</p>
+            <p>Projection and auction-price engine for fantasy football. Players with no valid baseline to compare against return null, so the engine does not output an invented number.</p>
           </div>
         </details>
         <details class="node">
@@ -304,7 +304,7 @@ site/                 the public build</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>Links winery news to a known entity list. A deterministic matcher proposes candidates and the language model may only confirm or reject them — it is never allowed to invent one.</p>
+            <p>Links winery news to a known entity list. A rule-based matcher proposes candidates, and the language model can only confirm or reject them. It cannot add one.</p>
           </div>
         </details>
         <details class="node">
@@ -314,7 +314,7 @@ site/                 the public build</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A small scheduling app — FastAPI, a Svelte front end and Postgres — running in its own container behind a tunnel. Built to be used rather than demonstrated.</p>
+            <p>A small scheduling app — FastAPI, a Svelte front end and Postgres — running in its own container behind a tunnel. I use it myself.</p>
           </div>
         </details>
         <details class="node">
@@ -324,7 +324,7 @@ site/                 the public build</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>Internal operations work turning messy handoffs into explicit states and next actions. Most automation failures I have cleaned up were not automation failures — they were ambiguous state with a scheduler on top.</p>
+            <p>Internal operations work turning messy handoffs into explicit states and next actions. Most automation failures I have cleaned up came from ambiguous state, such as unclear status or ownership, with a scheduler running on top.</p>
           </div>
         </details>
         </div>
@@ -339,7 +339,7 @@ site/                 the public build</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Ten machines under Proxmox carrying real routing, monitoring and backups — where a claim about how something fails is something I have watched rather than read.</p>
+            <p>Ten machines under Proxmox (a server virtualization platform) running live routing, monitoring and backups. Failure behavior described elsewhere on this site comes from watching it happen here.</p>
           </div>
         </details>
         <details class="node">
@@ -349,7 +349,7 @@ site/                 the public build</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A persistent multiplexed shell published through an identity-proxied tunnel. Same live session from any device, nothing listening on the public internet, and no session survives without single sign-on. It is also why the agent work on this page is routine rather than theoretical — a long job keeps running when the laptop closes, and I can look in on it from anywhere without leaving anything listening.</p>
+            <p>A persistent multiplexed shell published through an identity-proxied tunnel. It gives the same live session from any device, nothing listens on the public internet, and no session starts without single sign-on. A long agent job keeps running when the laptop closes, and I can check on it from anywhere.</p>
           </div>
         </details>
         </div>
@@ -361,13 +361,13 @@ site/                 the public build</code></pre>
       <div class="prose">
         <p>
           My whole working environment is a browser tab. A terminal multiplexer runs on a machine at
-          home, fronted by a small web terminal, published through an identity-proxied tunnel — no
+          home, fronted by a small web terminal, published through an identity-proxied tunnel, so no
           port is open to the internet and no session starts without single sign-on. Opening the same
           address from a phone, a laptop or a borrowed machine attaches to the <em>same</em> live
-          session, so work does not have a device attached to it.
+          session, so work carries over between devices.
         </p>
         <p>
-          Below is a model of that console on an ordinary day — a rail of agent sessions beside
+          Below is a model of that console on an ordinary day, with a column of agent sessions beside
           the one that is open. Hover it, or give it focus, to watch it fill in.
         </p>
       </div>
@@ -450,7 +450,7 @@ site/                 the public build</code></pre>
   </div>
 </div>
       <p class="fine" style="margin-top:12px">
-        A model of the console, not a capture of a real session. The sessions, their output and the usage figures are illustrative; no host name, address, path or session content from the actual environment appears here. The surface is worth describing, its location is not.
+        This is a model of the console, built from illustrative sessions, output and usage figures. No host name, address, path or session content from the actual environment appears here.
       </p>
     </section>
 
