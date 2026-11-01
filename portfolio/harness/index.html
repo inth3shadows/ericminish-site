@@ -48,11 +48,11 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 09</b><span>Agent infrastructure · verification</span><span>2026</span></div>
-        <h1>The model writes the code. Something else has to say whether it worked.</h1>
+        <h1>An agent harness whose verdict on a code change comes from four checks and no language model</h1>
         <p class="lede">
-          A solo harness cannot beat a lab on agent count or model quality. What it can have is a
-          real verification oracle for the repositories it actually runs against — so the judge here
-          is mechanical, deterministic, and has no language model in it anywhere.
+          A language model writes the code, and a separate oracle (a program that reports pass or
+          fail) decides whether the change is acceptable. That oracle is mechanical and
+          deterministic, and no language model is part of it.
         </p>
       </div>
       <aside class="note">
@@ -71,18 +71,19 @@
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The invariant everything is arranged around</h2></div></div>
+      <div class="section-head"><div><h2>How the verdict is decided</h2></div></div>
       <div class="prose">
         <p>
-          An agent that writes code is model-driven by definition. The interesting question is what
-          decides whether what it wrote is acceptable — and the common answer, a second model
-          reviewing the first, inherits every failure mode of the first. It is confident on a bad
-          diff, it is not reproducible, and it cannot be re-run to the same answer tomorrow.
+          An agent that writes code is driven by a language model. Something else has to decide
+          whether the change is acceptable. A common choice is a second model reviewing the first,
+          but that reviewer can be confident about a bad diff, and it cannot be re-run to the same
+          answer tomorrow.
         </p>
         <p>
-          So: <strong>the language model is never the judge.</strong> The verdict is four stateless
-          checks, each one a program with an exit code. Run it twice on the same tree and you get the
-          same answer, on any machine, with no network and nothing to re-roll.
+          So <strong>the language model has no part in the verdict.</strong> The verdict is four
+          stateless checks (each keeps no memory between runs), and each one is a program that
+          reports an exit code. Run it twice on the same tree and it gives the same answer, on any
+          machine, with no network.
         </p>
       </div>
       <div class="table-scroll">
@@ -91,62 +92,58 @@
           <tr><td><code>tests</code></td><td>the project&rsquo;s own suite does not pass</td></tr>
           <tr><td><code>ir_contract</code></td><td>a change leaves its declared scope, or removes a symbol without opting in</td></tr>
           <tr><td><code>secrets</code></td><td>a credential is found in the staged change</td></tr>
-          <tr><td><code>cve</code></td><td>a <em>reachable</em> vulnerability is found — not merely a listed one</td></tr>
+          <tr><td><code>cve</code></td><td>a <em>reachable</em> vulnerability is found (one the project&rsquo;s code can trigger, as opposed to one that is only listed)</td></tr>
         </table>
       </div>
       <div class="prose">
         <p>
-          The symbol contract is the interesting one. It is the same deterministic index that powers
-          <a href="/portfolio/runecho/">RunEcho</a>: a change declares the scope it intends to touch,
-          and the gate compares the actual structural diff against that declaration. An agent that
-          quietly deletes a function on its way past is caught by a hash comparison, not by someone
-          noticing in review.
+          The symbol contract check uses the same deterministic index that powers
+          <a href="/portfolio/runecho/">RunEcho</a>. A change declares the scope it intends to touch,
+          and the gate compares the structural diff against that declaration. If an agent deletes a
+          function while working on something else, a hash comparison catches it, and nobody has to
+          notice it in review.
         </p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>A pass is not a merge</h2></div></div>
+      <div class="section-head"><div><h2>Passing the checks does not merge the change</h2></div></div>
       <div class="prose">
         <p>
-          When all four checks pass, the harness leaves the branch sitting there for a human to
-          commit. <strong>There is no auto-commit.</strong> That is a deliberate guardrail rather
-          than an unfinished feature, and it is the boundary that production agent tooling has
-          converged on after the fully-autonomous-to-merge pitch was walked back — Devin repositioned
-          from &ldquo;builds anything on its own&rdquo; to &ldquo;human on the loop required&rdquo;
-          once real unattended completion rates landed at 14–15%.
+          When all four checks pass, the harness leaves the branch for a human to commit.
+          <strong>There is no auto-commit.</strong> This is a deliberate guardrail.
         </p>
         <p>
-          &ldquo;Autonomous&rdquo; here means the plan, produce and verify cycle runs unattended. It
-          does not mean nobody sees the result. The gate&rsquo;s value is highest exactly when nobody
-          is watching each step — in an interactive tool the human is already judging every diff,
-          which is precisely where a mechanical oracle earns least.
+          &ldquo;Autonomous&rdquo; here means the plan, produce and verify cycle runs unattended,
+          and a person still sees the result. The gate matters most when nobody is watching each
+          step. In an interactive tool the human already judges every diff, so a mechanical oracle
+          adds the least there.
         </p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Roles, not models</h2></div></div>
+      <div class="section-head"><div><h2>Roles and the model gateway</h2></div></div>
       <div class="grid-2">
         <article class="panel">
           <div class="prose">
             <p>
               The second half is the runtime. A <em>role</em> is a job — consult, scout, builder,
               reviewer, scribe — and a gateway resolves each role to whatever model currently does
-              that job well. Swapping a model is a gateway configuration change; it is never a code
+              that job well. Swapping a model is a gateway configuration change and needs no code
               change here.
             </p>
             <p>
               Roles carry tools, and the runtime runs the full request, tool call, result, request
-              loop against them. The two tool sets are a code-intelligence set and a retrieval set,
-              and <strong>every tool in them is read-only</strong>. It can find, trace, fetch and
-              reason. It cannot yet edit a file or run a command — that gap is the honest distance
-              between what exists and a self-driving loop.
+              loop against them. There are two tool sets, a code-intelligence set and a retrieval set,
+              and <strong>every tool in them is read-only</strong>. They can find, trace, fetch and
+              reason. They cannot yet edit a file or run a command, and that is the remaining
+              distance to a self-driving loop.
             </p>
           </div>
         </article>
         <article class="code-window">
-          <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>the four checks &#8212; a model, not a capture</div>
+          <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>the four checks, illustrated</div>
           <pre><code>tests        the suite passes
 ir_contract  scope held, no silent symbol removal
 secrets      nothing credential-shaped is staged
@@ -158,48 +155,48 @@ all four     &#8594;  the branch waits for a human</code></pre>
       </div>
       <div class="prose">
         <p>
-          The code-intelligence set picks its index by the question being asked: one index answers
-          <em>where a symbol is</em>, live and never stale; another answers <em>how things
-          connect</em>, stored and able to lag uncommitted edits. A structural answer costs a few
+          The code-intelligence set picks its index by the question being asked. One index answers
+          <em>where a symbol is</em>, live and always current. Another answers <em>how things
+          connect</em>, stored and able to lag behind uncommitted edits. A structural answer costs a few
           hundred tokens where the file it was derived from costs thousands.
         </p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Where the loop actually lives</h2></div></div>
+      <div class="section-head"><div><h2>What runs the plan, produce and verify loop today</h2></div></div>
       <div class="prose">
         <p>
           The orchestration that ties plan, produce and verify together does not yet run inside this
-          project. It runs in a foreign agent runtime, with each phase as an agent call, so today the
-          harness supplies the judge and the tools while somebody else supplies the loop.
+          project. It runs in a separate agent runtime, with each phase as an agent call. Today the
+          harness supplies the judge and the tools, and that runtime supplies the loop.
         </p>
         <p>
-          The sharpest edge of that is embarrassing enough to be worth naming: even the harness&rsquo;s
-          own event emissions are currently written by asking a model to run a shell command. That
-          violates the project&rsquo;s own invariant on the write side, and it is the first thing
-          being fixed — before the event bus grows a read side, and well before any write-capable
-          tool set exists.
+          One known gap: the harness&rsquo;s own event records are currently written by asking a
+          model to run a shell command. That conflicts with the project&rsquo;s rule of keeping
+          models out of the mechanical parts, on the write side. It is the first thing being fixed,
+          before the event bus gets a read side and well before any write-capable tool set exists.
         </p>
       </div>
       <p class="fine">
-        Runtime state lives outside the repository entirely; code lives here, state never does.
-        Every step of a run is appended to a local event log as newline-delimited JSON.
+        Runtime state is kept outside the repository: code lives here and state does not.
+        Every step of a run is appended to a local event log as newline-delimited JSON (one JSON
+        record per line).
       </p>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Why this and not a better chat interface</h2></div></div>
+      <div class="section-head"><div><h2>Why the project is not an interactive coding tool</h2></div></div>
       <div class="prose">
         <p>
-          The alternative direction was live and got rejected: make this a model-agnostic interactive
-          tool you sit and drive. Matching an interactive coding assistant means matching its write
-          tools, session loop, approval layer and context management — pure catch-up against teams
-          orders of magnitude larger, with no edge anywhere in it for one person.
+          The alternative I considered and rejected was a model-agnostic interactive tool that a
+          person drives. Matching an interactive coding assistant means matching its write tools,
+          session loop, approval layer and context management, against teams orders of magnitude
+          larger than one person.
         </p>
         <p>
-          The mechanical verdict has no equivalent in any of those tools. That is the thing worth
-          building, so it is what the roadmap points at.
+          The mechanical verdict has no equivalent in any of those tools, so the roadmap points at
+          it.
         </p>
       </div>
       <div class="tag-row">

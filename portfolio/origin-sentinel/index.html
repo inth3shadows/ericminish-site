@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Origin Sentinel — case study | Eric Minish</title>
-  <meta name="description" content="Case study: an autonomous origin-health sentinel for Cloudflare-tunnelled services — catching the failure your uptime monitor can't see, with a do-no-harm rollout.">
+  <meta name="description" content="Case study: an autonomous origin-health sentinel for Cloudflare-tunnelled services. It detects dead services behind a healthy edge and ships report-only before getting write access.">
   <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/origin-sentinel/">
   <meta property="og:type" content="website">
@@ -48,11 +48,12 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 06</b><span>Platform · reliability</span><span>2026</span></div>
-        <h1>When your edge is green but your service is dead</h1>
+        <h1>Origin Sentinel: detecting dead services behind a healthy Cloudflare edge</h1>
         <p class="lede">
-          Cloudflare Tunnel can report a healthy edge while the service behind it is silently
-          broken. I built an autonomous sentinel that watches the origin, not the edge — and
-          deliberately shipped it without write access until it earned trust.
+          Cloudflare Tunnel carries outside traffic to services on a private network. Its edge
+          (Cloudflare's servers facing the internet) can report healthy while the service behind it
+          is broken. I built an autonomous sentinel that checks the origin (the service itself)
+          directly. It ships without write access until it has built trust.
         </p>
       </div>
       <aside class="note">
@@ -71,20 +72,20 @@
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The failure nobody monitors for</h2></div></div>
+      <div class="section-head"><div><h2>Failure mode: a healthy edge in front of a dead service</h2></div></div>
       <div class="prose">
-        <p>Edge and tunnel status answer one question: <em>is the tunnel connected?</em> They do not answer the only question that matters — <em>is the thing behind the tunnel actually alive?</em></p>
-        <p>A container reboots, DHCP hands it a new LAN IP, and the tunnel ingress still points at the old one. Now the edge serves errors — or worse, a different service — while every dashboard stays green. I call this the <strong>silent-origin-behind-healthy-edge</strong> class. Standard monitoring is structurally blind to it, because it probes the wrong layer.</p>
+        <p>Edge and tunnel status answer one question: <em>is the tunnel connected?</em> They do not say whether the service behind the tunnel is alive.</p>
+        <p>A container reboots, DHCP hands it a new LAN IP, and the tunnel ingress (the rule mapping a public hostname to an internal address) still points at the old one. The edge then serves errors, or a different service, while every dashboard stays green. I call this the <strong>silent-origin-behind-healthy-edge</strong> class. Standard monitoring checks the edge and tunnel, which is not the layer where this failure happens.</p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Classify before you heal</h2></div></div>
+      <div class="section-head"><div><h2>How the sentinel classifies origin state</h2></div></div>
       <div class="grid-2">
         <article class="panel">
           <div class="prose">
-            <p>The sentinel probes each origin LAN-side, bypassing Access, and classifies the real state before it touches anything. Only when a container's IP has genuinely drifted does it propose a Cloudflare ingress repoint.</p>
-            <p>Everything it learns is written to a machine-readable <code>health.json</code>, so the next automated agent — or a human — inherits ground truth instead of re-diagnosing from scratch.</p>
+            <p>The sentinel probes each origin from the LAN side, bypassing Access (Cloudflare's login gate in front of the services), and classifies the state before it changes anything. It proposes a Cloudflare ingress repoint only when a container's IP has changed.</p>
+            <p>Everything it learns is written to a machine-readable <code>health.json</code>, so the next automated agent, or a human, starts from recorded ground truth instead of diagnosing again from scratch.</p>
           </div>
         </article>
         <article class="code-window">
@@ -100,26 +101,21 @@ NEEDS_HUMAN</code></pre>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The part that matters: restraint</h2></div></div>
+      <div class="section-head"><div><h2>Safeguards on automatic repair</h2></div></div>
       <div class="prose">
-        <p>Auto-remediation that can rewrite production ingress is a loaded gun. The engineering here is mostly about <em>not</em> firing it:</p>
+        <p>Automatic repair that can rewrite production ingress could take services down if it acts wrongly, so most of the engineering limits what the sentinel may do:</p>
       </div>
       <article class="note">
         <ul>
-          <li><strong>Report-only v1.</strong> It proposes repoints into <code>health.json</code> and writes zero Cloudflare changes. Write access is a later, earned phase — not day one.</li>
-          <li><strong>Read-scoped token.</strong> It cannot mutate what it isn't authorized to.</li>
-          <li><strong>Blast-radius guards.</strong> Localhost origins are never auto-repointed; heal confirmation requires a stricter 2xx; a repoint preserves every existing config key and handles multi-rule hostnames; one origin's failure never aborts the run; heal-state writes are atomic.</li>
-          <li><strong>Testable by construction.</strong> A pure functional core — data in, data out, no I/O — with all side effects pushed to the shell edge, and 63 tests against the part where correctness is non-negotiable.</li>
+          <li><strong>Report-only v1.</strong> It proposes repoints into <code>health.json</code> and makes no Cloudflare changes. Write access is planned for a later phase, once the report-only version has built trust.</li>
+          <li><strong>Read-scoped token.</strong> The token it uses can only read, so it cannot change anything.</li>
+          <li><strong>Limits on damage from a wrong action.</strong> Localhost origins are excluded from automatic repointing; heal confirmation requires a stricter 2xx HTTP status; a repoint preserves every existing config key and handles hostnames with several rules; one origin's failure does not abort the run; heal-state writes are atomic (a write either completes or leaves the old file).</li>
+          <li><strong>Tested core.</strong> The decision logic is a pure functional core: it takes data, returns data and does no I/O (no network or file access). All side effects sit in a thin outer layer. 63 tests cover the core.</li>
         </ul>
       </article>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>What this demonstrates</h2></div></div>
-      <div class="prose">
-        <p>Two things I bring to infrastructure work: I find the failure classes your current monitoring can't see, and I build remediation that defaults to <em>do no harm</em> — staged rollouts, least-privilege tokens, isolated failure domains, and an architecture where the risky logic is the tested logic.</p>
-        <p>If you run agents, tunnels, or self-healing systems in production, that combination is the difference between automation you trust at 3am and automation you switch off after it burns you once.</p>
-      </div>
       <div class="tag-row">
         <span class="tag">Platform / SRE</span>
         <span class="tag">Cloudflare</span>

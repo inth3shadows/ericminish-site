@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>modelbench — case study | Eric Minish</title>
-  <meta name="description" content="Case study: a personal LLM benchmark built on real bug-fix commits from my own repositories, reporting cost per solved task — and publishing the four figures it got wrong.">
+  <meta name="description" content="Case study: a personal LLM benchmark built on real bug-fix commits from my own repositories, reporting cost per solved task — with a record of four published figures that were later corrected.">
   <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/modelbench/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="modelbench — Eric Minish">
-  <meta property="og:description" content="A benchmark on my own code, scored by cost per solved task — including the four published numbers it later had to correct.">
+  <meta property="og:description" content="A benchmark on my own code, scored by cost per solved task — including a record of four published numbers that were later corrected.">
   <meta property="og:url" content="https://www.ericminish.com/portfolio/modelbench/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="modelbench — Eric Minish">
-  <meta name="twitter:description" content="A benchmark on my own code, scored by cost per solved task — including the four published numbers it later had to correct.">
+  <meta name="twitter:description" content="A benchmark on my own code, scored by cost per solved task — including a record of four published numbers that were later corrected.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -48,15 +48,16 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 10</b><span>Measurement · model routing</span><span>2026</span></div>
-        <h1>A benchmark on my own code, that corrects itself in public</h1>
+        <h1>A benchmark built from bug-fix commits in my own code</h1>
         <p class="lede">
-          A public benchmark tells you how a model does on somebody else&rsquo;s repositories, once.
-          Neither half of that survives contact with a real routing decision, so this one mines real
-          bug-fix commits out of my own repositories and runs each task several times.
+          A public benchmark reports how a model does on other people&rsquo;s repositories, with
+          each task run once. Neither fits a decision about which model to route my own work to, so
+          this benchmark mines bug-fix commits from my own repositories and runs each task three
+          times.
         </p>
       </div>
       <aside class="note">
-        <p><strong>What it is</strong> — harvest, run, grade, report. A task is a real commit; a pass is its real test suite going green.</p>
+        <p><strong>What it is</strong> — harvest, run, grade, report. A task is a commit from git history; a pass means that commit&rsquo;s test suite goes green.</p>
         <p><strong>Status</strong> — private repository, in use for routing decisions across a local model gateway.</p>
       </aside>
     </section>
@@ -71,28 +72,30 @@
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Two things a public benchmark cannot tell me</h2></div></div>
+      <div class="section-head"><div><h2>Why build it: whose code, and how many runs</h2></div></div>
       <div class="prose">
         <p>
-          <strong>Whose code.</strong> A SWE-bench score says nothing about how a model behaves in a
-          specific Go, Python or TypeScript codebase with its own conventions. So the harvester walks
-          this machine&rsquo;s own git history for commits that touch both a test file and a source
-          file and are small enough to be a fair single-shot task. The model is measured on the code
-          it will actually be asked to work on.
+          <strong>Whose code.</strong> A SWE-bench score (SWE-bench is a public benchmark of bug fixes in
+          open-source repositories) does not show how a model behaves in a specific Go, Python or
+          TypeScript codebase with its own conventions. So the harvester walks this machine&rsquo;s
+          own git history for commits that touch both a test file and a source file and are small
+          enough to work as a single-shot task. The model is measured on the code it will be asked
+          to work on.
         </p>
         <p>
           <strong>How many times.</strong> Public benchmarks run each task once and report a single
-          pass or fail. That hides a real failure mode: a model that passes a task once and fails it
-          twice more is not &ldquo;80% reliable&rdquo; in any useful sense when you only get one shot
-          in production. Every model-task pair runs three times here, and the report carries an
-          agreement rate and a bootstrap confidence interval, so a gap between two models can be
-          called noise or called real instead of asserted from one sample.
+          pass or fail. A model that passes a task once and fails it twice more is not
+          &ldquo;80% reliable&rdquo; in any useful sense when production gives it one shot. Every
+          model-task pair runs three times here, and the report carries an agreement rate and a
+          bootstrap confidence interval (a range of plausible values found by resampling the
+          results), so a gap between two models can be judged as noise or as a difference from more
+          than one sample.
         </p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The number that decides anything is cost per solved task</h2></div></div>
+      <div class="section-head"><div><h2>Results by model tier, scored on cost per solved task</h2></div></div>
       <div class="table-scroll">
         <table class="data-table">
           <tr><th>Model tier</th><th style="text-align:right">pass@1</th><th style="text-align:right">tasks solved</th><th style="text-align:right">timeouts</th><th style="text-align:right">$ / solved task</th></tr>
@@ -103,75 +106,75 @@
       </div>
       <div class="prose">
         <p>
-          Fifteen tasks a cheaper model had already failed, each run twice per tier, every pass
-          integrity-verified: the test had to fail before the patch and pass after it, with no writes
-          to the test file. The small tier solves two thirds of what the large tier does at a quarter
-          of the price per success, which is a routing decision rather than a ranking.
+          The table uses fifteen tasks that a cheaper model had already failed, each run twice per
+          tier. pass@1 is the share of runs that pass on the first attempt. Every pass was verified:
+          the test had to fail before the patch and pass after it, with no writes to the test file.
+          The small tier solves 10 of 15 tasks where the large tier solves 15 of 15, at $0.51 per
+          solved task against $2.09, so choosing between them is a routing decision.
         </p>
         <p>
-          The dollar levels are inflated — a large system preamble rides on every call — but it rides
-          on all three equally. <strong>Ratios hold; levels do not.</strong> A benchmark that only
-          reported the flattering half of that would not be one.
+          The dollar levels are inflated because a large system preamble is sent with every call,
+          and it is sent with all three tiers equally. <strong>Use the ratios between tiers; the
+          absolute dollar levels are inflated.</strong>
         </p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Four numbers it published, and had to take back</h2></div></div>
+      <div class="section-head"><div><h2>A broken task and the four published figures it corrected</h2></div></div>
       <div class="prose">
         <p>
-          One task failed for every tier: zero passes out of two, three times over, with no timeouts
-          and no variance. Zero spread across three capability tiers is a signature of a broken task,
-          not a hard one — a genuinely hard problem separates a large model from a small one.
+          One task failed for every tier: zero passes out of two in each of the three tiers,
+          with no timeouts and no variance. Identical failure across three capability tiers points
+          to a broken task, because a hard problem would separate a large model from a small one.
         </p>
         <p>
-          It was the harness. The graded test was asynchronous, the repository declared its async
-          plugin as an optional extra, and the command the benchmark ran did not install extras. So
-          the test could not execute at all. The decisive check cost no model calls: check out the
-          real fix commit — the change that <em>is</em> the answer — and run the graded command
-          against it. It scored zero. No patch any model could write would have passed.
+          The cause was the harness. The graded test was asynchronous, the repository declared its
+          async plugin as an optional extra, and the command the benchmark ran did not install
+          extras, so the test could not run at all. The check that confirmed it cost no model calls:
+          check out the commit that holds the correct fix and run the graded command against it. It
+          scored zero, so no patch any model wrote could have passed.
         </p>
         <p>
-          Three tiers had been reported a full capability step lower than they were, on the strength
-          of a task nothing could pass. The task was repaired and re-run rather than dropped, and the
-          findings file now carries each wrong figure inline beside the one that replaced it.
+          Three tiers had been reported a full capability step lower than they were, because of
+          a task nothing could pass. The task was repaired and re-run instead of dropped, and the
+          findings file now shows each wrong figure inline next to the one that replaced it.
         </p>
       </div>
       <p class="fine">
-        Three of the four corrections cost zero model calls — they were recomputations of data
-        already on disk, which is itself the finding: the write-up had drifted from its own results
-        because nothing regenerated it. That file is generated from the graded runs now.
+        Three of the four corrections cost zero model calls: they were recomputations of data
+        already on disk. The write-up had drifted from its own results because nothing regenerated
+        it. That file is now generated from the graded runs.
       </p>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The scores do not transfer, and that is the design</h2></div></div>
+      <div class="section-head"><div><h2>Why scores cannot be compared across repositories</h2></div></div>
       <div class="prose">
         <p>
-          Rejecting public benchmarks for scoring models on somebody else&rsquo;s code has an honest
-          consequence, and it applies here first: <strong>a score from this project is a statement
-          about one model, one corpus, one revision and one date.</strong> It is not a leaderboard
-          entry, and two scores from different repositories do not rank the models against each other.
+          Because models are scored on my own code, <strong>a score from this project describes one
+          model, one corpus, one revision and one date.</strong> It is not a leaderboard entry, and
+          scores from different repositories cannot rank the models against each other.
         </p>
         <p>
-          That is not a gap waiting to be closed. A benchmark whose numbers <em>were</em> comparable
-          across corpora would have had to abstract away the codebase — its conventions, its test
-          shapes, its commit habits — and the codebase is the entire thing being measured.
+          Making scores comparable across corpora would mean abstracting away the codebase: its
+          conventions, its test shapes and its commit habits. Those are what the benchmark
+          measures.
         </p>
         <p>
-          The corpora are already different instruments before a single model is called. Across a
-          hundred repositories on two machines, the share of a repository&rsquo;s history that
-          qualifies as a task ranges from <strong>4.0% to 74.5%</strong> among the thirty that yield
-          anything at all. One repository measured 60.8% when its corpus was first built and 40.6%
-          under identical criteria today — twenty points of drift from history growth alone, most of
-          it automated release commits entering the denominator.
+          The corpora differ before any model is called. Across a hundred repositories on two
+          machines, the share of a repository&rsquo;s history that qualifies as a task ranges from
+          <strong>4.0% to 74.5%</strong> among the thirty that yield any tasks. One repository
+          measured 60.8% when its corpus was first built and 40.6% under identical criteria today.
+          That is twenty points of drift from history growth alone, mostly automated release commits
+          entering the total the share is calculated against.
         </p>
       </div>
       <article class="note">
         <ul>
-          <li><strong>Never pool.</strong> One headline score over several repositories averages instruments that do not measure the same thing.</li>
-          <li><strong>Cite the revision and the date.</strong> A number without them is not reproducible, it is remembered.</li>
-          <li><strong>Re-harvest before comparing.</strong> Each run records its own qualification funnel, precisely so a stale ratio cannot be quietly compared against a fresh one.</li>
+          <li><strong>Do not pool.</strong> One headline score over several repositories averages measurements that are not on the same scale.</li>
+          <li><strong>Cite the revision and the date.</strong> Without them the number cannot be reproduced.</li>
+          <li><strong>Re-harvest before comparing.</strong> Each run records its own qualification funnel (how many commits passed each filter), so a stale ratio is not compared against a fresh one by mistake.</li>
         </ul>
       </article>
     </section>
@@ -180,16 +183,16 @@
       <div class="section-head"><div><h2>What else it measures</h2></div></div>
       <div class="prose">
         <ul>
-          <li><strong>Patch</strong> — coding ability, graded by running the model&rsquo;s fix against a real test suite.</li>
-          <li><strong>Reading</strong> — effective context length, graded by exact retrieval of a real fact planted in real repository content.</li>
-          <li><strong>Discovery</strong> — bug finding, graded by whether the reported line range intersects the real fix.</li>
-          <li><strong>Scout</strong> — symbol-location accuracy, run through a real tool loop rather than a plain chat completion, and graded against a deterministic symbol index.</li>
+          <li><strong>Patch</strong> — coding ability, graded by running the model&rsquo;s fix against a test suite.</li>
+          <li><strong>Reading</strong> — effective context length (how much of its input the model can use), graded by exact retrieval of a fact planted in repository content.</li>
+          <li><strong>Discovery</strong> — bug finding, graded by whether the reported line range overlaps the line range of the fix.</li>
+          <li><strong>Scout</strong> — symbol-location accuracy, run through a tool loop (the model calls tools and reads the results over several turns) instead of a single chat completion, and graded against a deterministic symbol index.</li>
         </ul>
         <p>
-          Two failure modes are scored as real failures rather than retried away: determinism decays
-          with output length, so identical prompts stop returning identical prose past a few hundred
-          tokens; and a reasoning model can return an empty response when its whole token budget went
-          to reasoning it never shows you. A retry would have hidden both.
+          Two failure modes are scored as failures and not retried. Determinism decays with output
+          length, so identical prompts stop returning identical text past a few hundred tokens. And
+          a reasoning model can return an empty response when its whole token budget went on
+          reasoning it does not show. A retry would hide both.
         </p>
       </div>
       <div class="tag-row">
@@ -198,7 +201,7 @@
         <span class="tag">Python</span>
         <span class="tag">Statistics</span>
       </div>
-      <p class="project-meta-line" style="margin-top:12px">Private repository — half the corpus is other people&rsquo;s code. The method is described here in full; the numbers are regenerable rather than reachable.</p>
+      <p class="project-meta-line" style="margin-top:12px">Private repository, because half the corpus is other people&rsquo;s code. The method is described here in full, and the numbers can be regenerated but are not published.</p>
     </section>
 
     <p class="closing-line">

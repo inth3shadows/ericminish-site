@@ -50,13 +50,14 @@
         <div class="entry-stamp"><b>Entry 03</b><span>Retrieval · evaluation</span><span>2026</span></div>
         <h1>My semantic search worked at 1,000 documents and failed at 57,000</h1>
         <p class="lede">
-          I built a hybrid retrieval engine over years of my own working notes, measured it honestly,
-          and the measurement said half of it does not work. This is that result.
+          I built a hybrid retrieval engine (keyword search combined with embedding-based search)
+          over years of my own working notes and measured it. The measurement showed that half of it
+          does not work. This page describes that result.
         </p>
       </div>
       <aside class="note">
-        <p><strong>What it is</strong> — keyword search and embeddings fused, then re-ranked. Entirely offline, on CPU.</p>
-        <p><strong>Status</strong> — private repository. The numbers below are the whole story.</p>
+        <p><strong>What it is</strong> — keyword search and embeddings (numeric representations of text meaning) fused, then re-ranked (a second model reorders the top results). Runs entirely offline, on CPU.</p>
+        <p><strong>Status</strong> — private repository.</p>
       </aside>
     </section>
 
@@ -70,18 +71,18 @@
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The result that argued against my own design</h2></div></div>
+      <div class="section-head"><div><h2>Development corpus versus full scale</h2></div></div>
       <div class="prose">
         <p>
-          On a 1,271-chunk development corpus the semantic arm clearly beat keyword search on
-          paraphrased questions — the ones where you describe a memory in different words than you
-          originally used. That is what justified building a hybrid at all.
+          On a 1,271-chunk development corpus the semantic arm beat keyword search on
+          paraphrased questions, where you describe a memory in different words than you originally
+          used. That justified building a hybrid.
         </p>
         <p>
-          Measured at full scale for the first time, against ten real questions judged by hand, it
+          Measured at full scale for the first time, against ten questions judged by hand, it
           returned something useful five times. Every success was a keyword-shaped question. Four of
-          the five paraphrased questions — the exact case the semantic arm existed to solve —
-          returned nothing useful.
+          the five paraphrased questions, the case the semantic arm was built for, returned nothing
+          useful.
         </p>
       </div>
 
@@ -95,42 +96,43 @@
 
       <div class="prose">
         <p>
-          The answers were being retrieved. The semantic arm was burying them. Keyword search alone
-          beat every hybrid configuration — the exact inverse of the small-corpus result. Similarity
-          stops discriminating as the candidate pool grows; rare words stay rare.
+          The correct answers were being retrieved, and the semantic arm ranked them too low.
+          Keyword search alone (BM25, a standard keyword-ranking formula) beat every hybrid
+          configuration, the reverse of the small-corpus result. Similarity scores stop separating
+          good matches from bad as the pool of candidates grows.
         </p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>How it got there</h2></div></div>
+      <div class="section-head"><div><h2>How the investigation went</h2></div></div>
       <ol class="beats">
-        <li><b>Small corpus, clear win.</b> 1,271 chunks. Semantic beat keyword on paraphrase, decisively.</li>
-        <li><b>Real scale, five of ten.</b> Judged by hand, no partial credit.</li>
-        <li><b>The obvious explanation was wrong.</b> "The bigger corpus is diluted" — tested by restricting
-          the search to the single highest-quality source. No improvement. Rejected in one run rather than argued about.</li>
-        <li><b>Recall or rank?</b> A diagnostic separated answers that were never retrieved from answers
-          that were retrieved and then buried. It was rank.</li>
-        <li><b>The tuning already shipped was a regression.</b> A query-adaptive router — use the expensive
-          re-ranker only when the query looks keyword-shaped — had been tuned on the small corpus and shipped
-          as the default. At full scale it measured worst of six configurations, scoring 0.000 on paraphrased
-          questions where always re-ranking scored 0.200. Removed as default the same day.</li>
-        <li><b>Then the evaluation itself had a bug.</b> A code review found the scorer retrieving deeper than
-          the judging pool went, so the re-ranked configuration was returning documents nobody had graded and
-          being marked wrong for it. Fixing it <b>improved</b> that configuration, 0.352 to 0.447 — it did not
-          rescue the conclusion.</li>
+        <li><b>Small corpus.</b> 1,271 chunks. Semantic beat keyword on paraphrase.</li>
+        <li><b>Full scale, five of ten.</b> Judged by hand, no partial credit.</li>
+        <li><b>First hypothesis tested.</b> The hypothesis was that the bigger corpus was diluted. I tested it by restricting
+          the search to the single highest-quality source. There was no improvement, so the hypothesis was rejected in one run.</li>
+        <li><b>Recall versus rank.</b> A diagnostic separated answers that were never retrieved (a recall problem) from answers
+          that were retrieved and then ranked too low (a rank problem). The problem was rank.</li>
+        <li><b>The shipped router made results worse.</b> A query-adaptive router, which uses the expensive
+          re-ranker only when the query looks keyword-shaped, had been tuned on the small corpus and shipped
+          as the default. At full scale it scored worst of six configurations: 0.000 on paraphrased
+          questions, where always re-ranking scored 0.200. It was removed as the default the same day.</li>
+        <li><b>A bug in the scorer.</b> A code review found the scorer retrieving deeper than
+          the judging pool went, so the re-ranked configuration returned documents nobody had graded and
+          was marked wrong for them. Fixing it raised that configuration from 0.352 to 0.447. The
+          overall conclusion stayed the same.</li>
       </ol>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The parts that are actually rare</h2></div></div>
+      <div class="section-head"><div><h2>Evaluation methods used</h2></div></div>
       <div class="subs">
-        <div><span class="st">Pre-registered kill gate</span><span class="sx">Written before anything was built: if a local re-ranker does not beat the existing baseline, the project stops at one session.</span></div>
-        <div><span class="st">Refused to fit anecdotes</span><span class="sx">A visibly underperforming threshold was left alone rather than re-tuned against eight unlabelled examples. Twice — and the refusal is recorded in the plan file both times.</span></div>
-        <div><span class="st">Negative controls</span><span class="sx">Two questions with no answer anywhere in the corpus. The semantic arm scored a nonsense query about sourdough hydration <b>95%</b> as highly as a real question. Its confidence carries almost no information.</span></div>
-        <div><span class="st">Pooled, blind judging</span><span class="sx">Candidates unioned across five retrieval configurations and shuffled, with no indication of which system found them — so the incumbent could not win by being graded only on its own results.</span></div>
-        <div><span class="st">The evaluator as a defect</span><span class="sx">Labels are stamped with who produced them, and a separate tool samples them to compute inter-rater agreement before they are trusted.</span></div>
-        <div><span class="st">The most damning finding</span><span class="sx">For several failed questions the answer sat in a file the index demonstrably returns for other questions. Not a coverage gap — a failure to connect a paraphrased need to a document it already holds.</span></div>
+        <div><span class="st">Pre-registered kill gate</span><span class="sx">A stop condition written before anything was built: if a local re-ranker did not beat the existing baseline, the project would stop after one session.</span></div>
+        <div><span class="st">Restraint in tuning</span><span class="sx">A threshold that visibly underperformed was left alone instead of being re-tuned against eight unlabelled examples. This happened twice, and the plan file records the decision both times.</span></div>
+        <div><span class="st">Negative controls</span><span class="sx">Two questions with no answer anywhere in the corpus, used to check that the system does not invent matches. The semantic arm scored a nonsense query about sourdough hydration <b>95%</b> as highly as an answerable question. Its confidence score carries almost no information.</span></div>
+        <div><span class="st">Pooled, blind judging</span><span class="sx">Candidates were pooled from five retrieval configurations and shuffled, with no indication of which system found them. This stops the incumbent from winning by being graded only on its own results.</span></div>
+        <div><span class="st">Judge reliability</span><span class="sx">Labels are stamped with who produced them, and a separate tool samples them to compute inter-rater agreement (how often two judges give the same label) before they are trusted.</span></div>
+        <div><span class="st">Answers in files the index already returns</span><span class="sx">For several failed questions the answer was in a file the index returns for other questions. The corpus covered them, and the system failed to connect a paraphrased need to a document it already holds.</span></div>
       </div>
       <div class="tag-row" style="margin-top:20px">
         <span class="tag">Retrieval</span><span class="tag">Evaluation</span>

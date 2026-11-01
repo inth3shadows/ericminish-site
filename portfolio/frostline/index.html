@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Frostline — case study | Eric Minish</title>
-  <meta name="description" content="Case study: spatial models over 50,000 Michigan well records — depth is predictable from location, yield is not, and the most useful result was the one that got cut.">
+  <meta name="description" content="Case study: spatial models over 50,000 Michigan well records — well depth can be predicted from location, well yield cannot, and one promising model target was cut after a baseline check.">
   <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/frostline/">
   <meta property="og:type" content="website">
@@ -48,15 +48,16 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 04</b><span>Frostline · spatial modelling</span><span>2026</span></div>
-        <h1>The most useful result was the one I threw out</h1>
+        <h1>Frostline: what spatial models can and cannot predict about wells</h1>
         <p class="lede">
-          Depth is predictable from location. Yield is not. Both of those took real work to
-          establish, and only one of them is a finding anybody wants to hear.
+          Well depth can be predicted from location. Well yield (how much water a well produces)
+          cannot. This page shows the evidence for each, and one model target I cut after testing
+          it against the right baseline.
         </p>
       </div>
       <aside class="note">
         <p><strong>What it is</strong> — spatial models over the public Michigan well record for four north-west counties, and the contractor-intake business built around them.</p>
-        <p><strong>Status</strong> — active. Private repository; the numbers below are the substance.</p>
+        <p><strong>Status</strong> — active. Private repository; the numbers below come from the project.</p>
       </aside>
     </section>
 
@@ -64,7 +65,7 @@
       <div class="facts">
         <div><span class="fk">well records</span><span class="fv">50,083</span></div>
         <div><span class="fk">apparent gain</span><span class="fv">+38.8%</span></div>
-        <div><span class="fk">actually a restatement</span><span class="fv">~96%</span></div>
+        <div><span class="fk">share that restates depth</span><span class="fv">~96%</span></div>
         <div><span class="fk">target</span><span class="fv">cut</span></div>
       </div>
     </section>
@@ -75,14 +76,14 @@
         <p>
           A drilling record carries where the hole is, how deep it went, what the driller hit on the
           way down, and what it produced. The commercially interesting question is the last one — how
-          much water will this location give — and that is the one the data refuses to answer.
+          much water a location will give. The data does not answer it.
         </p>
         <p>
-          Depth behaves. Neighbouring wells agree with each other, so location carries real
-          information and a model can use it. Yield does not behave. A well's output is not predicted
-          by its neighbours, and no amount of feature work changed that. Establishing the negative
-          took as long as establishing the positive, and it is the more valuable of the two: it says
-          which promises the business must not make.
+          Depth is predictable: neighbouring wells have similar depths, so location carries
+          information a model can use. Yield is not: a well's output is only weakly related to its
+          neighbours' output, and extra feature work did not change that. The negative result took as
+          long to establish as the positive one. It also decides which promises the business must
+          not make.
         </p>
       </div>
     </section>
@@ -94,8 +95,8 @@
         <p>
           Same 49,527 wells, same grid, same method — median of every well in a two-kilometre cell.
           On the left, well depth. On the right, tested yield. Depth resolves into contiguous
-          shapes; yield does not resolve into anything. That contrast is the finding, and it is
-          measurable rather than a matter of taste.
+          shapes; yield does not resolve into anything. That contrast is the finding, and it can
+          be measured.
         </p>
       </div>
 
@@ -123,28 +124,30 @@
       </div>
       <p class="fine" style="margin-top:12px">
         Moran's I measures whether neighbouring cells resemble each other: 0 is indistinguishable
-        from noise. Grand Traverse, Antrim, Kalkaska and Charlevoix counties, cells of roughly two
-        kilometres with at least five wells each. Computed from the well table on 29 July 2026 —
-        these are the project's own numbers, not an illustration of them.
+        from noise and higher values mean more similar neighbours. Grand Traverse, Antrim, Kalkaska and Charlevoix counties, cells of roughly two
+        kilometres with at least five wells each. These are the project's own numbers,
+        computed from the well table on 29 July 2026.
       </p>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The target that looked like a win</h2></div></div>
+      <div class="section-head"><div><h2>The aquifer-interval target and the baseline check</h2></div></div>
       <div class="prose">
         <p>
-          The aquifer-interval fields are unusually well populated — top and bottom depths present on
-          roughly nine in ten records — and had never been modelled. A leave-one-out skill test put
-          local prediction <strong>38.8% better</strong> than the global median. That looked like a
+          The aquifer-interval fields (the top and bottom depths of the water-bearing layer) are well
+          populated, present on roughly nine in ten records, and had not been modelled before. A
+          leave-one-out skill test (predict each cell from its neighbours with that cell held out,
+          then compare with a simple reference prediction) put local prediction <strong>38.8% better</strong> than the global median. That looked like a
           new signal.
         </p>
         <p>
-          It was not. The global median is the wrong baseline for a variable that sits at about
-          three-quarters of the well depth. Measured against a depth-derived null instead, the
-          apparent skill disappeared: the aquifer interval is roughly <strong>96% a restatement of
-          the well depth already in hand</strong>. It was cut rather than shipped, and if the
-          interval is surfaced at all it should be a derived ratio off the existing depth band, not a
-          modelled target.
+          The gain came from the choice of reference. A baseline is the simple prediction a model must
+          beat, and the global median is a poor baseline for a variable that sits at about
+          three-quarters of the well depth. Against a depth-derived null (a reference prediction
+          computed from the well depth), the apparent skill disappeared: the aquifer interval is roughly <strong>96% a restatement of
+          the well depth already in hand</strong>. It was cut. If the
+          interval is surfaced at all, it should be a derived ratio off the existing depth band instead
+          of a modelled target.
         </p>
       </div>
       <div class="table-scroll">
@@ -155,17 +158,17 @@
         </table>
       </div>
       <p class="fine" style="margin-top:12px">
-        The first row is not a mistake anyone would notice from the outside. Choosing the null is the
-        whole experiment.
+        The first row uses the global median as its reference and the second uses a depth-derived
+        one. The choice of reference decides whether the result is a gain or no signal.
       </p>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>What is still open, stated honestly</h2></div></div>
+      <div class="section-head"><div><h2>Open questions and what the business may claim</h2></div></div>
       <div class="subs">
-        <div><span class="st">Lithology — untouched</span><span class="sx">Two hundred thousand-odd logged intervals across the same wells, describing what the driller actually hit. Genuinely independent of depth, and therefore the one place a new signal could still be. <b>Not yet modelled.</b></span></div>
-        <div><span class="st">Static water level — untested</span><span class="sx">A first pass scored badly, but the data is dirty enough that the number means nothing: sentinel values standing in for missing readings, and hundreds of wells recording a water level deeper than the well itself. <b>Untested, not disproven</b> — and the first-pass figure must not be quoted as a finding.</span></div>
-        <div><span class="st">What the business may claim</span><span class="sx">Depth and cost bands, with an interval rather than a point estimate. Not yield. A model that cannot predict output is not permitted to imply that it can.</span></div>
+        <div><span class="st">Lithology (rock and soil type) — not yet modelled</span><span class="sx">About two hundred thousand logged intervals across the same wells, describing what the driller hit. They are independent of depth, so this is the one place a new signal could still appear.</span></div>
+        <div><span class="st">Static water level — untested</span><span class="sx">A first pass scored badly, but the data is too dirty for that score to mean anything. It contains sentinel values (placeholder numbers standing in for missing readings), and hundreds of wells record a water level deeper than the well itself. <b>The question is still untested.</b> The first-pass figure should not be quoted as a finding.</span></div>
+        <div><span class="st">What the business may claim</span><span class="sx">The business may claim depth and cost bands, each with an interval (a range) around the estimate. It may not claim anything about yield, because the model cannot predict output.</span></div>
       </div>
       <div class="tag-row" style="margin-top:20px">
         <span class="tag">Spatial modelling</span><span class="tag">Null result</span>

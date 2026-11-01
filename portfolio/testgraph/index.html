@@ -50,9 +50,7 @@
         <div class="entry-stamp"><b>Entry 08</b><span>Verification · static analysis</span><span>2026</span></div>
         <h1>Which user journeys could this change have broken?</h1>
         <p class="lede">
-          Every test-impact tool on the market answers in tests, and every one of them needs
-          coverage from a previous run to do it. testgraph answers in user journeys, from a
-          static call graph, on a repository that has never run its suite once.
+          Test-impact tools such as pytest-testmon and Ekstazi report which tests to run, and they need coverage data (a record of which code each test executed) from a previous run. testgraph reports which user journeys a change could break. It works from a static call graph, a map of which functions call which that is built without running anything, so it works on a repository that has never run its test suite.
         </p>
       </div>
       <aside class="note">
@@ -71,22 +69,16 @@
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The question a test suite cannot answer</h2></div></div>
+      <div class="section-head"><div><h2>Why existing test-impact tools fall short</h2></div></div>
       <div class="prose">
         <p>
-          An agent finishes a change and has to decide whether it is done. Running the whole suite
-          is the safe answer and the slow one; running nothing is fast and dishonest. The tools built
-          for that gap — SeaLights, Datadog&rsquo;s test impact analysis, pytest-testmon, Ekstazi —
-          all narrow the suite by watching which tests touched which lines on a previous run.
+          When an agent finishes a change it has to decide whether the change is done. Running the whole suite is safe but slow. Running nothing is fast but gives no evidence. Tools built for that gap (SeaLights, Datadog&rsquo;s test impact analysis, pytest-testmon, Ekstazi) narrow the suite by recording which tests touched which lines on a previous run.
         </p>
         <p>
-          That mechanism is also their prerequisite. Coverage is something you have only after you
-          have run the thing, which means none of them can say anything at all about a repository on
-          its first day, or about the parts of a repository nobody has exercised yet.
+          That recorded coverage is also their prerequisite. Coverage exists only after the tests have run, so none of these tools can say anything about a repository on its first day or about code nobody has exercised yet.
         </p>
         <p>
-          And they answer the wrong unit. <code>test_resolve_backfill</code> failing tells you a
-          test failed. It does not tell you that a claimant can no longer submit a signed form.
+          They also report in the wrong unit. A failing <code>test_resolve_backfill</code> says a test failed. It does not say that a claimant can no longer submit a signed form.
         </p>
       </div>
     </section>
@@ -98,9 +90,9 @@
           <div class="prose">
             <ul>
               <li><strong>A journey registry</strong> names each user-facing flow and the symbols it enters through — a route handler, a scheduler sweep, a CLI entry point.</li>
-              <li><strong>Seeds</strong> — the changed line ranges in a diff are mapped to the symbols that own them.</li>
-              <li><strong>Reverse walk</strong> — the call graph is walked backwards, transitively, to every symbol that depends on a seed.</li>
-              <li><strong>Rank</strong> — the journeys whose entry symbols land in that set are reported, ordered by fan-in.</li>
+              <li><strong>Seeds</strong> — the changed line ranges in a diff are mapped to the symbols that own them. These symbols are the starting points of the search.</li>
+              <li><strong>Reverse walk</strong> — the call graph is walked backwards, following callers of callers, to every symbol that depends on a seed.</li>
+              <li><strong>Rank</strong> — the journeys whose entry symbols land in that set are reported, ordered by fan-in (the number of incoming connections).</li>
             </ul>
           </div>
         </article>
@@ -114,81 +106,54 @@ d9174b7e1..0305ada6f, ranked:
   &#8230;</code></pre>
         </article>
       </div>
-      <p class="fine">Real hook output from a private repository, its name removed. The two figures are the fan-in rank and the journey&rsquo;s identifier in that repository&rsquo;s registry.</p>
+      <p class="fine">Output from a git hook (a script git runs automatically, here before a push) on a private repository, name removed. The two figures are the fan-in rank and the journey&rsquo;s identifier in that repository&rsquo;s registry.</p>
       <div class="prose">
         <p>
-          Confidence is the strongest path that reached the journey: the maximum, over every path,
-          of the weakest edge on that path. A chain is only as trustworthy as its worst hop, but one
-          solid route through is enough. A journey reached only through weak or synthesized edges is
-          labelled <code>VERIFY MANUALLY</code> — it is never silently dropped from the list.
+          Confidence is the strongest path that reaches the journey: for each path take its weakest edge, then take the maximum across paths. A chain is as trustworthy as its worst link, and one solid route is enough. A journey reached only through weak or synthesized edges (links the analyzer inferred instead of reading a direct call) is labelled <code>VERIFY MANUALLY</code> and stays on the list.
         </p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Recall-first, and what that costs</h2></div></div>
+      <div class="section-head"><div><h2>Favouring recall over precision</h2></div></div>
       <div class="prose">
         <p>
-          The failure modes are not symmetric. Flagging a journey that turns out to be fine costs a
-          few minutes. Silently dropping a journey a change really did break costs a production
-          incident and the user&rsquo;s trust in the tool at the same time. So testgraph
-          over-selects on purpose: edit a shared config file and it fans out to almost everything,
-          because that is the truth about a shared config file.
+          The two kinds of error cost different amounts. Flagging a journey that turns out to be fine costs a few minutes. Dropping a journey that a change did break costs a production incident and the user&rsquo;s trust in the tool. So testgraph is built for recall (finding every affected journey) and accepts over-selecting: edit a shared config file and it selects almost everything, because almost everything depends on it.
         </p>
         <p>
-          The same asymmetry drives the integrity guard. Before answering, testgraph refuses to run
-          off a stale or corrupted index — a wrong graph produces a confidently wrong
-          &ldquo;you don&rsquo;t need to test that&rdquo;, which is the one output a test selector
-          must never produce. Seeds come from line ranges, so an index built before the code moved
-          resolves the diff against spans that no longer mean anything. If a changed file&rsquo;s
-          bytes still disagree with the indexed copy after a re-sync, the answer degrades to
-          <code>RECALL DEGRADED</code> and names the file.
+          The same reasoning drives the integrity guard. Before answering, testgraph checks that the index (the stored call graph) is current and uncorrupted, and declines to answer from a stale or corrupted one. A wrong graph would produce a wrong &ldquo;you don&rsquo;t need to test that&rdquo;, the one answer a test selector must avoid. Seeds come from line ranges, so an index built before the code moved would match the diff against line spans that no longer mean the same thing. If a changed file&rsquo;s bytes still differ from the indexed copy after a re-sync, the answer is marked <code>RECALL DEGRADED</code>, meaning some affected journeys may be missing, and names the file.
         </p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>What I will not claim</h2></div></div>
+      <div class="section-head"><div><h2>Claims the evidence does not support</h2></div></div>
       <div class="prose">
         <p>
-          The obvious pitch is suite reduction, and I am not making it. The regression-test-selection
-          literature is directionally unkind to static selection: measured against a dynamic
-          baseline, the static tool STARTS reduced suites 68.3% against Ekstazi&rsquo;s 84.1%, and
-          carried a 5.9% safety-violation rate doing it. Dynamic beat static on both size and safety.
+          The usual pitch for test selection is suite reduction, and this page does not make it. In the regression-test-selection literature, static selection compares poorly with dynamic selection: the static tool STARTS reduced suites by 68.3% against Ekstazi&rsquo;s 84.1% and had a 5.9% safety-violation rate (cases where a test that should have run was skipped). Dynamic beat static on both size and safety.
         </p>
         <p>
-          testgraph has selectivity numbers of its own across four repositories, and they are not
-          published here, because it has no measured missed-fault rate at those scales to put beside
-          them. Recall 1.00 was established on exactly one target — five hand-labelled real commits
-          and roughly twenty seeded mutation sites — and a recall figure from one repository is not
-          a property of the tool.
+          testgraph has selectivity numbers of its own across four repositories. They are not published here, because there is no measured missed-fault rate at those sizes to set beside them. Recall of 1.00 was measured on one target only: five hand-labelled commits and roughly twenty seeded mutation sites (small code changes injected to simulate bugs). A recall figure from one repository does not describe the tool in general.
         </p>
         <p>
-          What is defensible is narrower and still decisive: <strong>it answers cold.</strong> Zero
-          coverage, zero CI, zero prior runs. That is a positioning advantage rather than a moat —
-          an incumbent could collect coverage on build one, or bolt static analysis on — and it is
-          not free either, because a maintained journey registry is real hand-authored judgement
-          that nothing derives for you.
+          The claim the evidence supports is that <strong>testgraph can answer on a cold start</strong>: no coverage, no CI, no prior runs. That is an advantage in positioning and could be copied, since an incumbent could collect coverage on the first build or add static analysis. It also has a cost: someone has to maintain the journey registry, which is hand-written judgement that nothing generates for you.
         </p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>A selector nobody calls cannot be wrong</h2></div></div>
+      <div class="section-head"><div><h2>How it runs: git hook, ledger and MCP server</h2></div></div>
       <article class="note">
         <ul>
-          <li><strong>It runs on push.</strong> <code>pre-push</code> is the only git hook handed a real base — the remote sha is exactly the &ldquo;what they don&rsquo;t have yet&rdquo; boundary the question wants.</li>
-          <li><strong>It never fails a push.</strong> Every path exits zero: a blocked integrity guard, a missing index, a missing registry, a traceback, a timeout. Advice that can stop a push stops being advice.</li>
-          <li><strong>It records itself.</strong> Every run appends a row to a local ledger, which is how &ldquo;is anything actually calling this?&rdquo; gets answered with a number instead of a guess.</li>
-          <li><strong>Agents can ask it directly.</strong> An MCP server exposes the ranked journeys as a tool — stdlib only, lazily imported, 15.2 MB resident when idle against 62–69 MB for a typical SDK-based server. That gap is multiplied by every editor window you have open, not paid once.</li>
+          <li><strong>It runs on push.</strong> <code>pre-push</code> is the only git hook that receives a base commit to compare against: the remote&rsquo;s sha (commit id) marks the boundary of what the remote does not have yet.</li>
+          <li><strong>It does not block a push.</strong> Every path exits with code zero, including a blocked integrity guard, a missing index, a missing registry, a traceback and a timeout, so its output is advice only.</li>
+          <li><strong>It records its own use.</strong> Every run appends a row to a local ledger, so how often the tool is called can be counted.</li>
+          <li><strong>Agents can ask it directly.</strong> An MCP server (Model Context Protocol, the standard way agents call tools) exposes the ranked journeys as a tool. It uses only the standard library and imports lazily, and takes 15.2 MB of memory when idle against 62–69 MB for a typical SDK-based server. The difference applies to every editor window you have open.</li>
         </ul>
       </article>
       <div class="prose">
         <p>
-          The other half of that ledger is what running a journey then <em>found</em>. Joined on
-          repository and commit, the two halves produce the one number the project has so far
-          asserted rather than measured: a journey that failed on a commit whose selection never
-          named it.
+          The other half of the ledger records what running a journey then <em>found</em>. Joining the two halves on repository and commit gives the one figure the project has so far claimed without measuring: how often a journey failed on a commit whose selection did not name it.
         </p>
       </div>
     </section>
@@ -211,7 +176,7 @@ python3 -m testgraph.select  --repo &lt;path&gt;   # rank the journeys a diff to
       <div class="inline-links" style="margin-top:16px">
         <a class="button" href="https://github.com/inth3shadows/testgraph">Source on GitHub</a>
       </div>
-      <p class="project-meta-line" style="margin-top:12px">MIT licensed. A drafted registry is marked unapproved until a human reads it — an unapproved registry runs, loudly, but never silently.</p>
+      <p class="project-meta-line" style="margin-top:12px">MIT licensed. A drafted registry is marked unapproved until a human reads it, and an unapproved registry still runs but says so in its output.</p>
     </section>
 
     <p class="closing-line">
