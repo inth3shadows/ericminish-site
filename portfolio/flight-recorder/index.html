@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>flight-recorder — case study | Eric Minish</title>
+  <meta name="description" content="Case study: scoring 11,179 coding-agent sessions on their cost and on how much of their code was still in the repository later.">
+  <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
+  <link rel="canonical" href="https://www.ericminish.com/portfolio/flight-recorder/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Eric Minish">
+  <meta property="og:title" content="flight-recorder — Eric Minish">
+  <meta property="og:description" content="11,179 coding-agent sessions, scored on cost and on how much of their code survived.">
+  <meta property="og:url" content="https://www.ericminish.com/portfolio/flight-recorder/">
+  <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="flight-recorder — Eric Minish">
+  <meta name="twitter:description" content="11,179 coding-agent sessions, scored on cost and on how much of their code survived.">
+  <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/resume/">Resume</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell" id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="entry-stamp"><b>Entry 11</b><span>Agent evaluation · measurement</span><span>2026</span></div>
+        <h1>Measuring whether my coding agents improve, from what happened to their code</h1>
+        <p class="lede">
+          flight-recorder reads every coding-agent session saved on my machines and scores each one
+          two ways: what it cost, and how much of the code it wrote was still in the repository later.
+          It ignores the agent&rsquo;s own report of success, because agents often report success
+          on work that failed.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong>: a Python tool that loads agent session transcripts and git history into SQLite and reports on them.</p>
+        <p><strong>Status</strong>: private repository. Figures as of 30 October 2026.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="facts">
+        <div><span class="fk">sessions scored</span><span class="fv">11,179</span></div>
+        <div><span class="fk">tool calls</span><span class="fv">278,722</span></div>
+        <div><span class="fk">cost spent reloading context after an idle hour</span><span class="fv bad">8.8%</span></div>
+        <div><span class="fk">each average reported with</span><span class="fv good">95% interval</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Cost and outcome are reported separately</h2></div></div>
+      <div class="prose">
+        <p>
+          Each session gets two sets of numbers, shown side by side. They are not combined into one
+          score: a session can produce good code at a wasteful cost, and an average of the two would hide that.
+        </p>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Measure</th><th>Taken from</th><th>Examples</th></tr>
+          <tr><td>Cost</td><td>the session transcript</td><td>tokens used, how often cached context was reused, tool error rate, files read but never edited</td></tr>
+          <tr><td>Outcome</td><td>the repository, days later</td><td>share of the session&rsquo;s lines still in the code, lines a later session rewrote, commits later reverted</td></tr>
+        </table>
+      </div>
+      <div class="prose">
+        <p>
+          To check whether a line survived, the tool hashes each line a session adds and looks for that
+          line in the current version of the file. It matches on the line&rsquo;s content, not on
+          commit IDs, because rebasing or squashing changes every commit ID while the code stays the same.
+        </p>
+        <p>
+          It reads saved transcripts after the fact instead of running inside each session. That adds no
+          delay to any session, loses nothing if a session crashes, and let it score 6,264 past
+          sessions on the first day.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Four results the first version got wrong</h2></div></div>
+      <ol class="beats">
+        <li><b>Tool error rate read 0.000 everywhere.</b> Only about half of failed tool calls are
+          flagged as errors. The rest come back as ordinary text starting with &ldquo;Error&rdquo; or
+          &ldquo;exit code&rdquo;. The tool now checks for both.</li>
+        <li><b>About 66% of sessions looked like failures.</b> The first rework signal was &ldquo;a later
+          session edited the same file within 7 days&rdquo;, which normal follow-up work also triggers.
+          Rework is now measured from which lines survived, and the old signal is kept only as a
+          secondary number over one day.</li>
+        <li><b>One repository scored 0.448 survival; the true figure was 0.796.</b> The rate was divided
+          by every line recorded, including lines whose files the tool could not find. It now divides by
+          lines it actually checked, and records an unchecked line as unknown rather than lost.</li>
+        <li><b>One model looked much worse than another, 0.508 against 0.826.</b> The weaker-looking
+          model had mostly been used in one difficult repository. Models are now compared only on
+          similar work: the same repository, the same task type and a similar change size.</li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Checks built into the reports</h2></div></div>
+      <div class="subs">
+        <div><span class="st">Intervals per session</span><span class="sx">Each average has a bootstrap 95% interval computed over sessions rather than lines, since lines from one session are not independent. A difference whose interval includes zero is printed as <b>inconclusive</b>.</span></div>
+        <div><span class="st">No averages from tiny samples</span><span class="sx">Below a minimum number of sessions, the report prints the count instead of a value.</span></div>
+        <div><span class="st">Credit by cost</span><span class="sx">A session is attributed to the command that accounts for most of its cost. Counting tagged messages instead had credited the most expensive sessions to a wrap-up command that runs at the end of every long session.</span></div>
+        <div><span class="st">Missing is not zero</span><span class="sx">When a rate has no denominator it is stored as empty, so missing data cannot show up as a perfect score.</span></div>
+        <div><span class="st">Call-level verification</span><span class="sx">A companion check confirms that each tool call in a transcript matches the call that was actually sent, and that each result matches the one delivered. It is used to check <a href="/portfolio/terse/">terse</a>&rsquo;s claim that its compression loses nothing.</span></div>
+        <div><span class="st">Weaknesses listed up front</span><span class="sx">The README lists seven known weaknesses. The largest: commits are linked to sessions by time, so a session that overlaps a manual commit gets credit for it.</span></div>
+      </div>
+      <div class="tag-row" style="margin-top:20px">
+        <span class="tag">Agent evaluation</span><span class="tag">Statistics</span>
+        <span class="tag">Python</span><span class="tag">SQLite</span>
+      </div>
+    </section>
+
+    <p class="closing-line">
+      Questions about the method? Email <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+      
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
