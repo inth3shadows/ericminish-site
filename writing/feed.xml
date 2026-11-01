@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Eric Minish — Writing</title>
+  <link href="https://www.ericminish.com/writing/feed.xml" rel="self"/>
+  <link href="https://www.ericminish.com/writing/"/>
+  <id>https://www.ericminish.com/writing/</id>
+  <updated>2026-11-01T00:00:00Z</updated>
+  <author><name>Eric Minish</name></author>
+  <entry>
+    <title>Measuring coding agents by what happens to their code</title>
+    <link href="https://www.ericminish.com/writing/measuring-coding-agents/"/>
+    <id>https://www.ericminish.com/writing/measuring-coding-agents/</id>
+    <published>2026-11-01T00:00:00Z</published>
+    <updated>2026-11-01T00:00:00Z</updated>
+    <summary>Four Claude models across 681 coding sessions: I could not tell their code survival apart, but their cost per session differed clearly. Method, results with 95% intervals, and limits.</summary>
+  </entry>
+</feed>

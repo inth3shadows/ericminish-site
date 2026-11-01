@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>flight-recorder — case study | Eric Minish</title>
   <meta name="description" content="Case study: scoring 11,179 coding-agent sessions on their cost and on how much of their code was still in the repository later.">
-  <link rel="stylesheet" href="/assets/site.css?v=b2e34a03">
+  <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/flight-recorder/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
@@ -35,6 +35,7 @@
       <nav class="site-nav" aria-label="Primary">
         <a href="/">Home</a>
         <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/writing/">Writing</a>
         <a href="/homelab/">Homelab</a>
         <a href="/status/">Now</a>
         <a href="/about/">About</a>
@@ -112,7 +113,7 @@
           secondary number over one day.</li>
         <li><b>One repository scored 0.448 survival; the true figure was 0.796.</b> The rate was divided
           by every line recorded, including lines whose files the tool could not find. It now divides by
-          lines it actually checked, and records an unchecked line as unknown rather than lost.</li>
+          lines it was able to check, and records an unchecked line as unknown rather than lost.</li>
         <li><b>One model looked much worse than another, 0.508 against 0.826.</b> The weaker-looking
           model had mostly been used in one difficult repository. Models are now compared only on
           similar work: the same repository, the same task type and a similar change size.</li>
@@ -126,7 +127,7 @@
         <div><span class="st">No averages from tiny samples</span><span class="sx">Below a minimum number of sessions, the report prints the count instead of a value.</span></div>
         <div><span class="st">Credit by cost</span><span class="sx">A session is attributed to the command that accounts for most of its cost. Counting tagged messages instead had credited the most expensive sessions to a wrap-up command that runs at the end of every long session.</span></div>
         <div><span class="st">Missing is not zero</span><span class="sx">When a rate has no denominator it is stored as empty, so missing data cannot show up as a perfect score.</span></div>
-        <div><span class="st">Call-level verification</span><span class="sx">A companion check confirms that each tool call in a transcript matches the call that was actually sent, and that each result matches the one delivered. It is used to check <a href="/portfolio/terse/">terse</a>&rsquo;s claim that its compression loses nothing.</span></div>
+        <div><span class="st">Call-level verification</span><span class="sx">A companion check confirms that each tool call in a transcript matches the call that was sent over the wire, and that each result matches the one delivered. It is used to check <a href="/portfolio/terse/">terse</a>&rsquo;s claim that its compression loses nothing.</span></div>
         <div><span class="st">Weaknesses listed up front</span><span class="sx">The README lists seven known weaknesses. The largest: commits are linked to sessions by time, so a session that overlaps a manual commit gets credit for it.</span></div>
       </div>
       <div class="tag-row" style="margin-top:20px">

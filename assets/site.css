@@ -1444,3 +1444,71 @@ h3 {
   font-size: var(--t-micro);
   color: var(--muted);
 }
+
+/* ---------- Writing: long-form posts (scoped under .post so the shared tokens stay unchanged; see #32) ---------- */
+.post-shell { width: min(calc(100% - 32px), 72ch); margin: 0 auto; }
+.post { font-size: 1.12rem; line-height: 1.7; }
+.post-header { margin: 48px 0 28px; }
+.post-header h1 { font-size: clamp(1.7rem, 4.2vw, 2.4rem); line-height: 1.2; margin: 0 0 14px; text-wrap: balance; }
+.post-dek { font-size: 1.2rem; color: #d6dfeb; margin: 0 0 18px; }
+.post-meta { font-family: var(--mono); font-size: var(--t-fine); color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.post-meta time { color: var(--text); }
+.post h2 { font-size: 1.45rem; line-height: 1.3; margin: 2.4em 0 0.6em; scroll-margin-top: 88px; }
+.post h3 { font-size: 1.15rem; margin: 1.8em 0 0.5em; scroll-margin-top: 88px; }
+.post p, .post ul, .post ol { margin: 0 0 1.1em; }
+.post ul, .post ol { padding-left: 1.3em; }
+.post li { margin-bottom: 0.35em; }
+.post a { text-decoration: underline; text-decoration-color: rgba(24, 230, 153, 0.45); text-underline-offset: 3px; }
+.post a:hover { text-decoration-color: currentColor; }
+.post .anchor { margin-left: 0.4em; font-family: var(--mono); font-size: 0.8em; color: var(--muted); text-decoration: none; opacity: 0.5; }
+.post h2:hover .anchor, .post h3:hover .anchor, .post .anchor:focus-visible { opacity: 1; }
+.post .summary { border-left: 3px solid var(--accent); padding: 4px 0 4px 18px; margin: 0 0 1.6em; }
+.post .toc { border: 1px solid var(--line); border-radius: 14px; padding: 14px 18px; margin: 0 0 2em; font-size: 0.95rem; }
+.post .toc p { margin: 0 0 6px; font-family: var(--mono); font-size: var(--t-label); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.post .toc ol { margin: 0; }
+.post figure { margin: 1.8em 0; }
+.post figure svg { width: 100%; height: auto; display: block; }
+.post figcaption { font-size: 0.92rem; color: var(--muted); margin-bottom: 10px; }
+.post figure { overflow-x: auto; }
+.post figure .chart { min-width: 560px; }
+.post td:first-child { white-space: nowrap; }
+.post details { margin-top: 10px; font-size: 0.9rem; }
+.post summary { cursor: pointer; color: var(--muted); font-family: var(--mono); font-size: var(--t-fine); }
+.post .table-scroll { overflow-x: auto; margin: 1.4em 0; }
+.post table { border-collapse: collapse; width: 100%; font-size: 0.88rem; font-family: var(--mono); }
+.post th, .post td { text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.post th { color: var(--muted); font-weight: 500; }
+.post td.num, .post th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.post pre { background: var(--bg-soft); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; overflow-x: auto; font-size: 0.85rem; line-height: 1.55; }
+.post :not(pre) > code { background: var(--bg-soft); padding: 1px 5px; border-radius: 5px; }
+.post sup a { text-decoration: none; font-family: var(--mono); font-size: 0.75em; }
+.post .footnotes { border-top: 1px solid var(--line); margin-top: 3em; padding-top: 1em; font-size: 0.92rem; color: var(--muted); }
+.post .footnotes li:target, .post sup:target { background: var(--accent-soft); }
+.post .corrections { font-size: 0.92rem; }
+.post-list { list-style: none; padding: 0; margin: 0; }
+.post-list li { padding: 18px 0; border-bottom: 1px solid var(--line); }
+.post-list h2 { font-size: 1.25rem; margin: 4px 0 6px; }
+.post-list p { margin: 0; color: #d6dfeb; }
+.post-list .post-meta { margin-bottom: 4px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media print {
+  .site-header, .site-footer, .skip-link, .post .anchor, .post .toc { display: none; }
+  body { background: #fff; color: #000; }
+  .post, .post-dek, .post-list p { color: #000; }
+  .post a { color: #000; }
+  .post a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; }
+  .post figure, .post table, .post pre { break-inside: avoid; }
+}
+.chart .c-zero { stroke: var(--line-strong); stroke-dasharray: 3 3; }
+.chart .c-tick { stroke: var(--line-strong); }
+.chart .c-label, .chart .c-axis { fill: var(--muted); font-family: var(--mono); font-size: 12px; }
+.chart .c-label { fill: var(--text); }
+.chart line.c-clear { stroke: var(--accent); stroke-width: 2.5; }
+.chart circle.c-clear { fill: var(--accent); }
+.chart line.c-unclear { stroke: var(--muted); stroke-width: 2.5; }
+.chart circle.c-unclear { fill: var(--muted); }
+@media print {
+  .chart .c-label, .chart .c-axis { fill: #000; }
+  .chart line.c-clear { stroke: #000; } .chart circle.c-clear { fill: #000; }
+  .chart line.c-unclear { stroke: #888; } .chart circle.c-unclear { fill: #888; }
+}

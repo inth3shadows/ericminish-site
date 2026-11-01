@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Measuring coding agents by what happens to their code | Eric Minish</title>
+  <meta name="description" content="Four Claude models across 681 coding sessions: I could not tell their code survival apart, but their cost per session differed clearly. Method, results with 95% intervals, and limits.">
+  <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
+  <link rel="canonical" href="https://www.ericminish.com/writing/measuring-coding-agents/">
+  <link rel="alternate" type="application/atom+xml" title="Eric Minish — Writing" href="/writing/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Eric Minish">
+  <meta property="og:title" content="Measuring coding agents by what happens to their code">
+  <meta property="og:description" content="Four Claude models across 681 coding sessions: code survival I could not tell apart, and clear differences in cost.">
+  <meta property="og:url" content="https://www.ericminish.com/writing/measuring-coding-agents/">
+  <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-11-01">
+  <meta property="article:modified_time" content="2026-11-01">
+  <meta property="article:author" content="Eric Minish">
+  <meta property="article:tag" content="Agent evaluation">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Measuring coding agents by what happens to their code">
+  <meta name="twitter:description" content="Four Claude models across 681 coding sessions: code survival I could not tell apart, and clear differences in cost.">
+  <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"Measuring coding agents by what happens to their code","datePublished":"2026-11-01","dateModified":"2026-11-01","author":{"@type":"Person","name":"Eric Minish","url":"https://www.ericminish.com/about/"},"mainEntityOfPage":"https://www.ericminish.com/writing/measuring-coding-agents/","image":"https://www.ericminish.com/assets/og.png"}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/writing/" aria-current="page">Writing</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/resume/">Resume</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="post-shell" id="main">
+    <article class="post">
+      <header class="post-header">
+        <h1>Measuring coding agents by what happens to their code</h1>
+        <p class="post-dek">I compared four Claude models across 681 coding sessions in my own repositories.
+          I could not tell their code survival apart. Their cost per session differed clearly.</p>
+        <p class="post-meta">
+          <span>By <a href="/about/">Eric Minish</a></span>
+          <span>Published <time datetime="2026-11-01">1 November 2026</time></span>
+          <!-- auto:start readtime --><span>6 min read</span><!-- auto:end readtime -->
+        </p>
+      </header>
+
+      <div class="summary">
+        <p><b>Result.</b> Between 30 June and 1 November 2026, the share of an agent&rsquo;s code still
+          present later did not differ detectably between Claude Opus 4.8, Opus 5, Opus 5.5 and Sonnet 5.
+          All six pairwise intervals include zero. Cost did differ: on comparable work, Opus 5.5 used about
+          91,000 more weighted tokens per session than Opus 5 (95% interval 43,000 to 138,000).</p>
+        <p><b>Data.</b> 681 coding sessions with checked survival, from 11,611 sessions recorded by
+          <a href="/portfolio/flight-recorder/">flight-recorder</a>. The models were not assigned at random,
+          which is the main limit on these results.</p>
+      </div>
+
+      <nav class="toc" aria-label="Contents">
+        <p>Contents</p>
+        <ol>
+          <li><a href="#question">The question</a></li>
+          <li><a href="#data">The data</a></li>
+          <li><a href="#survival">How survival is measured</a></li>
+          <li><a href="#comparison">How models are compared</a></li>
+          <li><a href="#results">Results</a></li>
+          <li><a href="#limits">What these results cannot show</a></li>
+          <li><a href="#mistakes">Mistakes in earlier versions</a></li>
+          <li><a href="#reproduce">How to reproduce it</a></li>
+          <li><a href="#corrections">Corrections</a></li>
+        </ol>
+      </nav>
+
+      <h2 id="question">The question <a class="anchor" href="#question" aria-label="Link to this section">#</a></h2>
+      <p>When I switch the model my coding agent uses, does the code it writes hold up better, and what
+        does the switch cost? Most model comparisons answer this with public benchmarks or with the
+        agent&rsquo;s own report that a task succeeded. I wanted an answer from my own repositories, using
+        evidence the agent cannot influence: whether its code is still there weeks later.</p>
+
+      <h2 id="data">The data <a class="anchor" href="#data" aria-label="Link to this section">#</a></h2>
+      <p>Every coding-agent session on my machines leaves a transcript on disk. flight-recorder reads
+        those transcripts after the fact and stores one row per session in SQLite. Between 30 June and
+        1 November 2026 it recorded 11,611 sessions, 1,297 of them coding sessions, meaning sessions that edited at least one file.
+        681 of those had lines whose survival could be checked.</p>
+      <div class="table-scroll">
+        <table>
+          <tr><th>Model</th><th class="num">Coding sessions with checked survival</th></tr>
+          <tr><td>Claude Opus 5</td><td class="num">193</td></tr>
+          <tr><td>Claude Sonnet 5</td><td class="num">171</td></tr>
+          <tr><td>Claude Opus 4.8</td><td class="num">127</td></tr>
+          <tr><td>Claude Opus 5.5</td><td class="num">121</td></tr>
+        </table>
+      </div>
+      <p>Other models appear in the data with fewer than 20 sessions each and are left out of the comparison.</p>
+      <p>Cost is measured in weighted tokens: input and output tokens weighted by their relative price,
+        with reads from the prompt cache counted as zero.<sup id="fn1-ref"><a href="#fn1">1</a></sup>
+        Each session&rsquo;s cost is reported in thousands of weighted tokens.</p>
+
+      <h2 id="survival">How survival is measured <a class="anchor" href="#survival" aria-label="Link to this section">#</a></h2>
+      <p>For each session, flight-recorder hashes every substantive line the agent added. Later, it looks
+        for each hashed line in the current version of the file. A session&rsquo;s survival is the share of
+        its checked lines that are still present. A survival of 0.85 means 85% of the lines it wrote are
+        still in the code.</p>
+      <p>Matching on line content matters. Tracking commit IDs instead would score surviving code as
+        deleted whenever history is rebased or squashed, because both operations change every commit ID.</p>
+      <p>Lines whose file cannot be found are recorded as unknown and left out of the denominator. An
+        early version counted them as deleted, which made one repository score 0.448 when the correct
+        figure was 0.796.</p>
+
+      <h2 id="comparison">How models are compared <a class="anchor" href="#comparison" aria-label="Link to this section">#</a></h2>
+      <p>Comparing all sessions of one model with all sessions of another mixes in the kind of work
+        each one did. A model used mostly in a hard repository looks worse for that reason alone. So
+        sessions are grouped into cohorts: the same repository, the same task type, and a similar change
+        size (small, medium or large).</p>
+      <p>Within each cohort where both models have at least 4 sessions, the tool takes the difference
+        between their averages. Those differences are then averaged across cohorts. Every figure comes
+        with a 95% interval from a bootstrap over sessions.<sup id="fn2-ref"><a href="#fn2">2</a></sup>
+        When an interval includes zero, the data does not distinguish the two models on that measure.</p>
+
+      <h2 id="results">Results <a class="anchor" href="#results" aria-label="Link to this section">#</a></h2>
+      <h3>Survival</h3>
+      <p>No pair of models differs detectably in survival. The point estimates are all within 0.08 of
+        zero, and every interval crosses it.</p>
+      <figure>
+        <figcaption>Difference in survival for each pair of models, first model minus second. Dots are
+          averages across shared cohorts; lines are 95% intervals. Grey intervals include zero.</figcaption>
+        <!-- auto:start chart-survival -->
+<svg viewBox="0 0 680 278" role="img" aria-labelledby="t-survival d-survival" class="chart">
+<title id="t-survival">Difference in line survival (share of lines still present)</title>
+<desc id="d-survival">Point estimate and 95% interval for each model pair. A positive value means the first model is higher. Values are in the table below the chart.</desc>
+<line class="c-zero" x1="438.4" x2="438.4" y1="10" y2="232"/>
+<text class="c-label" x="178" y="38.0" text-anchor="end">Opus 4.8 − Opus 5</text>
+<line class="c-unclear" x1="406.5" x2="543.6" y1="34.0" y2="34.0"/>
+<circle class="c-unclear" cx="473.8" cy="34.0" r="4.5"/>
+<text class="c-label" x="178" y="74.0" text-anchor="end">Opus 4.8 − Opus 5.5</text>
+<line class="c-unclear" x1="310.7" x2="501.0" y1="70.0" y2="70.0"/>
+<circle class="c-unclear" cx="412.4" cy="70.0" r="4.5"/>
+<text class="c-label" x="178" y="110.0" text-anchor="end">Opus 4.8 − Sonnet 5</text>
+<line class="c-unclear" x1="215.0" x2="456.1" y1="106.0" y2="106.0"/>
+<circle class="c-unclear" cx="348.5" cy="106.0" r="4.5"/>
+<text class="c-label" x="178" y="146.0" text-anchor="end">Opus 5 − Opus 5.5</text>
+<line class="c-unclear" x1="276.4" x2="525.8" y1="142.0" y2="142.0"/>
+<circle class="c-unclear" cx="406.5" cy="142.0" r="4.5"/>
+<text class="c-label" x="178" y="182.0" text-anchor="end">Opus 5 − Sonnet 5</text>
+<line class="c-unclear" x1="320.2" x2="566.0" y1="178.0" y2="178.0"/>
+<circle class="c-unclear" cx="430.1" cy="178.0" r="4.5"/>
+<text class="c-label" x="178" y="218.0" text-anchor="end">Opus 5.5 − Sonnet 5</text>
+<line class="c-unclear" x1="282.3" x2="631.0" y1="214.0" y2="214.0"/>
+<circle class="c-unclear" cx="438.4" cy="214.0" r="4.5"/>
+<line class="c-tick" x1="202.0" x2="202.0" y1="232" y2="237"/>
+<text class="c-axis" x="202.0" y="250" text-anchor="middle">-0.2</text>
+<line class="c-tick" x1="320.2" x2="320.2" y1="232" y2="237"/>
+<text class="c-axis" x="320.2" y="250" text-anchor="middle">-0.1</text>
+<line class="c-tick" x1="438.4" x2="438.4" y1="232" y2="237"/>
+<text class="c-axis" x="438.4" y="250" text-anchor="middle">0</text>
+<line class="c-tick" x1="556.6" x2="556.6" y1="232" y2="237"/>
+<text class="c-axis" x="556.6" y="250" text-anchor="middle">+0.1</text>
+<text class="c-axis" x="423.0" y="270" text-anchor="middle">Difference in line survival (share of lines still present)</text>
+</svg>
+<details><summary>The numbers in this chart</summary><div class="table-scroll"><table><tr><th>Pair</th><th class="num">Cohorts</th><th class="num">Difference</th><th class="num">95% interval</th></tr><tr><td>Opus 4.8 − Opus 5</td><td class="num">11</td><td class="num">+0.030</td><td class="num">-0.027 to +0.089</td></tr><tr><td>Opus 4.8 − Opus 5.5</td><td class="num">8</td><td class="num">-0.022</td><td class="num">-0.108 to +0.053</td></tr><tr><td>Opus 4.8 − Sonnet 5</td><td class="num">8</td><td class="num">-0.076</td><td class="num">-0.189 to +0.015</td></tr><tr><td>Opus 5 − Opus 5.5</td><td class="num">13</td><td class="num">-0.027</td><td class="num">-0.137 to +0.074</td></tr><tr><td>Opus 5 − Sonnet 5</td><td class="num">9</td><td class="num">-0.007</td><td class="num">-0.100 to +0.108</td></tr><tr><td>Opus 5.5 − Sonnet 5</td><td class="num">7</td><td class="num">-0.000</td><td class="num">-0.132 to +0.163</td></tr></table></div></details>
+<!-- auto:end chart-survival -->
+      </figure>
+
+      <h3>Cost per session</h3>
+      <p>Cost separates the models in five of the six pairs. Opus 5.5 was the most expensive model in
+        every pair it appears in. On comparable work it used about 71,000 more weighted tokens per session
+        than Opus 4.8, 91,000 more than Opus 5, and 138,000 more than Sonnet 5.</p>
+      <figure>
+        <figcaption>Difference in cost per session, in thousands of weighted tokens, first model minus
+          second. Green intervals exclude zero.</figcaption>
+        <!-- auto:start chart-ktok -->
+<svg viewBox="0 0 680 278" role="img" aria-labelledby="t-ktok d-ktok" class="chart">
+<title id="t-ktok">Difference in cost per session (thousand weighted tokens)</title>
+<desc id="d-ktok">Point estimate and 95% interval for each model pair. A positive value means the first model is higher. Values are in the table below the chart.</desc>
+<line class="c-zero" x1="402.7" x2="402.7" y1="10" y2="232"/>
+<text class="c-label" x="178" y="38.0" text-anchor="end">Opus 4.8 − Opus 5</text>
+<line class="c-clear" x1="411.5" x2="561.0" y1="34.0" y2="34.0"/>
+<circle class="c-clear" cx="487.5" cy="34.0" r="4.5"/>
+<text class="c-label" x="178" y="74.0" text-anchor="end">Opus 4.8 − Opus 5.5</text>
+<line class="c-clear" x1="226.5" x2="383.6" y1="70.0" y2="70.0"/>
+<circle class="c-clear" cx="306.5" cy="70.0" r="4.5"/>
+<text class="c-label" x="178" y="110.0" text-anchor="end">Opus 4.8 − Sonnet 5</text>
+<line class="c-clear" x1="447.2" x2="600.5" y1="106.0" y2="106.0"/>
+<circle class="c-clear" cx="516.3" cy="106.0" r="4.5"/>
+<text class="c-label" x="178" y="146.0" text-anchor="end">Opus 5 − Opus 5.5</text>
+<line class="c-clear" x1="215.0" x2="344.8" y1="142.0" y2="142.0"/>
+<circle class="c-clear" cx="278.9" cy="142.0" r="4.5"/>
+<text class="c-label" x="178" y="182.0" text-anchor="end">Opus 5 − Sonnet 5</text>
+<line class="c-unclear" x1="395.1" x2="494.9" y1="178.0" y2="178.0"/>
+<circle class="c-unclear" cx="446.9" cy="178.0" r="4.5"/>
+<text class="c-label" x="178" y="218.0" text-anchor="end">Opus 5.5 − Sonnet 5</text>
+<line class="c-clear" x1="548.0" x2="631.0" y1="214.0" y2="214.0"/>
+<circle class="c-clear" cx="590.6" cy="214.0" r="4.5"/>
+<line class="c-tick" x1="198.5" x2="198.5" y1="232" y2="237"/>
+<text class="c-axis" x="198.5" y="250" text-anchor="middle">-150</text>
+<line class="c-tick" x1="266.6" x2="266.6" y1="232" y2="237"/>
+<text class="c-axis" x="266.6" y="250" text-anchor="middle">-100</text>
+<line class="c-tick" x1="334.6" x2="334.6" y1="232" y2="237"/>
+<text class="c-axis" x="334.6" y="250" text-anchor="middle">-50</text>
+<line class="c-tick" x1="402.7" x2="402.7" y1="232" y2="237"/>
+<text class="c-axis" x="402.7" y="250" text-anchor="middle">0</text>
+<line class="c-tick" x1="470.7" x2="470.7" y1="232" y2="237"/>
+<text class="c-axis" x="470.7" y="250" text-anchor="middle">+50</text>
+<line class="c-tick" x1="538.7" x2="538.7" y1="232" y2="237"/>
+<text class="c-axis" x="538.7" y="250" text-anchor="middle">+100</text>
+<line class="c-tick" x1="606.8" x2="606.8" y1="232" y2="237"/>
+<text class="c-axis" x="606.8" y="250" text-anchor="middle">+150</text>
+<text class="c-axis" x="423.0" y="270" text-anchor="middle">Difference in cost per session (thousand weighted tokens)</text>
+</svg>
+<details><summary>The numbers in this chart</summary><div class="table-scroll"><table><tr><th>Pair</th><th class="num">Cohorts</th><th class="num">Difference</th><th class="num">95% interval</th></tr><tr><td>Opus 4.8 − Opus 5</td><td class="num">11</td><td class="num">+62k</td><td class="num">+7k to +116k</td></tr><tr><td>Opus 4.8 − Opus 5.5</td><td class="num">8</td><td class="num">-71k</td><td class="num">-129k to -14k</td></tr><tr><td>Opus 4.8 − Sonnet 5</td><td class="num">8</td><td class="num">+84k</td><td class="num">+33k to +145k</td></tr><tr><td>Opus 5 − Opus 5.5</td><td class="num">13</td><td class="num">-91k</td><td class="num">-138k to -43k</td></tr><tr><td>Opus 5 − Sonnet 5</td><td class="num">9</td><td class="num">+33k</td><td class="num">-6k to +68k</td></tr><tr><td>Opus 5.5 − Sonnet 5</td><td class="num">7</td><td class="num">+138k</td><td class="num">+107k to +168k</td></tr></table></div></details>
+<!-- auto:end chart-ktok -->
+      </figure>
+
+      <h3>Other measures</h3>
+      <p>Sonnet 5 had a higher tool error rate than each Opus model, by 1.3 to 1.8 percentage points.
+        These differences are small, but their intervals exclude zero. Opus 5 read fewer files it never
+        edited, and rewrote less of its own output, than Sonnet 5. The remaining differences in those two
+        measures were inconclusive.</p>
+      <p>Taken together: on my repositories over these four months, the more expensive models did not
+        produce code that lasted longer. If cost matters, the cheaper models were the better choice on
+        this evidence.</p>
+
+      <h2 id="limits">What these results cannot show <a class="anchor" href="#limits" aria-label="Link to this section">#</a></h2>
+      <ol>
+        <li><b>Models were not assigned at random.</b> I chose the model for each session, and my default
+          changed over time. Model, time period and the kind of task I gave each one are mixed together.
+          Cohorts reduce this but cannot remove it.</li>
+        <li><b>No detectable difference does not mean no difference.</b> Each model has between 4 and 32 sessions
+          per cohort, and most cohorts have fewer than 15. With intervals this wide, a survival gap of around 10 percentage points between two
+          models could go unseen.</li>
+        <li><b>Older sessions have had longer to be rewritten.</b> Survival is checked once, against the
+          current code. A model used mostly in July has had more time for its lines to be replaced than one
+          used in October.</li>
+        <li><b>Commits are linked to sessions by time.</b> A session that overlaps a commit I made by hand
+          gets credit for it. This adds noise to interactive sessions.</li>
+        <li><b>One developer, one set of repositories.</b> These are my projects and my habits. The method
+          transfers; the numbers do not.</li>
+      </ol>
+
+      <h2 id="mistakes">Mistakes in earlier versions <a class="anchor" href="#mistakes" aria-label="Link to this section">#</a></h2>
+      <p>Each of these produced a confident number that was wrong. They are described in more detail
+        in the <a href="/portfolio/flight-recorder/">flight-recorder case study</a>.</p>
+      <ul>
+        <li>The tool error rate read 0.000 everywhere, because about half of failed tool calls are not
+          flagged as errors. It now also checks the text of each result.</li>
+        <li>About 66% of sessions looked like failures, because a later edit to the same file within
+          7 days counted as rework. Rework is now measured from line survival.</li>
+        <li>One repository scored 0.448 survival instead of 0.796, because unfindable lines counted as
+          deleted.</li>
+        <li>One model looked far worse than another, 0.508 against 0.826, because it had mostly been used
+          in one difficult repository. This is why comparisons are now made within cohorts.</li>
+      </ul>
+
+      <h2 id="reproduce">How to reproduce it <a class="anchor" href="#reproduce" aria-label="Link to this section">#</a></h2>
+      <p>The flight-recorder repository is private, so these commands are for reference. They build the
+        database from local transcripts, score survival against git, and print the comparison above.</p>
+      <pre><code>python3 ingest.py                  # read new transcripts into SQLite
+python3 score.py --git             # link commits, check line survival
+python3 report.py models --min-n 4 # matched-pair model comparison</code></pre>
+      <p>The numbers behind both charts are in <a href="/writing/measuring-coding-agents/data.json">data.json</a>,
+        copied from that report on 1 November 2026.</p>
+
+      <h2 id="corrections">Corrections <a class="anchor" href="#corrections" aria-label="Link to this section">#</a></h2>
+      <p class="corrections">None yet. Corrections will be listed here with their date.</p>
+
+      <ol class="footnotes">
+        <li id="fn1">Weights: output tokens 1.0, input tokens 0.94, cache writes 0.11, cache reads 0. They
+          come from the ledger I use to track token spend. <a href="#fn1-ref" aria-label="Back to text">↩</a></li>
+        <li id="fn2">A bootstrap resamples the sessions many times with replacement and recomputes the
+          difference each time; the middle 95% of those results is the interval. It resamples whole
+          sessions, because lines from one session are not independent of each other.
+          <a href="#fn2-ref" aria-label="Back to text">↩</a></li>
+      </ol>
+    </article>
+
+    <p class="closing-line">
+      Questions or corrections: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/writing/">All writing</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+        <a href="/writing/feed.xml">Feed</a>
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

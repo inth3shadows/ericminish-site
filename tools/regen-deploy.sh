@@ -23,6 +23,9 @@ trap 'rm -rf "$work"' EXIT
 git -C "$REPO" fetch -q origin
 git -C "$REPO" archive "$REF" | tar -x -C "$work"
 python3 -I "$work/tools/gen-gitstrip.py" --root "$work"
+# Refuse to ship a stale writing index/feed or a broken internal link; report copy-rule findings.
+python3 -I "$work/tools/gen-writing.py" --check
+python3 -I "$work/tools/lint-copy.py" --warn | tail -1
 
 # Ship only the site: no docs, tooling or dotfiles.
 rm -rf "$work/tools" "$work"/.[!.]* "$work"/*.md
