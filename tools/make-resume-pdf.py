@@ -7,23 +7,23 @@ def esc(t):
     return t.replace('\\','\\\\').replace('(','\\(').replace(')','\\)')
 def add(kind,text=''): LINES.append((kind,text))
 add('name','ERIC MINISH')
-add('tag','AI Infrastructure & Backend Engineer - I build the checks that catch what is breaking quietly')
+add('tag','AI Infrastructure & Backend Engineer - I build checks that find problems in systems before people notice them')
 add('meta','hi@ericminish.com  |  ericminish.com  |  github.com/inth3shadows  |  linkedin.com/in/ericminish')
 add('gap')
 add('h','SUMMARY')
-add('p','AI infrastructure and backend engineering, built from inside operations rather than beside it. Python, Go and SQL; MCP servers, retrieval and evaluation harnesses, ingestion pipelines and the cloud services underneath them - shipped, deployed and maintained, mostly by me.')
-add('p','I find the thing that is quietly breaking and build the check that catches it the next time. In customer-success operations that was account risk: churn went from 30% to under 10% because the system flagged customers before they left rather than explaining them afterwards. Lately it has been my own tooling - a proxy that refuses to compress anything it cannot rebuild exactly, a search engine whose evaluation told me half of it did not work, and a well-depth model that lost its most promising variable the moment it was measured against the right baseline.')
+add('p','AI infrastructure and backend engineering, built while working in operations. Python, Go and SQL; MCP servers, retrieval and evaluation harnesses, ingestion pipelines and the cloud services they run on. I built, deployed and maintain most of it myself.')
+add('p','I look for problems that do not raise an error, and build checks that catch them. In customer-success operations that meant account risk: churn fell from 30% to under 10% after the system began flagging at-risk customers before they left. More recently it has meant my own tools: a proxy that only sends compressed output it can decode back exactly, a search engine whose evaluation showed it answered half of the test questions usefully, and a well-depth model that lost its strongest variable once it was measured against the right baseline.')
 add('gap')
 add('h','EXPERIENCE')
 add('role','Systems & Automation Lead')
 add('sub','Transactly  |  Jul 2023 - Present  |  Remote  |  Internal title: Lead Customer Account Specialist')
-for b in ["Own the internal systems layer: workflow logic, the integrations around it, and the reporting that makes the result legible. Roughly sixty active project directories, two-thirds touched in the last month.",
+for b in ["Own the internal systems layer: workflow logic, the integrations around it, and the reporting that explains the results to people who were not involved. Roughly sixty active projects, two-thirds of them changed in the last month.",
           "Scope and deploy technical workflows across customer success, onboarding, and internal operations using SQL, CRM APIs, and multi-department tooling.",
           "Built and maintain SQL-backed reporting for subscription logic and billing reconciliation.",
           "Lead employee onboarding and offboarding workflows tied to access control and system provisioning.",
           "Design and implement CRM automations across customer success, sales, and partnerships.",
           "Support internal infrastructure through custom development: ingestion services and scheduled jobs on managed cloud infrastructure, warehouse-backed reporting behind access control, and operational microservices. Python-dominant, TypeScript for user-facing work, ~140 test files.",
-          "Built an LLM-assisted compliance service: transcribes calls and scores them against a rubric, deterministic checks first and human review after, with the model never given the last word."]:
+          "Built an LLM-assisted compliance service: transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision."]:
     add('li',b)
 add('gap')
 add('role','Customer Success Operations Manager')
@@ -33,16 +33,16 @@ for b in ["Cut client churn from 30% to under 10% through process and engagement
           "Coordinated ticket workflows across success and transaction-coordination operations, halving issue resolution time.",
           "Served as the customer-success stakeholder for CRM, internal tooling, and platform workflows.",
           "Wrote and deployed the customer-success playbooks and onboarding documentation.",
-          "Kept every system running through a 30% headcount reduction. Nothing broke."]:
+          "Kept every system running through a 30% headcount reduction."]:
     add('li',b)
 add('gap')
 add('role','Agent and data infrastructure (independent)')
 add('sub','2025 - Present')
-for b in ["RunEcho - stops a coding agent writing a call to a function the repo does not have, before the write lands. ~12 ms, no model, no network, no context cost on a clean check. Public, MIT licensed.",
-          "terse - compresses AI tool output losslessly: 59% fewer tokens across 365,144 tokens of real API payloads, measured head-to-head against the TOON format, which regresses to -7% on the same corpus. Public, MIT licensed.",
-          "testgraph - given a diff, names the user journeys it could have broken. Comparable tools answer in tests and need coverage from a prior run; this answers on a repo that has never run its suite. Public, MIT licensed, on PyPI.",
-          "modelbench - benchmarks models on real bug-fix commits mined from my own repos, three runs per pair, scored on cost per solved task - and publishes its own corrections.",
-          "Lodestone - local retrieval over years of working notes, and the evaluation that showed half of it did not work. Published the null result.",
+for b in ["RunEcho - stops a coding agent writing a call to a function the repo does not have, before the write lands. It takes about 12 ms, uses no model or network, and adds nothing to the agent's context when the check passes. Public, MIT licensed.",
+          "terse - compresses AI tool output losslessly: 59% fewer tokens across 365,144 tokens of real API payloads, compared with the TOON format, which made the same payloads 7% larger. Public, MIT licensed.",
+          "testgraph - given a diff, names the user journeys it could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT licensed, on PyPI.",
+          "modelbench - benchmarks models on real bug-fix commits mined from my own repos, three runs per pair, scored on cost per solved task. The write-up lists the earlier figures it had to correct.",
+          "Lodestone - local search over years of my working notes. Its evaluation showed it gave useful answers to 5 of 10 test questions at full scale, and I published that result.",
           "Frostline - spatial models over 50,083 well records; depth is predictable from location, yield is not.",
           "Reported 32 bugs in a code-analysis tool, including two race conditions reproduced on demand with purpose-built harnesses.",
           "Three applications deployed end to end: a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client."]:

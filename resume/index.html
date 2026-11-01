@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Resume — Eric Minish</title>
-  <meta name="description" content="Eric Minish — systems engineer. I build the checks that catch what is breaking quietly.">
+  <meta name="description" content="Eric Minish — systems engineer. I build checks that find problems in systems before people notice them.">
   <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
   <link rel="canonical" href="https://www.ericminish.com/resume/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="Resume — Eric Minish">
-  <meta property="ogdescription" content="Systems engineer. I build the checks that catch what is breaking quietly.">
+  <meta property="ogdescription" content="Systems engineer. I build checks that find problems in systems before people notice them.">
   <meta property="og:url" content="https://www.ericminish.com/resume/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Resume — Eric Minish">
-  <meta name="twitterdescription" content="Systems engineer. I build the checks that catch what is breaking quietly.">
+  <meta name="twitterdescription" content="Systems engineer. I build checks that find problems in systems before people notice them.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -47,7 +47,7 @@
   <main class="shell" id="main">
     <section class="hero hero-home">
       <h2 class="name">Eric Minish</h2>
-      <h1 class="lede">I build the checks that catch what is breaking quietly.</h1>
+      <h1 class="lede">I build checks that find problems in systems before people notice them.</h1>
       <p class="hero-meta" style="margin-top:16px">AI infrastructure &amp; backend engineering · embedded in operations</p>
       <p class="fine" style="margin-top:12px">
         <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> ·
@@ -60,19 +60,18 @@
     <section class="section">
       <div class="prose">
         <p>
-          <strong>AI infrastructure and backend engineering, built from inside operations rather
-          than beside it.</strong> Python, Go and SQL; MCP servers, retrieval and evaluation
-          harnesses, ingestion pipelines and the cloud services underneath them — shipped, deployed
-          and maintained, mostly by me.
+          <strong>AI infrastructure and backend engineering, built while working in operations.</strong>
+          Python, Go and SQL; MCP servers, retrieval and evaluation harnesses, ingestion pipelines
+          and the cloud services they run on. I built, deployed and maintain most of it myself.
         </p>
         <p>
-          I find the thing that is quietly breaking and build the check that catches it the next
-          time. In customer-success operations that was account risk: churn went from 30% to under
-          10% because the system flagged customers before they left rather than explaining them
-          afterwards. Lately it has been my own tooling — a proxy that refuses to compress anything
-          it cannot rebuild exactly, a search engine whose evaluation told me half of it did not
-          work, and a well-depth model that lost its most promising variable the moment it was
-          measured against the right baseline.
+          I look for problems that do not raise an error, and build checks that catch them. In
+          customer-success operations that meant account risk: churn fell from 30% to under 10%
+          after the system began flagging at-risk customers before they left. More recently it has
+          meant my own tools: a proxy that only sends compressed output it can decode back exactly,
+          a search engine whose evaluation showed it answered half of the test questions usefully,
+          and a well-depth model that lost its strongest variable once it was measured against the
+          right baseline.
         </p>
       </div>
     </section>
@@ -87,9 +86,8 @@
         <div class="prose">
           <p>
             I own the internal systems layer: the workflow logic, the integrations between it and
-            everything else, and the reporting that has to make the result legible to people who
-            were not in the room. Roughly sixty active project directories, two-thirds of them
-            touched in the last month — a maintained estate rather than a pile of scripts.
+            everything else, and the reporting that explains the results to people who were not involved. Roughly sixty
+            active projects, two-thirds of them changed in the last month.
           </p>
           <ul>
             <li>Scope and deploy technical workflows across customer success, onboarding and internal operations using SQL, CRM APIs and multi-department tooling.</li>
@@ -97,7 +95,7 @@
             <li>Lead employee onboarding and offboarding workflows tied to access control and system provisioning.</li>
             <li>Design and implement CRM automations across customer success, sales and partnerships.</li>
             <li>Support internal infrastructure through custom workflow development and scripting — ingestion services and scheduled jobs on managed cloud infrastructure, warehouse-backed reporting behind access control, and operational microservices. Python-dominant, TypeScript for user-facing work, around 140 test files across the estate.</li>
-            <li>Built an LLM-assisted compliance service: it transcribes calls and scores them against a rubric, deterministic checks first and human review after, with the model never given the last word.</li>
+            <li>Built an LLM-assisted compliance service: it transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.</li>
           </ul>
         </div>
       </article>
@@ -108,9 +106,9 @@
         <p class="fine" style="margin:0 0 12px">Previously Client Success Operations Lead, Success Coach, Success Support Specialist.</p>
         <div class="prose">
           <p>
-            Owned cross-department process infrastructure and automation across customer success,
-            product, sales and operations — the reporting, tooling and workflow design that made
-            churn something the company could see before it happened.
+            Owned process infrastructure and automation across customer success, product, sales and
+            operations, including the reporting, tools and workflows that let the company see churn
+            risk early.
           </p>
           <ul>
             <li>Cut client churn from <strong>30% to under 10%</strong> through process and engagement redesign backed by real-time risk scoring.</li>
@@ -118,7 +116,7 @@
             <li>Coordinated ticket workflows across success and transaction-coordination operations, <strong>halving</strong> issue resolution time.</li>
             <li>Served as the customer-success stakeholder for CRM, internal tooling and platform workflows.</li>
             <li>Wrote and deployed the customer-success playbooks and onboarding documentation.</li>
-            <li>Kept every system running through a 30% headcount reduction. Nothing broke.</li>
+            <li>Kept every system running through a 30% headcount reduction.</li>
           </ul>
         </div>
       </article>
@@ -128,11 +126,11 @@
         <h3>Agent infrastructure</h3>
         <div class="prose">
           <ul>
-            <li><a href="/portfolio/runecho/">RunEcho</a> — stops a coding agent writing a call to a function the repo does not have, before the write lands. ~12 ms, no model, no network, and zero context cost on a clean check. Public, MIT.</li>
-            <li><a href="/portfolio/terse/">terse</a> — compresses AI tool output losslessly: 59% fewer tokens across 365,144 tokens of real API payloads, measured against the TOON format, which regresses to −7% on the same corpus. Public, MIT.</li>
-            <li><a href="/portfolio/testgraph/">testgraph</a> — given a diff, names the user journeys it could have broken. Comparable tools answer in tests and need coverage from a prior run; this answers on a repository that has never run its suite. Public, MIT, on PyPI.</li>
-            <li><a href="/portfolio/modelbench/">modelbench</a> — benchmarks models on real bug-fix commits mined from my own repositories, three runs per pair, scored on cost per solved task — and publishes its own corrections.</li>
-            <li><a href="/portfolio/harness/">harness</a> — an agent harness whose verdict on a change is four deterministic checks with no model in them, and no auto-commit at the end.</li>
+            <li><a href="/portfolio/runecho/">RunEcho</a> — stops a coding agent writing a call to a function the repo does not have, before the write lands. It takes about 12 ms, uses no model or network, and adds nothing to the agent&rsquo;s context when the check passes. Public, MIT.</li>
+            <li><a href="/portfolio/terse/">terse</a> — compresses AI tool output losslessly: 59% fewer tokens across 365,144 tokens of real API payloads, compared with the TOON format, which made the same payloads 7% larger. Public, MIT.</li>
+            <li><a href="/portfolio/testgraph/">testgraph</a> — given a diff, names the user journeys it could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT, on PyPI.</li>
+            <li><a href="/portfolio/modelbench/">modelbench</a> — benchmarks models on real bug-fix commits mined from my own repositories, three runs per pair, scored on cost per solved task. The write-up lists the earlier figures it had to correct.</li>
+            <li><a href="/portfolio/harness/">harness</a> — an agent harness that judges each change with four rule-based checks, uses no model to judge, and never commits on its own.</li>
           </ul>
         </div>
       </article>
@@ -142,8 +140,8 @@
         <h3>Data work and shipped applications</h3>
         <div class="prose">
           <ul>
-            <li><a href="/portfolio/lodestone/">Lodestone</a> — local retrieval over years of working notes, and the evaluation that showed half of it did not work. Published the null result.</li>
-            <li><a href="/portfolio/frostline/">Frostline</a> — spatial models over 50,083 well records, and a business built around what they can honestly predict.</li>
+            <li><a href="/portfolio/lodestone/">Lodestone</a> — local search over years of my working notes. Its evaluation showed it gave useful answers to 5 of 10 test questions at full scale, and I published that result.</li>
+            <li><a href="/portfolio/frostline/">Frostline</a> — spatial models over 50,083 well records, and a business built around what they can predict.</li>
             <li>Reported <strong>32 bugs</strong> in a code-analysis tool I use daily, including two race conditions reproduced on demand with purpose-built harnesses.</li>
             <li>Three applications deployed end to end — a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client.</li>
           </ul>
@@ -196,7 +194,7 @@
         <div><span class="st">Practice</span><span class="sx">pytest and Go test, CI/CD with GitHub Actions, git, technical writing and documentation</span></div>
       </div>
       <p class="fine" style="margin-top:12px">
-        Everything here is in something I have shipped or run, not something I have read about.
+        Each of these is used in work listed above.
       </p>
     </section>
 
@@ -210,7 +208,7 @@
     </section>
 
     <p class="closing-line">
-      <a class="button" href="/resume/eric-minish-resume-f04848eb.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
+      <a class="button" href="/resume/eric-minish-resume-c621cda2.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
     </p>
   </main>
 

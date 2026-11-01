@@ -64,7 +64,7 @@
       </div>
 
       <aside class="note">
-        <p>Live surfaces: this site, <a href="https://thefrostlineco.com">The Frostline Co.</a>, <a href="https://ttrpg.ericminish.com">The Campaign Table</a>, and the disclosed reference build at <a href="https://nmwelldrilling.com">nmwelldrilling.com</a> — all served from my own homelab.</p>
+        <p>Sites I run from my own homelab: this one, <a href="https://thefrostlineco.com">The Frostline Co.</a> and <a href="https://ttrpg.ericminish.com">The Campaign Table</a>. <a href="https://nmwelldrilling.com">nmwelldrilling.com</a> is a sample site I built and label as one.</p>
       </aside>
     </section>
 
@@ -78,7 +78,7 @@
           <div>
             <div class="prow-name"><a href="/portfolio/terse/">terse</a></div>
             <p class="prow-desc">A proxy in front of my agent&rsquo;s tool servers. It compresses what they
-              return and forwards the original untouched whenever a perfect round trip cannot be proven.</p>
+              return, and sends the original instead whenever it cannot prove the compressed version decodes back exactly.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">59% fewer tokens</span>
@@ -90,8 +90,8 @@
           <div>
             <div class="prow-name"><a href="/portfolio/testgraph/">testgraph</a></div>
             <p class="prow-desc">Given a diff, it names the user journeys the change could have broken.
-              Everything comparable answers in tests and needs coverage first; this answers on a repo
-              that has never run its suite.</p>
+              Similar tools need coverage data from an earlier test run; this works on a repository
+              whose tests have never been run.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">journeys, not tests</span>
@@ -103,7 +103,7 @@
           <div>
             <div class="prow-name"><a href="/portfolio/runecho/">RunEcho</a></div>
             <p class="prow-desc">Stops an agent writing a call to a function the repo does not have, before
-              the write lands. No model, no network, ~12&nbsp;ms — and a clean check costs no context at all.</p>
+              the write lands. It takes about 12&nbsp;ms, uses no model or network, and adds nothing to the agent&rsquo;s context when the check passes.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">0 context tokens</span>
@@ -115,7 +115,7 @@
           <div>
             <div class="prow-name"><a href="/portfolio/modelbench/">modelbench</a></div>
             <p class="prow-desc">Replays real bug-fix commits from my own repos against cheap models, several
-              times each, and reports cost per solved task. It publishes its own corrections.</p>
+              times each, and reports cost per solved task. The write-up lists the earlier figures it had to correct.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">cost per solved task</span>
@@ -127,10 +127,10 @@
           <div>
             <div class="prow-name"><a href="/portfolio/lodestone/">Lodestone</a></div>
             <p class="prow-desc">Local retrieval over years of my own working notes. It beat keyword
-              search at a thousand documents and lost to it at fifty-seven thousand — so I published that.</p>
+              search at a thousand documents and lost to it at fifty-seven thousand. I published both results.</p>
           </div>
           <div class="prow-right">
-            <span class="prow-value">5 of 10 at real scale</span>
+            <span class="prow-value">5 of 10 at full scale</span>
             <span class="prow-meta">null result</span>
           </div>
         </div>
@@ -190,7 +190,7 @@
     </section>
 
     <p class="closing-line">
-      Email is the best way to reach me — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
+      Email is the best way to reach me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
     </p>
   </main>
 

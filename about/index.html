@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>About | Eric Minish</title>
-  <meta name="description" content="Eric Minish — agent and data infrastructure, reached through operational systems rather than research.">
+  <meta name="description" content="Eric Minish builds infrastructure for AI agents and data work, after years in operational systems.">
   <link rel="stylesheet" href="/assets/site.css?v=2628f0b1">
   <link rel="canonical" href="https://www.ericminish.com/about/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="About — Eric Minish">
-  <meta property="og:description" content="Agent and data infrastructure, reached through operational systems rather than research.">
+  <meta property="og:description" content="Infrastructure for AI agents and data work, built after years in operational systems.">
   <meta property="og:url" content="https://www.ericminish.com/about/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="About — Eric Minish">
-  <meta name="twitter:description" content="Agent and data infrastructure, reached through operational systems rather than research.">
+  <meta name="twitter:description" content="Infrastructure for AI agents and data work, built after years in operational systems.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -49,29 +49,29 @@
       <div class="hero-copy">
         <h1>About</h1>
         <p class="lede">
-          I build agent and data infrastructure, and I came to it through operational systems
-          rather than through research. Central Lake, Michigan.
+          I build infrastructure for AI agents and the data work that runs on it. I came to this
+          from operations work, not research. I live in Central Lake, Michigan.
         </p>
       </div>
       <aside class="note">
-        <p>The short version: I am most useful in the part of a system where ownership, state and
-          follow-through start to get muddy.</p>
+        <p>In short: I work on systems where it is unclear who owns a task, what state it is in,
+          or whether it was finished, and I make those things clear.</p>
       </aside>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The rule everything here follows</h2></div></div>
+      <div class="section-head"><div><h2>The rule I build to</h2></div></div>
       <div class="prose">
         <p>
-          A system should decline to answer rather than guess. That sounds like a platitude until
-          it costs something, so the work on this site is chosen partly to show what it costs.
+          A system should decline to answer rather than guess. Following that rule has a cost each
+          time, and these four projects show what it cost.
         </p>
       </div>
       <div class="subs">
-        <div><span class="st">It cost a design</span><span class="sx">A <a href="/portfolio/lodestone/">retrieval engine</a> I built beat keyword search on a small corpus and lost to it on a real one. The write-up leads with the loss, because a measurement that only ever confirms you is not a measurement.</span></div>
-        <div><span class="st">It cost a result</span><span class="sx">A <a href="/portfolio/frostline/">modelling target</a> scored 38.8% better than its baseline and got cut anyway, once the right baseline showed it was a restatement of a variable already in hand.</span></div>
-        <div><span class="st">It costs throughput</span><span class="sx">The <a href="/portfolio/terse/">compression proxy</a> in front of my tool servers forwards the original payload untouched the moment it cannot prove a perfect round trip. Slower, and never wrong.</span></div>
-        <div><span class="st">It costs convenience</span><span class="sx">My knowledge base takes proposals from agents and reviews every one before it lands. Uncurated ingestion was the cheap alternative and it was rejected: at volume, the important things stop being findable.</span></div>
+        <div><span class="st">A design I gave up</span><span class="sx">A <a href="/portfolio/lodestone/">retrieval engine</a> I built beat keyword search on a small set of documents and lost to it on the full set. The write-up starts with the loss.</span></div>
+        <div><span class="st">A result I cut</span><span class="sx">A <a href="/portfolio/frostline/">modelling target</a> scored 38.8% better than its baseline. Measured against the right baseline, it turned out to repeat a variable the model already had, so I dropped it.</span></div>
+        <div><span class="st">Speed I gave up</span><span class="sx">The <a href="/portfolio/terse/">compression proxy</a> in front of my agent&rsquo;s tool servers sends the original, uncompressed output whenever it cannot prove the compressed version decodes back exactly. That is slower, but the agent never receives a damaged copy.</span></div>
+        <div><span class="st">Convenience I gave up</span><span class="sx">My knowledge base accepts proposals from agents and reviews each one before saving it. Saving everything unreviewed was the cheaper option. I rejected it because, at volume, the important entries become hard to find.</span></div>
       </div>
     </section>
 
@@ -79,29 +79,26 @@
       <div class="section-head"><div><h2>How I got here</h2></div></div>
       <div class="prose">
         <p>
-          The professional work has been operational systems: workflow state, event handling,
-          automation around CRM behaviour, and the reporting layer that has to make all of it
-          legible afterwards. The part I care about is rarely the interface. It is the point where
-          somebody needs to know what happened, what happens next, and whether they can trust it.
+          My professional work has been in operational systems: tracking the state of workflows,
+          handling events, automating CRM processes, and building the reports that show afterwards
+          what happened. The parts I spend most time on are not the interface. They are the places
+          where someone needs to know what happened, what happens next, and whether the record can be trusted.
         </p>
         <p>
-          That turns out to be the whole problem in AI infrastructure too. An agent acts on state
-          it cannot see directly, so the interesting work is the layer deciding what it is allowed
-          to know, what it is allowed to write, and what happens when part of that goes wrong.
-          Neither of those is a clever trick. Both are refusals to let a convenient default quietly
-          become a correctness bug.
+          AI agents have the same problem. An agent acts on information it cannot check directly,
+          so most of my work on agents is deciding what an agent may read, what it may change, and
+          what happens when one of those steps fails.
         </p>
         <p>
-          The <a href="/homelab/">homelab</a> is the same argument in hardware. Ten machines
-          carrying real routing, monitoring and recovery, so a claim about how something behaves
-          under failure is something I have watched rather than read.
+          I run these systems on my own <a href="/homelab/">homelab</a>: ten machines handling routing,
+          monitoring and recovery. When I describe how something behaves when it fails, I have seen it fail there.
         </p>
       </div>
     </section>
 
 
     <p class="closing-line">
-      Email is the best way to reach me — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
+      Email is the best way to reach me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
     </p>
   </main>
 
