@@ -50,31 +50,30 @@
         <p class="eyebrow">Case study · AI infrastructure</p>
         <h1>Cutting agent token cost without losing a byte</h1>
         <p class="lede">
-          Agent tool outputs are quietly one of the most expensive things in an AI stack.
-          terse is a drop-in proxy that losslessly compresses that output — 59% fewer tokens on a real corpus — while keeping every single piece of information.
+          An AI agent calls tools (search, file listings, API requests) and the model reads every result, so tool output is a large part of the token bill. Tokens are the units a model is limited and billed by. terse is a drop-in proxy that compresses that output without losing anything: 59% fewer tokens on nine GitHub API payloads, and the original can always be rebuilt exactly.
         </p>
       </div>
       <aside class="note">
-        <p><strong>What it is</strong> — a lossless compression proxy that sits in front of any MCP tool server and shrinks its output.</p>
+        <p><strong>What it is</strong> — a lossless compression proxy that sits in front of any MCP server (Model Context Protocol, the standard way agents connect to tools) and shrinks its output.</p>
         <p><strong>Status</strong> — running in my own agent stack today, wrapping a code-intelligence server on every call.</p>
       </aside>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The hidden cost</h2></div></div>
+      <div class="section-head"><div><h2>Why tool output costs so much</h2></div></div>
       <div class="prose">
-        <p>Every search result, directory listing, and API response comes back as repetitive JSON — the same field names on every row, the same values over and over, padding everywhere. The model re-reads that bloat on every turn. Multiply it by every tool call, every turn, every session, and repetitive tool output becomes a line item you pay on continuously.</p>
+        <p>Every search result, directory listing and API response comes back as repetitive JSON: the same field names on every row, the same values over and over, and padding. The model re-reads all of it on every turn, so the cost repeats with every tool call, every turn and every session.</p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Why the usual fixes are the wrong trade</h2></div></div>
+      <div class="section-head"><div><h2>Why summarizing and bigger context windows fall short</h2></div></div>
       <div class="prose">
         <ul>
-          <li><strong>Summarize or truncate</strong> — lossy. You lose data and can no longer trust the result for anything correctness-sensitive.</li>
-          <li><strong>Buy a bigger context window</strong> — you still pay per token; a longer window doesn't make the bloat cheaper, it just delays the ceiling.</li>
+          <li><strong>Summarize or truncate</strong> — lossy. Data is gone, so the result cannot be trusted where correctness matters.</li>
+          <li><strong>Buy a bigger context window</strong> — you still pay per token. A longer window raises the limit but does not make the bloat cheaper.</li>
         </ul>
-        <p>terse refuses the trade. Its one unbreakable rule: <strong>the compressed output can always be turned back into the exact original.</strong> If a payload ever couldn't round-trip perfectly, terse treats that as a failure and sends the original — not as an acceptable trade-off. Lossless is the default, not a mode.</p>
+        <p>terse has one rule: <strong>the compressed output can always be turned back into the exact original.</strong> A round trip means compressing the data and then restoring it. If a payload would not restore perfectly, terse treats that as a failure and sends the original.</p>
       </div>
     </section>
 
@@ -86,8 +85,8 @@
             <ul>
               <li><strong>Table form</strong> — repeated field names collapse to a header; rows become positional.</li>
               <li><strong>Dictionary form</strong> — repeated values become short back-references to a legend.</li>
-              <li><strong>Cross-call diffs</strong> — when a tool returns something similar to last time, terse sends only the provable delta.</li>
-              <li><strong>Field offload</strong> — a huge value becomes a handle you fetch back exactly on demand, so it stops eating context until you need it.</li>
+              <li><strong>Cross-call diffs</strong> — when a tool returns something similar to last time, terse sends only the difference, and only when it can prove the difference rebuilds the full result.</li>
+              <li><strong>Field offload</strong> — a very large value is replaced by a handle (a short reference) that fetches the exact value on demand, so it takes no context until needed.</li>
             </ul>
           </div>
         </article>
@@ -100,7 +99,7 @@ cl100k tokens: 1810 -> 881 (51.3% saved)</code></pre>
         </article>
       </div>
       <div class="prose">
-        <p>It is selective and honest: output that's already tidy is passed through untouched rather than churned for a rounding-error gain. A one-time primer — paid once per session, not per result — teaches the model to read the dense encoding directly, so there's no decoding step in your own code.</p>
+        <p>terse skips output that is already compact, because the saving would be tiny. A short primer, sent once per session instead of with every result, teaches the model to read the dense encoding directly, so your own code needs no decoding step. Token counts here use cl100k, a widely used tokenizer (the tool that splits text into the tokens that are counted).</p>
       </div>
     </section>
 
@@ -109,10 +108,7 @@ cl100k tokens: 1810 -> 881 (51.3% saved)</code></pre>
       <div class="section-head"><div><h2>Measured against TOON</h2></div></div>
       <div class="prose">
         <p>
-          The honest way to state a compression claim is against something else that already
-          exists. TOON is a published token-oriented serialisation format with the same goal, so
-          the benchmark runs both over the same nine real GitHub API payloads — 365,144 raw tokens,
-          every row verified lossless, counted in the same tokenizer.
+          To check the claim against something outside the project, the benchmark compares terse with TOON, a published token-oriented serialisation format with the same goal. Both run over the same nine GitHub API payloads (365,144 raw tokens), every row is verified lossless, and tokens are counted with the same tokenizer.
         </p>
       </div>
       <div class="table-scroll">
@@ -131,16 +127,10 @@ cl100k tokens: 1810 -> 881 (51.3% saved)</code></pre>
       </div>
       <div class="prose">
         <p>
-          Percentages are fewer tokens than the raw JSON, so a negative number means the encoding
-          made the payload <em>bigger</em>. TOON regresses on nested records because it adds a
-          key-path at every level of nesting; terse folds the repeated subtrees instead — the
-          <code>gh_pulls</code> row is sixty copies of the same repository object collapsed to one
-          legend entry.
+          Percentages are the reduction in tokens against the raw JSON, so a negative number means the encoding made the payload <em>bigger</em>. TOON gets bigger on nested records because it adds a key-path at every level of nesting. terse collapses repeated subtrees: the <code>gh_pulls</code> row is sixty copies of the same repository object reduced to one legend entry.
         </p>
         <p>
-          TOON wins one row, and it is left in. <code>gh_labels</code> is a flat table of short
-          uniform values, which is precisely what TOON was designed for. A benchmark that only
-          reports the rows you win is not a benchmark.
+          TOON wins one row, <code>gh_labels</code> (19.0% against 15.2%), and the row is included. It is a flat table of short uniform values, the case TOON was designed for.
         </p>
       </div>
       <p class="fine">
@@ -153,23 +143,23 @@ cl100k tokens: 1810 -> 881 (51.3% saved)</code></pre>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Built to be invisible and safe</h2></div></div>
+      <div class="section-head"><div><h2>Failure handling and safeguards</h2></div></div>
       <article class="note">
         <ul>
-          <li><strong>Fail-open.</strong> If any compression goes wrong, terse forwards the original result. A tool call is never lost.</li>
+          <li><strong>Fail-open.</strong> If any compression goes wrong, terse forwards the original result, so the tool call always completes.</li>
           <li><strong>Self-verifying.</strong> A diff is only sent when it provably reconstructs the result; the full form is always the fallback.</li>
-          <li><strong>Bounded.</strong> The compression logic is pure and testable; in-flight tracking is capped so a flaky server can't leak memory.</li>
+          <li><strong>Bounded.</strong> The compression logic has no side effects, so it is easy to test. In-flight tracking is capped, so a flaky server cannot leak memory.</li>
         </ul>
       </article>
       <div class="prose">
-        <p>From the outside, nothing changes except that token usage drops.</p>
+        <p>To the caller, the only visible change is lower token usage.</p>
       </div>
     </section>
 
     <section class="section">
       <div class="section-head"><div><h2>Who this is for</h2></div></div>
       <div class="prose">
-        <p>If you run MCP servers, agent harnesses, or anything that pipes large tool outputs into an LLM on a loop, terse removes over half of that cost with a guarantee that nothing is ever lost.</p>
+        <p>terse suits anyone running MCP servers, agent harnesses or other setups that feed large tool outputs to an LLM repeatedly. On the benchmark it cut tokens by 59.1% with an exact round trip.</p>
       </div>
       <div class="tag-row">
         <span class="tag">AI Infra</span>
@@ -186,7 +176,7 @@ terse proxy -- uvx some-mcp-server --flags</code></pre>
       <div class="inline-links" style="margin-top:16px">
         <a class="button" href="https://github.com/inth3shadows/terse">Source on GitHub</a>
       </div>
-      <p class="project-meta-line" style="margin-top:12px">MIT licensed, with a benchmark harness in the repo — measure the saving on your own tools before you believe mine.</p>
+      <p class="project-meta-line" style="margin-top:12px">MIT licensed, with a benchmark harness in the repo so you can measure the saving on your own tools.</p>
     </section>
 
     <p class="closing-line">
