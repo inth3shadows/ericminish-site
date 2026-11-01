@@ -1,0 +1,14 @@
+{
+  "source": "flight-recorder report.py models --min-n 4 (matched pairs within repo/skill/size cohorts; 95% bootstrap intervals over sessions)",
+  "as_of": "2026-11-01",
+  "window": ["2026-06-30", "2026-11-01"],
+  "delta": "first model minus second model, averaged over the cohorts where both have at least 4 sessions",
+  "pairs": [
+    {"a": "Opus 4.8", "b": "Opus 5",   "cohorts": 11, "survival": [0.030, -0.027, 0.089],  "ktok": [62.377, 6.507, 116.351]},
+    {"a": "Opus 4.8", "b": "Opus 5.5", "cohorts": 8,  "survival": [-0.022, -0.108, 0.053], "ktok": [-70.655, -129.462, -13.985]},
+    {"a": "Opus 4.8", "b": "Sonnet 5", "cohorts": 8,  "survival": [-0.076, -0.189, 0.015], "ktok": [83.540, 32.757, 145.403]},
+    {"a": "Opus 5",   "b": "Opus 5.5", "cohorts": 13, "survival": [-0.027, -0.137, 0.074], "ktok": [-90.977, -137.925, -42.548]},
+    {"a": "Opus 5",   "b": "Sonnet 5", "cohorts": 9,  "survival": [-0.007, -0.100, 0.108], "ktok": [32.512, -5.540, 67.775]},
+    {"a": "Opus 5.5", "b": "Sonnet 5", "cohorts": 7,  "survival": [-0.000, -0.132, 0.163], "ktok": [138.066, 106.796, 167.814]}
+  ]
+}

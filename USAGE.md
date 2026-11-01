@@ -42,6 +42,36 @@ so the file on the page always matches what was last built.
 copies the files onto the server that hosts the site, and is a manual step —
 saving a file, or even committing it, changes nothing that a visitor sees.
 
+## Writing a Post
+
+Posts live at `writing/<slug>/index.html`. Copy an existing post and change its
+`og:title`, `description`, `article:published_time` and `article:modified_time`;
+the index, the Atom feed (`writing/feed.xml`), the sitemap and the reading time
+are generated from those tags.
+
+1. Write the post. Charts are drawn from `writing/<slug>/data.json` with
+   `python tools/gen-forest.py writing/<slug>` into `<!-- auto:start chart-NAME -->` markers.
+2. `python tools/gen-writing.py` writes the index, feed, sitemap entries and reading time,
+   and checks every internal link and `#anchor` on the site.
+3. `python tools/lint-copy.py` checks the copy rule (no intensifiers, no "X, not Y"
+   reversals, no "Rather than" openers, no em-dash chains). Fix every finding.
+4. Run the tag-balance check from `TECHNICAL.md`.
+
+The daily deploy runs `gen-writing.py --check` and refuses to ship a stale feed or a
+broken link.
+
+### Standard for evaluation posts
+
+- State the question and the answer in the first screen.
+- Give the data window and the as-of date.
+- Define every metric and the baseline it is compared against.
+- Give every number with its sample size and a 95% interval; say "could not tell apart"
+  when an interval includes zero.
+- List what the results cannot show, starting with the largest limit.
+- Include failure cases and earlier mistakes.
+- Give the commands that reproduce the numbers, and publish the numbers behind each chart.
+- End with a dated corrections log, and add to it when a number changes.
+
 ## What to Do When Something Breaks
 
 - **"I changed a page but the site looks the same."** The change has not been
