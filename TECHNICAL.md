@@ -2,9 +2,9 @@
 
 ## Architecture
 
-A hand-written static site. There is no build step, no framework, no
-JavaScript, and no dependencies — the files in this repo are byte-for-byte the
-files that get served.
+A hand-written static site with no framework or browser JavaScript. Python
+helpers generate the writing files and charts; the deploy job refreshes the
+contribution strip before copying the static files to the server.
 
 ```
 repo (git)
@@ -14,9 +14,10 @@ repo (git)
 ```
 
 Every page is a complete HTML document that repeats the same header, nav, and
-footer markup inline. That duplication is deliberate: with fewer than a dozen
-pages, a templating layer would cost more than it saves, and the tradeoff is
-that a nav change is a find-and-replace across every file.
+footer markup inline. The site has 22 HTML pages. A nav change requires an
+edit across every page. Python helpers generate the writing index, Atom feed,
+sitemap entries, reading times, charts and contribution strip before deployment;
+visitors receive static HTML and CSS.
 
 All styling lives in one stylesheet, `assets/site.css`, linked with a manual
 cache-busting query string. Both typefaces are self-hosted from
@@ -62,8 +63,9 @@ forms, and no analytics. Contact happens through a `mailto:` link.
 
 ## Configuration
 
-No environment variables and no config files. The two values that behave like
-configuration are both inline in the HTML:
+The served pages have no runtime environment variables or config files.
+Deployment settings are supplied privately to the workstation job. Two values
+that affect the served pages are inline in the HTML:
 
 - **Stylesheet cache-bust** — the `?v=` query on the `assets/site.css` link,
   derived from the stylesheet's own hash. Run `python tools/bump-cachebust.py`
@@ -92,7 +94,15 @@ to revert, only files.
 
 ## Maintenance Commands
 
-There is no test suite. The checks worth running before a deploy:
+There is no test suite. Before a deploy, check generated writing files and
+internal links, then lint the copy:
+
+```bash
+python3 tools/gen-writing.py --check
+python3 tools/lint-copy.py
+```
+
+Also check tag balance across every page:
 
 ```bash
 # tag balance across every page
@@ -138,11 +148,12 @@ grep -rhoE 'href="/[a-z-]*/?[a-z-]*/"' --include=*.html . | sort -u \
   still honest — it went three months stale before anyone noticed.
 - **The homelab node table is hand-maintained**, not live data. It says so on
   the page. Uptime Kuma holds the real state; nothing pipes it here yet.
-- **The home page's commit strip is a hand-taken snapshot.** Regenerate it
-  with `gh api graphql` and edit the bars when the capture date gets old.
-- **No automated deploy.** Deployment is a manual copy into the live document
-  root (see Deployment above), so the live tree can drift from `main` with no
-  signal.
+- **Contribution updates depend on the workstation.** A daily systemd user
+  timer runs `tools/regen-deploy.sh` there. It fetches `origin/main`, regenerates
+  the strip, checks writing freshness and internal links, and copies the site
+  into the existing live root. If the workstation or job is unavailable,
+  updates wait. The job checks the public home page's status and capture date;
+  it does not verify every deployed file. Host settings remain private.
 
 ## Related Documentation
 
