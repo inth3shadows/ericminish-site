@@ -72,51 +72,61 @@
         </article>
         <article class="timeline" data-card="codegraph" data-as-of="2026-11-04">
           <h3><a href="/portfolio/codegraph/">codegraph</a></h3>
+          <!-- auto:start now-codegraph --><p class="fine">Last change 3 November 2026 · 17 pull requests merged in the last 30 days · <a href="https://github.com/colbymchenry/codegraph/pulls?q=is%3Apr+is%3Amerged+author%3Ainth3shadows">merged changes</a></p><!-- auto:end now-codegraph -->
           <p>codegraph is an open-source tool that maps which functions call which, for coding agents. I check its map against type checkers and against freshly built indexes and send fixes upstream.</p>
           <p>Recent fixes, 29 October to 3 November: index updates that drifted from a fresh build of the same commit, and TypeScript variance annotations. <a href="/portfolio/codegraph/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="terse" data-as-of="2026-11-04">
           <h3><a href="/portfolio/terse/">terse</a></h3>
+          <!-- auto:start now-terse --><p class="fine">Last change 30 October 2026 · 54 pull requests merged in the last 30 days · <a href="https://github.com/inth3shadows/terse/pulls?q=is%3Apr+is%3Amerged+author%3Ainth3shadows">merged changes</a></p><!-- auto:end now-terse -->
           <p>terse compresses the output of MCP tools (the tools AI agents call) by 59% in tokens, and forwards the original whenever it cannot prove the compressed version restores exactly.</p>
           <p>Late October: fixes from a red-team review that found 37 problems (28 October), and a decoder that treats an integer longer than Python&rsquo;s 4,300-digit limit as plain text instead of crashing. <a href="/portfolio/terse/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="runecho" data-as-of="2026-11-04">
           <h3><a href="/portfolio/runecho/">RunEcho</a></h3>
+          <!-- auto:start now-runecho --><p class="fine">Last change 1 November 2026 · 34 pull requests merged in the last 30 days · <a href="https://github.com/inth3shadows/runecho/pulls?q=is%3Apr+is%3Amerged+author%3Ainth3shadows">merged changes</a></p><!-- auto:end now-runecho -->
           <p>RunEcho checks each edit a coding agent makes against the names the repository declares, before the file changes.</p>
           <p>Late October: a setting that blocks a flagged edit instead of asking (28 October), and blocking by default under Cursor, which does not enforce the ask step (30 October). <a href="/portfolio/runecho/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="flight-recorder" data-as-of="2026-11-04">
           <h3><a href="/portfolio/flight-recorder/">flight-recorder</a></h3>
+          <!-- auto:start now-flight-recorder --><p class="fine">Last change 21 October 2026 · 10 pull requests merged in the last 30 days</p><!-- auto:end now-flight-recorder -->
           <p>flight-recorder scores each coding-agent session on what it cost and how much of its code was still in the repository when it was last scored.</p>
           <p>21 October: an evidence layer that rebuilds each request the agent sent from its transcript, and checks that every MCP tool call in the transcript appears in the wire log terse recorded. <a href="/portfolio/flight-recorder/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="modelbench" data-as-of="2026-11-04">
           <h3><a href="/portfolio/modelbench/">modelbench</a></h3>
+          <!-- auto:start now-modelbench --><p class="fine">Last change 3 November 2026 · 39 pull requests merged in the last 30 days</p><!-- auto:end now-modelbench -->
           <p>modelbench replays real bug-fix commits against cheaper models and reports the cost per solved task.</p>
           <p>Late October: a blinded sample for judging RunEcho&rsquo;s own checker. Flagged lines and clean lines are mixed, the labels are kept in a separate file, and two models judge each item. <a href="/portfolio/modelbench/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="testgraph" data-as-of="2026-11-04">
           <h3><a href="/portfolio/testgraph/">testgraph</a></h3>
+          <!-- auto:start now-testgraph --><p class="fine">Last change 30 October 2026 · 10 pull requests merged in the last 30 days · <a href="https://github.com/inth3shadows/testgraph/pulls?q=is%3Apr+is%3Amerged+author%3Ainth3shadows">merged changes</a></p><!-- auto:end now-testgraph -->
           <p>Given a code change, testgraph names the user journeys it could have broken, from a static call graph, so it works on a repository that has never run its tests.</p>
           <p>30 October: CI now runs its verify step end to end with pytest and its tracing plugin, which records what each journey&rsquo;s tests execute, so the static selection can be scored against what ran. <a href="/portfolio/testgraph/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="secret-broker" data-as-of="2026-11-04">
           <h3><a href="/portfolio/secret-broker/">secret-broker</a></h3>
+          <!-- auto:start now-secret-broker --><p class="fine">Last change 3 November 2026 · 17 pull requests merged in the last 30 days</p><!-- auto:end now-secret-broker -->
           <p>secret-broker lets coding agents use credentials without receiving them, and writes a receipt for every call to a log that shows any later edit.</p>
           <p>3 November: it can now rotate a credential it created, through a write route on the vault service, and only after a person approves the request. <a href="/portfolio/secret-broker/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="harness" data-as-of="2026-11-04">
           <h3><a href="/portfolio/harness/">harness</a></h3>
+          <!-- auto:start now-harness --><p class="fine">Last change 3 November 2026 · 5 pull requests merged in the last 30 days</p><!-- auto:end now-harness -->
           <p>harness decides whether an agent&rsquo;s code change is acceptable with four fixed checks. No language model takes part, and nothing is committed automatically.</p>
           <p>The gate and the role runtime are done. Next is a set of tools that can write files, so the loop that produces changes runs inside harness. Early November: fixes to its mutation-testing tool. <a href="/portfolio/harness/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="knowledge-base" data-as-of="2026-11-04">
           <h3><a href="/portfolio/knowledge-base/">Knowledge base</a></h3>
+          <!-- auto:start now-knowledge-base --><p class="fine">Last change 30 October 2026 · 49 pull requests merged in the last 30 days</p><!-- auto:end now-knowledge-base -->
           <p>Long-term memory for my coding agents. Agents can only propose an entry, and an AI reviewer approves, edits or rejects each proposal.</p>
           <p>Late October: each session now records what it set out to do and how it ended, and the status command warns when the reviewer runs different code from the deployed tree. <a href="/portfolio/knowledge-base/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="soundings" data-as-of="2026-11-04">
           <h3>soundings</h3>
+          <!-- auto:start now-soundings --><p class="fine">Last change 4 November 2026 · 38 pull requests merged in the last 30 days</p><!-- auto:end now-soundings -->
           <p>A store of US county economic data that keeps every published version of each number, so a backtest uses only the figures known at the time.</p>
           <p>30 October: county employment from the Bureau of Labor Statistics&rsquo; quarterly census (QCEW) became the default employment input for its detector.</p>
         </article>
