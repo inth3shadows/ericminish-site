@@ -50,6 +50,7 @@ rather than writing new CSS.
 | `tools/bump-cachebust.py` | Rewrites the `?v=` cache-bust query on every page from `assets/site.css`'s hash. |
 | `tools/make-resume-pdf.py` | Builds the content-addressed resume PDF and rewrites its link in `resume/index.html`. |
 | `tools/gen-gitstrip.py` | Rewrites the home page's commit strip between its `auto:` markers from `gh api graphql`. Bars count public repos; private work shows only as one total. Refuses to write if a private repo name would appear. |
+| `tools/gen-now.py` | Staleness check for the Now page. Each card has `data-card` and `data-as-of`; `CARDS` in the script maps cards to GitHub repos. Warns on age (45 days, day job 90), more than 10 PRs merged since a card's date, 60 days without activity, or a repo with 8+ merged PRs in 30 days and no card. `--issue` keeps one issue, "Now page needs an update", in step; it never shows private repo names without a card or private PR titles. Warn-only; API errors skip. Tests: `python3 -m unittest tools/test_gen_now.py`. |
 | `tools/regen-deploy.sh` | Daily job (systemd user timer on the workstation, where `gh` is logged in): exports `origin/main`, runs the generator, copies the site into the live root, checks `/` is 200 and dated today. Host details come from a private environment file. `DRY_RUN=1` shows the diff only. |
 | `assets/site.css` | The entire stylesheet, including the two `@font-face` declarations. |
 | `assets/fonts/newsreader.woff2` | Newsreader, variable. Used for prose — anything argued. |
@@ -94,12 +95,14 @@ to revert, only files.
 
 ## Maintenance Commands
 
-There is no test suite. Before a deploy, check generated writing files and
-internal links, then lint the copy:
+Before a deploy, check generated writing files and internal links, lint the copy,
+and check the Now page:
 
 ```bash
 python3 tools/gen-writing.py --check
 python3 tools/lint-copy.py
+python3 tools/gen-now.py --check
+python3 -m unittest tools/test_gen_now.py
 ```
 
 Also check tag balance across every page:
