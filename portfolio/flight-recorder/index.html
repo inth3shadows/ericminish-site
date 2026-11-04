@@ -49,12 +49,13 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 11</b><span>Agent evaluation · measurement</span><span>2026</span></div>
-        <h1>Measuring coding-agent sessions by their cost and by how much of their code survives</h1>
+        <h1>flight-recorder measures what coding-agent sessions cost and how much of their code survives</h1>
         <p class="lede">
           flight-recorder reads every coding-agent session saved on my machines and scores each one
           two ways: what it cost, and how much of the code it wrote was still in the repository later.
           It ignores the agent&rsquo;s own report of success, because agents often report success
-          on work that failed.
+          on work that failed. The first version got four results wrong. In one, a repository&rsquo;s
+          line-survival rate read 44.8% and was 79.6% once corrected.
         </p>
       </div>
       <aside class="note">
@@ -94,18 +95,14 @@
           not prove the work was correct.
         </p>
         <p>
-          To check whether a line survived, the tool hashes each line a session adds and looks for that
-          line in the current version of the file. It matches lines by their content because rebasing or
-          squashing changes every commit ID while the code stays the same.
-        </p>
-        <p>
-          Commits are linked to sessions by time, so a session that overlaps a manual commit gets
-          credit for it. This is the largest of the seven known weaknesses listed in the README.
+          To check whether a line survived, the tool hashes each line a session adds (turns it into a
+          short fingerprint of its content) and looks for that line in the current version of the file.
+          It matches lines by their content because rebasing or squashing, git operations that rewrite
+          commit history, change every commit ID while the code stays the same.
         </p>
         <p>
           The tool reads saved transcripts after the fact instead of running inside each session. That
-          adds no delay to any session, and a session that crashes is still scored from whatever its
-          transcript saved. Reading the existing backlog this way let it score 6,264 past sessions on
+          adds no delay to any session, and nothing is lost if a session crashes. Reading the existing backlog this way let it score 6,264 past sessions on
           the first day.
         </p>
       </div>
@@ -125,7 +122,7 @@
           The rate was divided by every line recorded, including lines whose files the tool could not find.
           It now divides by the lines it was able to check, and records an unchecked line as unknown
           instead of lost.</li>
-        <li><b>One model scored 0.508 and another 0.826.</b> The lower-scoring model had mostly been
+        <li><b>One model looked much worse than another, 0.508 against 0.826.</b> The weaker-looking model had mostly been
           used in one difficult repository. Models are now compared only on similar work: the same
           repository, the same task type and a similar change size.</li>
       </ol>
@@ -138,8 +135,8 @@
         <div><span class="st">Small samples show a count</span><span class="sx">When there are too few sessions to compute a reliable average, the report prints the session count instead of a value.</span></div>
         <div><span class="st">Sessions are credited by cost</span><span class="sx">A session is attributed to the command that accounts for most of its cost. Counting tagged messages instead had credited the most expensive sessions to a wrap-up command that runs at the end of every long session.</span></div>
         <div><span class="st">Missing rates are stored as empty</span><span class="sx">When a rate has no denominator it is stored as an empty value, so missing data cannot show up as a perfect score.</span></div>
-        <div><span class="st">Tool calls are checked against the wire</span><span class="sx">A companion check confirms that each tool call in a transcript matches the call that was sent over the network, and that each result matches the one delivered. It is used to test the claim made by <a href="/portfolio/terse/">terse</a>, my compression proxy for agent tool output, that its compression loses nothing.</span></div>
-        <div><span class="st">Known weaknesses are documented</span><span class="sx">The README lists seven known weaknesses, starting with the time-based commit linking described above.</span></div>
+        <div><span class="st">Tool calls are checked against the wire</span><span class="sx">A companion check confirms that each tool call in a transcript matches the call that was sent over the network, and that each result matches the one delivered. It is used to test <a href="/portfolio/terse/">terse</a>&rsquo;s claim that its compression loses nothing.</span></div>
+        <div><span class="st">Known weaknesses are documented</span><span class="sx">The README lists seven known weaknesses. The largest is that commits are linked to sessions by time, so a session that overlaps a manual commit gets credit for it.</span></div>
       </div>
       <div class="tag-row" style="margin-top:20px">
         <span class="tag">Agent evaluation</span><span class="tag">Statistics</span>

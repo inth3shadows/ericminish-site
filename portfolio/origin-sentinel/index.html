@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Origin Sentinel — case study | Eric Minish</title>
-  <meta name="description" content="Case study: an autonomous sentinel for Cloudflare-tunnelled services that detects dead services behind a healthy edge. The first version only reports; write access is planned for later.">
+  <meta name="description" content="Case study: an automated monitor for Cloudflare-tunnelled services that detects dead services behind a healthy edge. The first version only reports; write access is planned for later.">
   <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/origin-sentinel/">
   <meta property="og:type" content="website">
@@ -53,22 +53,22 @@
         <p class="lede">
           Cloudflare Tunnel carries outside traffic to services on a private network. Its edge
           (Cloudflare's servers facing the internet) can report healthy while the service behind it
-          is broken. I built an autonomous sentinel that checks the origin (the service itself)
-          directly and classifies what is wrong. The first version only reports; write access is
-          planned for a later phase.
+          is broken. I built Origin Sentinel, an automated monitor that checks the origin (the
+          service itself) directly and classifies what is wrong.
         </p>
       </div>
       <aside class="note">
+        <p><strong>What it is</strong> — automated detection and classification of origin health for Cloudflare-tunnelled services, with self-repair added in stages.</p>
         <p><strong>Status</strong> — built and reviewed, 63 tests passing, staged for a report-only production rollout.</p>
       </aside>
     </section>
 
     <section class="section">
       <div class="facts">
-        <div><span class="fk">tests passing</span><span class="fv good">63</span></div>
+        <div><span class="fk">watches</span><span class="fv">the origin</span></div>
         <div><span class="fk">first release</span><span class="fv">report-only</span></div>
-        <div><span class="fk">Cloudflare token</span><span class="fv">read-only</span></div>
-        <div><span class="fk">production rollout</span><span class="fv">staged</span></div>
+        <div><span class="fk">API token</span><span class="fv good">read-only</span></div>
+        <div><span class="fk">repair</span><span class="fv">staged</span></div>
       </div>
     </section>
 
@@ -76,7 +76,7 @@
       <div class="section-head"><div><h2>How a healthy tunnel can hide a failed service</h2></div></div>
       <div class="prose">
         <p>Edge and tunnel status answer one question: <em>is the tunnel connected?</em> They do not say whether the service behind the tunnel is alive.</p>
-        <p>Here is how that goes wrong. A container reboots, and DHCP (the service that hands out network addresses) gives it a new LAN IP, its address on the local network. The tunnel ingress (the rule mapping a public hostname to an internal address) still points at the old address. The edge then serves errors, or a different service, while every dashboard stays green. Monitoring that checks only the edge and the tunnel does not see this, because the failure sits between the tunnel and the service.</p>
+        <p>A container reboots, and DHCP (the service that hands out network addresses) gives it a new LAN IP, its address on the local network. The tunnel ingress (the rule mapping a public hostname to an internal address) still points at the old address. The edge then serves errors, or a different service, while every dashboard stays green. Monitoring that checks only the edge and the tunnel does not see this, because the failure sits between the tunnel and the service. I call this class of failure a silent origin behind a healthy edge.</p>
       </div>
     </section>
 
@@ -85,7 +85,7 @@
       <div class="grid-2">
         <article class="panel">
           <div class="prose">
-            <p>The sentinel probes each origin from the local network side, bypassing Access (Cloudflare's login gate in front of the services), and classifies the state before it changes anything. It proposes a repoint, changing the ingress rule to the container&rsquo;s new address, only when a container&rsquo;s IP has changed.</p>
+            <p>The sentinel probes each origin from the local network side, so its probes bypass Access (Cloudflare's login gate in front of the services). It classifies the state before it changes anything. It proposes a repoint, changing the ingress rule to the container&rsquo;s new address, only when a container&rsquo;s IP has changed.</p>
             <p>Everything it finds is written to a machine-readable <code>health.json</code> file, so the next automated agent, or a person, starts from the recorded findings instead of diagnosing the problem again from scratch.</p>
           </div>
         </article>
@@ -93,23 +93,23 @@
           <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>origin state</div>
           <pre><code>OK
 STALE_INGRESS_IP   -> propose repoint
-DEAD_ORIGIN        # not running anywhere
-TUNNEL_DOWN        # tunnel not connected
-APP_UNHEALTHY      # running, answering with an error
-NEEDS_HUMAN        # ambiguous; it will not guess</code></pre>
+DEAD_ORIGIN
+TUNNEL_DOWN
+APP_UNHEALTHY
+NEEDS_HUMAN</code></pre>
         </article>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Safeguards on automatic repair</h2></div></div>
+      <div class="section-head"><div><h2>How the sentinel limits the risk of automatic repair</h2></div></div>
       <div class="prose">
-        <p>Automatic repair that can rewrite production ingress could take services down if it acted wrongly, so most of the engineering limits what the sentinel may do. In the report-only version these apply:</p>
+        <p>Automatic repair that can rewrite production ingress could take services down if it acted wrongly, so most of the engineering limits what the sentinel may do. The first version only reports. Write access is planned for a later phase, once the report-only version has built trust. In the report-only version these limits apply:</p>
       </div>
       <article class="note">
         <ul>
           <li>It writes proposed repoints into <code>health.json</code> and makes no Cloudflare changes.</li>
-          <li>Its Cloudflare API token has read permission only, so it cannot change the configuration.</li>
+          <li>The API token it uses has read permission only, so it cannot change anything.</li>
           <li>A failure on one origin does not stop the checks on the others.</li>
           <li>Heal-state writes are atomic: a write either completes or leaves the old file in place.</li>
         </ul>
@@ -120,7 +120,7 @@ NEEDS_HUMAN        # ambiguous; it will not guess</code></pre>
       <article class="note">
         <ul>
           <li>Localhost origins (services addressed as running on the same machine as the tunnel) are excluded from automatic repointing.</li>
-          <li>A repair counts as confirmed only when the service returns a 2xx HTTP status (a success response).</li>
+          <li>Confirming a repair uses a stricter check: the service must return a 2xx HTTP status (a success response).</li>
           <li>A repoint preserves every existing config key and handles hostnames that have several ingress rules.</li>
         </ul>
       </article>
@@ -131,7 +131,7 @@ NEEDS_HUMAN        # ambiguous; it will not guess</code></pre>
 
     <section class="section">
       <div class="tag-row">
-        <span class="tag">Platform / SRE</span>
+        <span class="tag">Platform / reliability</span>
         <span class="tag">Cloudflare</span>
         <span class="tag">Python</span>
         <span class="tag">Self-Heal</span>

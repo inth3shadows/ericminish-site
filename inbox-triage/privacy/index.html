@@ -47,11 +47,11 @@
     <section class="section">
       <h2>What data it reads</h2>
       <p>
-        With your permission, inbox-triage reads certain headers from messages in your Gmail inbox.
+        With your permission, inbox-triage reads headers from messages in your Gmail inbox.
         Headers are the short fields at the top of a message that describe it, such as who sent it
-        and when. The headers it reads are From (sender address and display name), Subject, Date,
-        List-Id, List-Unsubscribe, Precedence, and Auto-Submitted. The last four are standard fields
-        that mark mailing-list and automated mail.
+        and when. It reads From (sender address and display name), Subject, and Date. It also reads
+        List-Id, List-Unsubscribe, Precedence, and Auto-Submitted, four standard fields that mark
+        mailing-list and automated mail.
       </p>
       <p>
         It also reads Gmail's message and thread IDs (the identifiers Gmail gives each message and
@@ -69,24 +69,23 @@
 
       <h2>What is stored, and where</h2>
       <ul>
-        <li>A list of sender addresses and the group each was sorted into, the digest, and a small run-state file that the tool uses to keep track of its runs.
+        <li>A list of sender addresses and the group each was sorted into, the digest, and a small run-state file.
           These live on a private computer controlled by Eric Minish.</li>
-        <li>The Google sign-in token is kept in a private password vault and is used only by the tool's daily run.</li>
+        <li>The Google sign-in token, which lets the tool access your Gmail account, is kept in a private password vault and is used only by the tool's daily run.</li>
       </ul>
 
       <h2>What is shared with third parties</h2>
       <p>
         For a sender the tool has not seen before, it may send that sender's address, display name,
-        and up to three shortened subject lines to OpenRouter, a language-model service (a service
-        that runs AI language models). The model uses them to suggest which group the sender belongs
-        in. No message bodies are sent.
+        and up to three shortened subject lines to OpenRouter, a language-model service, to suggest which group the sender
+        belongs in. No message bodies are sent.
       </p>
       <p>
         No other data leaves the computer the tool runs on, apart from the tool's own connections to
         Google. Nothing is sold, used for advertising, or shared for any other purpose.
       </p>
 
-      <h2>How it meets Google's user data policy</h2>
+      <h2>Google API Services User Data Policy</h2>
       <p>
         inbox-triage's use of information received from Google APIs adheres to the
         <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>,

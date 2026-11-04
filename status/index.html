@@ -50,7 +50,7 @@
       <div class="hero-copy">
         <h1>Current work</h1>
         <p class="lede">
-          The projects I am working on, and what changed in each recently.
+          These are the projects I am working on and what changed in each recently.
         </p>
       </div>
 
@@ -71,23 +71,27 @@
         </article>
         <article class="timeline">
           <h3><a href="/portfolio/terse/">terse</a></h3>
-          <p>terse is a compression proxy for the output of MCP tools (MCP is the Model Context Protocol, the standard that connects tools to AI agents). It reduces that output by 59 percent, counted in tokens (the units a model reads and is billed by). Whenever it cannot prove the compressed version restores exactly, it forwards the original output unchanged, so no information is lost. Recent work has been on security. Credentials must not be sent along when a request is redirected to another site, and the configuration generator, which tunes settings for speed, may not overwrite a safety setting. <a href="/portfolio/terse/">Case study</a>.</p>
+          <p>terse compresses the output of MCP tools (MCP is the Model Context Protocol, the standard that connects tools to AI agents). It reduces that output by 59 percent, counted in tokens (the units a model reads and is billed by). Whenever it cannot prove the compressed version restores exactly, it forwards the original output unchanged, so no information is lost.</p>
+          <p>Recent work has been on security. Credentials must not be sent along when a request is redirected to another site, and the configuration generator, which tunes settings for speed, may not overwrite a safety setting. <a href="/portfolio/terse/">Case study</a>.</p>
         </article>
         <article class="timeline">
           <h3><a href="/portfolio/testgraph/">testgraph</a></h3>
-          <p>Given a code change, testgraph names the user journeys the change could have broken. It traces a static call graph (a map of which code calls which) instead of reading a test coverage report, so it works on a repository that has never run its tests. It was recently made public and published on PyPI, the Python package index. Current work compares the journeys it selected against what running them found, so its miss rate can be reported as a number. <a href="/portfolio/testgraph/">Case study</a>.</p>
+          <p>Given a code change, testgraph names the user journeys the change could have broken. It traces a static call graph (a map of which code calls which) instead of reading a test coverage report, so it works on a repository that has never run its tests.</p>
+          <p>It was recently made public and published on PyPI, the Python package index. Current work compares the journeys it selected against what running them found, so its miss rate can be reported as a number. <a href="/portfolio/testgraph/">Case study</a>.</p>
         </article>
         <article class="timeline">
           <h3><a href="/portfolio/harness/">harness</a></h3>
-          <p>harness decides whether a code change written by an AI agent is acceptable, using four fixed checks. No language model takes part in that decision, and nothing is committed automatically afterward. The loop that plans and produces the changes still runs on a runtime I did not write. The current build moves that loop into harness itself and adds tools that can write files, each limited by isolation rules that set what it may reach. <a href="/portfolio/harness/">Case study</a>.</p>
+          <p>harness decides whether a code change written by an AI agent is acceptable, using four fixed checks. No language model takes part in that decision, and nothing is committed automatically afterward.</p>
+          <p>The loop that drives harness still runs inside someone else&rsquo;s runtime (the program that executes the loop). The current build moves that loop into harness itself and adds tools that can write files, each limited by isolation rules that set what it may reach. <a href="/portfolio/harness/">Case study</a>.</p>
         </article>
         <article class="timeline">
           <h3>Knowledge graph</h3>
-          <p>My personal knowledge base runs on the Postgres database. Agents can add to it only by proposing an entry, and every proposal is reviewed before it is saved. This quarter its embeddings (the numeric text representations used for search) moved into a separate service that runs alongside it, which cut the deployed container image from 2.14 GB to 442 MB. It also dropped half its tools, because the size of each tool response mattered more than how many tools there were.</p>
+          <p>My personal knowledge base runs on Postgres, a relational database. Agents can add to it only by proposing an entry, and every proposal is reviewed before it is saved.</p>
+          <p>This quarter its embeddings (the numeric text representations used for search) moved into a separate service that runs alongside it, which cut the deployed container image from 2.14 GB to 442 MB. It also dropped half its tools, after finding that the size of each tool response mattered more than the number of tools.</p>
         </article>
         <article class="timeline">
           <h3><a href="/portfolio/frostline/">Frostline</a></h3>
-          <p>Frostline is spatial modeling over fifty thousand Michigan well records, and the contractor-intake business built around it. In these records, location predicts well depth, but it does not predict well yield (how much water a well produces).</p>
+          <p>Frostline applies spatial modeling (predicting from location) to fifty thousand Michigan well records, and includes the contractor-intake business built around it. Well depth can be predicted from location. Well yield (how much water a well produces) cannot.</p>
         </article>
         <article class="timeline">
           <h3><a href="/homelab/">Homelab</a></h3>

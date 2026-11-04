@@ -51,10 +51,9 @@
         <div class="entry-stamp"><b>Entry 04</b><span>Frostline · spatial modelling</span><span>2026</span></div>
         <h1>Frostline: what spatial models can and cannot predict about wells</h1>
         <p class="lede">
-          Neighbouring wells have similar depths, so location helps predict how deep a new well will
-          go. Well yield (how much water a well produces) shows little of that pattern, and extra
-          feature work did not improve its prediction. This page shows the evidence for each, and one
-          model target I cut after testing it against the right baseline.
+          Well depth can be predicted from location. Well yield (how much water a well produces)
+          cannot. This page shows the evidence for each, and one model target I cut after testing it
+          against the right baseline.
         </p>
       </div>
       <aside class="note">
@@ -66,9 +65,9 @@
     <section class="section">
       <div class="facts">
         <div><span class="fk">well records</span><span class="fv">50,083</span></div>
-        <div><span class="fk">aquifer-interval skill against the global median</span><span class="fv">+38.8%</span></div>
-        <div><span class="fk">share of that interval that restates depth</span><span class="fv">~96%</span></div>
-        <div><span class="fk">aquifer-interval model</span><span class="fv">cut</span></div>
+        <div><span class="fk">Moran&rsquo;s I for well depth</span><span class="fv good">0.393</span></div>
+        <div><span class="fk">Moran&rsquo;s I for tested yield</span><span class="fv bad">0.089</span></div>
+        <div><span class="fk">aquifer-interval target</span><span class="fv">cut</span></div>
       </div>
     </section>
 
@@ -139,8 +138,8 @@
           The aquifer-interval fields record the top and bottom depths of the water-bearing layer.
           They are present on roughly nine in ten records and had not been modelled before. I ran a
           leave-one-out skill test: predict each cell from its neighbours with that cell held out, then
-          compare the result with a simple reference prediction. Local prediction scored
-          <strong>38.8% better</strong> than the global median, which looked like a new signal.
+          compare the result with a simple reference prediction. Against the global median, local
+          prediction showed an apparent skill of <strong>+38.8%</strong>, which looked like a new signal.
         </p>
         <p>
           The gain came from the choice of reference. A baseline is the simple prediction a model must
@@ -166,7 +165,7 @@
       <div class="subs">
         <div><span class="st">Lithology (rock and soil type) has not been modelled yet</span><span class="sx">The same wells carry about two hundred thousand logged intervals describing what the driller hit. They are independent of depth, so this is the one place a new signal could still appear.</span></div>
         <div><span class="st">Static water level is still untested</span><span class="sx">A first pass scored badly, but the data is too dirty for that score to mean anything. It contains sentinel values (placeholder numbers standing in for missing readings), and hundreds of wells record a water level deeper than the well itself. The first-pass figure should not be quoted as a finding.</span></div>
-        <div><span class="st">The business may claim depth and cost bands</span><span class="sx">Each band comes with an interval (a range) around the estimate. The business may not claim anything about yield, because the model cannot predict output.</span></div>
+        <div><span class="st">What the business may and may not claim</span><span class="sx">The business may claim depth and cost bands, each with an interval (a range) around the estimate. It may not claim anything about yield, because the model cannot predict output.</span></div>
       </div>
       <div class="tag-row" style="margin-top:20px">
         <span class="tag">Spatial modelling</span><span class="tag">Null result</span>

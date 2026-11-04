@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Eric Minish</title>
-  <meta name="description" content="Eric Minish builds infrastructure for AI agents and works on data modelling. Central Lake, Michigan.">
+  <meta name="description" content="Eric Minish builds infrastructure for AI agents and the data work that runs on it. Central Lake, Michigan.">
   <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
   <link rel="canonical" href="https://www.ericminish.com/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="Eric Minish">
-  <meta property="og:description" content="Eric Minish builds infrastructure for AI agents and works on data modelling. Central Lake, Michigan.">
+  <meta property="og:description" content="Eric Minish builds infrastructure for AI agents and the data work that runs on it. Central Lake, Michigan.">
   <meta property="og:url" content="https://www.ericminish.com/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Eric Minish">
-  <meta name="twitter:description" content="Eric Minish builds infrastructure for AI agents and works on data modelling. Central Lake, Michigan.">
+  <meta name="twitter:description" content="Eric Minish builds infrastructure for AI agents and the data work that runs on it. Central Lake, Michigan.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -50,7 +50,7 @@
       <div class="hero-copy">
         <h2 class="name">Eric Minish</h2>
         <h1 class="lede">
-          I build infrastructure for AI agents, and I work on data modelling.
+          I build infrastructure for AI agents and the data work that runs on it.
         </h1>
         <p class="hero-meta">
           Central Lake, Michigan
@@ -64,7 +64,7 @@
       </div>
 
       <aside class="note">
-        <p>Sites I run from my own homelab: this one, <a href="https://thefrostlineco.com">The Frostline Co.</a> and <a href="https://ttrpg.ericminish.com">The Campaign Table</a>. <a href="https://nmwelldrilling.com">nmwelldrilling.com</a> is a sample site I built and label as one.</p>
+        <p>Sites I run from my own homelab (servers I own and operate myself): this one, <a href="https://thefrostlineco.com">The Frostline Co.</a> and <a href="https://ttrpg.ericminish.com">The Campaign Table</a>. <a href="https://nmwelldrilling.com">nmwelldrilling.com</a> is a sample site I built and label as one.</p>
       </aside>
     </section>
 
@@ -77,12 +77,13 @@
         <div class="prow">
           <div>
             <div class="prow-name"><a href="/portfolio/terse/">terse</a></div>
-            <p class="prow-desc">A proxy between my AI agent and the servers that run its tools. It compresses
-              the tool output so the model reads fewer tokens (the units a model reads and is billed by). When it
+            <p class="prow-desc">A proxy (a program that sits between two others and passes their traffic along)
+              between my AI agent and the servers that run its tools. It compresses the tool output so the
+              model reads fewer tokens (the units a model reads and is billed by). When it
               cannot prove the compressed version decodes back exactly, it sends the original output.</p>
           </div>
           <div class="prow-right">
-            <span class="prow-value">59% fewer tokens than raw output</span>
+            <span class="prow-value">59% fewer tokens</span>
             <span class="prow-meta"><em>public</em> · MIT</span>
           </div>
         </div>
@@ -128,12 +129,13 @@
         <div class="prow">
           <div>
             <div class="prow-name"><a href="/portfolio/lodestone/">Lodestone</a></div>
-            <p class="prow-desc">Search by meaning over years of my own working notes, running on my own machines.
-              It beat keyword search at a thousand documents and lost to it at fifty-seven thousand, where it gave
-              useful answers to 5 of 10 test questions. I published both results.</p>
+            <p class="prow-desc">Local retrieval (software that finds the passages relevant to a question) over
+              years of my own working notes, running on my own machines. It beat keyword search at a thousand
+              documents and lost to it at fifty-seven thousand. I published both results, including the null
+              result (a test in which the new method showed no improvement).</p>
           </div>
           <div class="prow-right">
-            <span class="prow-value">5 of 10 at 57,000 docs</span>
+            <span class="prow-value">5 of 10 at full scale</span>
             <span class="prow-meta">null result</span>
           </div>
         </div>
@@ -141,9 +143,10 @@
         <div class="prow">
           <div>
             <div class="prow-name"><a href="/portfolio/frostline/">Frostline</a></div>
-            <p class="prow-desc">Spatial models over Michigan well records, and the contractor-intake
-              business built around them. Location predicts how deep a well will be, but it does not predict the
-              well&rsquo;s yield (how much water it produces).</p>
+            <p class="prow-desc">Spatial models (models that predict from location) over Michigan well
+              records. A well&rsquo;s location predicts how deep it will be. Location does not predict its yield
+              (how much water it produces). The project also includes the contractor-intake business built
+              around these models.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">50,000 records</span>
@@ -187,7 +190,7 @@
         <span class="also-label">Also running</span>
         <a href="/portfolio/harness/">harness</a>
         <a href="/portfolio/origin-sentinel/">Origin Sentinel</a>
-        <a href="/portfolio/llm-gateway/">LLM gateway</a>
+        <a href="/portfolio/llm-gateway/">LLM (large language model) gateway</a>
         <a href="/homelab/">Homelab</a>
         <a href="/portfolio/">Everything else</a>
       </div>

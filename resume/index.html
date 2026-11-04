@@ -61,17 +61,21 @@
     <section class="section">
       <div class="prose">
         <p>
-          <strong>AI infrastructure and backend engineering, built while working in operations.</strong>
           I work in Python, Go and SQL. I build MCP servers (MCP, the Model Context Protocol, is the
-          standard that connects tools to AI agents), retrieval systems, evaluation harnesses,
-          ingestion pipelines, and the cloud services they run on. I built, deployed and maintain
+          standard that connects tools to AI agents), retrieval systems that find the passages
+          relevant to a question, evaluation harnesses that test a system against a fixed set of
+          tasks, ingestion pipelines that bring data in from other systems, and the cloud services
+          they run on. I built, deployed and maintain
           most of it myself.
         </p>
         <p>
           I look for problems that do not raise an error, and build checks that catch them. In
           customer-success operations the problem was account risk: churn fell from 30% to under 10%
           after the system began flagging at-risk customers before they left. More recently I have
-          applied the same approach to my own AI tools, listed under the two independent entries below.
+          applied the same approach to my own tools: a proxy that only sends compressed output it can
+          decode back exactly, a search engine whose evaluation showed it gave useful answers to half
+          of the test questions, and a well-depth model that lost its strongest variable once it was
+          measured against the right baseline.
         </p>
       </div>
     </section>
@@ -90,12 +94,33 @@
             That covers roughly sixty active projects, two-thirds of which changed in the last month.
           </p>
           <ul>
-            <li>Built an LLM-assisted compliance service. It transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.</li>
-            <li>Scope and deploy technical workflows for customer success, onboarding and internal operations, using SQL, CRM APIs and tools shared by several departments.</li>
+            <li>Built a compliance service assisted by a large language model (LLM). It transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.</li>
+            <li>Scope and deploy technical workflows for customer success, onboarding and internal operations, using SQL, CRM (customer relationship management) APIs, and tools shared by several departments.</li>
             <li>Built and maintain SQL-backed reporting for subscription logic and billing reconciliation.</li>
             <li>Lead the employee onboarding and offboarding workflows, which are tied to access control and system provisioning.</li>
             <li>Design and implement CRM automations for customer success, sales and partnerships.</li>
-            <li>Write custom workflows and scripts for internal infrastructure: ingestion services and scheduled jobs on managed cloud infrastructure, warehouse-backed reporting behind access control, and operational microservices. The code is mostly Python, with TypeScript for user-facing work, and has around 140 test files across these systems.</li>
+            <li>Write custom workflows and scripts for internal infrastructure. These include ingestion services and scheduled jobs on managed cloud infrastructure, reporting built on a data warehouse and protected by access control, and operational microservices. The code is mostly Python, with TypeScript for user-facing work. These systems have around 140 test files.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article style="margin-bottom:32px">
+        <div class="entry-stamp"><b>Sep 2020 — Apr 2023</b><span>Transactly</span></div>
+        <h3>Customer Success Operations Manager</h3>
+        <p class="fine" style="margin:0 0 12px">Previously Client Success Operations Lead, Success Coach, Success Support Specialist.</p>
+        <div class="prose">
+          <p>
+            Owned process infrastructure and automation across customer success, product, sales and
+            operations, including the reporting, tools and workflows that let the company see churn
+            risk early.
+          </p>
+          <ul>
+            <li>Cut client churn from <strong>30% to under 10%</strong> by redesigning processes and customer engagement around real-time risk scoring.</li>
+            <li>Built and ran SQL-driven credit, billing and subscription reporting.</li>
+            <li>Coordinated ticket workflows between the success and transaction-coordination teams. Issue resolution time fell by <strong>half</strong>.</li>
+            <li>Represented customer success in decisions about the CRM, internal tools and platform workflows.</li>
+            <li>Wrote and rolled out the customer-success playbooks and onboarding documentation.</li>
+            <li>Kept the systems I was responsible for running through a 30% headcount reduction.</li>
           </ul>
         </div>
       </article>
@@ -120,30 +145,9 @@
         <div class="prose">
           <ul>
             <li><a href="/portfolio/lodestone/">Lodestone</a> is local search over years of my working notes. Its evaluation showed that it gave useful answers to 5 of 10 test questions at full scale, and I published that result.</li>
-            <li><a href="/portfolio/frostline/">Frostline</a> is a set of spatial models built on 50,083 well records, and a business built around what they can predict, which is well depth. When the depth model was measured against the right baseline (the simple prediction a model has to beat), it lost what had looked like its strongest variable.</li>
+            <li><a href="/portfolio/frostline/">Frostline</a> is a set of spatial models built on 50,083 well records, and a business built around what they can predict, which is well depth. When the well-depth model was measured against the right baseline (the simple prediction a model has to beat), it lost the variable that had looked like its strongest.</li>
             <li>Reported <strong>32 bugs</strong> in a code-analysis tool I use daily. Two of them were race conditions, which I reproduced on demand with purpose-built test harnesses.</li>
             <li>Deployed three applications end to end: a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client.</li>
-          </ul>
-        </div>
-      </article>
-
-      <article style="margin-bottom:32px">
-        <div class="entry-stamp"><b>Sep 2020 — Apr 2023</b><span>Transactly</span></div>
-        <h3>Customer Success Operations Manager</h3>
-        <p class="fine" style="margin:0 0 12px">Previously Client Success Operations Lead, Success Coach, Success Support Specialist.</p>
-        <div class="prose">
-          <p>
-            Owned process infrastructure and automation across customer success, product, sales and
-            operations, including the reporting, tools and workflows that let the company see churn
-            risk early.
-          </p>
-          <ul>
-            <li>Cut client churn from <strong>30% to under 10%</strong> by redesigning processes and customer engagement around real-time risk scoring.</li>
-            <li>Built and ran SQL-driven credit, billing and subscription reporting.</li>
-            <li>Coordinated ticket workflows between the success and transaction-coordination teams. Issue resolution time fell by <strong>half</strong>.</li>
-            <li>Represented customer success in decisions about the CRM, internal tools and platform workflows.</li>
-            <li>Wrote and rolled out the customer-success playbooks and onboarding documentation.</li>
-            <li>Kept the systems I was responsible for running through a 30% headcount reduction.</li>
           </ul>
         </div>
       </article>
@@ -187,8 +191,8 @@
       <div class="section-head"><div><h2>What I work with</h2></div></div>
       <div class="subs">
         <div><span class="st">Languages</span><span class="sx">Python, TypeScript/JavaScript, Go, SQL, Bash</span></div>
-        <div><span class="st">AI &amp; ML</span><span class="sx">LLM evaluation and benchmarking, retrieval and retrieval-augmented generation (RAG), embeddings, cross-encoder re-ranking, MCP servers and clients, agent tooling, prompt and eval harnesses, LiteLLM</span></div>
-        <div><span class="st">Data</span><span class="sx">PostgreSQL, BigQuery, SQLite, ETL and ingestion pipelines, spatial modeling, conformal prediction intervals, reporting and dashboards</span></div>
+        <div><span class="st">AI &amp; ML</span><span class="sx">LLM evaluation and benchmarking, retrieval and retrieval-augmented generation (RAG), embeddings, cross-encoder re-ranking (re-scoring search results with a model that reads the query and each result together), MCP servers and clients, agent tooling, prompt and eval harnesses, LiteLLM (one interface to many model providers)</span></div>
+        <div><span class="st">Data</span><span class="sx">PostgreSQL, BigQuery, SQLite, ETL and ingestion pipelines, spatial modeling, conformal prediction intervals (prediction ranges with a stated chance of containing the true value), reporting and dashboards</span></div>
         <div><span class="st">Cloud &amp; infra</span><span class="sx">Google Cloud Platform (Cloud Run, Cloud Scheduler, Cloud Tasks, BigQuery), Docker, Proxmox, Cloudflare Tunnel and Access, Caddy, nginx, systemd, Linux</span></div>
         <div><span class="st">Platforms &amp; integration</span><span class="sx">HubSpot Ops Hub, REST APIs, webhooks, Google Apps Script, Stripe, OAuth and access provisioning</span></div>
         <div><span class="st">Practice</span><span class="sx">pytest and Go test, CI/CD with GitHub Actions, git, technical writing and documentation</span></div>

@@ -49,13 +49,15 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 07</b><span>AI infrastructure · cost</span><span>2026</span></div>
-        <h1>A gateway that routes one coding agent across a frontier model and cheaper open models</h1>
+        <h1>A gateway that sends each coding-agent task to a frontier model or a cheaper open model</h1>
         <p class="lede">
           A coding agent does not need a frontier model (the most capable and most expensive tier of
           large language model, or LLM) for every call, because much of its work is mechanical. I
-          built a personal gateway that connects one agent front-end to a subscription frontier
-          model and to cheaper open models such as DeepSeek, GLM and Kimi. No API keys are stored in
-          config files on disk, and a live display shows what the usage costs.
+          built a personal gateway that connects one agent front-end (the program I type requests
+          into, which then calls a model) to a subscription frontier model and to cheaper open
+          models such as DeepSeek, GLM and Kimi. No API keys (the credentials that authorize calls
+          to a provider&rsquo;s application programming interface) are stored in config files on
+          disk, and a live display shows what the usage costs.
         </p>
       </div>
       <aside class="note">
@@ -86,7 +88,7 @@
         <article class="panel">
           <div class="prose">
             <p>LiteLLM runs as an OpenAI-compatible proxy: a server that accepts requests in the format of OpenAI&rsquo;s API and forwards them to whichever provider serves the requested model. It sits in front of every provider I use. The agent talks to one endpoint whichever model answers.</p>
-            <p>A lightweight router maps task types to models, as in the config shown here. It also lets me switch provider and model mid-session without restarting the agent. I also run a second agent harness (the program that drives the model and its tools), OpenCode, with a browser UI against the same pool of models, so the setup works with more than one client.</p>
+            <p>A router maps task types to models, as in the config shown here, and lets me switch provider and model mid-session without restarting the agent. A second agent front-end, the OpenCode agent harness, runs with a browser interface against the same pool of models, so the setup works with more than one client.</p>
           </div>
         </article>
         <article class="code-window">
@@ -111,14 +113,14 @@ providers:
     <section class="section">
       <div class="section-head"><div><h2>How spend is tracked</h2></div></div>
       <div class="prose">
-        <p>A status line under every prompt shows live spend against a budget for each API key. It is green while there is headroom, amber near the limit and red over it.</p>
+        <p>A status line on every prompt shows live spend against a budget for each API key. It is green while there is headroom, amber near the limit and red over it.</p>
       </div>
       <article class="code-window">
         <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>status line</div>
         <pre><code>[frontier: $3.40 / $10.00]  [open-pool: $0.85 / $25.00]</code></pre>
       </article>
       <div class="prose">
-        <p>A small poller (a script that runs on a timer) copies each key&rsquo;s spend into a table in Postgres, a database, every few minutes. The cost history therefore survives dashboard refreshes and can be queried over time. Comparing spending before and after a routing change is one such query; this page does not report its result.</p>
+        <p>A small poller (a script that runs on a timer) copies each key&rsquo;s spend into a Postgres database table every few minutes. The cost history therefore survives dashboard refreshes and can be queried over time. Comparing spending before and after a routing change is one such query; this page does not report its result.</p>
       </div>
     </section>
 
@@ -127,8 +129,8 @@ providers:
       <article class="note">
         <ul>
           <li>The gateway and router config files contain no plaintext keys. They reference keys by name.</li>
-          <li>At process start, the keys are pulled from a secret broker (a separate service that stores them) and kept in the running process&rsquo;s memory.</li>
-          <li>When the process ends, it rewrites the config to its keyless stub as a second safeguard, so the file left on disk does not contain a key.</li>
+          <li>At process start, the keys are pulled from a secret broker (a separate service that stores them) and held only in memory.</li>
+          <li>When the process ends, the config is rewritten to its keyless stub, so the config file at rest never contains a key.</li>
         </ul>
       </article>
       <div class="prose">

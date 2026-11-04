@@ -51,9 +51,7 @@
         <h1>Portfolio</h1>
         <p class="lede">
           Infrastructure I built and run. Each entry has a write-up with enough detail to check
-          the claims, including the projects that failed. The case studies come first, starting with
-          tools for coding agents and the measurements I use to judge them. Live sites and other
-          systems I run follow.
+          the claims, including the projects that failed.
         </p>
       </div>
     </section>
@@ -131,7 +129,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A harness for coding agents, built for a single developer. Its gate decides whether a code change is acceptable by running four checks that keep no state and use no language model: the project&rsquo;s test suite; a symbol contract, which fails if the change leaves the scope it declared or removes a function or type without opting in; a scan for credentials in the staged change; and a scan for reachable vulnerabilities (ones the project&rsquo;s code can trigger). A pass leaves the branch for a human to commit, and nothing is committed automatically. The second part is the runtime that assigns models to roles and gives them tools.</p>
+            <p>A harness for coding agents, built for a single developer, in two parts. The first is a gate that gives a fixed-rule verdict on a code change. It runs four checks that keep no state: the test suite, a symbol contract, a scan for staged secrets, and a scan for reachable vulnerabilities. A pass leaves the branch for a human to commit. Nothing is committed automatically, and no language model makes the judgment. The second part is the runtime that drives its own loop.</p>
           </div>
         </details>
         </div>
@@ -146,7 +144,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A personal benchmark that takes bug-fix commits from my own repositories and replays them against cheap models, several times each, so a gap between two models can be judged as noise or as a genuine difference. Its headline figure is cost per solved task. It also publishes its own corrections: one defective task had lowered four figures it reported earlier, across three capability tiers.</p>
+            <p>A personal benchmark that takes bug-fix commits from my own repositories and replays them against lower-cost models, several times each, so a gap between two models can be told apart from noise. Its headline figure is cost per solved task. It also publishes its own corrections: one defective task, which affected three capability tiers, had pulled down four figures it stated earlier.</p>
           </div>
         </details>
         <details class="node">
@@ -156,17 +154,17 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>Scores each coding-agent session on two things, kept separate: what it cost, from the transcript, and how much of its code was still in the repository later, from git. Every average comes with a 95% confidence interval, and models are compared only on similar work, so a hard repository does not make a model look weak.</p>
+            <p>Scores each coding-agent session on two things, kept separate: what it cost, from the transcript, and how much of its code was still in the repository later, from git. Every average comes with a 95% confidence interval (a range that shows how precise the average is), and models are compared only on similar work, so a hard repository does not make a model look weak.</p>
           </div>
         </details>
         <details class="node">
           <summary class="node-head">
             <span class="node-name"><a href="/portfolio/lodestone/">Lodestone</a></span>
-            <span class="node-spec">5 of 10 useful at full scale</span>
+            <span class="node-spec">5 of 10 at full scale</span>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Local retrieval over years of my own notes. Semantic search (matching by meaning, using embeddings, which are numeric vectors that represent text) beat keyword search at 1,271 documents and lost to it at 57,500. The write-up starts with that result. The experiment set a kill gate in advance (a stated condition for stopping the project), and it also used negative controls (cases where the right answer is known to be nothing) and blind judging of pooled results.</p>
+            <p>Local retrieval over years of my own notes. Semantic search (matching by meaning) beat keyword search at 1,271 documents and lost to it at 57,500, and the write-up starts with that result. The experiment set a kill gate in advance (a stated condition for stopping the project), and it also used negative controls (cases where the right answer is known to be nothing) and blind judging of pooled results, where results are graded without the judge knowing which method returned them.</p>
           </div>
         </details>
         </div>
@@ -181,7 +179,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Spatial models over the public Michigan well record. Nearby wells have similar depths, with a Moran&rsquo;s I of 0.393. Moran&rsquo;s I measures how strongly nearby cells resemble each other: 0 means no pattern, and higher values mean neighbours are more alike. Yield scores 0.089. One promising model target was dropped after a baseline check showed it was about 96% a restatement of depth.</p>
+            <p>Spatial models over the public Michigan well record. Depth is predictable from location, with a Moran&rsquo;s I of 0.393. Moran&rsquo;s I measures how strongly nearby wells resemble each other, from 0 (no pattern) to 1 (strong). Yield scores 0.089. One promising target was dropped after it turned out to be about 96% a restatement of depth.</p>
             <div class="tree">
               <div class="tree-head"><span>frostline</span><span>8ef8a4d · 145 files</span></div>
               <pre><code>template/scripts/     the Track B pipeline — export, backtest,
@@ -212,7 +210,7 @@ site/                 the public build</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Routes one coding agent across several model providers by task, with secrets kept out of the environment and cost tracked against a budget as it accrues.</p>
+            <p>Routes one coding agent across several large language model (LLM) providers by task, with secrets kept out of the environment and cost tracked against a budget as it accrues.</p>
           </div>
         </details>
         </div>
@@ -259,7 +257,7 @@ site/                 the public build</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>The Campaign Table, a tabletop RPG workspace built on text extracted from rulebook PDFs. It is a FastAPI back end and a React single-page app in one container on its own LXC (a lightweight Linux container). CI (the automated build and deploy pipeline) releases it with a canary step (a trial release to check health first) and a rollback path. Two staging containers sit behind it so changes land somewhere else first.</p>
+            <p>The Campaign Table, a tabletop RPG workspace built on extracted rulebook PDFs. It is a FastAPI back end and a React single-page app in one container on its own LXC (a lightweight Linux container). CI (the automated build and deploy pipeline) releases it with a canary step (a trial release to check health first) and a rollback path. Two staging containers sit behind it so changes land somewhere else first.</p>
           </div>
         </details>
       </div>
@@ -352,7 +350,7 @@ site/                 the public build</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>The shell I work in, reached from any browser and described in the next section. A long agent job keeps running when the laptop closes, and I can check on it from anywhere.</p>
+            <p>The shell I work in, reached from any browser through single sign-on (SSO) with no open ports. The next section describes it. A long agent job keeps running when the laptop closes, and I can check on it from anywhere.</p>
           </div>
         </details>
         </div>
@@ -373,8 +371,7 @@ site/                 the public build</code></pre>
         </p>
         <p>
           Below is a model of that console on an ordinary day, with a column of agent sessions beside
-          the one that is open. The sessions, output and usage figures in it are illustrative. Hover
-          it, or give it focus, to watch it fill in.
+          the one that is open. Hover it, or give it focus, to watch it fill in.
         </p>
       </div>
 

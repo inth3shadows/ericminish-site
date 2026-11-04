@@ -55,7 +55,7 @@
         </p>
       </div>
       <aside class="note">
-        <p>Public traffic arrives through Cloudflare Tunnel, an outbound connection from the lab to Cloudflare. No ports on the home router are opened to the internet (nothing is port-forwarded).</p>
+        <p>Public routes come through Cloudflare Tunnel, a Cloudflare service that connects a private server to the internet. Nothing is port-forwarded.</p>
         <p>Last updated <strong>July 2026</strong>.</p>
       </aside>
     </section>
@@ -83,8 +83,8 @@
         </p>
         <p>
           Another failure involved a workload that had to reach the internet through one specific
-          network interface (one of the machine&rsquo;s network connections). Restarting things in the
-          right order did not guarantee that it used that interface. The lesson was to bind the
+          network interface. Restarting things in the right order did not guarantee that it used
+          that interface. The lesson was to bind the
           workload to the interface by name.
         </p>
       </div>
@@ -92,7 +92,7 @@
 
     <section class="section">
       <div class="section-head"><div><h2>Nodes</h2></div></div>
-      <p class="fine" style="margin:-4px 0 16px">Open a machine to see what it is and what it runs. In the specs, 2c/4t means two processor cores and four threads.</p>
+      <p class="fine" style="margin:-4px 0 16px">Open a machine to see what it is and what it runs.</p>
       <div class="nodes nodes-wide">
         <details class="node">
           <summary class="node-head">
@@ -103,7 +103,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Intel NUC5i7RYB</p>
-            <p>Runs the knowledge graph and a task-scheduler app, each in its own container (an isolated package that holds one service and everything it needs).</p>
+            <p>Runs the knowledge graph (a database that stores facts and the links between them) and a task-scheduler app, each in its own container.</p>
           </div>
         </details>
         <details class="node">
@@ -115,7 +115,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Intel D53427RKE</p>
-            <p>This is the always-on core. It runs primary DNS (the service that turns names into network addresses), this website, a fantasy-football projection UI, a weekly competitive-intelligence pipeline, and the print server.</p>
+            <p>This is the always-on core. It runs primary DNS, this website, a fantasy-football projection UI, a weekly competitive-intelligence pipeline, and the print server.</p>
           </div>
         </details>
         <details class="node">
@@ -127,7 +127,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Intel NUC5i5RYB</p>
-            <p>Runs the film, television and music servers, plus backup DNS and the internal HTTPS proxy. The proxy sits in front of every service on the local network (LAN) and serves each one over an encrypted connection.</p>
+            <p>Runs the film, television and music servers, plus backup DNS and the internal HTTPS proxy. The proxy sits in front of every service on the LAN and serves each one over HTTPS.</p>
           </div>
         </details>
         <details class="node">
@@ -151,7 +151,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Lenovo ThinkCentre M710q</p>
-            <p>Runs the origin-health sentinel, a watchdog that checks the health of services from behind Cloudflare, which is the layer visitors reach first.</p>
+            <p>Runs the origin-health sentinel, a watchdog that checks services from behind the public edge (the Cloudflare layer visitors reach first).</p>
           </div>
         </details>
         <details class="node">
@@ -175,7 +175,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Lenovo ThinkCentre M710q</p>
-            <p>Hosts client websites. It runs the edge proxy (the first server a visitor&rsquo;s request reaches) and the web server behind it.</p>
+            <p>Hosts client websites. It runs the edge proxy and the web server behind it.</p>
           </div>
         </details>
         <details class="node">
@@ -227,7 +227,7 @@
         <table class="data-table">
           <tr><th>Service</th><th>Job</th></tr>
           <tr><td>AdGuard Home</td><td>Primary and backup DNS, on separate machines</td></tr>
-          <tr><td>Caddy</td><td>Public edge, TLS (the encryption behind HTTPS), and the internal HTTPS proxy</td></tr>
+          <tr><td>Caddy</td><td>Public edge, TLS, and the internal HTTPS proxy</td></tr>
           <tr><td>Nginx</td><td>Client sites</td></tr>
           <tr><td>Uptime Kuma</td><td>Monitoring</td></tr>
           <tr><td>ntfy</td><td>Push alerts when something stops</td></tr>

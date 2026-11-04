@@ -51,15 +51,16 @@
         <div class="entry-stamp"><b>Entry 10</b><span>Measurement · model routing</span><span>2026</span></div>
         <h1>A benchmark built from bug-fix commits in the repositories I work in</h1>
         <p class="lede">
-          Public coding benchmarks such as SWE-bench measure models on open-source repositories. I
-          wanted to know which model to route my own work to, so this benchmark turns bug-fix
-          commits from the repositories on my machines into tasks, runs each task three times per
-          model by default, and scores each model by what it costs per task it solves.
+          Public coding benchmarks such as SWE-bench, a set of bug fixes from open-source
+          repositories, measure models on other people&rsquo;s code and run each task once. I wanted
+          to know which model to route my own work to. This benchmark turns bug-fix commits from
+          the repositories on my machines into tasks and runs each task three times per model by
+          default. It scores each model by what it costs per task it solves.
         </p>
       </div>
       <aside class="note">
         <p><strong>What it is</strong> — a pipeline that harvests tasks, runs models on them, grades the results and writes a report. A task is a commit from git history, and a pass means that commit&rsquo;s test suite goes green.</p>
-        <p><strong>Status</strong> — private repository, in use for routing decisions across a local model gateway (one endpoint in front of several model providers).</p>
+        <p><strong>Status</strong> — private repository, in use for routing decisions across a local model gateway.</p>
       </aside>
     </section>
 
@@ -76,11 +77,11 @@
       <div class="section-head"><div><h2>Why it uses my own repositories and repeated runs</h2></div></div>
       <div class="prose">
         <p>
-          A SWE-bench score (SWE-bench is a public benchmark of bug fixes in open-source
-          repositories) does not show how a model behaves in a specific Go, Python or TypeScript
+          A SWE-bench score does not show how a model behaves in a specific Go, Python or TypeScript
           codebase with its own conventions. The harvester therefore walks the git history on this
           machine for commits that touch both a test file and a source file and are small enough to
-          work as a single-shot task. The model is measured on the code it will be asked to work on.
+          work as a single-shot task, one the model attempts in a single response. The model is
+          measured on the code it will be asked to work on.
         </p>
         <p>
           A single run per task gives one pass or fail, and a model that passes a task once and
@@ -112,8 +113,8 @@
         </p>
         <p>
           The small tier solves 10 of 15 tasks and the large tier solves 15 of 15, at $0.51 per
-          solved task against $2.09. Which one to use depends on whether a task needs the large
-          tier&rsquo;s extra five solves, so the choice is a routing decision.
+          solved task against $2.09. On these tasks the large tier solved more and cost more per
+          solve, so choosing between them is a routing decision.
         </p>
         <p>
           The dollar amounts are higher than normal use would produce, because a large system
@@ -134,9 +135,10 @@
           task itself was broken.
         </p>
         <p>
-          The cause was the harness. The graded test was asynchronous, the repository declared its
-          async plugin as an optional extra, and the command the benchmark ran did not install
-          extras, so the test could not run at all. The check that confirmed it cost no model calls:
+          The cause was the harness, the benchmark code that sets up and runs each task. The graded
+          test was asynchronous, the repository declared the plugin its test runner needs for
+          asynchronous tests as an optional extra, and the command the benchmark ran did not
+          install extras, so the test could not run at all. The check that confirmed it cost no model calls:
           check out the commit that holds the correct fix and run the graded command against it. It
           scored zero, so no patch any model wrote could have passed.
         </p>
@@ -164,17 +166,18 @@
           that context.
         </p>
         <p>
-          Making scores comparable across corpora would mean abstracting away the codebase: its
-          conventions, its test shapes and its commit habits. Those are what the benchmark
-          measures.
+          Scores from different corpora could be made comparable only by setting aside what differs
+          between codebases: their conventions, their test shapes and their commit habits. Those
+          differences are what the benchmark is meant to measure.
         </p>
         <p>
           The corpora differ before any model is called. Across a hundred repositories on two
           machines, thirty yield any tasks, and among those the share of a repository&rsquo;s
-          history that qualifies as a task ranges from <strong>4.0% to 74.5%</strong>. One
-          repository measured 60.8% when its corpus was first built and 40.6% under identical
-          criteria today. That twenty-point drift came from history growth alone, mostly automated
-          release commits added to the total the share is calculated against.
+          history that qualifies as a task ranges from <strong>4.0% to 74.5%</strong>. The share
+          also drifts. One repository measured 60.8% when its corpus was first built and 40.6%
+          today under identical criteria, a twenty-point drop caused by history growth alone,
+          mostly automated release commits that enlarged the total the share is calculated
+          against.
         </p>
       </div>
       <article class="note">
@@ -191,14 +194,14 @@
       <div class="prose">
         <ul>
           <li><strong>Patch</strong> mode tests coding ability by running the model&rsquo;s fix against a test suite.</li>
-          <li><strong>Reading</strong> mode measures effective context length (how much of its input the model can use). A fact is planted in repository content, and the model must retrieve it exactly.</li>
-          <li><strong>Discovery</strong> mode asks the model to find a bug. It counts as found when the reported line range overlaps the line range of the fix.</li>
-          <li><strong>Scout</strong> mode measures how accurately the model locates a symbol (a function, class or variable). It runs as a tool loop, in which the model calls tools and reads the results over several turns, and its answers are checked against a deterministic symbol index.</li>
+          <li>To measure effective context length (how much of its input the model can use), <strong>Reading</strong> mode plants a fact in repository content and requires the model to retrieve it exactly.</li>
+          <li>In <strong>Discovery</strong> mode the model looks for a bug, which counts as found when the reported line range overlaps the line range of the fix.</li>
+          <li><strong>Scout</strong> checks how accurately the model locates a symbol (a function, class or variable). It runs as a tool loop, in which the model calls tools and reads the results over several turns. Its answers are checked against a deterministic symbol index, a lookup of where each symbol is defined that gives the same answer every time.</li>
         </ul>
         <p>
           Two failure modes are scored as failures and not retried. Determinism decays with output
-          length, so identical prompts stop returning identical text past a few hundred tokens. And
-          a reasoning model can return an empty response when its whole token budget went on
+          length, so identical prompts stop returning identical text past a few hundred tokens. A
+          reasoning model can also return an empty response when its whole token budget went on
           reasoning it does not show. A retry would hide both.
         </p>
       </div>
@@ -208,7 +211,7 @@
         <span class="tag">Python</span>
         <span class="tag">Statistics</span>
       </div>
-      <p class="project-meta-line" style="margin-top:12px">The repository is private because half the corpus is other people&rsquo;s code. The method is described here in full. The full results stay in that repository, where they can be regenerated.</p>
+      <p class="project-meta-line" style="margin-top:12px">The repository is private because half the corpus is other people&rsquo;s code. This page describes the method. The full results stay in that repository, where they can be regenerated.</p>
     </section>
 
     <p class="closing-line">

@@ -53,12 +53,13 @@
         <p class="lede">
           A language model writes the code, and a separate oracle (a program that reports pass or
           fail) decides whether the change is acceptable. The oracle runs four checks: the
-          project&rsquo;s tests, a scope check on which functions and types changed, a credential scan,
-          and a vulnerability scan. No language model is part of it.
+          project&rsquo;s tests, a symbol contract, a credential scan and a vulnerability scan. It is
+          mechanical and deterministic, and no language model is part of it. The gate and the role
+          runtime are built and in use.
         </p>
       </div>
       <aside class="note">
-        <p><strong>What it is</strong>: two parts. One is the verdict on a code change. The other is the runtime that gives models their jobs and tools while they produce those changes.</p>
+        <p><strong>What it is</strong>: a verdict on each code change that uses no language model, and the runtime that drives the loop producing those changes.</p>
         <p><strong>Status</strong>: private repository. The gate and the role runtime are built and in use. The loop that plans, produces and verifies a change without a person in it still runs in a separate agent runtime, and moving it into this project is the work in progress.</p>
       </aside>
     </section>
@@ -68,7 +69,7 @@
         <div><span class="fk">checks in the verdict</span><span class="fv">4</span></div>
         <div><span class="fk">model calls in the verdict</span><span class="fv good">0</span></div>
         <div><span class="fk">auto-commits</span><span class="fv good">0</span></div>
-        <div><span class="fk">runtime dependencies (Python standard library)</span><span class="fv">stdlib</span></div>
+        <div><span class="fk">runtime dependencies</span><span class="fv">Python standard library</span></div>
       </div>
     </section>
 
@@ -78,7 +79,7 @@
         <p>
           An agent that writes code is driven by a language model, and something else has to decide
           whether the change is acceptable. A common choice is a second model reviewing the first.
-          That reviewer can be confident about a bad diff, and it cannot be re-run to get the same
+          That reviewer can be confident about a bad code change, and it cannot be re-run to get the same
           answer tomorrow.
         </p>
         <p>
@@ -99,12 +100,11 @@
       <div class="prose">
         <p>
           A symbol is a named piece of code, such as a function, type or constant. The symbol contract
-          check uses the same deterministic index of symbols that powers
-          <a href="/portfolio/runecho/">RunEcho</a>, my pre-write check for coding agents. A change
-          declares the scope it intends to touch, and the gate compares the structural diff (the list of
-          symbols added, removed or changed) against that declaration. Each symbol&rsquo;s content is
-          hashed, so comparing hashes shows which ones changed. If an agent deletes a function while
-          working on something else, the hash comparison catches it, and nobody has to notice it in review.
+          check uses the same deterministic index that powers
+          <a href="/portfolio/runecho/">RunEcho</a>. A change declares the scope it intends to touch,
+          and the gate compares the structural diff (the list of symbols added, removed or changed)
+          against that declaration. If an agent deletes a function while working on something else, a
+          hash comparison catches it, and nobody has to notice it in review.
         </p>
       </div>
       <div class="code-window" style="margin-top:20px">
@@ -136,7 +136,7 @@ all four     &#8594;  the branch waits for a human</code></pre>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Roles and the model gateway</h2></div></div>
+      <div class="section-head"><div><h2>How a gateway assigns a model to each role</h2></div></div>
       <div class="prose">
         <p>
           The second part is the runtime. A <em>role</em> is a job (consult, scout, builder,
@@ -152,9 +152,10 @@ all four     &#8594;  the branch waits for a human</code></pre>
         </p>
         <p>
           The code-intelligence set picks its index by the question being asked. One index answers
-          <em>where a symbol is</em>, read live from the code so it is always current. Another answers
+          <em>where a symbol is</em>, and it is live and always current. Another answers
           <em>how things connect</em>; it is stored, so it can lag behind uncommitted edits. A
-          structural answer costs a few hundred tokens where the file it was derived from costs thousands.
+          structural answer costs a few hundred tokens (the units a model reads text in) where the file
+          it was derived from costs thousands.
         </p>
       </div>
     </section>
@@ -170,8 +171,8 @@ all four     &#8594;  the branch waits for a human</code></pre>
         <p>
           One known gap: the harness&rsquo;s own event records are currently written by asking a
           model to run a shell command. That breaks the project&rsquo;s rule of keeping models out of
-          the mechanical parts. It is the first thing being fixed, before the event log gets a way to
-          be read back and well before any tool set that can write exists.
+          the mechanical parts. It is the first thing being fixed, before the runtime can read the event
+          log back and well before any tool set that can write exists.
         </p>
       </div>
       <p class="fine">
@@ -184,7 +185,8 @@ all four     &#8594;  the branch waits for a human</code></pre>
       <div class="section-head"><div><h2>Why the project is not an interactive coding tool</h2></div></div>
       <div class="prose">
         <p>
-          I considered and rejected building a model-agnostic interactive tool that a person drives.
+          I considered and rejected building a model-agnostic interactive tool (one that works with any
+          model) that a person drives.
           Matching an interactive coding assistant means matching its write tools, session loop,
           approval layer and context management, against teams orders of magnitude larger than one
           person. Those tools have no equivalent of the mechanical verdict, so the roadmap is built
