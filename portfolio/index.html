@@ -89,7 +89,7 @@ VERIFY.md             how to check the claims</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Stops an agent from writing a call to a function your repo does not have, before the edit is saved. It runs as a hook (a step the agent loop triggers automatically) and checks every edit against the functions and other symbols the code declares. Each check takes about 12 ms. It uses no language model, no network and no build, and a passing check adds nothing to the agent&rsquo;s context. Its accuracy is measured against dated git history. Over 30 days, 406 flagged symbols could be rated: 62 (15.3%) were false positives, 137 (33.7%) were premature (the code was added later), and 207 (51.0%) were references to something that did not exist.</p>
+            <p>Catches an agent writing a call to a function your repo does not have, before the edit is saved; on nine confirmed invented names it caught four. It runs as a hook (a step the agent loop triggers automatically) and checks every edit against the functions and other symbols the code declares. Each check takes about 12 ms. It uses no language model, no network and no build, and a passing check adds nothing to the agent&rsquo;s context. Its accuracy is measured against dated git history. Over 30 days, 406 flagged symbols could be rated: 62 (15.3%) were false positives, 137 (33.7%) were premature (the code was added later), and 207 (51.0%) were references to something that did not exist.</p>
             <div class="tree">
               <div class="tree-head"><span>RunEcho</span><span>b117ffc · 332 files</span></div>
               <pre><code>cmd/                  runecho-guard, -ir, -mcp
@@ -196,11 +196,11 @@ site/                 the public build</code></pre>
         <details class="node">
           <summary class="node-head">
             <span class="node-name"><a href="/portfolio/origin-sentinel/">Origin Sentinel</a></span>
-            <span class="node-spec">read-only first, then repairs</span>
+            <span class="node-spec">report-only, repairs staged</span>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Checks the health of services reached through a tunnel (a Cloudflare connection that exposes a machine without opening ports). It catches the failure where the public edge looks healthy but the service behind it is down. It first shipped without write access, and it was given the ability to fix problems once its classifications held up in the field.</p>
+            <p>Checks the health of services reached through a tunnel (a Cloudflare connection that exposes a machine without opening ports). It catches the failure where the public edge looks healthy but the service behind it is down. It runs report-only: it proposes the fix for a stale origin and applies none. Repairs stay switched off until its classifications have held up in the field.</p>
           </div>
         </details>
         <details class="node">

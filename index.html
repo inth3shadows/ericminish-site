@@ -76,20 +76,6 @@
       <div class="plist">
         <div class="prow">
           <div>
-            <div class="prow-name"><a href="/portfolio/terse/">terse</a></div>
-            <p class="prow-desc">A proxy between my AI agent and the servers that run its tools. It compresses
-              the tool output so the model reads fewer tokens. When it cannot prove the compressed version
-              decodes back exactly, it sends the original output. On nine GitHub API responses totalling
-              365,144 tokens, the compressed output had 59% fewer tokens than the raw JSON.</p>
-          </div>
-          <div class="prow-right">
-            <span class="prow-value">59% fewer tokens</span>
-            <span class="prow-meta"><em>public</em> · MIT</span>
-          </div>
-        </div>
-
-        <div class="prow">
-          <div>
             <div class="prow-name"><a href="/portfolio/codegraph/">codegraph correctness</a></div>
             <p class="prow-desc">codegraph is an open-source tool that maps which functions call which and serves that map to
               coding agents. I check its map against each language&rsquo;s own type checker and against freshly
@@ -104,58 +90,43 @@
 
         <div class="prow">
           <div>
-            <div class="prow-name"><a href="/portfolio/testgraph/">testgraph</a></div>
-            <p class="prow-desc">Given a code change, it names the user journeys (sequences of actions a user takes,
-              such as &ldquo;claimant submits a signed form&rdquo;) the change could have broken. It walks a static
-              call graph (a map of which code calls which) backwards from the changed lines. Similar tools need
-              coverage data (a record of which code an earlier test run executed). testgraph works on a repository
-              whose tests have never been run.</p>
+            <div class="prow-name"><a href="/portfolio/terse/">terse</a></div>
+            <p class="prow-desc">A proxy between my AI agent and the servers that run its tools. It compresses
+              the tool output so the model reads fewer tokens. When it cannot prove the compressed version
+              decodes back exactly, it sends the original output. On nine GitHub API responses totalling
+              365,144 tokens, the compressed output had 59% fewer tokens than the raw JSON.</p>
           </div>
           <div class="prow-right">
-            <span class="prow-value">no prior test run needed</span>
+            <span class="prow-value">59% fewer tokens</span>
             <span class="prow-meta"><em>public</em> · MIT</span>
           </div>
         </div>
 
         <div class="prow">
           <div>
+            <div class="prow-name"><a href="/portfolio/flight-recorder/">flight-recorder</a></div>
+            <p class="prow-desc">Scores each coding-agent session on two things, kept separate: what it cost, from
+              the transcript, and how much of its code was still in the repository when it was last scored, from
+              git. A session is re-scored until it is seven days old. It has scored 11,179 sessions. Every average
+              comes with a 95% confidence interval, and models are compared only on similar work.</p>
+          </div>
+          <div class="prow-right">
+            <span class="prow-value">11,179 sessions scored</span>
+            <span class="prow-meta">private</span>
+          </div>
+        </div>
+
+        <div class="prow">
+          <div>
             <div class="prow-name"><a href="/portfolio/runecho/">RunEcho</a></div>
-            <p class="prow-desc">Stops an AI agent from writing a call to a function that does not exist in the
-              repository. Before the file is changed, it checks the edit against the function, type and constant
-              names the code declares. The check takes about 12&nbsp;ms and uses no model and no network. When the
-              check passes, it adds nothing to the agent&rsquo;s context.</p>
+            <p class="prow-desc">Checks each edit a coding agent makes, before the file changes, against the
+              function, type and constant names the repository declares, so a call to something that does not
+              exist is caught. On nine confirmed invented names it caught four. Each check takes about 12&nbsp;ms,
+              uses no model and no network, and adds nothing to the agent&rsquo;s context when it passes.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">0 context tokens</span>
             <span class="prow-meta"><em>public</em></span>
-          </div>
-        </div>
-
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="/portfolio/modelbench/">modelbench</a></div>
-            <p class="prow-desc">Replays real bug-fix commits from my own repositories against lower-cost models,
-              three times per model by default, and reports the cost per solved task. On fifteen tasks, the small
-              tier solved 10 at $0.51 per solved task and the large tier solved 15 at $2.09. The write-up lists
-              the earlier figures that had to be corrected.</p>
-          </div>
-          <div class="prow-right">
-            <span class="prow-value">$0.51 vs $2.09 per solve</span>
-            <span class="prow-meta">private</span>
-          </div>
-        </div>
-
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="/portfolio/knowledge-base/">Knowledge base for agents</a></div>
-            <p class="prow-desc">Long-term memory for my coding agents. Agents cannot write to it directly: each change is a
-              proposal, and a separate AI reviewer approves, edits or rejects it first. Over 30 days the reviewer
-              accepted 92.0% of 238 decided proposals. It caught 63.0% of short vague rules but only 27.8% of
-              long ones, and the write-up measures that weakness.</p>
-          </div>
-          <div class="prow-right">
-            <span class="prow-value">92.0% accepted</span>
-            <span class="prow-meta">private</span>
           </div>
         </div>
 
@@ -169,34 +140,6 @@
           <div class="prow-right">
             <span class="prow-value">0 raw-value reveals</span>
             <span class="prow-meta">private</span>
-          </div>
-        </div>
-
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="/portfolio/lodestone/">Lodestone</a></div>
-            <p class="prow-desc">Local search over my own working notes: Claude Code session transcripts, a
-              ChatGPT export, planning documents and repository markdown. On paraphrased questions, its search
-              by meaning beat keyword search over 1,222 chunks (short passages cut from the notes) and lost to
-              it over the full collection of 57,562 chunks. I published both results. On ten recall questions asked against the full
-              collection, the default setup returned something useful in its top three results for five.</p>
-          </div>
-          <div class="prow-right">
-            <span class="prow-value">5 of 10 useful</span>
-            <span class="prow-meta">lost at full scale</span>
-          </div>
-        </div>
-
-        <div class="prow">
-          <div>
-            <div class="prow-name"><a href="/portfolio/frostline/">Frostline</a></div>
-            <p class="prow-desc">Spatial models over Michigan well records. Depth is predictable from location
-              because nearby wells have similar depths. Yield (how much water a well produces) is not. The project also includes a business that builds and runs websites with lead-intake forms for
-              Northern Michigan well drillers.</p>
-          </div>
-          <div class="prow-right">
-            <span class="prow-value">50,000 records</span>
-            <span class="prow-meta">modelled</span>
           </div>
         </div>
       </div>
@@ -233,10 +176,15 @@
       <!-- auto:end gitstrip -->
 
       <div class="also">
-        <span class="also-label">Also running</span>
+        <span class="also-label">More work</span>
+        <a href="/portfolio/testgraph/">testgraph</a>
+        <a href="/portfolio/knowledge-base/">Knowledge base</a>
+        <a href="/portfolio/modelbench/">modelbench</a>
+        <a href="/portfolio/lodestone/">Lodestone</a>
         <a href="/portfolio/harness/">harness</a>
         <a href="/portfolio/origin-sentinel/">Origin Sentinel</a>
         <a href="/portfolio/llm-gateway/">LLM gateway</a>
+        <a href="/portfolio/frostline/">Frostline</a>
         <a href="/homelab/">Homelab</a>
         <a href="/portfolio/">Everything else</a>
       </div>

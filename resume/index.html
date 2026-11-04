@@ -61,8 +61,7 @@
     <section class="section">
       <div class="prose">
         <p>
-          I work in Python, Go and SQL. I build MCP servers (MCP is the standard that connects tools
-          to AI agents), retrieval systems, evaluation harnesses, ingestion pipelines, and the cloud
+          I work in Python, Go and SQL. I build MCP servers, retrieval systems, evaluation harnesses, ingestion pipelines, and the cloud
           services they run on. I built, deployed and maintain most of it myself.
         </p>
         <p>
@@ -73,7 +72,7 @@
           decode back exactly, a search engine whose evaluation showed it gave useful answers to half
           of the test questions, and a well-record model in which a target that looked like new signal
           turned out to be about 96% a restatement of well depth, once it was compared with a baseline
-          computed from depth (a baseline is the simple prediction a model has to beat).
+          computed from depth.
         </p>
       </div>
     </section>
@@ -83,8 +82,8 @@
 
       <article style="margin-bottom:32px">
         <div class="entry-stamp"><b>Jul 2023 — present</b><span>Transactly</span><span>Remote</span></div>
-        <h3>Systems &amp; Automation Lead</h3>
-        <p class="fine" style="margin:0 0 12px">Internal title: Lead Customer Account Specialist. At Transactly since Sep 2020.</p>
+        <h3>Senior AI Engineer</h3>
+        <p class="fine" style="margin:0 0 12px">At Transactly since Sep 2020.</p>
         <div class="prose">
           <p>
             I own the internal systems layer: the workflow logic, its integrations with the other
@@ -92,8 +91,8 @@
             That covers roughly sixty active projects, two-thirds of which changed in the last month.
           </p>
           <ul>
-            <li>Built a compliance service assisted by a large language model (LLM). It transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.</li>
-            <li>Scope and deploy technical workflows for customer success, onboarding and internal operations, using SQL, the APIs (programming interfaces) of our CRM (customer relationship management) system, and tools shared by several departments.</li>
+            <li>Built an LLM-assisted call-compliance service. It transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.</li>
+            <li>Scope and deploy technical workflows for customer success, onboarding and internal operations, using SQL, our CRM&rsquo;s APIs, and tools shared by several departments.</li>
             <li>Built and maintain SQL-backed reporting for subscription logic and billing reconciliation.</li>
             <li>Lead the employee onboarding and offboarding workflows, which are tied to access control and system provisioning.</li>
             <li>Design and implement CRM automations for customer success, sales and partnerships.</li>
@@ -128,11 +127,11 @@
         <h3>Agent infrastructure</h3>
         <div class="prose">
           <ul>
-            <li><a href="/portfolio/runecho/">RunEcho</a> stops a coding agent from writing a call to a function the repository does not have. The check runs before the code is written, takes about 12 ms, uses no model or network, and adds nothing to the agent&rsquo;s context when it passes. Public, MIT license.</li>
-            <li><a href="/portfolio/terse/">terse</a> is a proxy that compresses AI tool output without losing information. Across 365,144 tokens of real API payloads it used 59% fewer tokens than the original payloads. TOON 4.1.1 (Token-Oriented Object Notation, a compact JSON encoding written for model prompts) made the same payloads 6.5% larger. Public, MIT license.</li>
-            <li><a href="/portfolio/testgraph/">testgraph</a> reads a diff (the lines a code change adds and removes) and names the user journeys the change could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT license, published on PyPI.</li>
+            <li><a href="/portfolio/runecho/">RunEcho</a> checks each edit a coding agent makes, before the file changes, against the names the repository declares. On nine confirmed invented names it caught four. Each check takes about 12 ms, uses no model or network, and adds nothing to the agent&rsquo;s context when it passes. Public, MIT license.</li>
+            <li><a href="/portfolio/terse/">terse</a> is a proxy that compresses AI tool output without losing information. Across 365,144 tokens of real API payloads it used 59% fewer tokens than the original payloads. TOON 4.1.1, a compact JSON encoding written for model prompts, made the same payloads 6.5% larger. Public, MIT license.</li>
+            <li><a href="/portfolio/testgraph/">testgraph</a> reads a diff and names the user journeys the change could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT license, published on PyPI.</li>
             <li><a href="/portfolio/modelbench/">modelbench</a> benchmarks models on real bug-fix commits mined from my own repositories. Each model runs each task three times, and models are scored on cost per solved task. Its write-up lists the earlier figures that were later corrected.</li>
-            <li><a href="/portfolio/harness/">harness</a> runs a coding agent and judges each change it makes with four rule-based checks. No model takes part in the judging, and the harness never commits on its own.</li>
+            <li><a href="/portfolio/harness/">harness</a> gives each code change a verdict from four rule-based checks: the tests, a symbol contract, a credential scan and a vulnerability scan. No model takes part in the judging, and nothing is committed automatically. Its agent runtime so far uses read-only tools.</li>
           </ul>
         </div>
       </article>
@@ -144,7 +143,7 @@
           <ul>
             <li><a href="/portfolio/lodestone/">Lodestone</a> is local search over years of my working notes. Its evaluation showed that it gave useful answers to 5 of 10 test questions at full scale, and I published that result.</li>
             <li><a href="/portfolio/frostline/">Frostline</a> is a set of spatial models built on 50,083 well records, and a business built around what the models can predict. One candidate target, the aquifer interval (the top and bottom depths of the water-bearing layer), showed +38.8% apparent skill against the global median. Against a baseline computed from well depth, that skill disappeared: the interval was about 96% a restatement of depth, so I cut it.</li>
-            <li>Filed <strong>111 issues</strong> against codegraph (colbymchenry/codegraph), an open-source code-intelligence tool I use daily; 86 have since been closed, and 17 of my pull requests were merged (GitHub, 3 November 2026). I built fault-injection harnesses (programs that force the failure on demand) that reproduce two of the bugs.</li>
+            <li>Filed <strong>111 issues</strong> against codegraph (colbymchenry/codegraph), an open-source code-intelligence tool I use daily; 86 have since been closed, and 17 of my pull requests were merged (GitHub, 3 November 2026). I built fault-injection harnesses that reproduce two of the bugs.</li>
             <li>Deployed three applications end to end: a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client.</li>
           </ul>
         </div>
@@ -189,11 +188,11 @@
       <div class="section-head"><div><h2>What I work with</h2></div></div>
       <div class="subs">
         <div><span class="st">Languages</span><span class="sx">Python, TypeScript/JavaScript, Go, SQL, Bash</span></div>
-        <div><span class="st">AI &amp; ML</span><span class="sx">LLM evaluation and benchmarking, retrieval and retrieval-augmented generation (RAG, where a model answers from passages a search step found), embeddings (text stored as numbers so similar passages can be found), cross-encoder re-ranking (re-scoring search results with a model that reads the query and each result together), MCP servers and clients, agent tooling, prompt and eval harnesses, LiteLLM (one interface to many model providers)</span></div>
-        <div><span class="st">Data</span><span class="sx">PostgreSQL, BigQuery, SQLite, ETL (extract, transform, load) and ingestion pipelines, spatial modeling, conformal prediction intervals (prediction ranges with a stated chance of containing the true value), reporting and dashboards</span></div>
+        <div><span class="st">AI &amp; ML</span><span class="sx">LLM evaluation and benchmarking, retrieval and RAG, embeddings, cross-encoder re-ranking, MCP servers and clients, agent tooling, prompt and eval harnesses, LiteLLM</span></div>
+        <div><span class="st">Data</span><span class="sx">PostgreSQL, BigQuery, SQLite, ETL and ingestion pipelines, spatial modeling, conformal prediction intervals, reporting and dashboards</span></div>
         <div><span class="st">Cloud &amp; infra</span><span class="sx">Google Cloud Platform (Cloud Run, Cloud Scheduler, Cloud Tasks, BigQuery), Docker, Proxmox, Cloudflare Tunnel and Access, Caddy, nginx, systemd, Linux</span></div>
-        <div><span class="st">Platforms &amp; integration</span><span class="sx">HubSpot Ops Hub, REST APIs, webhooks, Google Apps Script, Stripe, OAuth (the standard for giving an app access to an account without sharing its password) and access provisioning</span></div>
-        <div><span class="st">Practice</span><span class="sx">pytest and Go test, CI/CD (tests and deployments that run automatically on each change) with GitHub Actions, git, technical writing and documentation</span></div>
+        <div><span class="st">Platforms &amp; integration</span><span class="sx">HubSpot Ops Hub, REST APIs, webhooks, Google Apps Script, Stripe, OAuth and access provisioning</span></div>
+        <div><span class="st">Practice</span><span class="sx">pytest and Go test, CI/CD with GitHub Actions, git, technical writing and documentation</span></div>
       </div>
       <p class="fine" style="margin-top:12px">
         Each of these is used in work listed above.
@@ -210,7 +209,7 @@
     </section>
 
     <p class="closing-line">
-      <a class="button" href="/resume/eric-minish-resume-22f80b4c.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
+      <a class="button" href="/resume/eric-minish-resume-f6027f86.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
     </p>
   </main>
 
