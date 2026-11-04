@@ -90,6 +90,20 @@
 
         <div class="prow">
           <div>
+            <div class="prow-name"><a href="/portfolio/codegraph/">codegraph correctness</a></div>
+            <p class="prow-desc">codegraph is an open-source tool that maps which functions call which and serves that map to
+              coding agents. I check its map against each language&rsquo;s own type checker and against freshly
+              built indexes, reduce each difference to the smallest code that shows it, and file it upstream.
+              Of 111 issues filed, the maintainer closed 81 as completed, and 17 of my pull requests were merged.</p>
+          </div>
+          <div class="prow-right">
+            <span class="prow-value">17 PRs merged upstream</span>
+            <span class="prow-meta"><em>public</em> fork · MIT</span>
+          </div>
+        </div>
+
+        <div class="prow">
+          <div>
             <div class="prow-name"><a href="/portfolio/testgraph/">testgraph</a></div>
             <p class="prow-desc">Given a code change, it names the user journeys (sequences of actions a user takes,
               such as &ldquo;claimant submits a signed form&rdquo;) the change could have broken. It walks a static
@@ -127,6 +141,33 @@
           </div>
           <div class="prow-right">
             <span class="prow-value">$0.51 vs $2.09 per solve</span>
+            <span class="prow-meta">private</span>
+          </div>
+        </div>
+
+        <div class="prow">
+          <div>
+            <div class="prow-name"><a href="/portfolio/knowledge-base/">Knowledge base for agents</a></div>
+            <p class="prow-desc">Long-term memory for my coding agents. Agents cannot write to it directly: each change is a
+              proposal, and a separate AI reviewer approves, edits or rejects it first. Over 30 days the reviewer
+              accepted 92.0% of 238 decided proposals. It caught 63.0% of short vague rules but only 27.8% of
+              long ones, and the write-up measures that weakness.</p>
+          </div>
+          <div class="prow-right">
+            <span class="prow-value">92.0% accepted</span>
+            <span class="prow-meta">private</span>
+          </div>
+        </div>
+
+        <div class="prow">
+          <div>
+            <div class="prow-name"><a href="/portfolio/secret-broker/">secret-broker</a></div>
+            <p class="prow-desc">Lets coding agents use API keys without receiving them. The broker makes the call itself
+              and returns the cleaned-up result, and every call writes a receipt to a hash-chained log, so a
+              later edit to the log shows. 2,568 receipts over six months check out intact.</p>
+          </div>
+          <div class="prow-right">
+            <span class="prow-value">0 raw-value reveals</span>
             <span class="prow-meta">private</span>
           </div>
         </div>
