@@ -74,7 +74,7 @@
       <div class="section-head"><div><h2>A deterministic check: same input, same answer</h2></div></div>
       <div class="prose">
         <p>
-          Each check parses the edit and looks its names up in an index built from your code. No model is involved, so the same code and the same index give the same answer on every run, machine and agent. The check needs no API keys, network, build or language server (the background process an editor queries for code information).
+          Each check parses the edit and looks its names up in an index built from your code. No model is involved, so the same code and the same index give the same answer on every run, machine and agent. The check needs no API keys, network, build or language server (the background process an editor queries for code information). Claude Code can now report type errors after an edit when a language-server plugin is installed; RunEcho checks before the edit is written, without one.
         </p>
         <p>
           <strong>A clean check costs zero context tokens</strong> (tokens are the units a model reads and is billed for). The hook writes nothing unless it stops an edit, and then writes about a hundred tokens. Because it runs as a hook, the agent spends no context deciding whether to call it. The companion server, which answers structural questions about the code on demand, is a separate piece and does use context: its tool schemas (the descriptions of its tools that the model is given) take around 968 tokens at session start. Both figures are published in the repository.

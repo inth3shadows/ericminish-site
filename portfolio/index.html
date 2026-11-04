@@ -65,11 +65,11 @@
         <details class="node">
           <summary class="node-head">
             <span class="node-name"><a href="/portfolio/terse/">terse</a></span>
-            <span class="node-spec">59% fewer tokens</span>
+            <span class="node-spec">23% of MCP cost, under 1% of the bill</span>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>MCP, the Model Context Protocol, is the standard that connects tools to AI agents. terse is a proxy that sits in front of MCP tool servers and compresses what they return without losing anything. If it cannot prove that a compressed payload rebuilds the original exactly, it forwards the original unchanged. On a benchmark of nine GitHub API payloads that total 365,144 tokens as raw JSON, the compressed form uses 59% fewer tokens. The project is public under the MIT license, and the repository includes a benchmark harness so you can measure the saving on your own tools.</p>
+            <p>MCP, the Model Context Protocol, is the standard that connects tools to AI agents. terse is a proxy that sits in front of MCP tool servers and compresses what they return without losing anything. If it cannot prove that a compressed payload rebuilds the original exactly, it forwards the original unchanged. On nine GitHub API payloads, its best case, the compressed form uses 59% fewer tokens. A replay of my own Claude Code sessions, priced at what each call was billed, found it removes 23% of what MCP results cost, under 1% of a session&rsquo;s bill, almost all of it from two tools in long sessions. The project is public under the MIT license, and the repository includes a benchmark harness so you can measure the saving on your own tools.</p>
             <div class="tree">
               <div class="tree-head"><span>terse</span><span>9bd5ad3 · 161 files</span></div>
               <pre><code>src/terse/            the codec, proxy and policy
