@@ -7,82 +7,87 @@ def esc(t):
     return t.replace('\\','\\\\').replace('(','\\(').replace(')','\\)')
 def add(kind,text=''): LINES.append((kind,text))
 add('name','ERIC MINISH')
-add('tag','AI Infrastructure & Backend Engineer - I build checks that find problems in systems before people notice them')
-add('meta','hi@ericminish.com  |  ericminish.com  |  github.com/inth3shadows  |  linkedin.com/in/ericminish')
+add('tag','AI infrastructure & backend engineering, embedded in operations. I build checks that find problems in systems before people notice them.')
+add('meta','hi@ericminish.com  |  ericminish.com  |  github.com/inth3shadows  |  linkedin.com/in/ericminish  |  Central Lake, Michigan')
 add('gap')
 add('h','SUMMARY')
-add('p','AI infrastructure and backend engineering, built while working in operations. Python, Go and SQL; MCP servers, retrieval and evaluation harnesses, ingestion pipelines and the cloud services they run on. I built, deployed and maintain most of it myself.')
-add('p','I look for problems that do not raise an error, and build checks that catch them. In customer-success operations that meant account risk: churn fell from 30% to under 10% after the system began flagging at-risk customers before they left. More recently it has meant my own tools: a proxy that only sends compressed output it can decode back exactly, a search engine whose evaluation showed it answered half of the test questions usefully, and a well-depth model that lost its strongest variable once it was measured against the right baseline.')
+add('p','I work in Python, Go and SQL. I build MCP servers, retrieval systems, evaluation harnesses, ingestion pipelines, and the cloud services they run on. I built, deployed and maintain most of it myself.')
+add('p','I look for problems that do not raise an error, and build checks that catch them. In customer-success operations the problem was account risk: churn fell from 30% to under 10% after the system began flagging at-risk customers before they left. More recently I have applied the same approach to my own tools: a proxy that only sends compressed output it can decode back exactly, a search engine whose evaluation showed it gave useful answers to half of the test questions, and a well-depth model that lost its strongest variable once it was measured against the right baseline.')
 add('gap')
 add('h','EXPERIENCE')
 add('role','Systems & Automation Lead')
-add('sub','Transactly  |  Jul 2023 - Present  |  Remote  |  Internal title: Lead Customer Account Specialist')
-for b in ["Own the internal systems layer: workflow logic, the integrations around it, and the reporting that explains the results to people who were not involved. Roughly sixty active projects, two-thirds of them changed in the last month.",
-          "Scope and deploy technical workflows across customer success, onboarding, and internal operations using SQL, CRM APIs, and multi-department tooling.",
+add('sub','Transactly  |  Jul 2023 - Present  |  Remote  |  Internal title: Lead Customer Account Specialist. At Transactly since Sep 2020.')
+add('p','I own the internal systems layer: the workflow logic, its integrations with the other systems, and the reporting that explains the results to people who were not involved. That covers roughly sixty active projects, two-thirds of which changed in the last month.')
+for b in ["Built an LLM-assisted compliance service. It transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.",
+          "Scope and deploy technical workflows for customer success, onboarding and internal operations, using SQL, our CRM's APIs, and tools shared by several departments.",
           "Built and maintain SQL-backed reporting for subscription logic and billing reconciliation.",
-          "Lead employee onboarding and offboarding workflows tied to access control and system provisioning.",
-          "Design and implement CRM automations across customer success, sales, and partnerships.",
-          "Support internal infrastructure through custom development: ingestion services and scheduled jobs on managed cloud infrastructure, warehouse-backed reporting behind access control, and operational microservices. Python-dominant, TypeScript for user-facing work, ~140 test files.",
-          "Built an LLM-assisted compliance service: transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision."]:
+          "Lead the employee onboarding and offboarding workflows, which are tied to access control and system provisioning.",
+          "Design and implement CRM automations for customer success, sales and partnerships.",
+          "Write custom workflows and scripts for internal infrastructure. These include ingestion services and scheduled jobs on managed cloud infrastructure, reporting built on a data warehouse and protected by access control, and operational microservices. The code is mostly Python, with TypeScript for user-facing work. These systems have around 140 test files."]:
     add('li',b)
 add('gap')
 add('role','Customer Success Operations Manager')
 add('sub','Transactly  |  Sep 2020 - Apr 2023  |  Previously Client Success Operations Lead, Success Coach, Success Support Specialist')
-for b in ["Cut client churn from 30% to under 10% through process and engagement redesign backed by real-time risk scoring.",
-          "Built and ran SQL-driven credit, billing, and subscription reporting.",
-          "Coordinated ticket workflows across success and transaction-coordination operations, halving issue resolution time.",
-          "Served as the customer-success stakeholder for CRM, internal tooling, and platform workflows.",
-          "Wrote and deployed the customer-success playbooks and onboarding documentation.",
-          "Kept every system running through a 30% headcount reduction."]:
+add('p','Owned process infrastructure and automation across customer success, product, sales and operations, including the reporting, tools and workflows that let the company see churn risk early.')
+for b in ["Cut client churn from 30% to under 10% by redesigning processes and customer engagement around real-time risk scoring.",
+          "Built and ran SQL-driven credit, billing and subscription reporting.",
+          "Coordinated ticket workflows between the success and transaction-coordination teams. Issue resolution time fell by half.",
+          "Represented customer success in decisions about the CRM, internal tools and platform workflows.",
+          "Wrote and rolled out the customer-success playbooks and onboarding documentation.",
+          "Kept the systems I was responsible for running through a 30% headcount reduction."]:
     add('li',b)
 add('gap')
-add('role','Agent and data infrastructure (independent)')
-add('sub','2025 - Present')
-for b in ["RunEcho - stops a coding agent writing a call to a function the repo does not have, before the write lands. It takes about 12 ms, uses no model or network, and adds nothing to the agent's context when the check passes. Public, MIT licensed.",
-          "terse - compresses AI tool output losslessly: 59% fewer tokens across 365,144 tokens of real API payloads, compared with the TOON format, which made the same payloads 7% larger. Public, MIT licensed.",
-          "testgraph - given a diff, names the user journeys it could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT licensed, on PyPI.",
-          "modelbench - benchmarks models on real bug-fix commits mined from my own repos, three runs per pair, scored on cost per solved task. The write-up lists the earlier figures it had to correct.",
-          "Lodestone - local search over years of my working notes. Its evaluation showed it gave useful answers to 5 of 10 test questions at full scale, and I published that result.",
-          "Frostline - spatial models over 50,083 well records; depth is predictable from location, yield is not.",
-          "Reported 32 bugs in a code-analysis tool, including two race conditions reproduced on demand with purpose-built harnesses.",
-          "Three applications deployed end to end: a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client."]:
+add('role','Agent infrastructure')
+add('sub','Independent  |  2025 - Present  |  Built, shipped and run')
+for b in ["RunEcho stops a coding agent from writing a call to a function the repository does not have. The check runs before the code is written, takes about 12 ms, uses no model or network, and adds nothing to the agent's context when it passes. Public, MIT license.",
+          "terse is a proxy that compresses AI tool output without losing information. Across 365,144 tokens of real API payloads it used 59% fewer tokens than the original payloads. The TOON format made the same payloads 7% larger. Public, MIT license.",
+          "testgraph reads a diff and names the user journeys the change could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT license, published on PyPI.",
+          "modelbench benchmarks models on real bug-fix commits mined from my own repositories. Each model runs each task three times, and models are scored on cost per solved task. Its write-up lists the earlier figures that were later corrected.",
+          "harness runs a coding agent and judges each change it makes with four rule-based checks. No model takes part in the judging, and the harness never commits on its own."]:
+    add('li',b)
+add('gap')
+add('role','Data work and shipped applications')
+add('sub','Independent  |  2025 - Present  |  Data, delivery and evidence')
+for b in ["Lodestone is local search over years of my working notes. Its evaluation showed that it gave useful answers to 5 of 10 test questions at full scale, and I published that result.",
+          "Frostline is a set of spatial models built on 50,083 well records, including the well-depth model above, and a business built around what the models can predict.",
+          "Reported 32 bugs in a code-analysis tool I use daily. Two of them were race conditions, which I reproduced on demand with purpose-built test harnesses.",
+          "Deployed three applications end to end: a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client."]:
     add('li',b)
 add('gap')
 add('role','Customer Success Manager')
 add('sub','Geotix  |  Jun 2017 - Jun 2020  |  Traverse City, Michigan')
-for b in ["Handled customer service for 70+ partners, 3,000+ partner clients, and 400,000+ end customers, responding to every ticket within two hours.",
-          "Tested issues for reproducibility before escalating, documented what would not reproduce, and ran the weekly session feeding that back to product.",
-          "Wrote the FAQ and knowledge-base documentation, and carried customer feedback into product recommendations."]:
+for b in ["Handled customer service for 70+ partners, 3,000+ partner clients and 400,000+ end customers. Every ticket received a response within two hours.",
+          "Tested each issue for reproducibility before escalating it, documented the ones that would not reproduce, and ran the weekly session that reported them back to product.",
+          "Wrote the FAQ and knowledge-base documentation, and turned customer feedback into product recommendations."]:
     add('li',b)
 add('gap')
-add('role','Owner and Founder')
+add('role','Owner and founder')
 add('sub','Independent, contract  |  Apr 2013 - Jun 2017  |  Bellaire, Michigan')
-for b in ["Ran day-to-day operations under five service contracts, handling up to 70 calls and 100 emails a day.",
-          "Created and documented the processes underneath - refunds, chargebacks, phone sales, fulfilment."]:
+for b in ["Ran day-to-day operations under five service contracts. The work involved up to 70 calls and 100 emails a day.",
+          "Created and documented the processes behind refunds, chargebacks, phone sales and fulfillment."]:
     add('li',b)
 add('gap')
 add('role','District Court Legal Assistant II')
 add('sub',"4th Judicial District Attorney's Office  |  Apr 2010 - Mar 2013")
 for b in ["Managed complex caseloads for four attorneys.",
-          "Worked across departments to keep discovery moving so attorneys had time to prepare for hearings."]:
+          "Worked across departments to keep discovery moving, so the attorneys had time to prepare for hearings."]:
     add('li',b)
 add('gap')
-add('h','TECHNOLOGIES')
+add('h','WHAT I WORK WITH  (each is used in work listed above)')
 add('p','Languages: Python, TypeScript/JavaScript, Go, SQL, Bash')
 add('p','AI & ML: LLM evaluation and benchmarking, retrieval and RAG, embeddings, cross-encoder re-ranking, MCP servers and clients, agent tooling, prompt and eval harnesses, LiteLLM')
-add('p','Data: PostgreSQL, BigQuery, SQLite, ETL and ingestion pipelines, spatial modelling, conformal prediction intervals, reporting and dashboards')
+add('p','Data: PostgreSQL, BigQuery, SQLite, ETL and ingestion pipelines, spatial modeling, conformal prediction intervals, reporting and dashboards')
 add('p','Cloud & infra: Google Cloud Platform (Cloud Run, Cloud Scheduler, Cloud Tasks, BigQuery), Docker, Proxmox, Cloudflare Tunnel and Access, Caddy, nginx, systemd, Linux')
 add('p','Platforms & integration: HubSpot Ops Hub, REST APIs, webhooks, Google Apps Script, Stripe, OAuth and access provisioning')
 add('p','Practice: pytest and Go test, CI/CD with GitHub Actions, git, technical writing and documentation')
 add('gap')
 add('h','EDUCATION & CERTIFICATIONS')
 add('p','Central Michigan University - B.A. Sociology, emphasis in institutional systems.')
-add('p','Gainsight Customer Success Certified (Level 1 & Advanced, 2021-2022); Customer Success Leader Certified (2022).')
-add('p','PostgreSQL + SQL Bootcamp (2023).')
+add('p','Gainsight Customer Success Certified, Level 1 and Advanced (2021-2022). Customer Success Leader Certified (2022). PostgreSQL & SQL Bootcamp, 2023.')
 
 STYLE={'name':('F2',17,20),'tag':('F1',10.5,15),'meta':('F1',8.5,14),'h':('F2',10,16),
-       'role':('F2',10.5,14),'sub':('F1',9,13),'p':('F1',9.5,12.6),'li':('F1',9.5,12.6),'gap':('F1',6,7)}
-WRAP={'p':98,'li':95,'sub':110,'meta':110,'tag':92}
+       'role':('F2',10.5,14),'sub':('F1',9,13),'p':('F1',9.5,11.8),'li':('F1',9.5,11.8),'gap':('F1',6,5)}
+WRAP={'p':103,'li':100,'sub':118,'meta':125,'tag':92}
 pages=[]; cur=[]; y=H-M
 for kind,text in LINES:
     font,size,lead=STYLE[kind]
