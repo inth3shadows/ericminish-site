@@ -17,12 +17,12 @@ add('gap')
 add('h','EXPERIENCE')
 add('role','Senior AI Engineer')
 add('sub','Transactly  |  Jul 2023 - Present  |  Remote  |  At Transactly since Sep 2020.')
-add('p','I build and run the software our sales, operations and partner teams work in: the workflow logic, its integrations with the other systems, and the reporting that explains the results. As of November 2026 that is 60 repositories, 29 of which changed in the last 30 days; I wrote about 95% of the commits since September.')
-for b in ['Built an LLM-assisted compliance service. It transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.',
-          "Own the company's HubSpot CRM: its workflows, automations and integrations, and the services built around it.",
-          "Built and run a console that gathers a consultant's tools in one place, a partner portal, and a lead-intake API for partners, each released to production repeatedly in October and November 2026.",
-          "Scope and deploy technical workflows for customer success, onboarding and internal operations, using SQL, our CRM's APIs, and tools shared by several departments.",
-          'Write the services and jobs behind them: call-activity sync and CRM record cleanup, ingestion and scheduled cloud jobs, warehouse reporting behind access control, and monitoring. About evenly Python and TypeScript, with about 940 test files across the 33 repositories active in the last 90 days.']:
+add('p','I build and run the software our sales, operations and partner teams work in. As of November 2026 that is 60 repositories, 29 of which changed in the last 30 days; I wrote about 95% of the commits since September.')
+for b in ["Lead partner integrations from requirements to launch and support, including the partner lead-intake API (three production releases, October to November 2026) and the partner portal.",
+          "Build AI automations on the company's LiteLLM gateway with evaluation and cost tracking, including an LLM-assisted call-compliance service where rule-based checks run first and a person reviews.",
+          "Own the company's HubSpot CRM: workflows, custom code, integrations and API rate limits.",
+          "Built and run a consultant console (in production since September 2026) and a health dashboard that monitors the production automations.",
+          "Write the services and scheduled jobs behind them, about evenly Python and TypeScript, with about 940 test files across the 33 repositories active in the last 90 days."]:
     add('li',b)
 add('gap')
 add('role','Customer Success Operations Manager')
@@ -76,7 +76,7 @@ add('h','WHAT I WORK WITH  (each is used in work listed above)')
 add('p','Languages: Python, TypeScript/JavaScript, Go, SQL, Bash')
 add('p','AI & ML: LLM evaluation and benchmarking, retrieval and RAG, embeddings, cross-encoder re-ranking, MCP servers and clients, agent tooling, prompt and eval harnesses, LiteLLM')
 add('p','Data: PostgreSQL, BigQuery, SQLite, ETL and ingestion pipelines, spatial modeling, conformal prediction intervals, reporting and dashboards')
-add('p','Cloud & infra: Google Cloud Platform (Cloud Run, Cloud Scheduler, Cloud Tasks, BigQuery), Docker, Proxmox, Cloudflare Tunnel and Access, Caddy, nginx, systemd, Linux')
+add('p','Cloud & infra: Google Cloud Platform (Cloud Run, Cloud Scheduler, Cloud Tasks, BigQuery), Terraform, Docker, Proxmox, Cloudflare Tunnel and Access, Caddy, nginx, systemd, Linux')
 add('p','Platforms & integration: HubSpot Ops Hub, REST APIs, webhooks, Google Apps Script, Stripe, OAuth and access provisioning')
 add('p','Practice: pytest and Go test, CI/CD with GitHub Actions, git, technical writing and documentation')
 add('gap')

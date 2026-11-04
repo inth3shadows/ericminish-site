@@ -89,11 +89,12 @@
             I build and run the software our sales, operations and partner teams work in: the workflow logic, its integrations with the other systems, and the reporting that explains the results. As of November 2026 that is 60 repositories, 29 of which changed in the last 30 days; I wrote about 95% of the commits since September.
           </p>
           <ul>
-            <li>Built an LLM-assisted call-compliance service. It transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.</li>
-            <li>Own the company&rsquo;s HubSpot CRM: its workflows, automations and integrations, and the services built around it.</li>
-            <li>Built and run a console that gathers a consultant&rsquo;s tools in one place, a partner portal, and a lead-intake API for partners, each released to production repeatedly in October and November 2026.</li>
-            <li>Scope and deploy technical workflows for customer success, onboarding and internal operations, using SQL, our CRM&rsquo;s APIs, and tools shared by several departments.</li>
-            <li>Write the services and jobs behind them: call-activity sync and CRM record cleanup, ingestion and scheduled jobs on managed cloud infrastructure, reporting on a data warehouse behind access control, and monitoring. The code is about evenly split between Python and TypeScript, with about 940 test files across the 33 repositories active in the last 90 days.</li>
+            <li>Lead technical integrations with partners: requirements with their teams, the data exchange, then launch and support. Built the partner lead-intake API, released to production three times between October and November 2026, and the partner portal.</li>
+            <li>Build AI automations through the company&rsquo;s LiteLLM gateway, with evaluation and cost tracking. The LLM-assisted call-compliance service transcribes calls and scores them against a rubric: rule-based checks run first, then a person reviews, and the model never makes the final decision.</li>
+            <li>Own the company&rsquo;s HubSpot CRM: workflows, custom code, integrations and API rate limits, and the services built around it.</li>
+            <li>Built and run a console that gathers a consultant&rsquo;s tools in one place, in production since September 2026.</li>
+            <li>Monitor the production automations from a health dashboard I built, and fix data problems where they start.</li>
+            <li>Write the services and jobs behind them: call-activity sync and CRM record cleanup, ingestion and scheduled jobs on managed cloud infrastructure, reporting on a data warehouse behind access control. The code is about evenly split between Python and TypeScript, with about 940 test files across the 33 repositories active in the last 90 days.</li>
           </ul>
         </div>
       </article>
@@ -187,7 +188,7 @@
         <div><span class="st">Languages</span><span class="sx">Python, TypeScript/JavaScript, Go, SQL, Bash</span></div>
         <div><span class="st">AI &amp; ML</span><span class="sx">LLM evaluation and benchmarking, retrieval and RAG, embeddings, cross-encoder re-ranking, MCP servers and clients, agent tooling, prompt and eval harnesses, LiteLLM</span></div>
         <div><span class="st">Data</span><span class="sx">PostgreSQL, BigQuery, SQLite, ETL and ingestion pipelines, spatial modeling, conformal prediction intervals, reporting and dashboards</span></div>
-        <div><span class="st">Cloud &amp; infra</span><span class="sx">Google Cloud Platform (Cloud Run, Cloud Scheduler, Cloud Tasks, BigQuery), Docker, Proxmox, Cloudflare Tunnel and Access, Caddy, nginx, systemd, Linux</span></div>
+        <div><span class="st">Cloud &amp; infra</span><span class="sx">Google Cloud Platform (Cloud Run, Cloud Scheduler, Cloud Tasks, BigQuery), Terraform, Docker, Proxmox, Cloudflare Tunnel and Access, Caddy, nginx, systemd, Linux</span></div>
         <div><span class="st">Platforms &amp; integration</span><span class="sx">HubSpot Ops Hub, REST APIs, webhooks, Google Apps Script, Stripe, OAuth and access provisioning</span></div>
         <div><span class="st">Practice</span><span class="sx">pytest and Go test, CI/CD with GitHub Actions, git, technical writing and documentation</span></div>
       </div>
@@ -206,7 +207,7 @@
     </section>
 
     <p class="closing-line">
-      <a class="button" href="/resume/eric-minish-resume-063201ed.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
+      <a class="button" href="/resume/eric-minish-resume-37cb8b32.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
     </p>
   </main>
 
