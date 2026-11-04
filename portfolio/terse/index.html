@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>terse — case study | Eric Minish</title>
-  <meta name="description" content="Case study: terse, a lossless compression proxy for AI-agent tool output. 59% fewer tokens on nine GitHub API payloads, with an exact round trip.">
+  <meta name="description" content="Case study: terse, a lossless compression proxy for AI-agent tool output. 59% fewer tokens on its best case, and a replay of real sessions that put it at 23% of MCP result cost and under 1% of the bill.">
   <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/terse/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="terse — Eric Minish">
-  <meta property="og:description" content="A lossless compression proxy for AI-agent tool output: 59% fewer tokens on nine GitHub API payloads, with an exact round trip.">
+  <meta property="og:description" content="A lossless compression proxy for agent tool output, measured twice: 59% on GitHub API payloads, and 23% of MCP result cost, under 1% of the bill, in a replay of real sessions.">
   <meta property="og:url" content="https://www.ericminish.com/portfolio/terse/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="terse — Eric Minish">
-  <meta name="twitter:description" content="A lossless compression proxy for AI-agent tool output: 59% fewer tokens on nine GitHub API payloads, with an exact round trip.">
+  <meta name="twitter:description" content="A lossless compression proxy for agent tool output, measured twice: 59% on GitHub API payloads, and 23% of MCP result cost, under 1% of the bill, in a replay of real sessions.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -48,29 +48,132 @@
   <main class="shell" id="main">
     <section class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">Case study · AI infrastructure</p>
-        <h1>Reducing agent token cost with lossless compression of tool output</h1>
+        <p class="eyebrow">Case study · AI infrastructure · measurement</p>
+        <h1>terse compresses agent tool output without losing anything, and I measured what that is worth</h1>
         <p class="lede">
-          An AI agent calls tools such as search, file listings and API requests, and the model reads every result, so tool output is a large part of the token bill. Tokens are the units a model is limited and billed by. terse is a drop-in proxy that sits in front of any MCP server. MCP (Model Context Protocol) is the standard way agents connect to tools. terse compresses the server&rsquo;s output in a form that can always be turned back into the exact original. On nine GitHub API payloads it used 59% fewer tokens than the raw JSON. Those results describe GitHub payloads only, and the saving on other tools depends on the shape of their output.
+          terse is a proxy that sits between a coding agent and its MCP servers (MCP, the Model Context
+          Protocol, is the standard way agents call tools). It rewrites each tool result in a denser form
+          that can always be turned back into the exact original. On its best case, nine GitHub API
+          payloads, it uses 59% fewer tokens. A replay of my own Claude Code sessions, priced at what each
+          API call was billed, puts it much lower: it removes 23% of what MCP results cost, which
+          is under 1% of a session&rsquo;s bill. This page explains both numbers and where the value is.
         </p>
       </div>
       <aside class="note">
-        <p><strong>Status</strong>: running in my own agent stack today, wrapping a code-intelligence server (a tool server that answers questions about source code) on every call.</p>
+        <p><strong>What it is</strong>: a Python MCP proxy and router, MIT licensed, on PyPI as <code>terse-mcp</code>.</p>
+        <p><strong>Status</strong>: in daily use in front of my knowledge base, code-intelligence and RunEcho servers, with the credentials broker wrapped on its own. Since 7 October 2026 only narrow improvements, chosen from the replay. Figures as of 4 November 2026.</p>
       </aside>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Why tool output costs so much</h2></div></div>
-      <div class="prose">
-        <p>Search results, directory listings and API responses usually come back as JSON, and that JSON is repetitive: the same field names on every row, the same values over and over, and padding. A result stays in the conversation, and the model reads the conversation again on each later turn, so a large result is paid for on every turn while it remains in context.</p>
+      <div class="facts">
+        <div><span class="fk">fewer tokens, nine GitHub payloads</span><span class="fv">59.1%</span></div>
+        <div><span class="fk">MCP result cost removed, my sessions</span><span class="fv good">23.4%</span></div>
+        <div><span class="fk">share of the whole bill, Opus 5.5 sessions</span><span class="fv bad">0.81%</span></div>
+        <div><span class="fk">saving from two tools</span><span class="fv">92%</span></div>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Why summarizing and bigger context windows fall short</h2></div></div>
+      <div class="section-head"><div><h2>Why the best-case number shrinks in everyday use</h2></div></div>
       <div class="prose">
-        <p>Summarizing or truncating the output is lossy: it can discard information that a correct answer depends on. A bigger context window raises the limit on how much the model can hold, but every token is still billed, so the repetition costs the same.</p>
-        <p>terse has one rule: <strong>the compressed output can always be turned back into the exact original.</strong> A round trip means compressing the data and then restoring it. If a payload would not restore perfectly, terse treats that as a failure and sends the original.</p>
+        <p>
+          The 59% is a fair measurement of the encoder on large, repetitive JSON. Three things stand between
+          it and the bill.
+        </p>
+        <ul>
+          <li><strong>The model does not see everything that is sent.</strong> Some servers return each result twice, as typed data and as text. On Claude Code 2.1.218 I measured that only the typed copy reaches the model, so a saving on the text copy saves nothing. terse&rsquo;s own counter now reports what the model receives alongside what crossed the wire. Over the last 30 days the two were 15.9% and 18.7%.</li>
+          <li><strong>Most context is billed at the cache price.</strong> Over 1,093 of my sessions in September, 96.9% of input tokens were cache reads, billed at a tenth of the normal input price. A removed token is mostly a token that would have been re-read cheaply.</li>
+          <li><strong>MCP results are a small part of a session.</strong> The MCP results terse handled were about 1.8% of what all my sessions cost. Shell output was 16.1% and file reads 7.1% in the October measurement, and an MCP proxy never sees either.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What a replay of my own sessions found</h2></div></div>
+      <div class="prose">
+        <p>
+          The replay matches every result terse changed to the session it landed in, then prices the removed
+          tokens on each later API call that would have re-read them, at the rate that call was billed: the
+          cache-write rate first, the cache-read rate after, the write rate again when the cache was rebuilt,
+          and nothing after the conversation was compacted. When the model fetched a dropped value back, that
+          fetch is charged to terse. It covers 8,993 sessions from mid-July to 4 November 2026, 736 of them
+          with a terse result, and it joined 96.4% of the results terse changed.
+        </p>
+      </div>
+      <div class="nodes nodes-wide">
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name">Two tools carry the saving</span>
+            <span class="node-spec">92% of it</span>
+          </summary>
+          <div class="node-detail">
+            <p>The list of credential names from my credentials broker, cut by 60.7%, and code searches with their code blocks replaced by a fetch handle, cut by 56.8%, hold 92% of the saving before fetch-backs. Fetching dropped code blocks back cost about a third of what that rule saved. The large knowledge-base lists save about 10%, and most other tools save little or nothing.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name">Long sessions pay, short ones lose</span>
+            <span class="node-spec">+24.2% to &minus;15.5%</span>
+          </summary>
+          <div class="node-detail">
+            <p>terse sends a short note once per session that teaches the model its format. In sessions of more than 100 API calls it removed 24.2% of MCP result cost, because a result is re-read many times. In sessions of 1 to 5 calls it added 15.5%, because the note is never paid back.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name">No sign that the model misreads it</span>
+            <span class="node-spec">0.1% against 2.76%</span>
+          </summary>
+          <div class="node-detail">
+            <p>The replay cannot see whether a task succeeded, so it checks a proxy: the model calling the same tool again with the same arguments within three calls. That happened after 0.1% of the results terse changed and after 2.76% of the results it left alone. A separate test with fixed tasks, set up before it ran, found every one of 154 runs answered correctly with and without terse.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name">Against other compressors on the same results</span>
+            <span class="node-spec">23.2% lossless</span>
+          </summary>
+          <div class="node-detail">
+            <p>On 3,184 of my own MCP results, priced the same way on 7 October, terse saved 23.2% of their cost. TOON made them 5.6% more expensive. headroom saved 45.7% in its default mode, almost all of it by removing content and leaving a marker to fetch the rest, and 0.0% in its two lossless modes.</p>
+          </div>
+        </details>
+      </div>
+      <p class="fine">Session-replay script: <code>scripts/bench/replay_sessions.py</code> in the repository, run on 4 November 2026 with no model calls. It assumes the model would have made the same calls without terse. Bill shares are API-price equivalents of a subscription.</p>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What Claude Code now does itself</h2></div></div>
+      <div class="prose">
+        <p>
+          Since terse started, Claude Code has taken on part of the same job. It saves any MCP text result over
+          50,000 characters to a file and shows the model only the path and a preview. It loads only tool names
+          at the start of a session and fetches a tool&rsquo;s description when it is needed. It compacts long
+          sessions and clears old tool results. The result most worth compressing is often the one Claude Code
+          now moves out of the conversation anyway: in the replay, 72 such results saved nothing.
+        </p>
+        <p>
+          It also changed what terse had to get right. In a fixed-task test set up before it ran, terse was
+          7.8% cheaper on Haiku but 4.2% dearer on Opus 5.5, and the loss came from one task: terse&rsquo;s
+          format note sat at the top of a result Claude Code had saved to a file, filled the preview, and
+          pushed the answer out of view. terse now treats any result over 50,000 characters as one Claude Code
+          will save and keeps the note out of it.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Where the value is</h2></div></div>
+      <div class="prose">
+        <ul>
+          <li>On a few large, repetitive results that stay in a long session. That is where I keep working: the credentials list and fewer code-block fetch-backs.</li>
+          <li>In a guarantee: terse never trades correctness for size. A result that would not restore exactly is sent unchanged.</li>
+          <li>In the measurement. The replay prices a change to tool output at what each later call was billed. It replaced a headline of 59% with 23% of MCP cost and under 1% of the bill, and it overturned an earlier verdict to stop the project that rested on short test tasks. It can price any tool that changes what an agent reads.</li>
+        </ul>
+        <p>
+          I stopped adding general compression rules on 7 October 2026. The saving does not justify them, and
+          the larger costs, shell output and file reads, are outside what an MCP proxy can reach.
+        </p>
       </div>
     </section>
 
@@ -102,10 +205,10 @@ cl100k tokens: 1810 -> 881 (51.3% saved)</code></pre>
 
 
     <section class="section">
-      <div class="section-head"><div><h2>Measured against TOON</h2></div></div>
+      <div class="section-head"><div><h2>The best case: GitHub API payloads, against TOON</h2></div></div>
       <div class="prose">
         <p>
-          To test the claim against something outside the project, the benchmark compares terse with TOON (Token-Oriented Object Notation), a published compact encoding of JSON written for model prompts, run here at version 4.1.1. Both run over the same nine GitHub API payloads (365,144 raw tokens), every row is verified lossless, and tokens are counted with the same tokenizer.
+          This benchmark compares terse with TOON (Token-Oriented Object Notation), a published compact encoding of JSON written for model prompts, run here at version 4.1.1. Both run over the same nine GitHub API payloads (365,144 raw tokens), every row is verified lossless, and tokens are counted with the same tokenizer.
         </p>
       </div>
       <div class="table-scroll">
@@ -125,20 +228,17 @@ cl100k tokens: 1810 -> 881 (51.3% saved)</code></pre>
       </div>
       <div class="prose">
         <p>
-          Percentages are the reduction in tokens against the raw JSON, so a negative number means the encoding made the payload <em>bigger</em>. The weighted total adds up tokens across all nine payloads before taking the percentage, so larger payloads count for more. Overall, TOON&rsquo;s output was 6.5% larger than the raw JSON. TOON grows on nested records because it adds a key-path (the chain of field names leading to a value) at every level of nesting. terse writes a repeated nested object once: the <code>gh_pulls</code> row holds sixty copies of the same repository object, and terse reduces them to one legend entry.
-        </p>
-        <p>
-          TOON saved more than terse on two of the nine payloads, both small: <code>gh_rate_limit</code> (18.8% against 13.4% for terse) and <code>gh_labels</code> (19.0% against 15.2%). <code>gh_labels</code> is a flat table of short, uniform values, the case TOON was designed for. Across the nine payloads the terse saving ranges from 80.4% on workflow runs to 0.0% on a single repository object. The benchmark harness in the repository measures the saving on other tools.
+          Percentages are the reduction against the raw JSON; a negative number means the encoding made the
+          payload bigger. The total adds tokens across all nine payloads first, so larger payloads count for
+          more. TOON grows on nested records because it repeats the chain of field names at every level, while
+          terse writes a repeated nested object once: <code>gh_pulls</code> holds sixty copies of the same
+          repository object, which become one legend entry. TOON did better on the two smallest, flattest
+          payloads.
         </p>
       </div>
       <p class="fine">
-        Last re-measured on 22 September 2026 against a pinned corpus (a fixed, saved set of
-        payloads), with TOON at version 4.1.1 in place of the 2.3.1 used before. terse&rsquo;s column
-        was unchanged at 59.1%, and <code>uv run scripts/bench/benchmark.py</code> in the repository
-        reproduces the table. An earlier change, which lets the encoder build one schema (a
-        description of a record&rsquo;s fields) that covers records of different shapes, raised
-        <code>gh_issues</code> from 32.7% to 38.8% and the weighted total from 58.3% to 59.1%. Every
-        other row was byte-identical across that change.
+        Re-measured on 22 September 2026 against a pinned corpus, TOON at 4.1.1.
+        <code>uv run scripts/bench/benchmark.py</code> in the repository reproduces the table.
       </p>
     </section>
 

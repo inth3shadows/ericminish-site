@@ -91,13 +91,14 @@
         <div class="prow">
           <div>
             <div class="prow-name"><a href="/portfolio/terse/">terse</a></div>
-            <p class="prow-desc">A proxy between my AI agent and the servers that run its tools. It compresses
-              the tool output so the model reads fewer tokens. When it cannot prove the compressed version
-              decodes back exactly, it sends the original output. On nine GitHub API responses totalling
-              365,144 tokens, the compressed output had 59% fewer tokens than the raw JSON.</p>
+            <p class="prow-desc">A proxy between my AI agent and its tool servers that compresses what they
+              return in a form that always restores exactly. Its best case, GitHub API payloads, is 59% fewer
+              tokens. A replay of my own sessions, priced at what each call was billed, put it at 23% of what
+              MCP results cost and under 1% of the whole bill, so I narrowed the work to the two tools that
+              carry the saving.</p>
           </div>
           <div class="prow-right">
-            <span class="prow-value">59% fewer tokens</span>
+            <span class="prow-value">23% of MCP cost</span>
             <span class="prow-meta"><em>public</em> · MIT</span>
           </div>
         </div>

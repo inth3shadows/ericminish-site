@@ -39,7 +39,7 @@ add('gap')
 add('role','Agent infrastructure')
 add('sub','Independent  |  2025 - Present  |  Built, shipped and run')
 for b in ["RunEcho checks each agent edit against the names the repository declares before the file changes; it caught 4 of 9 confirmed invented names, in about 12 ms, with no model or network. Public, MIT license.",
-          "terse is a proxy that compresses AI tool output without losing information. Across 365,144 tokens of real API payloads it used 59% fewer tokens than the original payloads. TOON 4.1.1 made the same payloads 6.5% larger. Public, MIT license.",
+          "terse compresses AI tool output without loss: 59% fewer tokens on GitHub API payloads, its best case; a replay of my own sessions priced at billed rates put it at 23% of MCP result cost, under 1% of the bill. Public, MIT.",
           "testgraph reads a diff and names the user journeys the change could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT license, published on PyPI.",
           "modelbench benchmarks models on real bug-fix commits mined from my own repositories. Each model runs each task three times, and models are scored on cost per solved task. Its write-up lists the earlier figures that were later corrected.",
           "harness judges each code change with four rule-based checks (tests, symbol contract, credential and vulnerability scans); no model judges and nothing commits automatically."]:
