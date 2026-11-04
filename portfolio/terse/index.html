@@ -68,7 +68,7 @@
     <section class="section">
       <div class="facts">
         <div><span class="fk">fewer tokens, nine GitHub payloads</span><span class="fv">59.1%</span></div>
-        <div><span class="fk">MCP result cost removed, my sessions</span><span class="fv good">23.4%</span></div>
+        <div><span class="fk">MCP result cost removed, my sessions</span><span class="fv good">23.5%</span></div>
         <div><span class="fk">share of the whole bill, sessions that used it</span><span class="fv bad">0.77%</span></div>
         <div><span class="fk">saving from two tools</span><span class="fv">92%</span></div>
       </div>
@@ -97,8 +97,9 @@
           tokens on each later API call that would have re-read them, at the rate that call was billed: the
           cache-write rate first, the cache-read rate after, the write rate again when the cache was rebuilt,
           and nothing after the conversation was compacted. When the model fetched a dropped value back, that
-          fetch is charged to terse. It covers 8,993 sessions from mid-July to 4 November 2026, 736 of them
-          with a terse result, and it joined 96.4% of the results terse changed.
+          fetch is charged to terse. It covers 6,309 sessions from 14 July to 4 November 2026, 720 of
+          them with a terse result, and it joined 96.4% of the results terse changed. Sessions my test harness
+          runs from a scratch directory are left out; a few scripted runs elsewhere are still counted.
         </p>
       </div>
       <div class="nodes nodes-wide">
@@ -113,11 +114,11 @@
         </details>
         <details class="node">
           <summary class="node-head">
-            <span class="node-name">Long sessions pay, short ones lose</span>
-            <span class="node-spec">+24.2% to &minus;15.5%</span>
+            <span class="node-name">Long sessions save the most</span>
+            <span class="node-spec">+24.1% to +6.4%</span>
           </summary>
           <div class="node-detail">
-            <p>In sessions of more than 100 API calls terse removed 24.2% of MCP result cost, because a result is re-read many times. In sessions of 1 to 5 calls it added 15.5%. The compressed results still came out ahead there, including terse&rsquo;s one-time note on its format. The loss was the model fetching back code blocks that terse had held back: 111,698 input-equivalent tokens against a 44,615 saving, most of it in Claude Haiku 4.5 sessions. Holding code blocks back only pays in longer sessions, and fixing that is the next piece of work.</p>
+            <p>In sessions of more than 100 API calls terse removed 24.1% of MCP result cost, because a result is re-read many times; in sessions of 1 to 5 calls it removed 6.4%. A first count showed short sessions losing 15.5%. That loss came from 16 sessions of my own test harness, where a small model fetched back held-back code blocks, and the replay now leaves such sessions out. Fetch-backs did cost a lot before 26 September, about half of what holding code blocks back saved in long sessions. Since terse began keeping the first code block and stopping after the first fetch-back in a session, long sessions have fetched back once.</p>
           </div>
         </details>
         <details class="node">
