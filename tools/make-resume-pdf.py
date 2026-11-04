@@ -15,8 +15,8 @@ add('p','I work in Python, Go and SQL. I build MCP servers, retrieval systems, e
 add('p','I look for problems that do not raise an error, and build checks that catch them. In customer-success operations the problem was account risk: churn fell from 30% to under 10% after the system began flagging at-risk customers before they left. More recently I have applied the same approach to my own tools: a proxy that only sends compressed output it can decode back exactly, a search engine whose evaluation showed it gave useful answers to half of the test questions, and a well-record model target that looked like new signal until a depth baseline showed it was about 96% a restatement of depth.')
 add('gap')
 add('h','EXPERIENCE')
-add('role','Systems & Automation Lead')
-add('sub','Transactly  |  Jul 2023 - Present  |  Remote  |  Internal title: Lead Customer Account Specialist. At Transactly since Sep 2020.')
+add('role','Senior AI Engineer')
+add('sub','Transactly  |  Jul 2023 - Present  |  Remote  |  At Transactly since Sep 2020.')
 add('p','I own the internal systems layer: the workflow logic, its integrations with the other systems, and the reporting that explains the results to people who were not involved. That covers roughly sixty active projects, two-thirds of which changed in the last month.')
 for b in ["Built an LLM-assisted compliance service. It transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.",
           "Scope and deploy technical workflows for customer success, onboarding and internal operations, using SQL, our CRM's APIs, and tools shared by several departments.",
@@ -39,11 +39,11 @@ for b in ["Cut client churn from 30% to under 10% by redesigning processes and c
 add('gap')
 add('role','Agent infrastructure')
 add('sub','Independent  |  2025 - Present  |  Built, shipped and run')
-for b in ["RunEcho stops a coding agent from writing a call to a function the repository does not have. The check runs before the code is written, takes about 12 ms, uses no model or network, and adds nothing to the agent's context when it passes. Public, MIT license.",
+for b in ["RunEcho checks each agent edit against the names the repository declares before the file changes; it caught 4 of 9 confirmed invented names, in about 12 ms, with no model or network. Public, MIT license.",
           "terse is a proxy that compresses AI tool output without losing information. Across 365,144 tokens of real API payloads it used 59% fewer tokens than the original payloads. TOON 4.1.1 made the same payloads 6.5% larger. Public, MIT license.",
           "testgraph reads a diff and names the user journeys the change could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT license, published on PyPI.",
           "modelbench benchmarks models on real bug-fix commits mined from my own repositories. Each model runs each task three times, and models are scored on cost per solved task. Its write-up lists the earlier figures that were later corrected.",
-          "harness runs a coding agent and judges each change it makes with four rule-based checks. No model takes part in the judging, and the harness never commits on its own."]:
+          "harness judges each code change with four rule-based checks (tests, symbol contract, credential and vulnerability scans); no model judges and nothing commits automatically."]:
     add('li',b)
 add('gap')
 add('role','Data work and shipped applications')
