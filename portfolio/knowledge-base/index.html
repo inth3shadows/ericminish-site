@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>kb-mcp — case study | Eric Minish</title>
+  <meta name="description" content="Case study: kb-mcp, a knowledge base that coding agents write to only through proposals an AI reviewer approves, edits or rejects, with the reviewer and the search both measured.">
+  <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
+  <link rel="canonical" href="https://www.ericminish.com/portfolio/knowledge-base/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Eric Minish">
+  <meta property="og:title" content="kb-mcp — Eric Minish">
+  <meta property="og:description" content="A knowledge base for coding agents where every write is a proposal judged by an AI reviewer, and what measuring that reviewer showed.">
+  <meta property="og:url" content="https://www.ericminish.com/portfolio/knowledge-base/">
+  <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="kb-mcp — Eric Minish">
+  <meta name="twitter:description" content="A knowledge base for coding agents where every write is a proposal judged by an AI reviewer, and what measuring that reviewer showed.">
+  <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/writing/">Writing</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/resume/">Resume</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell" id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="entry-stamp"><b>Entry 12</b><span>Agent memory · LLM review</span><span>2026</span></div>
+        <h1>A knowledge base that coding agents can write to only through an AI reviewer</h1>
+        <p class="lede">
+          Coding agents start each session with no memory of the last one. kb-mcp gives them a shared
+          store of infrastructure facts, past decisions and standing rules, served over MCP (Model Context
+          Protocol, the standard way agents call tools). Agents read it freely but cannot write to it
+          directly. Every change is a proposal, and a separate, cheaper model approves, edits or rejects
+          each one before a database trigger copies it into the tables agents read.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong>: a Python MCP server, a Postgres database and a reviewer worker that runs in a container on a home server.</p>
+        <p><strong>Status</strong>: private repository with one operator. Reviewer counts are as of 3 November 2026; other figures carry their own dates.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="facts">
+        <div><span class="fk">proposals, last 30 days</span><span class="fv">257</span></div>
+        <div><span class="fk">accepted by the reviewer</span><span class="fv">92.0%</span></div>
+        <div><span class="fk">vague long rules caught</span><span class="fv bad">27.8%</span></div>
+        <div><span class="fk">search MRR, before and after</span><span class="fv good">0.54 → 0.64</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Why agents propose instead of writing</h2></div></div>
+      <div class="prose">
+        <p>
+          If an agent can write straight to shared memory, one wrong fact is loaded into every later
+          session. If a person approves every write, the store stops growing when that person is busy.
+          kb-mcp puts a model in the approval seat, and I step in only to override it.
+        </p>
+        <p>
+          Three kinds of writer send proposals: coding sessions; a reflector job, which reads batches of
+          past session summaries and drafts rules from patterns that recur; and a pruner job, which proposes
+          deleting records that were never durable.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>How a proposal becomes a record</h2></div></div>
+      <article class="note">
+        <ul>
+          <li>The MCP server checks the proposal&rsquo;s shape and inserts it as pending. Its database login can add proposals and has no write grant on the tables agents read.</li>
+          <li>An insert trigger notifies the reviewer worker, which looks up near-duplicate records by embedding similarity (a numeric representation of meaning).</li>
+          <li>The model sees the proposal, the agent&rsquo;s reasoning and those neighbours, but not which agent sent it. A malformed reply leaves the proposal pending and never counts as an approval.</li>
+          <li>A status change to approved fires a second trigger that writes the record. Rejections are shown at the start of later sessions so agents stop re-proposing them.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Where the write boundary leaked</h2></div></div>
+      <div class="prose">
+        <p>
+          A check of the live database in October 2026 found four ways around the permissions. In the most
+          serious, the function that applies an approved proposal ran with its owner&rsquo;s privileges and
+          any login could call it, including the read-only ones. A migration closed each route and then checks
+          the privilege, because a revoke reports success even when the privilege still arrives through
+          another grant.
+        </p>
+        <p>
+          Replaying the migrations onto an empty database also produced no review gate, because a later
+          file had redefined the insert trigger without it. Production hid this because the deploy script
+          re-applied the gated version each time. The trigger now has one definition, and review is skipped
+          only when the setting is exactly <code>off</code>. By my choice, the personal-scope login keeps a
+          self-approve grant as a manual override, so agent sessions on my own machine can still bypass the
+          gate.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What measuring the reviewer showed</h2></div></div>
+      <div class="prose">
+        <p>
+          A list of recent rejections has no denominator. In July 2026, 11 of 20 recent rejections cited
+          one cause, which made the reflector look broken; its accept rate was 67%. The reviewer now reports
+          full counts for each proposing agent and record type.
+        </p>
+        <p>
+          Those counts showed a gap on rules in July: the reviewer accepted 98.9% of rules from coding
+          sessions and 52.7% from the reflector. The reflector used the reviewer&rsquo;s own model, so I
+          expected the reviewer to favour that writing. It was harder on it. The gap lined up with length:
+          coding-session rules averaged 383 characters and the reflector&rsquo;s 143.
+        </p>
+        <p>
+          To find out whether the reviewer was scoring length, it was tested offline with canaries: 48 bad
+          rules (vague, duplicate, short-lived, or claiming too wide a scope), each written at about 140 and
+          about 380 characters with the same defect, plus 24 approved rules as controls. The harness calls
+          the production prompt and model code with database connections disabled, and the pass and fail
+          bars were written before the run.
+        </p>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Canary cell, 3 passes each</th><th class="num">Short</th><th class="num">Long</th></tr>
+          <tr><td>All bad rules caught (first set)</td><td class="num">93.1%</td><td class="num">75.0%</td></tr>
+          <tr><td>Vague rules caught (both sets pooled, 54 calls per cell)</td><td class="num">63.0%</td><td class="num lose">27.8%</td></tr>
+          <tr><td>Approved controls wrongly rejected</td><td class="num" colspan="2">0 to 5.6%</td></tr>
+        </table>
+      </div>
+      <div class="prose">
+        <p>
+          Short-lived and over-broad canaries were caught equally at both lengths. A second set of 12 new
+          vague pairs pointed the same way (25.0% caught when long, 52.8% when short) but missed the pre-set
+          bar for the short cell, so the length effect is recorded as inconclusive. Both sets agree that the
+          reviewer approves most vague rules at either length.
+        </p>
+        <p>
+          The live record matches. Of 13 coding-session rules rejected in the 60 days to 29 October, most
+          duplicated a named record or overstated their scope, none was rejected as vague, and three were
+          wrong rejections I overrode by refiling. In the 30 days to 3 November, the reviewer accepted 83.3%
+          of 72 reflector rules and 81.2% of 16 coding-session rules.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What measuring the search showed</h2></div></div>
+      <div class="prose">
+        <p>
+          In July 2026, 70% of logged agent searches used five or more words, and those missed 40 to 60% of
+          the time against 12.5% for one-word searches, because keyword search required every word to
+          match. Before the search fell back to embedding search on an empty result, 89% of logged keyword
+          searches returned nothing; in the 30 days to 19 July, after that change, 42.4% did. The store grew
+          over the same period, so this is not a controlled comparison.
+        </p>
+        <p>
+          For a controlled one, I built 46 labelled queries from the log. The labels were drafted by a script
+          that never calls the search code under test, so a search change cannot score well by
+          construction. The search was changed to retry with any-word matching when the all-words query
+          found nothing, and both versions were scored on the same snapshot of the data.
+        </p>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>46 queries, August 2026</th><th class="num">All words</th><th class="num">With retry</th></tr>
+          <tr><td>Recall@5</td><td class="num">0.484</td><td class="num win">0.542</td></tr>
+          <tr><td>Recall@10</td><td class="num">0.505</td><td class="num win">0.580</td></tr>
+          <tr><td>MRR</td><td class="num">0.544</td><td class="num win">0.636</td></tr>
+          <tr><td>Queries with no results</td><td class="num">21.7%</td><td class="num win">4.3%</td></tr>
+        </table>
+      </div>
+      <p class="fine">Recall@5 is the share of a query&rsquo;s relevant records that appear in the top five results. MRR (mean reciprocal rank) averages 1 divided by the position of the first relevant result. Half the set was drawn from queries that had hits, so its empty-result rate is lower than the production log&rsquo;s.</p>
+      <div class="prose">
+        <p>
+          Four review rounds then found 11 defects in the change, and the evaluation could detect none of
+          them. Later, a switch of embedding model left the fallback&rsquo;s similarity floor at a value
+          tuned for the old model, where it discarded 0 of 68 relevant rows and let through all 2,232 noise
+          rows. It was recalibrated to 0.80. The ranking gain was not statistically significant (MRR +0.014,
+          p = 0.090); the floor was kept because it restored the log of searches that find nothing.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Limits</h2></div></div>
+      <div class="nodes nodes-wide">
+        <details class="node">
+          <summary class="node-head"><span class="node-name">Who wrote the canaries</span></summary>
+          <div class="node-detail">
+            <p>Claude, the coding agent, wrote them. Some vague ones resemble rules the store already holds and may be fair to approve, so the catch rates are a rough lower bound.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head"><span class="node-name">How large the evaluations are</span></summary>
+          <div class="node-detail">
+            <p>Each canary cell holds 6 to 12 items, enough to tell 85% from 50% and too few to tell 85% from 75%. The search set is 46 queries over one store with one operator.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head"><span class="node-name">What the reviewer counts leave out</span></summary>
+          <div class="node-detail">
+            <p>The counts cover the personal and shared scopes, and a second install that shares the database is excluded. Whether the reflector still uses the reviewer&rsquo;s model has not been checked since the reviewer changed provider.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head"><span class="node-name">What is planned and not done</span></summary>
+          <div class="node-detail">
+            <p>A test of wrong rejections against the proposals I overrode, and a rubric clause that rejects rules without a checkable trigger and action, to be measured with the same canaries. The rubric is unchanged.</p>
+          </div>
+        </details>
+      </div>
+      <div class="tag-row" style="margin-top:20px">
+        <span class="tag">Agent memory</span><span class="tag">LLM evaluation</span>
+        <span class="tag">MCP</span><span class="tag">Postgres</span><span class="tag">Retrieval</span>
+      </div>
+    </section>
+
+    <p class="closing-line">
+      Questions about the method? Email <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

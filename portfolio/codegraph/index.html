@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>codegraph — case study | Eric Minish</title>
+  <meta name="description" content="Case study: checking codegraph, an open-source code-intelligence tool, against compiler type checkers and against fresh indexes. 111 issues filed upstream, 81 closed as completed by the maintainer, 17 pull requests merged.">
+  <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
+  <link rel="canonical" href="https://www.ericminish.com/portfolio/codegraph/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Eric Minish">
+  <meta property="og:title" content="codegraph — Eric Minish">
+  <meta property="og:description" content="Checking a code-intelligence tool's call graph against compilers and fresh indexes: 111 issues filed upstream, 17 pull requests merged.">
+  <meta property="og:url" content="https://www.ericminish.com/portfolio/codegraph/">
+  <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="codegraph — Eric Minish">
+  <meta name="twitter:description" content="Checking a code-intelligence tool's call graph against compilers and fresh indexes: 111 issues filed upstream, 17 pull requests merged.">
+  <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/writing/">Writing</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/resume/">Resume</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell" id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="entry-stamp"><b>Entry 12</b><span>Verification · open source</span><span>2026</span></div>
+        <h1>Checking codegraph&rsquo;s call graph against compilers and fresh indexes</h1>
+        <p class="lede">
+          codegraph is an open-source tool (MIT licensed, about 76,000 GitHub stars) that indexes a codebase into a call graph, a map of which functions call which, and serves it to coding agents over MCP (Model Context Protocol, the standard way agents call tools). I use it every day and build other tools on it. I wrote test tooling that compares its graph with independent references, reduced each disagreement to a minimal repro (the smallest code that shows the bug), and filed it upstream, with a fix when I had one.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong>: a public fork with fixes for wrong call edges, private test tooling, and codeshot, a public diagram tool built on the graph.</p>
+        <p><strong>Status</strong>: issues filed from 26 June to 30 October 2026. Counts from GitHub search on 3 November 2026.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="facts">
+        <div><span class="fk">issues filed upstream</span><span class="fv">111</span></div>
+        <div><span class="fk">closed as completed by the maintainer</span><span class="fv good">81</span></div>
+        <div><span class="fk">my pull requests merged</span><span class="fv good">17</span></div>
+        <div><span class="fk">sync replay steps / drifts found</span><span class="fv">2,979 / 12</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Why a wrong call edge is worse than a missing one</h2></div></div>
+      <div class="prose">
+        <p>
+          An edge is one link in the call graph, from a call site to the definition it reaches. When codegraph cannot tell which same-named function a call reaches, it can guess by name. A missing edge leaves a visible gap. A wrong guess looks like every correct edge, so an agent asking &ldquo;who calls this?&rdquo; gets a confident wrong answer.
+        </p>
+        <p>
+          In October I audited codegraph against each language&rsquo;s type checker on my own repositories. Precision (the share of reported edges that were correct) was 99.8% for Python calls, 97 to 100% for TypeScript and 97.8% for Go, where recall (the share of true calls it found) was 98.1%. The remaining errors look like every other edge, and finding them takes a reference that does not come from codegraph.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Three checks that do not trust the graph</h2></div></div>
+      <div class="prose">
+        <p>Each check compares codegraph with something it does not control.</p>
+      </div>
+      <div class="nodes nodes-wide" style="margin-top:16px">
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name">Compiler oracle</span>
+            <span class="node-spec">joined per call site</span>
+          </summary>
+          <div class="node-detail">
+            <p>SCIP is a code index format from Sourcegraph whose indexers run each language&rsquo;s own type checker (tsc, pyright, javac) and record where every reference resolves. The oracle joins codegraph&rsquo;s edges to SCIP&rsquo;s references by file, line, called name and nearest column, so overloads and same-named methods stay separate.</p>
+            <p>Each disagreement is sorted by cause. Three buckets hold bug candidates: the compiler resolves a different project definition, resolves a library where codegraph linked a project function, or sees a local variable where codegraph linked a global. Other buckets hold codegraph&rsquo;s deliberate conventions. On jsoup, a public Java library, 16.9k call sites agreed and 2.4k fell in the wrong-target bucket. Triage found three candidate shapes, and one reproduced minimally (#3040).</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name">Sync-versus-fresh replay</span>
+            <span class="node-spec">7 replay lanes</span>
+          </summary>
+          <div class="node-detail">
+            <p>codegraph updates its index incrementally when files change (a sync). The harness replays a repository&rsquo;s git history, syncs after each step, and compares the result with a fresh index of the same commit. Seven lanes vary the replay: no-op, forward, reverse, random jumps, one file at a time, a sync killed mid-write, and two syncs at once.</p>
+            <p>A disagreement triggers a second fresh build, so nondeterminism is not reported as drift. A control run with sync switched off, which must show drift, was caught on 4 of 4 forward steps, 4 of 4 reverse and 7 of 8 file by file. The overnight run on 29 October covered 11 repositories: 2,979 steps, 12 drifts and no failed integrity checks. One drift was a harness fault, and the harness now guards against it.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name">Fault injection</span>
+            <span class="node-spec">2 daemon bugs</span>
+          </summary>
+          <div class="node-detail">
+            <p>Two bugs in codegraph&rsquo;s daemon and worker pool depended on timing: a peer that drops mid-handshake leaves a phantom client that keeps the daemon from exiting, and a worker that fails to open its database stays in the pool and errors on every call. Each harness drives codegraph&rsquo;s own classes in one process, forces the failure at a chosen point beside a control arm, and prints PROVEN or not reproduced, with no timing race. Both issues (#1356, #1357) were closed as completed on 27 September.</p>
+          </div>
+        </details>
+      </div>
+      <div class="prose" style="margin-top:16px">
+        <p>
+          Each finding was reproduced on current upstream code in a minimal fixture and checked for duplicates before filing. On 29 October I re-checked all 41 then-open issues against upstream (39 by fixture, 2 by reading the code), and none had been fixed without notice.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What was filed and what happened to it</h2></div></div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Source</th><th>Issues filed</th><th>Outcome</th></tr>
+          <tr><td>Type-checker audits, 15 Oct</td><td>10 (#2580&ndash;#2589)</td><td>all 10 closed as completed</td></tr>
+          <tr><td>Compiler oracle, 29&ndash;30 Oct</td><td>8 (#3033&ndash;#3040)</td><td>1 fixed, 3 closed as duplicates of my earlier issues, 4 open</td></tr>
+          <tr><td>Sync replay, 29 Oct</td><td>4 (#3006, #3007, #3015, #3016)</td><td>3 fixed with my commits, 1 open</td></tr>
+          <tr><td>Fault injection</td><td>2 (#1356, #1357)</td><td>both closed as completed</td></tr>
+        </table>
+      </div>
+      <p class="fine">The table covers 24 of the 111 issues, all on the upstream tracker, colbymchenry/codegraph.</p>
+      <div class="prose">
+        <p>
+          Of the 111 issues, 86 are closed and 25 are open. The maintainer closed 81 as completed. I closed 3 as duplicates of my own earlier reports, which got through because my pre-filing check searched by keyword only, and 2 as not planned.
+        </p>
+        <p>
+          Of my 34 pull requests, 17 were merged. Nine more were closed after the maintainer carried my commits into his own pull requests with my authorship kept, which is how the three sync fixes landed (#3061, #3062, #3072).
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Fixes that were stopped or parked</h2></div></div>
+      <ol class="beats">
+        <li><b>An aliased-import fix contradicted upstream policy.</b> An import of a name the module lacks, such as <code>from .s import ARMS as LEAK</code>, bound to any project symbol named like the alias. My fix failed two upstream tests that encode the opposite behaviour on purpose, so I dropped it and drafted an issue instead.</li>
+        <li><b>A Python typed-receiver exception added wrong edges.</b> For #2583, its pattern-based receiver typing missed imports and rebinding and linked standard-library classes to project classes. I parked it and posted the findings. The maintainer later closed the issue as completed.</li>
+        <li><b>An object-member sync fix was parked after several redesigns.</b> Its issue, #3015, is still open with no pull request.</li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>codeshot: diagrams that fail CI when the code changes</h2></div></div>
+      <div class="prose">
+        <p>
+          codeshot reads codegraph&rsquo;s index and draws architecture and call diagrams into a repository&rsquo;s documentation. <code>--check</code> exits with code 1 when a committed diagram no longer matches the code, and <code>--forbid 'src/ui/-&gt;src/db/'</code> exits 1 when a file dependency crosses a forbidden boundary. It compares graph structure (nodes and edges) instead of SVG bytes, so different graphviz versions agree.
+        </p>
+        <p>
+          Against npm codegraph 1.5.0, a callee query for a name defined in two files returned both definitions&rsquo; callees, so a two-file fixture drew 4 edges where 2 existed. codeshot re-queries such names per file and discards answers it cannot trust, such as a list codegraph cut off at 12 entries for a function with 23 callees. It then falls back to the broader query and names each affected symbol in a warning.
+        </p>
+        <p>
+          Reading codegraph&rsquo;s SQLite index directly, in place of about 130 sequential CLI calls, cut an architecture scan of codeshot&rsquo;s own repository from 48.7 s to 1.3 s. With its one intended difference switched off, the direct read drew byte-identical diagrams to the CLI path on five test targets. The suite reports 195 passed and 0 failed (3 November 2026). It has no measured catches in other people&rsquo;s repositories yet. Its four CI failures were all on its own development branches.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What the checks do not cover</h2></div></div>
+      <article class="note">
+        <ul>
+          <li>The oracle checks only edges codegraph resolved, so calls it misses entirely are not reported.</li>
+          <li>scip-typescript sees only the files a tsconfig includes, and f-string and template-literal calls often fail to line up. scip-java 0.12.3 does not load under Kotlin 2.x, so there is no Kotlin data.</li>
+          <li>Five new candidate shapes found on 3 November are drafted and not filed. One is a limit already stated in an earlier pull request of mine.</li>
+          <li>The tooling is private and has paths hard-coded to my machine. The fork is built from source and is not on npm.</li>
+        </ul>
+      </article>
+      <div class="tag-row" style="margin-top:20px">
+        <span class="tag">Static analysis</span>
+        <span class="tag">Differential testing</span>
+        <span class="tag">TypeScript</span>
+        <span class="tag">Open source</span>
+      </div>
+      <div class="inline-links" style="margin-top:16px">
+        <a class="button" href="https://github.com/colbymchenry/codegraph/issues?q=author%3Ainth3shadows">My upstream issues</a>
+        <a class="button" href="https://github.com/inth3shadows/codegraph">The fork on GitHub</a>
+        <a class="button" href="https://github.com/inth3shadows/codeshot">codeshot on GitHub</a>
+      </div>
+    </section>
+
+    <p class="closing-line">
+      Questions about the method? Email <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
