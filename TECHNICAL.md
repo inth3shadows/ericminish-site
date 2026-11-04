@@ -51,6 +51,7 @@ rather than writing new CSS.
 | `tools/make-resume-pdf.py` | Builds the content-addressed resume PDF and rewrites its link in `resume/index.html`. |
 | `tools/gen-gitstrip.py` | Rewrites the home page's commit strip between its `auto:` markers from `gh api graphql`. Bars count public repos; private work shows only as one total. Refuses to write if a private repo name would appear. |
 | `tools/gen-now.py` | `--write` fills each Now-page card's `auto:start now-KEY` block: last change date, my pull requests merged in the last 30 days (codegraph counts upstream only), and a link to them for public repos. Run by the deploy; on an API error the committed facts ship. `--check`: staleness check for the Now page. Each card has `data-card` and `data-as-of`; `CARDS` in the script maps cards to GitHub repos. Warns on age (45 days, day job 90), more than 10 PRs merged since a card's date, 60 days without activity, or a repo with 8+ merged PRs in 30 days and no card. `--issue` keeps one issue, "Now page needs an update", in step; it never shows private repo names without a card or private PR titles. Warn-only; API errors skip. Tests: `python3 -m unittest tools/test_gen_now.py`. |
+| `tools/draft-now.py` | Monthly (timer in `tools/systemd/`): for each card `gen-now.py --check` flags as old or busy, gathers my merged PRs since the card's date and the README Status section, asks a model for a new "recent changes" paragraph that cites a source per sentence, then checks it without trusting the model (sources exist, every number is in a cited source, length, copy lint, no host/credential-like text, a second model call confirms each sentence). Passing drafts go into one PR from a fresh worktree; failures are listed as needing a hand edit. Never merges. Private repos' PR titles never appear in the PR body. `--dry-run` prints only. Tests: `python3 -m unittest tools/test_draft_now.py`. |
 | `tools/regen-deploy.sh` | Daily job (systemd user timer on the workstation, where `gh` is logged in): exports `origin/main`, runs the generator, copies the site into the live root, checks `/` is 200 and dated today. Host details come from a private environment file. `DRY_RUN=1` shows the diff only. |
 | `assets/site.css` | The entire stylesheet, including the two `@font-face` declarations. |
 | `assets/fonts/newsreader.woff2` | Newsreader, variable. Used for prose — anything argued. |
@@ -103,6 +104,7 @@ python3 tools/gen-writing.py --check
 python3 tools/lint-copy.py
 python3 tools/gen-now.py --check
 python3 -m unittest tools/test_gen_now.py
+python3 -m unittest tools/test_draft_now.py
 ```
 
 Also check tag balance across every page:
