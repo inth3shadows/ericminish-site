@@ -71,8 +71,9 @@
           after the system began flagging at-risk customers before they left. More recently I have
           applied the same approach to my own tools: a proxy that only sends compressed output it can
           decode back exactly, a search engine whose evaluation showed it gave useful answers to half
-          of the test questions, and a well-depth model that lost its strongest variable once it was
-          measured against the right baseline (the simple prediction a model has to beat).
+          of the test questions, and a well-record model in which a target that looked like new signal
+          turned out to be about 96% a restatement of well depth, once it was compared with a baseline
+          computed from depth (a baseline is the simple prediction a model has to beat).
         </p>
       </div>
     </section>
@@ -128,7 +129,7 @@
         <div class="prose">
           <ul>
             <li><a href="/portfolio/runecho/">RunEcho</a> stops a coding agent from writing a call to a function the repository does not have. The check runs before the code is written, takes about 12 ms, uses no model or network, and adds nothing to the agent&rsquo;s context when it passes. Public, MIT license.</li>
-            <li><a href="/portfolio/terse/">terse</a> is a proxy that compresses AI tool output without losing information. Across 365,144 tokens of real API payloads it used 59% fewer tokens than the original payloads. The TOON format made the same payloads 7% larger. Public, MIT license.</li>
+            <li><a href="/portfolio/terse/">terse</a> is a proxy that compresses AI tool output without losing information. Across 365,144 tokens of real API payloads it used 59% fewer tokens than the original payloads. TOON 4.1.1 (Token-Oriented Object Notation, a compact JSON encoding written for model prompts) made the same payloads 6.5% larger. Public, MIT license.</li>
             <li><a href="/portfolio/testgraph/">testgraph</a> reads a diff (the lines a code change adds and removes) and names the user journeys the change could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT license, published on PyPI.</li>
             <li><a href="/portfolio/modelbench/">modelbench</a> benchmarks models on real bug-fix commits mined from my own repositories. Each model runs each task three times, and models are scored on cost per solved task. Its write-up lists the earlier figures that were later corrected.</li>
             <li><a href="/portfolio/harness/">harness</a> runs a coding agent and judges each change it makes with four rule-based checks. No model takes part in the judging, and the harness never commits on its own.</li>
@@ -142,8 +143,8 @@
         <div class="prose">
           <ul>
             <li><a href="/portfolio/lodestone/">Lodestone</a> is local search over years of my working notes. Its evaluation showed that it gave useful answers to 5 of 10 test questions at full scale, and I published that result.</li>
-            <li><a href="/portfolio/frostline/">Frostline</a> is a set of spatial models built on 50,083 well records, including the well-depth model above, and a business built around what the models can predict.</li>
-            <li>Reported <strong>32 bugs</strong> in a code-analysis tool I use daily. Two of them were race conditions, which I reproduced on demand with purpose-built test harnesses.</li>
+            <li><a href="/portfolio/frostline/">Frostline</a> is a set of spatial models built on 50,083 well records, and a business built around what the models can predict. One candidate target, the aquifer interval (the top and bottom depths of the water-bearing layer), showed +38.8% apparent skill against the global median. Against a baseline computed from well depth, that skill disappeared: the interval was about 96% a restatement of depth, so I cut it.</li>
+            <li>Filed <strong>32 issues</strong> against codegraph (colbymchenry/codegraph), an open-source code-intelligence tool I use daily; 21 have since been closed. I built fault-injection harnesses (programs that force the failure on demand) that reproduce two of the bugs.</li>
             <li>Deployed three applications end to end: a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client.</li>
           </ul>
         </div>
@@ -209,7 +210,7 @@
     </section>
 
     <p class="closing-line">
-      <a class="button" href="/resume/eric-minish-resume-738607dc.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
+      <a class="button" href="/resume/eric-minish-resume-e4e94c56.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
     </p>
   </main>
 

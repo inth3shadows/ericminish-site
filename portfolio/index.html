@@ -50,7 +50,7 @@
       <div class="hero-copy">
         <h1>Portfolio</h1>
         <p class="lede">
-          Infrastructure I built and run. Each entry has a write-up with enough detail to check
+          Infrastructure I built and run. Each case study has a write-up with enough detail to check
           the claims, including the projects that failed.
         </p>
       </div>
@@ -69,7 +69,7 @@
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>MCP, the Model Context Protocol, is the standard that connects tools to AI agents. terse is a proxy that sits in front of MCP tool servers and compresses what they return without losing anything. If it cannot prove that a compressed payload rebuilds the original exactly, it forwards the original unchanged. The project is public under the MIT license, and the repository includes a benchmark harness so you can measure the saving on your own tools.</p>
+            <p>MCP, the Model Context Protocol, is the standard that connects tools to AI agents. terse is a proxy that sits in front of MCP tool servers and compresses what they return without losing anything. If it cannot prove that a compressed payload rebuilds the original exactly, it forwards the original unchanged. On a benchmark of nine GitHub API payloads that total 365,144 tokens as raw JSON, the compressed form uses 59% fewer tokens. The project is public under the MIT license, and the repository includes a benchmark harness so you can measure the saving on your own tools.</p>
             <div class="tree">
               <div class="tree-head"><span>terse</span><span>9bd5ad3 · 161 files</span></div>
               <pre><code>src/terse/            the codec, proxy and policy
@@ -89,7 +89,7 @@ VERIFY.md             how to check the claims</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Stops an agent from writing a call to a function your repo does not have, before the edit is saved. It runs as a hook (a step the agent loop triggers automatically) and checks every edit against the functions and other symbols the code declares. It uses no language model, no network and no build, and a passing check adds nothing to the agent&rsquo;s context. Its accuracy is measured against dated git history. Of the cases it flagged, 15.3% were false positives, 33.7% were premature (the code was added later), and 51.0% were references to something that did not exist.</p>
+            <p>Stops an agent from writing a call to a function your repo does not have, before the edit is saved. It runs as a hook (a step the agent loop triggers automatically) and checks every edit against the functions and other symbols the code declares. Each check takes about 12 ms. It uses no language model, no network and no build, and a passing check adds nothing to the agent&rsquo;s context. Its accuracy is measured against dated git history. Over 30 days, 406 flagged symbols could be rated: 62 (15.3%) were false positives, 137 (33.7%) were premature (the code was added later), and 207 (51.0%) were references to something that did not exist.</p>
             <div class="tree">
               <div class="tree-head"><span>RunEcho</span><span>b117ffc · 332 files</span></div>
               <pre><code>cmd/                  runecho-guard, -ir, -mcp
@@ -109,7 +109,7 @@ docs/                 architecture and the scope statement</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Given a diff (a set of line changes to the code), it answers which user journeys the change could have broken, and in what order to test them. Test-impact tools usually answer with a list of tests, and they need coverage data (a record of which code each test ran) from a previous run. testgraph walks a static call graph (a map of which code calls which) backwards from the changed lines, so it works on a repo that has never run its test suite. It is tuned to catch every journey that broke, so it will sometimes flag one that turned out fine.</p>
+            <p>Given a diff (a set of line changes to the code), it answers which user journeys (user-facing flows through a product, such as &ldquo;claimant submits a signed form&rdquo;) the change could have broken, and in what order to test them. Test-impact tools usually answer with a list of tests, and they need coverage data (a record of which code each test ran) from a previous run. testgraph walks a static call graph (a map of which code calls which) backwards from the changed lines, so it works on a repo that has never run its test suite. It is tuned to catch every journey that broke, so it will sometimes flag one that turned out fine.</p>
             <div class="tree">
               <div class="tree-head"><span>testgraph</span><span>a4baa9a · 68 files</span></div>
               <pre><code>testgraph/            graph traversal, integrity guard, registry, CLI
@@ -129,7 +129,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A harness for coding agents, built for a single developer, in two parts. The first is a gate that gives a fixed-rule verdict on a code change. It runs four checks that keep no state: the test suite, a symbol contract (a check on the functions and other named symbols a change touches), a scan for staged secrets, and a scan for reachable vulnerabilities. A pass leaves the branch for a human to commit. Nothing is committed automatically, and no language model makes the judgment. The second part is the runtime that drives its own loop.</p>
+            <p>A harness for coding agents, built for a single developer, in two parts. The first is a gate that gives a fixed-rule verdict on a code change. It runs four checks that keep no state: the test suite, a symbol contract (which fails when a change leaves its declared scope or removes a symbol without opting in), a scan for staged secrets, and a scan for reachable vulnerabilities (ones the project&rsquo;s code can trigger, as opposed to ones that are only listed). A pass leaves the branch for a human to commit. Nothing is committed automatically, and no language model makes the judgment. The second part is a runtime that assigns a model to each role (consult, scout, builder, reviewer or scribe) and runs the loop of request, tool call and result against read-only tools. It cannot yet edit files or run commands.</p>
           </div>
         </details>
         </div>
@@ -144,7 +144,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A personal benchmark that takes bug-fix commits from my own repositories and replays them against lower-cost models, several times each, so a gap between two models can be told apart from noise. Its headline figure is cost per solved task. It also publishes its own corrections: one defective task had pulled down four figures it stated earlier, across three capability tiers.</p>
+            <p>A personal benchmark that takes bug-fix commits from my own repositories and replays them against lower-cost models, three times per model by default, so a gap between two models can be told apart from noise. Its headline figure is cost per solved task. In one comparison of fifteen tasks, the small tier (Claude Haiku) solved 10 at $0.51 per solved task, and the large tier (Claude Opus) solved 15 at $2.09. It also publishes its own corrections: one defective task had made all three tiers look worse than they were, and four published claims were corrected.</p>
           </div>
         </details>
         <details class="node">
@@ -154,7 +154,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>Scores each coding-agent session on two things, kept separate: what it cost, from the transcript, and how much of its code was still in the repository later, from git. Every average comes with a 95% confidence interval (a range that shows how precise the average is), and models are compared only on similar work, so a hard repository does not make a model look weak.</p>
+            <p>Scores each coding-agent session on two things, kept separate: what it cost, from the transcript, and how much of its code was still in the repository when it was last scored, from git. A session is re-scored until it is seven days old. It has scored 11,179 sessions. Every average comes with a 95% confidence interval (a range that shows how precise the average is), and models are compared only on similar work, so a hard repository does not make a model look weak.</p>
           </div>
         </details>
         <details class="node">
@@ -164,7 +164,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Local retrieval over years of my own notes. Semantic search (matching by meaning) beat keyword search at 1,271 documents and lost to it at 57,500, and the write-up starts with that result. The experiment set a kill gate in advance (a stated condition for stopping the project), and it also used negative controls (cases where the right answer is known to be nothing) and blind judging of pooled results, where results are graded without the judge knowing which method returned them.</p>
+            <p>Local retrieval over my own notes: Claude Code session transcripts, a ChatGPT export, planning documents and repository markdown. The notes are split into chunks (short passages of text). Semantic search (matching by meaning) beat keyword search on a 1,222-chunk development set and lost to it on the full collection of 57,562 chunks, and the write-up starts with that result. On the development set&rsquo;s seven paraphrased questions, semantic search scored 0.731 nDCG@10 (a ranking score, higher is better) against 0.436 for keyword search. On ten test questions asked against the full collection, the default setup returned something useful in its top three results for five. The experiment set a kill gate in advance (a stated condition for stopping the project). The re-ranker passed it, so the project continued. It also used negative controls (cases where the right answer is known to be nothing) and blind judging of pooled results, where results are graded without the judge knowing which method returned them.</p>
           </div>
         </details>
         </div>
@@ -179,7 +179,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Spatial models over the public Michigan well record. Depth is predictable from location because nearby wells have similar depths. Moran&rsquo;s I measures how strongly nearby wells resemble each other, from 0 (no pattern) to 1 (strong); it is 0.393 for depth and 0.089 for yield. One promising target was dropped after it turned out to be about 96% a restatement of depth.</p>
+            <p>Spatial models over the public Michigan well record. Depth is predictable from location because nearby wells have similar depths. Moran&rsquo;s I measures how strongly nearby wells resemble each other: near 0 means no spatial pattern, and higher values mean a stronger one. It is 0.393 for depth and 0.089 for yield. The aquifer interval (the top and bottom depths of the water-bearing layer) looked like a promising target and was dropped: against a baseline computed from well depth, it was about 96% a restatement of depth.</p>
             <div class="tree">
               <div class="tree-head"><span>frostline</span><span>8ef8a4d · 145 files</span></div>
               <pre><code>template/scripts/     the Track B pipeline — export, backtest,
@@ -210,7 +210,7 @@ site/                 the public build</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Routes one coding agent across several large language model (LLM) providers by task, with secrets kept out of the environment and cost tracked against a budget as it accrues.</p>
+            <p>Routes one coding agent across several large language model (LLM) providers by task, and tracks cost against a budget as it accrues. Secrets are kept out of the environment: keys are pulled from a secret broker at process start and held only in memory.</p>
           </div>
         </details>
         </div>
@@ -233,11 +233,11 @@ site/                 the public build</code></pre>
         <details class="node">
           <summary class="node-head">
             <span class="node-name"><a href="https://nmwelldrilling.com">nmwelldrilling.com</a></span>
-            <span class="node-spec">reference build</span>
+            <span class="node-spec">sample site</span>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>A contractor-facing reference build, end to end. The page itself is labelled a sample.</p>
+            <p>A sample contractor site I built end to end. The page itself is labelled a sample.</p>
           </div>
         </details>
         <details class="node">
@@ -247,7 +247,7 @@ site/                 the public build</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>The business site for managed intake work. It is hosted separately from this site, with its own branding and technology stack.</p>
+            <p>The business site for The Frostline Co., which builds and runs websites with lead-intake forms for Northern Michigan well drillers. It is hosted separately from this site, with its own branding and technology stack.</p>
           </div>
         </details>
         <details class="node">

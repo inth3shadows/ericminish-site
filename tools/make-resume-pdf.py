@@ -1,5 +1,5 @@
 import zlib, textwrap, os
-W,H=612,792; M=54
+W,H=612,792; M=48
 LINES=[]
 def esc(t):
     t=t.replace('\u2014','-').replace('\u2013','-').replace('\u2019',"'").replace('\u201c','"').replace('\u201d','"')
@@ -12,7 +12,7 @@ add('meta','hi@ericminish.com  |  ericminish.com  |  github.com/inth3shadows  | 
 add('gap')
 add('h','SUMMARY')
 add('p','I work in Python, Go and SQL. I build MCP servers, retrieval systems, evaluation harnesses, ingestion pipelines, and the cloud services they run on. I built, deployed and maintain most of it myself.')
-add('p','I look for problems that do not raise an error, and build checks that catch them. In customer-success operations the problem was account risk: churn fell from 30% to under 10% after the system began flagging at-risk customers before they left. More recently I have applied the same approach to my own tools: a proxy that only sends compressed output it can decode back exactly, a search engine whose evaluation showed it gave useful answers to half of the test questions, and a well-depth model that lost its strongest variable once it was measured against the right baseline.')
+add('p','I look for problems that do not raise an error, and build checks that catch them. In customer-success operations the problem was account risk: churn fell from 30% to under 10% after the system began flagging at-risk customers before they left. More recently I have applied the same approach to my own tools: a proxy that only sends compressed output it can decode back exactly, a search engine whose evaluation showed it gave useful answers to half of the test questions, and a well-record model target that looked like new signal until a depth baseline showed it was about 96% a restatement of depth.')
 add('gap')
 add('h','EXPERIENCE')
 add('role','Systems & Automation Lead')
@@ -40,7 +40,7 @@ add('gap')
 add('role','Agent infrastructure')
 add('sub','Independent  |  2025 - Present  |  Built, shipped and run')
 for b in ["RunEcho stops a coding agent from writing a call to a function the repository does not have. The check runs before the code is written, takes about 12 ms, uses no model or network, and adds nothing to the agent's context when it passes. Public, MIT license.",
-          "terse is a proxy that compresses AI tool output without losing information. Across 365,144 tokens of real API payloads it used 59% fewer tokens than the original payloads. The TOON format made the same payloads 7% larger. Public, MIT license.",
+          "terse is a proxy that compresses AI tool output without losing information. Across 365,144 tokens of real API payloads it used 59% fewer tokens than the original payloads. TOON 4.1.1 made the same payloads 6.5% larger. Public, MIT license.",
           "testgraph reads a diff and names the user journeys the change could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT license, published on PyPI.",
           "modelbench benchmarks models on real bug-fix commits mined from my own repositories. Each model runs each task three times, and models are scored on cost per solved task. Its write-up lists the earlier figures that were later corrected.",
           "harness runs a coding agent and judges each change it makes with four rule-based checks. No model takes part in the judging, and the harness never commits on its own."]:
@@ -49,8 +49,8 @@ add('gap')
 add('role','Data work and shipped applications')
 add('sub','Independent  |  2025 - Present  |  Data, delivery and evidence')
 for b in ["Lodestone is local search over years of my working notes. Its evaluation showed that it gave useful answers to 5 of 10 test questions at full scale, and I published that result.",
-          "Frostline is a set of spatial models built on 50,083 well records, including the well-depth model above, and a business built around what the models can predict.",
-          "Reported 32 bugs in a code-analysis tool I use daily. Two of them were race conditions, which I reproduced on demand with purpose-built test harnesses.",
+          "Frostline: spatial models on 50,083 well records, and a business built on what they can predict. The aquifer interval showed +38.8% apparent skill against the global median, but against a depth baseline it was about 96% a restatement of depth, so I cut it.",
+          "Filed 32 issues against codegraph, an open-source code-intelligence tool I use daily (21 since closed), and built fault-injection harnesses that reproduce two of the bugs on demand.",
           "Deployed three applications end to end: a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client."]:
     add('li',b)
 add('gap')

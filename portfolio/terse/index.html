@@ -51,7 +51,7 @@
         <p class="eyebrow">Case study · AI infrastructure</p>
         <h1>Reducing agent token cost with lossless compression of tool output</h1>
         <p class="lede">
-          An AI agent calls tools such as search, file listings and API requests, and the model reads every result, so tool output is a large part of the token bill. Tokens are the units a model is limited and billed by. terse is a drop-in proxy that sits in front of any MCP server. MCP (Model Context Protocol) is the standard way agents connect to tools. terse compresses the server&rsquo;s output in a form that can always be turned back into the exact original. On nine GitHub API payloads it used 59% fewer tokens. Those results describe GitHub payloads only, and the saving on other tools depends on the shape of their output.
+          An AI agent calls tools such as search, file listings and API requests, and the model reads every result, so tool output is a large part of the token bill. Tokens are the units a model is limited and billed by. terse is a drop-in proxy that sits in front of any MCP server. MCP (Model Context Protocol) is the standard way agents connect to tools. terse compresses the server&rsquo;s output in a form that can always be turned back into the exact original. On nine GitHub API payloads it used 59% fewer tokens than the raw JSON. Those results describe GitHub payloads only, and the saving on other tools depends on the shape of their output.
         </p>
       </div>
       <aside class="note">
@@ -96,7 +96,7 @@ cl100k tokens: 1810 -> 881 (51.3% saved)</code></pre>
         </article>
       </div>
       <div class="prose">
-        <p>terse leaves output that is already compact unchanged, because the saving would be tiny. A short primer, sent once per session instead of with every result, teaches the model to read the dense encoding directly, so your own code needs no decoding step. Token counts on this page use cl100k, a widely used tokenizer (the tool that splits text into the tokens that are counted).</p>
+        <p>terse leaves output that is already compact unchanged, because the saving would be tiny. A short primer, sent once per session instead of with every result, teaches the model to read the dense encoding directly, so your own code needs no decoding step. Without the primer, Haiku 4.5 answered 92% of reading questions correctly from the compressed form, against 100% from raw JSON, and the primer closed that gap. That is the one accuracy result re-run with three trials, and it held. Opus 5 scored 100% on both forms, from a single trial. The project treats the primer's effect as model-dependent: in further tests it made one smaller model less accurate. Token counts on this page use cl100k, a widely used tokenizer (the tool that splits text into the tokens that are counted).</p>
       </div>
     </section>
 
@@ -105,39 +105,40 @@ cl100k tokens: 1810 -> 881 (51.3% saved)</code></pre>
       <div class="section-head"><div><h2>Measured against TOON</h2></div></div>
       <div class="prose">
         <p>
-          To test the claim against something outside the project, the benchmark compares terse with TOON, a published token-oriented serialisation format with the same goal. Both run over the same nine GitHub API payloads (365,144 raw tokens), every row is verified lossless, and tokens are counted with the same tokenizer.
+          To test the claim against something outside the project, the benchmark compares terse with TOON (Token-Oriented Object Notation), a published compact encoding of JSON written for model prompts, run here at version 4.1.1. Both run over the same nine GitHub API payloads (365,144 raw tokens), every row is verified lossless, and tokens are counted with the same tokenizer.
         </p>
       </div>
       <div class="table-scroll">
         <table class="data-table">
-          <tr><th>Payload</th><th style="text-align:right">Raw tokens</th><th style="text-align:right">terse reduction</th><th style="text-align:right">TOON reduction</th></tr>
-          <tr><td>gh_workflow_runs</td><td class="num">76,032</td><td class="num win">80.3%</td><td class="num lose">−7.5%</td></tr>
-          <tr><td>gh_pulls</td><td class="num">151,165</td><td class="num win">76.1%</td><td class="num lose">−8.4%</td></tr>
+          <tr><th>Payload</th><th style="text-align:right">Raw tokens</th><th style="text-align:right">terse reduction</th><th style="text-align:right">TOON 4.1.1 reduction</th></tr>
+          <tr><td>gh_workflow_runs</td><td class="num">76,032</td><td class="num win">80.4%</td><td class="num lose">−7.5%</td></tr>
+          <tr><td>gh_pulls</td><td class="num">151,165</td><td class="num win">76.1%</td><td class="num lose">−8.0%</td></tr>
           <tr><td>gh_issues</td><td class="num">48,032</td><td class="num win">38.8%</td><td class="num lose">−8.0%</td></tr>
-          <tr><td>gh_dir_listing</td><td class="num">6,736</td><td class="num win">31.4%</td><td class="num lose">−7.7%</td></tr>
+          <tr><td>gh_dir_listing</td><td class="num">6,736</td><td class="num win">31.4%</td><td class="num">10.4%</td></tr>
           <tr><td>gh_commits</td><td class="num">69,652</td><td class="num win">26.5%</td><td class="num lose">−4.5%</td></tr>
           <tr><td>gh_labels</td><td class="num">632</td><td class="num">15.2%</td><td class="num win">19.0%</td></tr>
-          <tr><td>gh_rate_limit</td><td class="num">357</td><td class="num win">13.4%</td><td class="num lose">−36.7%</td></tr>
+          <tr><td>gh_rate_limit</td><td class="num">357</td><td class="num">13.4%</td><td class="num win">18.8%</td></tr>
           <tr><td>gh_commits_flat</td><td class="num">10,886</td><td class="num win">2.4%</td><td class="num">1.7%</td></tr>
-          <tr><td>gh_repo_single</td><td class="num">1,652</td><td class="num">0.0%</td><td class="num lose">−4.4%</td></tr>
-          <tr><td><strong>Weighted total</strong></td><td class="num"><strong>365,144</strong></td><td class="num win"><strong>59.1%</strong></td><td class="num lose"><strong>−7.1%</strong></td></tr>
+          <tr><td>gh_repo_single</td><td class="num">1,652</td><td class="num">0.0%</td><td class="num lose">−3.9%</td></tr>
+          <tr><td><strong>Weighted total</strong></td><td class="num"><strong>365,144</strong></td><td class="num win"><strong>59.1%</strong></td><td class="num lose"><strong>−6.5%</strong></td></tr>
         </table>
       </div>
       <div class="prose">
         <p>
-          Percentages are the reduction in tokens against the raw JSON, so a negative number means the encoding made the payload <em>bigger</em>. TOON grows on nested records because it adds a key-path (the chain of field names leading to a value) at every level of nesting. terse writes a repeated nested object once: the <code>gh_pulls</code> row holds sixty copies of the same repository object, and terse reduces them to one legend entry.
+          Percentages are the reduction in tokens against the raw JSON, so a negative number means the encoding made the payload <em>bigger</em>. The weighted total adds up tokens across all nine payloads before taking the percentage, so larger payloads count for more. Overall, TOON&rsquo;s output was 6.5% larger than the raw JSON. TOON grows on nested records because it adds a key-path (the chain of field names leading to a value) at every level of nesting. terse writes a repeated nested object once: the <code>gh_pulls</code> row holds sixty copies of the same repository object, and terse reduces them to one legend entry.
         </p>
         <p>
-          TOON wins one row, <code>gh_labels</code> (19.0% against 15.2% for terse). That payload is a flat table of short, uniform values, the case TOON was designed for. Across the nine payloads the saving ranges from 80.3% on workflow runs to 0.0% on a single repository object. The benchmark harness in the repository measures the saving on other tools.
+          TOON saved more than terse on two of the nine payloads, both small: <code>gh_rate_limit</code> (18.8% against 13.4% for terse) and <code>gh_labels</code> (19.0% against 15.2%). <code>gh_labels</code> is a flat table of short, uniform values, the case TOON was designed for. Across the nine payloads the terse saving ranges from 80.4% on workflow runs to 0.0% on a single repository object. The benchmark harness in the repository measures the saving on other tools.
         </p>
       </div>
       <p class="fine">
-        Re-measured on 4 August 2026 against a pinned corpus (a fixed, saved set of payloads). Only
-        <code>gh_issues</code> changed, from 32.7% to 38.8%, which moved the weighted total from 58.3% to
-        59.1%. Every other row is byte-identical to the previous measurement, and
-        <code>uv run scripts/bench/benchmark.py</code> in the repository reproduces the table. The
-        gh_issues gain came from the encoder learning to build one schema (a description of a
-        record&rsquo;s fields) that covers records of different shapes.
+        Last re-measured on 22 September 2026 against a pinned corpus (a fixed, saved set of
+        payloads), with TOON at version 4.1.1 in place of the 2.3.1 used before. terse&rsquo;s column
+        was unchanged at 59.1%, and <code>uv run scripts/bench/benchmark.py</code> in the repository
+        reproduces the table. An earlier change, which lets the encoder build one schema (a
+        description of a record&rsquo;s fields) that covers records of different shapes, raised
+        <code>gh_issues</code> from 32.7% to 38.8% and the weighted total from 58.3% to 59.1%. Every
+        other row was byte-identical across that change.
       </p>
     </section>
 

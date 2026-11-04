@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Lodestone — case study | Eric Minish</title>
-  <meta name="description" content="Case study: a local retrieval engine whose embedding search beat keyword search on a 1,271-chunk development set of notes and lost to it on the full collection, and the evaluation that showed it.">
+  <meta name="description" content="Case study: a local retrieval engine whose embedding search beat keyword search on a 1,222-chunk development set of notes and lost to it on the full collection of 57,562 chunks, and the evaluations that showed it.">
   <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/lodestone/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="Lodestone — Eric Minish">
-  <meta property="og:description" content="Embedding search that beat keyword search on 1,271 chunks of notes and lost to it on the full collection, and the evaluation that showed it.">
+  <meta property="og:description" content="Embedding search that beat keyword search on 1,222 chunks of notes and lost to it on the full collection of 57,562, and the evaluations that showed it.">
   <meta property="og:url" content="https://www.ericminish.com/portfolio/lodestone/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Lodestone — Eric Minish">
-  <meta name="twitter:description" content="Embedding search that beat keyword search on 1,271 chunks of notes and lost to it on the full collection, and the evaluation that showed it.">
+  <meta name="twitter:description" content="Embedding search that beat keyword search on 1,222 chunks of notes and lost to it on the full collection of 57,562, and the evaluations that showed it.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -49,14 +49,16 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 03</b><span>Retrieval · evaluation</span><span>2026</span></div>
-        <h1>My embedding search beat keyword search on 1,271 chunks of notes and lost to it on the full collection of 57,500</h1>
+        <h1>My embedding search beat keyword search on 1,222 chunks of notes and lost to it on the full collection of 57,562</h1>
         <p class="lede">
-          I built a hybrid retrieval engine over years of my own working notes. It combines keyword
+          I built a hybrid retrieval engine over my own working notes. It combines keyword
           search with embedding-based search, which compares numeric representations of what each
-          passage means, and I measured how well it finds things. On a 1,271-chunk development set
-          the embedding side beat keyword search. On the full collection of 57,500, keyword search alone beat
-          every hybrid configuration I tried, and four of the five paraphrased questions returned
-          nothing useful.
+          passage means, and I measured how well it finds things. On a 1,222-chunk development set
+          the embedding side beat keyword search. On the full collection of 57,562 chunks, a
+          ten-question probe found the reverse: keyword search alone beat every hybrid configuration
+          I tried, and four of the five paraphrased questions returned nothing useful. On paraphrased
+          questions, a labelled evaluation that followed put keyword search ahead on one score and
+          the re-ranked hybrid slightly ahead on another.
         </p>
       </div>
       <aside class="note">
@@ -67,8 +69,8 @@
 
     <section class="section">
       <div class="facts">
-        <div><span class="fk">full collection</span><span class="fv">57,500</span></div>
-        <div><span class="fk">useful answers at full scale</span><span class="fv">5 of 10</span></div>
+        <div><span class="fk">full collection, chunks</span><span class="fv">57,562</span></div>
+        <div><span class="fk">useful answers in the full-scale probe</span><span class="fv">5 of 10</span></div>
         <div><span class="fk">dev set, embedding score</span><span class="fv good">0.731</span></div>
         <div><span class="fk">dev set, keyword score</span><span class="fv">0.436</span></div>
       </div>
@@ -78,23 +80,23 @@
       <div class="section-head"><div><h2>Results on the development set and on the full collection</h2></div></div>
       <div class="prose">
         <p>
-          The notes are split into chunks (short passages of text). On a development set of 1,271
-          chunks, I tested paraphrased questions, which describe a memory in different words from
-          the ones I originally wrote. On the evaluation score, where higher is better, the
-          embedding side scored 0.731 and keyword search scored 0.436. I then built the hybrid.
+          The notes are split into chunks (short passages of text). On a development set of 1,222
+          chunks from 82 Claude Code sessions, I tested seven paraphrased questions, which describe a
+          memory in different words from the ones I originally wrote. On nDCG@10, a 0-to-1 score of
+          how well the top ten results rank relevant passages, the embedding side scored 0.731 and
+          keyword search 0.436.
         </p>
         <p>
-          I then measured it on the full collection for the first time, with ten
-          questions whose results were labelled by Claude (an AI model) with no partial credit and
-          not yet checked by me. The hybrid engine returned something useful for five of the ten. All five successes were questions that
-          share words with the notes they should find. Four of the five paraphrased questions, the
-          case the embedding side was built for, returned nothing useful.
+          The first test on the full collection was a probe: ten questions, five keyword-shaped and
+          five paraphrased, with the top three results judged by hand. The production default
+          returned something useful for five of the ten. Four of the five paraphrased questions, the case the
+          embedding side was built for, returned nothing useful.
         </p>
       </div>
 
       <div class="table-scroll">
         <table class="data-table">
-          <tr><th>Search method</th><th style="text-align:right">Rank of the correct answer · 5 paraphrase questions</th></tr>
+          <tr><th>Search method</th><th style="text-align:right">Rank of the correct answer · 5 paraphrase questions in the probe</th></tr>
           <tr><td>Keyword (BM25, a standard keyword-ranking formula)</td><td class="num win">3 · 1 · 1 · 5 · 1</td></tr>
           <tr><td>Embedding</td><td class="num lose">&gt;200 · 7 · 2 · 107 · 1</td></tr>
         </table>
@@ -102,11 +104,18 @@
 
       <div class="prose">
         <p>
-          The embedding side was finding the correct answers but placing them too far down the
-          list, at rank 107 and below rank 200 in two cases. On the full collection, keyword search
-          alone beat every hybrid configuration, the reverse of the development-set result. In this
-          evaluation, the embedding similarity scores did not separate good matches from bad ones
-          once the collection was large.
+          Here the correct answer is any chunk containing a known key term, such as
+          <code>nohup</code>, so this is a rough check; &gt;200 means no such chunk was in that
+          method&rsquo;s top 200. Keyword search alone beat every hybrid configuration in the probe,
+          the reverse of the development-set result. My working explanation is that at this size
+          embedding similarity scores stop separating good matches from bad ones.
+        </p>
+        <p>
+          A labelled evaluation followed: 20 questions written before looking at the notes, the top
+          five results of five configurations pooled, and each result graded by Claude 0
+          (irrelevant), 1 (related) or 2 (the memory wanted). On the paraphrased questions, keyword
+          search alone scored 0.422 nDCG and 0.300 Hit@1 (the share of questions whose first result
+          was relevant). The hybrid that always re-ranks scored 0.447 and 0.200.
         </p>
         <p>
           For several of the failed questions, the answer was in a file the index returns for other
@@ -119,21 +128,21 @@
     <section class="section">
       <div class="section-head"><div><h2>How the investigation went</h2></div></div>
       <ol class="beats">
-        <li>My first explanation was that the larger collection was diluted by lower-quality material. I tested it by restricting the search to the single highest-quality source of notes. Restricting the search to that source did not improve results in that run, so I rejected that explanation.</li>
-        <li>A diagnostic then separated answers that were never retrieved (a recall problem) from answers that were retrieved and ranked too low (a ranking problem). The failures were ranking problems.</li>
-        <li>A query-adaptive router, the component that decides for each question whether to run the expensive re-ranker, had been shipped as the default. It ran the re-ranker only when a question looked like a keyword search, and it had been tuned on the development set. At full scale it scored worst of six configurations: 0.000 on paraphrased questions, against 0.200 when the re-ranker always ran. I removed it as the default the same day.</li>
-        <li>A code review found that the scorer retrieved deeper than the set of results that had been judged. The re-ranked configuration was returning documents nobody had graded and was marked wrong for them. Fixing the bug raised that configuration&rsquo;s score from 0.352 to 0.447. The overall conclusion stayed the same.</li>
+        <li>My first explanation was that the larger collection was diluted by lower-quality material. Restricting the search to the single highest-quality source of notes did not improve results in that run, so I rejected that explanation.</li>
+        <li>A diagnostic then separated answers that were never retrieved (a recall problem) from answers that were retrieved and ranked too low (a ranking problem). In the probe the misses were ranking problems. In the labelled evaluation, half the paraphrased questions had no relevant passage in any configuration&rsquo;s top five.</li>
+        <li>A query-adaptive router, the component that decides for each question whether to run the expensive re-ranker, had been shipped as the default. It ran the re-ranker only when a question looked like a keyword search, and it had been tuned on a 1,271-chunk snapshot. In the labelled evaluation it scored worst of six configurations on paraphrased questions: 0.000 Hit@1, against 0.200 when the re-ranker always ran. The same day I made always re-ranking the default, at about three seconds per query.</li>
+        <li>A code review found that the scorer retrieved deeper than the set of results that had been judged. The re-ranked configuration was returning documents nobody had graded and was marked wrong for them. Fixing the bug raised its paraphrase nDCG from 0.352 to 0.447, above keyword search alone at 0.422.</li>
       </ol>
     </section>
 
     <section class="section">
       <div class="section-head"><div><h2>Evaluation methods used</h2></div></div>
       <div class="subs">
-        <div><span class="st">A stop condition written in advance</span><span class="sx">Before anything was built, I wrote down that the project would stop after one session if a local re-ranker did not beat the existing baseline.</span></div>
-        <div><span class="st">No tuning on unlabelled examples</span><span class="sx">A threshold that visibly underperformed was left alone instead of being re-tuned against eight unlabelled examples. This happened twice, and the plan file records the decision both times.</span></div>
-        <div><span class="st">Questions that have no answer</span><span class="sx">Two negative controls, questions with no answer anywhere in the collection, check whether the system invents matches. The embedding side scored a nonsense query about sourdough hydration <b>95%</b> as highly as an answerable question, so on this test its score barely separated an unanswerable question from an answerable one.</span></div>
+        <div><span class="st">A stop condition written in advance</span><span class="sx">Before anything was built, I wrote down that the project would stop after one session if a local re-ranker did not beat the existing baseline. The re-ranker passed that test, so the project went ahead.</span></div>
+        <div><span class="st">No tuning on unlabelled examples</span><span class="sx">The router&rsquo;s cut-off (0.131) underperformed on the full collection and was not re-fitted to eight unlabelled examples from it. The fusion weights, which set how much each search method counts in the hybrid, were also not re-fitted to the five probe questions. My written project plan records both decisions.</span></div>
+        <div><span class="st">Questions that have no answer</span><span class="sx">Two negative controls, questions with no answer anywhere in the collection, check whether the system invents matches. The embedding side scored a nonsense query about sourdough hydration <b>95%</b> as highly as an answerable question.</span></div>
         <div><span class="st">Judging pooled results without knowing their source</span><span class="sx">Candidates were pooled from five retrieval configurations and shuffled, with no indication of which system found them. This stops the existing system from winning by being graded only on its own results.</span></div>
-        <div><span class="st">Who produced each label</span><span class="sx">Each label records who produced it. All 194 labels so far came from Claude, and the agreement check against my own labels has not been run yet. A November 2026 re-test, which I judge myself, will replace them.</span></div>
+        <div><span class="st">Who produced each label</span><span class="sx">Each label records who produced it. All 194 labels in the July evaluation came from Claude, and the check against my own judgments was not run. A re-test started on 1 November 2026 and is paused at the judging step. Its plan is for a model to label most results and for me to score a random 50 blind, then report how often we agree.</span></div>
       </div>
       <div class="tag-row" style="margin-top:20px">
         <span class="tag">Retrieval</span><span class="tag">Evaluation</span>

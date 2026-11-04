@@ -79,7 +79,8 @@
             <div class="prow-name"><a href="/portfolio/terse/">terse</a></div>
             <p class="prow-desc">A proxy between my AI agent and the servers that run its tools. It compresses
               the tool output so the model reads fewer tokens. When it cannot prove the compressed version
-              decodes back exactly, it sends the original output.</p>
+              decodes back exactly, it sends the original output. On nine GitHub API responses totalling
+              365,144 tokens, the compressed output had 59% fewer tokens than the raw JSON.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">59% fewer tokens</span>
@@ -90,9 +91,11 @@
         <div class="prow">
           <div>
             <div class="prow-name"><a href="/portfolio/testgraph/">testgraph</a></div>
-            <p class="prow-desc">Given a code change, it names the user journeys (the sequences of actions a user takes) the change could have broken.
-              Similar tools need coverage data (a record of which code an earlier test run executed). This one
-              works on a repository whose tests have never been run.</p>
+            <p class="prow-desc">Given a code change, it names the user journeys (sequences of actions a user takes,
+              such as &ldquo;claimant submits a signed form&rdquo;) the change could have broken. It walks a static
+              call graph (a map of which code calls which) backwards from the changed lines. Similar tools need
+              coverage data (a record of which code an earlier test run executed). testgraph works on a repository
+              whose tests have never been run.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">no prior test run needed</span>
@@ -104,8 +107,9 @@
           <div>
             <div class="prow-name"><a href="/portfolio/runecho/">RunEcho</a></div>
             <p class="prow-desc">Stops an AI agent from writing a call to a function that does not exist in the
-              repository. The check runs before the file is changed and takes about 12&nbsp;ms. It uses no model and no
-              network, and when the check passes it adds nothing to the agent&rsquo;s context.</p>
+              repository. Before the file is changed, it checks the edit against the function, type and constant
+              names the code declares. The check takes about 12&nbsp;ms and uses no model and no network. When the
+              check passes, it adds nothing to the agent&rsquo;s context.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">0 context tokens</span>
@@ -117,10 +121,12 @@
           <div>
             <div class="prow-name"><a href="/portfolio/modelbench/">modelbench</a></div>
             <p class="prow-desc">Replays real bug-fix commits from my own repositories against lower-cost models,
-              several times each, and reports the cost per solved task. The write-up lists the earlier figures that had to be corrected.</p>
+              three times per model by default, and reports the cost per solved task. On fifteen tasks, the small
+              tier solved 10 at $0.51 per solved task and the large tier solved 15 at $2.09. The write-up lists
+              the earlier figures that had to be corrected.</p>
           </div>
           <div class="prow-right">
-            <span class="prow-value">cost per solved task</span>
+            <span class="prow-value">$0.51 vs $2.09 per solve</span>
             <span class="prow-meta">private</span>
           </div>
         </div>
@@ -128,21 +134,24 @@
         <div class="prow">
           <div>
             <div class="prow-name"><a href="/portfolio/lodestone/">Lodestone</a></div>
-            <p class="prow-desc">Local retrieval over years of my own working notes. It beat keyword search
-              at a thousand documents and lost to it at fifty-seven thousand. I published both results.</p>
+            <p class="prow-desc">Local search over my own working notes: Claude Code session transcripts, a
+              ChatGPT export, planning documents and repository markdown. On paraphrased questions, its search
+              by meaning beat keyword search over 1,222 chunks (short passages cut from the notes) and lost to
+              it over the full collection of 57,562 chunks. I published both results. On ten recall questions asked against the full
+              collection, the default setup returned something useful in its top three results for five.</p>
           </div>
           <div class="prow-right">
-            <span class="prow-value">5 of 10 at full scale</span>
-            <span class="prow-meta">null result</span>
+            <span class="prow-value">5 of 10 useful</span>
+            <span class="prow-meta">lost at full scale</span>
           </div>
         </div>
 
         <div class="prow">
           <div>
             <div class="prow-name"><a href="/portfolio/frostline/">Frostline</a></div>
-            <p class="prow-desc">Spatial models over Michigan well records. Depth is predictable from location.
-              Yield (how much water a well produces) is not. The project also includes the contractor-intake
-              business built around these models.</p>
+            <p class="prow-desc">Spatial models over Michigan well records. Depth is predictable from location
+              because nearby wells have similar depths. Yield (how much water a well produces) is not. The project also includes a business that builds and runs websites with lead-intake forms for
+              Northern Michigan well drillers.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">50,000 records</span>
