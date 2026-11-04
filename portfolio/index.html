@@ -51,7 +51,9 @@
         <h1>Portfolio</h1>
         <p class="lede">
           Infrastructure I built and run. Each entry has a write-up with enough detail to check
-          the claims, including the projects that failed.
+          the claims, including the projects that failed. The case studies come first, starting with
+          tools for coding agents and the measurements I use to judge them. Live sites and other
+          systems I run follow.
         </p>
       </div>
     </section>
@@ -69,7 +71,7 @@
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>A proxy in front of MCP tool servers that losslessly compresses what they return. If it cannot prove a compressed payload reconstructs exactly, it forwards the original unchanged, so it is always lossless. MCP is the Model Context Protocol, the standard that connects tools to AI agents. The project is public under the MIT license, and the repository includes a benchmark harness so you can measure the saving on your own tools.</p>
+            <p>MCP, the Model Context Protocol, is the standard that connects tools to AI agents. terse is a proxy that sits in front of MCP tool servers and compresses what they return without losing anything. If it cannot prove that a compressed payload rebuilds the original exactly, it forwards the original unchanged. The project is public under the MIT license, and the repository includes a benchmark harness so you can measure the saving on your own tools.</p>
             <div class="tree">
               <div class="tree-head"><span>terse</span><span>9bd5ad3 · 161 files</span></div>
               <pre><code>src/terse/            the codec, proxy and policy
@@ -109,7 +111,7 @@ docs/                 architecture and the scope statement</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Given a diff, it answers which user journeys the change could have broken, and in what order to test them. Comparable tools answer with a list of tests and need coverage data from a previous run. testgraph walks a static call graph (a map of which code calls which) backwards from the changed lines, so it works on a repo that has never run its test suite. It is tuned to catch every journey that broke, so it will sometimes flag one that turned out fine.</p>
+            <p>Given a diff, it answers which user journeys the change could have broken, and in what order to test them. Test-impact tools usually answer with a list of tests, and they need coverage data (a record of which code each test ran) from a previous run. testgraph walks a static call graph (a map of which code calls which) backwards from the changed lines, so it works on a repo that has never run its test suite. It is tuned to catch every journey that broke, so it will sometimes flag one that turned out fine.</p>
             <div class="tree">
               <div class="tree-head"><span>testgraph</span><span>a4baa9a · 68 files</span></div>
               <pre><code>testgraph/            graph traversal, integrity guard, registry, CLI
@@ -129,7 +131,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A single-developer agent harness in two parts: a fixed-rule verdict on a code change, and the runtime that drives its own loop. The gate runs four stateless checks: the test suite, a symbol contract, staged secrets, and reachable vulnerabilities. A pass leaves the branch for a human to commit. Nothing is committed automatically, and no language model makes the judgment.</p>
+            <p>A harness for coding agents, built for a single developer. Its gate decides whether a code change is acceptable by running four checks that keep no state and use no language model: the project&rsquo;s test suite; a symbol contract, which fails if the change leaves the scope it declared or removes a function or type without opting in; a scan for credentials in the staged change; and a scan for reachable vulnerabilities (ones the project&rsquo;s code can trigger). A pass leaves the branch for a human to commit, and nothing is committed automatically. The second part is the runtime that assigns models to roles and gives them tools.</p>
           </div>
         </details>
         </div>
@@ -144,7 +146,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A personal benchmark that takes bug-fix commits from my own repositories and replays them against cheap models, several times each, so a gap between two models can be judged as noise or as a genuine difference. Its headline figure is cost per solved task. It also publishes its own corrections: four figures it had stated earlier were pulled down by one defective task that affected three capability tiers.</p>
+            <p>A personal benchmark that takes bug-fix commits from my own repositories and replays them against cheap models, several times each, so a gap between two models can be judged as noise or as a genuine difference. Its headline figure is cost per solved task. It also publishes its own corrections: one defective task had lowered four figures it reported earlier, across three capability tiers.</p>
           </div>
         </details>
         <details class="node">
@@ -160,11 +162,11 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
         <details class="node">
           <summary class="node-head">
             <span class="node-name"><a href="/portfolio/lodestone/">Lodestone</a></span>
-            <span class="node-spec">5 of 10 at full scale</span>
+            <span class="node-spec">5 of 10 useful at full scale</span>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Local retrieval over years of my own notes. Semantic search beat keyword search at 1,271 documents and lost to it at 57,500, and the write-up starts with that result. The experiment set a kill gate in advance (a stated condition for stopping the project), and it also used negative controls (cases where the right answer is known to be nothing) and blind judging of pooled results.</p>
+            <p>Local retrieval over years of my own notes. Semantic search (matching by meaning, using embeddings, which are numeric vectors that represent text) beat keyword search at 1,271 documents and lost to it at 57,500. The write-up starts with that result. The experiment set a kill gate in advance (a stated condition for stopping the project), and it also used negative controls (cases where the right answer is known to be nothing) and blind judging of pooled results.</p>
           </div>
         </details>
         </div>
@@ -179,7 +181,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Spatial models over the public Michigan well record. Depth is predictable from location, with a Moran&rsquo;s I of 0.393. Moran&rsquo;s I measures how strongly nearby wells resemble each other, from 0 (no pattern) to 1 (strong). Yield scores 0.089. One promising target was dropped after it turned out to be about 96% a restatement of depth.</p>
+            <p>Spatial models over the public Michigan well record. Nearby wells have similar depths, with a Moran&rsquo;s I of 0.393. Moran&rsquo;s I measures how strongly nearby cells resemble each other: 0 means no pattern, and higher values mean neighbours are more alike. Yield scores 0.089. One promising model target was dropped after a baseline check showed it was about 96% a restatement of depth.</p>
             <div class="tree">
               <div class="tree-head"><span>frostline</span><span>8ef8a4d · 145 files</span></div>
               <pre><code>template/scripts/     the Track B pipeline — export, backtest,
@@ -196,17 +198,17 @@ site/                 the public build</code></pre>
         <details class="node">
           <summary class="node-head">
             <span class="node-name"><a href="/portfolio/origin-sentinel/">Origin Sentinel</a></span>
-            <span class="node-spec">staged self-heal</span>
+            <span class="node-spec">read-only first, then repairs</span>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Origin-health detection for services reached through a tunnel (a Cloudflare connection that exposes a machine without opening ports). It catches the failure where the public edge looks healthy but the service behind it is down. It first shipped without write access and was given the ability to fix problems once its classifications held up in the field.</p>
+            <p>Checks the health of services reached through a tunnel (a Cloudflare connection that exposes a machine without opening ports). It catches the failure where the public edge looks healthy but the service behind it is down. It first shipped without write access, and it was given the ability to fix problems once its classifications held up in the field.</p>
           </div>
         </details>
         <details class="node">
           <summary class="node-head">
             <span class="node-name"><a href="/portfolio/llm-gateway/">Multi-provider LLM gateway</a></span>
-            <span class="node-spec">spend measured</span>
+            <span class="node-spec">cost tracked against a budget</span>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
@@ -227,7 +229,7 @@ site/                 the public build</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>This site. Static files, no build step, no third-party requests, rsynced into a container on my own hardware and served by Caddy behind a tunnel.</p>
+            <p>This site. Static files with no build step and no third-party requests, copied with rsync into a container on my own hardware and served by the Caddy web server behind a tunnel.</p>
           </div>
         </details>
         <details class="node">
@@ -243,7 +245,7 @@ site/                 the public build</code></pre>
         <details class="node">
           <summary class="node-head">
             <span class="node-name"><a href="https://thefrostlineco.com">thefrostlineco.com</a></span>
-            <span class="node-spec">business surface</span>
+            <span class="node-spec">business site</span>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
@@ -257,7 +259,7 @@ site/                 the public build</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>The Campaign Table — a tabletop RPG workspace built on extracted rulebook PDFs. FastAPI and a React single-page app in one container on its own LXC (a lightweight Linux container), deployed by CI with a canary step (a trial release to check health first) and a rollback path, and two staging containers behind it so changes land somewhere else first.</p>
+            <p>The Campaign Table, a tabletop RPG workspace built on text extracted from rulebook PDFs. It is a FastAPI back end and a React single-page app in one container on its own LXC (a lightweight Linux container). CI (the automated build and deploy pipeline) releases it with a canary step (a trial release to check health first) and a rollback path. Two staging containers sit behind it so changes land somewhere else first.</p>
           </div>
         </details>
       </div>
@@ -275,7 +277,7 @@ site/                 the public build</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>Durable memory my agents write into by proposal only, every fact reviewed before it lands. Moving embeddings to a sidecar took the production image from 2.14 GB to 442 MB; trimming the tool surface cut one response from 271 KB to 26 KB.</p>
+            <p>Long-term memory for my agents. They can only propose a fact, and every fact is reviewed before it is stored. Moving the embeddings into a sidecar (a separate container that runs beside the main one) took the production image from 2.14 GB to 442 MB. Trimming the tools it exposes to agents cut one response from 271 KB to 26 KB.</p>
           </div>
         </details>
         <details class="node">
@@ -315,7 +317,7 @@ site/                 the public build</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A small scheduling app — FastAPI, a Svelte front end and Postgres — running in its own container behind a tunnel. I use it myself.</p>
+            <p>A scheduling app (FastAPI, a Svelte front end and Postgres) running in its own container behind a tunnel. I use it myself.</p>
           </div>
         </details>
         <details class="node">
@@ -350,7 +352,7 @@ site/                 the public build</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A persistent multiplexed shell published through an identity-proxied tunnel. It gives the same live session from any device, nothing listens on the public internet, and no session starts without single sign-on. A long agent job keeps running when the laptop closes, and I can check on it from anywhere.</p>
+            <p>The shell I work in, reached from any browser and described in the next section. A long agent job keeps running when the laptop closes, and I can check on it from anywhere.</p>
           </div>
         </details>
         </div>
@@ -361,15 +363,18 @@ site/                 the public build</code></pre>
       <div class="section-head"><div><h2>The terminal</h2></div></div>
       <div class="prose">
         <p>
-          My whole working environment is a browser tab. A terminal multiplexer runs on a machine at
-          home, fronted by a small web terminal, published through an identity-proxied tunnel, so no
-          port is open to the internet and no session starts without single sign-on. Opening the same
-          address from a phone, a laptop or a borrowed machine attaches to the <em>same</em> live
-          session, so work carries over between devices.
+          My whole working environment is a browser tab. A terminal multiplexer (a program that keeps
+          shell sessions running and lets several screens attach to them) runs on a machine at home.
+          A small web terminal serves it, and an identity-proxied tunnel publishes that, meaning the
+          tunnel checks who you are before any traffic reaches the machine. No port is open to the
+          internet, and no session starts without single sign-on. Opening the same address from a
+          phone, a laptop or a borrowed machine attaches to the <em>same</em> live session, so work
+          carries over between devices.
         </p>
         <p>
           Below is a model of that console on an ordinary day, with a column of agent sessions beside
-          the one that is open. Hover it, or give it focus, to watch it fill in.
+          the one that is open. The sessions, output and usage figures in it are illustrative. Hover
+          it, or give it focus, to watch it fill in.
         </p>
       </div>
 
@@ -456,7 +461,7 @@ site/                 the public build</code></pre>
     </section>
 
     <p class="closing-line">
-      Email is the best way to reach me — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
+      Email is the best way to reach me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
     </p>
   </main>
 

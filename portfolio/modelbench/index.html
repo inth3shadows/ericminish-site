@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>modelbench — case study | Eric Minish</title>
-  <meta name="description" content="Case study: a personal LLM benchmark built on real bug-fix commits from my own repositories, reporting cost per solved task — with a record of four published figures that were later corrected.">
+  <meta name="description" content="Case study: a personal LLM benchmark built from bug-fix commits in the repositories I work in, scored by cost per solved task, with a record of four published figures that were later corrected.">
   <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/modelbench/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="modelbench — Eric Minish">
-  <meta property="og:description" content="A benchmark on my own code, scored by cost per solved task — including a record of four published numbers that were later corrected.">
+  <meta property="og:description" content="A benchmark built from bug-fix commits in my own repositories, scored by cost per solved task, with a record of four published figures that were later corrected.">
   <meta property="og:url" content="https://www.ericminish.com/portfolio/modelbench/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="modelbench — Eric Minish">
-  <meta name="twitter:description" content="A benchmark on my own code, scored by cost per solved task — including a record of four published numbers that were later corrected.">
+  <meta name="twitter:description" content="A benchmark built from bug-fix commits in my own repositories, scored by cost per solved task, with a record of four published figures that were later corrected.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -49,48 +49,45 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 10</b><span>Measurement · model routing</span><span>2026</span></div>
-        <h1>A benchmark built from bug-fix commits in my own code</h1>
+        <h1>A benchmark built from bug-fix commits in the repositories I work in</h1>
         <p class="lede">
-          A public benchmark reports how a model does on other people&rsquo;s repositories, with
-          each task run once. Neither fits a decision about which model to route my own work to, so
-          this benchmark mines bug-fix commits from my own repositories and runs each task three
-          times.
+          Public coding benchmarks such as SWE-bench measure models on open-source repositories. I
+          wanted to know which model to route my own work to, so this benchmark turns bug-fix
+          commits from the repositories on my machines into tasks, runs each task three times per
+          model by default, and scores each model by what it costs per task it solves.
         </p>
       </div>
       <aside class="note">
-        <p><strong>What it is</strong> — harvest, run, grade, report. A task is a commit from git history; a pass means that commit&rsquo;s test suite goes green.</p>
-        <p><strong>Status</strong> — private repository, in use for routing decisions across a local model gateway.</p>
+        <p><strong>What it is</strong> — a pipeline that harvests tasks, runs models on them, grades the results and writes a report. A task is a commit from git history, and a pass means that commit&rsquo;s test suite goes green.</p>
+        <p><strong>Status</strong> — private repository, in use for routing decisions across a local model gateway (one endpoint in front of several model providers).</p>
       </aside>
     </section>
 
     <section class="section">
       <div class="facts">
         <div><span class="fk">repositories surveyed</span><span class="fv">100</span></div>
-        <div><span class="fk">runs per model per task</span><span class="fv">3</span></div>
+        <div><span class="fk">default runs per model per task</span><span class="fv">3</span></div>
         <div><span class="fk">published figures corrected</span><span class="fv bad">4</span></div>
         <div><span class="fk">scored on</span><span class="fv">$ / solved task</span></div>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Why build it: whose code, and how many runs</h2></div></div>
+      <div class="section-head"><div><h2>Why it uses my own repositories and repeated runs</h2></div></div>
       <div class="prose">
         <p>
-          <strong>Whose code.</strong> A SWE-bench score (SWE-bench is a public benchmark of bug fixes in
-          open-source repositories) does not show how a model behaves in a specific Go, Python or
-          TypeScript codebase with its own conventions. So the harvester walks this machine&rsquo;s
-          own git history for commits that touch both a test file and a source file and are small
-          enough to work as a single-shot task. The model is measured on the code it will be asked
-          to work on.
+          A SWE-bench score (SWE-bench is a public benchmark of bug fixes in open-source
+          repositories) does not show how a model behaves in a specific Go, Python or TypeScript
+          codebase with its own conventions. The harvester therefore walks the git history on this
+          machine for commits that touch both a test file and a source file and are small enough to
+          work as a single-shot task. The model is measured on the code it will be asked to work on.
         </p>
         <p>
-          <strong>How many times.</strong> Public benchmarks run each task once and report a single
-          pass or fail. A model that passes a task once and fails it twice more is not
-          &ldquo;80% reliable&rdquo; in any useful sense when production gives it one shot. Every
-          model-task pair runs three times here, and the report carries an agreement rate and a
-          bootstrap confidence interval (a range of plausible values found by resampling the
-          results), so a gap between two models can be judged as noise or as a difference from more
-          than one sample.
+          A single run per task gives one pass or fail, and a model that passes a task once and
+          fails it the next two times looks the same in one run as a model that always passes. By
+          default, every model-task pair here runs three times. The report includes an agreement
+          rate and a bootstrap confidence interval (a range of plausible values found by resampling
+          the results), so a gap between two models can be judged as noise or as a difference.
         </p>
       </div>
     </section>
@@ -107,16 +104,22 @@
       </div>
       <div class="prose">
         <p>
-          The table uses fifteen tasks that a cheaper model had already failed, each run twice per
-          tier. pass@1 is the share of runs that pass on the first attempt. Every pass was verified:
-          the test had to fail before the patch and pass after it, with no writes to the test file.
-          The small tier solves 10 of 15 tasks where the large tier solves 15 of 15, at $0.51 per
-          solved task against $2.09, so choosing between them is a routing decision.
+          This comparison is smaller than the default protocol. It uses fifteen tasks that a
+          cheaper model had already failed, and each task ran twice per tier, which gives 30 runs
+          per tier. pass@1 is the share of runs that pass on the first attempt. Every pass was
+          verified: the test had to fail before the patch and pass after it, with no writes to the
+          test file.
         </p>
         <p>
-          The dollar levels are inflated because a large system preamble is sent with every call,
-          and it is sent with all three tiers equally. <strong>Use the ratios between tiers; the
-          absolute dollar levels are inflated.</strong>
+          The small tier solves 10 of 15 tasks and the large tier solves 15 of 15, at $0.51 per
+          solved task against $2.09. Which one to use depends on whether a task needs the large
+          tier&rsquo;s extra five solves, so the choice is a routing decision.
+        </p>
+        <p>
+          The dollar amounts are higher than normal use would produce, because a large system
+          preamble (fixed instructions sent before each task) goes with every call. It is the same
+          for all three tiers, so <strong>compare the ratios between tiers and treat the dollar
+          amounts as inflated.</strong>
         </p>
       </div>
     </section>
@@ -125,9 +128,10 @@
       <div class="section-head"><div><h2>A broken task and the four published figures it corrected</h2></div></div>
       <div class="prose">
         <p>
-          One task failed for every tier: zero passes out of two in each of the three tiers,
-          with no timeouts and no variance. Identical failure across three capability tiers points
-          to a broken task, because a hard problem would separate a large model from a small one.
+          One task failed for every tier: zero passes out of two in each of the three tiers, with
+          no timeouts and no variance. A large model usually does better than a small one on a hard
+          task, so an identical failure across all three tiers was a reason to check whether the
+          task itself was broken.
         </p>
         <p>
           The cause was the harness. The graded test was asynchronous, the repository declared its
@@ -137,9 +141,10 @@
           scored zero, so no patch any model wrote could have passed.
         </p>
         <p>
-          Three tiers had been reported a full capability step lower than they were, because of
-          a task nothing could pass. The task was repaired and re-run instead of dropped, and the
-          findings file now shows each wrong figure inline next to the one that replaced it.
+          All three tiers had been reported lower than they were, because each was charged a
+          failure on a task that nothing could pass. The task was repaired and re-run instead of
+          dropped, and the findings file now shows each wrong figure inline next to the one that
+          replaced it.
         </p>
       </div>
       <p class="fine">
@@ -150,12 +155,13 @@
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Why scores cannot be compared across repositories</h2></div></div>
+      <div class="section-head"><div><h2>Why scores from different repositories should be kept apart</h2></div></div>
       <div class="prose">
         <p>
           Because models are scored on my own code, <strong>a score from this project describes one
-          model, one corpus, one revision and one date.</strong> It is not a leaderboard entry, and
-          scores from different repositories cannot rank the models against each other.
+          model, one corpus, one revision and one date.</strong> A score from one repository and a
+          score from another measure different sets of tasks, so ranking models across them needs
+          that context.
         </p>
         <p>
           Making scores comparable across corpora would mean abstracting away the codebase: its
@@ -164,18 +170,18 @@
         </p>
         <p>
           The corpora differ before any model is called. Across a hundred repositories on two
-          machines, the share of a repository&rsquo;s history that qualifies as a task ranges from
-          <strong>4.0% to 74.5%</strong> among the thirty that yield any tasks. One repository
-          measured 60.8% when its corpus was first built and 40.6% under identical criteria today.
-          That is twenty points of drift from history growth alone, mostly automated release commits
-          entering the total the share is calculated against.
+          machines, thirty yield any tasks, and among those the share of a repository&rsquo;s
+          history that qualifies as a task ranges from <strong>4.0% to 74.5%</strong>. One
+          repository measured 60.8% when its corpus was first built and 40.6% under identical
+          criteria today. That twenty-point drift came from history growth alone, mostly automated
+          release commits added to the total the share is calculated against.
         </p>
       </div>
       <article class="note">
         <ul>
-          <li><strong>Do not pool.</strong> One headline score over several repositories averages measurements that are not on the same scale.</li>
-          <li><strong>Cite the revision and the date.</strong> Without them the number cannot be reproduced.</li>
-          <li><strong>Re-harvest before comparing.</strong> Each run records its own qualification funnel (how many commits passed each filter), so a stale ratio is not compared against a fresh one by mistake.</li>
+          <li>One headline score over several repositories would average measurements that are not on the same scale, so scores are not pooled.</li>
+          <li>Each score is cited with its revision and date, without which it cannot be reproduced.</li>
+          <li>Repositories are re-harvested before a comparison. Each run records its own qualification funnel (how many commits passed each filter), so a stale ratio is not compared against a fresh one by mistake.</li>
         </ul>
       </article>
     </section>
@@ -184,10 +190,10 @@
       <div class="section-head"><div><h2>What else it measures</h2></div></div>
       <div class="prose">
         <ul>
-          <li><strong>Patch</strong> — coding ability, graded by running the model&rsquo;s fix against a test suite.</li>
-          <li><strong>Reading</strong> — effective context length (how much of its input the model can use), graded by exact retrieval of a fact planted in repository content.</li>
-          <li><strong>Discovery</strong> — bug finding, graded by whether the reported line range overlaps the line range of the fix.</li>
-          <li><strong>Scout</strong> — symbol-location accuracy, run through a tool loop (the model calls tools and reads the results over several turns) instead of a single chat completion, and graded against a deterministic symbol index.</li>
+          <li><strong>Patch</strong> mode tests coding ability by running the model&rsquo;s fix against a test suite.</li>
+          <li><strong>Reading</strong> mode measures effective context length (how much of its input the model can use). A fact is planted in repository content, and the model must retrieve it exactly.</li>
+          <li><strong>Discovery</strong> mode asks the model to find a bug. It counts as found when the reported line range overlaps the line range of the fix.</li>
+          <li><strong>Scout</strong> mode measures how accurately the model locates a symbol (a function, class or variable). It runs as a tool loop, in which the model calls tools and reads the results over several turns, and its answers are checked against a deterministic symbol index.</li>
         </ul>
         <p>
           Two failure modes are scored as failures and not retried. Determinism decays with output
@@ -202,7 +208,7 @@
         <span class="tag">Python</span>
         <span class="tag">Statistics</span>
       </div>
-      <p class="project-meta-line" style="margin-top:12px">Private repository, because half the corpus is other people&rsquo;s code. The method is described here in full, and the numbers can be regenerated but are not published.</p>
+      <p class="project-meta-line" style="margin-top:12px">The repository is private because half the corpus is other people&rsquo;s code. The method is described here in full. The full results stay in that repository, where they can be regenerated.</p>
     </section>
 
     <p class="closing-line">

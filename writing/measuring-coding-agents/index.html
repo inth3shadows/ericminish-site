@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Measuring coding agents by what happens to their code | Eric Minish</title>
-  <meta name="description" content="Four Claude models across 681 coding sessions: I could not tell their code survival apart, but their cost per session differed clearly. Method, results with 95% intervals, and limits.">
+  <meta name="description" content="A comparison of four Claude models on 612 coding sessions from my own repositories. I could not tell their code survival apart, but their cost per session differed clearly. Method, results with 95% intervals, and limits.">
   <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
   <link rel="canonical" href="https://www.ericminish.com/writing/measuring-coding-agents/">
   <link rel="alternate" type="application/atom+xml" title="Eric Minish — Writing" href="/writing/feed.xml">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="Measuring coding agents by what happens to their code">
-  <meta property="og:description" content="Four Claude models across 681 coding sessions: code survival I could not tell apart, and clear differences in cost.">
+  <meta property="og:description" content="Four Claude models compared on 612 coding sessions: no detectable difference in how much of their code survived, and clear differences in cost.">
   <meta property="og:url" content="https://www.ericminish.com/writing/measuring-coding-agents/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
@@ -22,7 +22,7 @@
   <meta property="article:tag" content="Agent evaluation">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Measuring coding agents by what happens to their code">
-  <meta name="twitter:description" content="Four Claude models across 681 coding sessions: code survival I could not tell apart, and clear differences in cost.">
+  <meta name="twitter:description" content="Four Claude models compared on 612 coding sessions: no detectable difference in how much of their code survived, and clear differences in cost.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <script type="application/ld+json">
@@ -57,8 +57,8 @@
     <article class="post">
       <header class="post-header">
         <h1>Measuring coding agents by what happens to their code</h1>
-        <p class="post-dek">I compared four Claude models across 681 coding sessions in my own repositories.
-          I could not tell their code survival apart. Their cost per session differed clearly.</p>
+        <p class="post-dek">I compared four Claude models on 612 coding sessions in my own repositories.
+          I could not tell apart how much of their code survived. Their cost per session differed clearly.</p>
         <p class="post-meta">
           <span>By <a href="/about/">Eric Minish</a></span>
           <span>Published <time datetime="2026-11-01">1 November 2026</time></span>
@@ -70,20 +70,22 @@
         <p><b>Result.</b> Between 30 June and 1 November 2026, the share of an agent&rsquo;s code still
           present later did not differ detectably between Claude Opus 4.8, Opus 5, Opus 5.5 and Sonnet 5.
           All six pairwise intervals include zero. Cost did differ: on comparable work, Opus 5.5 used about
-          91,000 more weighted tokens per session than Opus 5 (95% interval 43,000 to 138,000).</p>
-        <p><b>Data.</b> 681 coding sessions with checked survival, from 11,611 sessions recorded by
-          <a href="/portfolio/flight-recorder/">flight-recorder</a>. The models were not assigned at random,
-          which is the main limit on these results.</p>
+          91,000 more weighted tokens per session than Opus 5 (95% interval 43,000 to 138,000). Weighted
+          tokens count each kind of token by its relative price.</p>
+        <p><b>Data.</b> 681 coding sessions with checked survival, 612 of them from the four models
+          compared, out of 11,611 sessions recorded by <a href="/portfolio/flight-recorder/">flight-recorder</a>,
+          a tool that reads coding-agent transcripts. The models were not assigned at random, which is
+          the main limit on these results.</p>
       </div>
 
       <nav class="toc" aria-label="Contents">
         <p>Contents</p>
         <ol>
-          <li><a href="#question">The question</a></li>
-          <li><a href="#data">The data</a></li>
+          <li><a href="#question">What I wanted to know</a></li>
+          <li><a href="#data">Where the data comes from</a></li>
           <li><a href="#survival">How survival is measured</a></li>
           <li><a href="#comparison">How models are compared</a></li>
-          <li><a href="#results">Results</a></li>
+          <li><a href="#results">What the comparison found</a></li>
           <li><a href="#limits">What these results cannot show</a></li>
           <li><a href="#mistakes">Mistakes in earlier versions</a></li>
           <li><a href="#reproduce">How to reproduce it</a></li>
@@ -91,13 +93,15 @@
         </ol>
       </nav>
 
-      <h2 id="question">The question <a class="anchor" href="#question" aria-label="Link to this section">#</a></h2>
-      <p>When I switch the model my coding agent uses, does the code it writes hold up better, and what
-        does the switch cost? Most model comparisons answer this with public benchmarks or with the
-        agent&rsquo;s own report that a task succeeded. I wanted an answer from my own repositories, using
-        evidence the agent cannot influence: whether its code is still there weeks later.</p>
+      <h2 id="question">What I wanted to know <a class="anchor" href="#question" aria-label="Link to this section">#</a></h2>
+      <p>When I switch the model my coding agent uses, I want to know whether more of the code it writes
+        stays in place, and what the switch costs. Most model comparisons answer this with public
+        benchmarks or with the agent&rsquo;s own report that a task succeeded. I wanted an answer from my
+        own repositories, using evidence that does not depend on the agent&rsquo;s report: whether its
+        code is still there weeks later. This measures whether code remained, which is not the same as
+        whether it was correct.</p>
 
-      <h2 id="data">The data <a class="anchor" href="#data" aria-label="Link to this section">#</a></h2>
+      <h2 id="data">Where the data comes from <a class="anchor" href="#data" aria-label="Link to this section">#</a></h2>
       <p>Every coding-agent session on my machines leaves a transcript on disk. flight-recorder reads
         those transcripts after the fact and stores one row per session in SQLite. Between 30 June and
         1 November 2026 it recorded 11,611 sessions, 1,297 of them coding sessions, meaning sessions that edited at least one file.
@@ -111,7 +115,8 @@
           <tr><td>Claude Opus 5.5</td><td class="num">121</td></tr>
         </table>
       </div>
-      <p>Other models appear in the data with fewer than 20 sessions each and are left out of the comparison.</p>
+      <p>These four models account for 612 of the 681 sessions. The other 69 come from models with
+        fewer than 20 sessions each, which are left out of the comparison.</p>
       <p>Cost is measured in weighted tokens: input and output tokens weighted by their relative price,
         with reads from the prompt cache counted as zero.<sup id="fn1-ref"><a href="#fn1">1</a></sup>
         Each session&rsquo;s cost is reported in thousands of weighted tokens.</p>
@@ -121,8 +126,9 @@
         for each hashed line in the current version of the file. A session&rsquo;s survival is the share of
         its checked lines that are still present. A survival of 0.85 means 85% of the lines it wrote are
         still in the code.</p>
-      <p>Matching on line content matters. Tracking commit IDs instead would score surviving code as
-        deleted whenever history is rebased or squashed, because both operations change every commit ID.</p>
+      <p>Lines are matched by content because commit IDs are unreliable for this. Rebasing or squashing
+        history replaces the affected commits with new ones that have different IDs, so tracking commit
+        IDs would score surviving code as deleted.</p>
       <p>Lines whose file cannot be found are recorded as unknown and left out of the denominator. An
         early version counted them as deleted, which made one repository score 0.448 when the correct
         figure was 0.796.</p>
@@ -137,8 +143,8 @@
         with a 95% interval from a bootstrap over sessions.<sup id="fn2-ref"><a href="#fn2">2</a></sup>
         When an interval includes zero, the data does not distinguish the two models on that measure.</p>
 
-      <h2 id="results">Results <a class="anchor" href="#results" aria-label="Link to this section">#</a></h2>
-      <h3>Survival</h3>
+      <h2 id="results">What the comparison found <a class="anchor" href="#results" aria-label="Link to this section">#</a></h2>
+      <h3>How much code survived</h3>
       <p>No pair of models differs detectably in survival. The point estimates are all within 0.08 of
         zero, and every interval crosses it.</p>
       <figure>
@@ -181,7 +187,7 @@
 <!-- auto:end chart-survival -->
       </figure>
 
-      <h3>Cost per session</h3>
+      <h3>How much each session cost</h3>
       <p>Cost separates the models in five of the six pairs. Opus 5.5 was the most expensive model in
         every pair it appears in. On comparable work it used about 71,000 more weighted tokens per session
         than Opus 4.8, 91,000 more than Opus 5, and 138,000 more than Sonnet 5.</p>
@@ -231,14 +237,14 @@
 <!-- auto:end chart-ktok -->
       </figure>
 
-      <h3>Other measures</h3>
-      <p>Sonnet 5 had a higher tool error rate than each Opus model, by 1.3 to 1.8 percentage points.
-        These differences are small, but their intervals exclude zero. Opus 5 read fewer files it never
-        edited, and rewrote less of its own output, than Sonnet 5. The remaining differences in those two
-        measures were inconclusive.</p>
-      <p>Taken together: on my repositories over these four months, the more expensive models did not
-        produce code that lasted longer. If cost matters, the cheaper models were the better choice on
-        this evidence.</p>
+      <h3>What the other measures showed</h3>
+      <p>Sonnet 5&rsquo;s tool error rate was higher than each Opus model&rsquo;s, by 1.3 to 1.8
+        percentage points. These differences are small, but their intervals exclude zero. Two more
+        measures separated Opus 5 from Sonnet 5: Opus 5 read fewer files it never edited, and rewrote
+        less of its own output. The other model pairs were inconclusive on those two measures.</p>
+      <p>On my repositories over these four months, I detected no difference in survival between the
+        more expensive and the cheaper models. If cost matters, this evidence points to the cheaper
+        models, within the limits listed next.</p>
 
       <h2 id="limits">What these results cannot show <a class="anchor" href="#limits" aria-label="Link to this section">#</a></h2>
       <ol>
@@ -254,7 +260,7 @@
         <li><b>Commits are linked to sessions by time.</b> A session that overlaps a commit I made by hand
           gets credit for it. This adds noise to interactive sessions.</li>
         <li><b>One developer, one set of repositories.</b> These are my projects and my habits. The method
-          transfers; the numbers do not.</li>
+          can be run on other repositories, but these numbers describe only mine.</li>
       </ol>
 
       <h2 id="mistakes">Mistakes in earlier versions <a class="anchor" href="#mistakes" aria-label="Link to this section">#</a></h2>

@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Multi-provider LLM gateway — case study | Eric Minish</title>
-  <meta name="description" content="Case study: a personal multi-provider LLM gateway that routes a coding-agent front-end across model providers by task, with keyless-at-rest secrets and live cost observability.">
+  <meta name="description" content="Case study: a personal LLM gateway that routes one coding-agent front-end to a frontier model or cheaper open models by task type, keeps API keys out of config files, and shows live spending.">
   <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/llm-gateway/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="Multi-provider LLM gateway — Eric Minish">
-  <meta property="og:description" content="One coding agent routed across several model providers, with spend measured rather than estimated.">
+  <meta property="og:description" content="One coding agent routed to a frontier model or cheaper open models by task type, with live spend tracking and no keys in config files.">
   <meta property="og:url" content="https://www.ericminish.com/portfolio/llm-gateway/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Multi-provider LLM gateway — Eric Minish">
-  <meta name="twitter:description" content="One coding agent routed across several model providers, with spend measured rather than estimated.">
+  <meta name="twitter:description" content="One coding agent routed to a frontier model or cheaper open models by task type, with live spend tracking and no keys in config files.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -49,44 +49,44 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 07</b><span>AI infrastructure · cost</span><span>2026</span></div>
-        <h1>One agent front-end, many model providers, one budget</h1>
+        <h1>A gateway that routes one coding agent across a frontier model and cheaper open models</h1>
         <p class="lede">
-          A coding agent does not need a frontier model (the most capable and most expensive tier)
-          for every call, because most of its work is mechanical. I built a personal gateway that
-          routes a single agent front-end across a subscription frontier model and several cheaper
-          open models. Secrets are keyless at rest (no API keys are stored in config files on disk),
-          and a live display shows what the usage costs.
+          A coding agent does not need a frontier model (the most capable and most expensive tier of
+          large language model, or LLM) for every call, because much of its work is mechanical. I
+          built a personal gateway that connects one agent front-end to a subscription frontier
+          model and to cheaper open models such as DeepSeek, GLM and Kimi. No API keys are stored in
+          config files on disk, and a live display shows what the usage costs.
         </p>
       </div>
       <aside class="note">
-        <p><strong>What it is</strong> — a multi-provider LLM gateway that lets one coding-agent front-end switch model/provider per task, with budget guardrails and spend history.</p>
         <p><strong>Status</strong> — running in my personal daily use.</p>
+        <p><strong>What this page reports</strong> — how the gateway, the spend tracking and the key handling work. It does not report a measured cost saving.</p>
       </aside>
     </section>
 
     <section class="section">
       <div class="facts">
-        <div><span class="fk">providers</span><span class="fv">several</span></div>
-        <div><span class="fk">routing</span><span class="fv">per task</span></div>
-        <div><span class="fk">secrets</span><span class="fv good">keyless at rest</span></div>
-        <div><span class="fk">spend</span><span class="fv">measured</span></div>
+        <div><span class="fk">models</span><span class="fv">Claude, DeepSeek, GLM, Kimi</span></div>
+        <div><span class="fk">clients</span><span class="fv">agent front-end, OpenCode</span></div>
+        <div><span class="fk">keys in config files</span><span class="fv good">none</span></div>
+        <div><span class="fk">spend history</span><span class="fv">Postgres</span></div>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The problem with one model for everything</h2></div></div>
+      <div class="section-head"><div><h2>Why calls go to different models</h2></div></div>
       <div class="prose">
-        <p>A subscription frontier model suits hard reasoning, but much of what an agent does, such as grepping a repo, summarizing a diff or running a mechanical refactor, does not need it. Paying frontier-model rates for that work wastes money, and choosing a cheaper model by hand for each task removes the benefit of having an agent. The gateway gives one front-end that routes each task to a suitable model.</p>
+        <p>A subscription frontier model suits hard reasoning. Much of what an agent does, such as searching a repository, summarizing a diff or running a mechanical refactor, can be done by a cheaper model. Sending all of that work to the frontier model costs more than it needs to, and picking a model by hand before every call would take away much of the convenience of using an agent. The gateway lets each type of task go to a model chosen for it in advance.</p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The gateway</h2></div></div>
+      <div class="section-head"><div><h2>How requests reach the models</h2></div></div>
       <div class="grid-2">
         <article class="panel">
           <div class="prose">
-            <p>An OpenAI-compatible proxy (LiteLLM) sits in front of every provider I use: the subscription frontier model plus cheaper open models such as DeepSeek, GLM and Kimi. The agent talks to one endpoint whichever model answers.</p>
-            <p>A lightweight router lets me switch provider and model mid-session without restarting the agent. I also run an alternate agent harness (OpenCode) with a browser UI against the same pool, so routing works with more than one client.</p>
+            <p>LiteLLM runs as an OpenAI-compatible proxy: a server that accepts requests in the format of OpenAI&rsquo;s API and forwards them to whichever provider serves the requested model. It sits in front of every provider I use. The agent talks to one endpoint whichever model answers.</p>
+            <p>A lightweight router maps task types to models, as in the config shown here. It also lets me switch provider and model mid-session without restarting the agent. I also run a second agent harness (the program that drives the model and its tools), OpenCode, with a browser UI against the same pool of models, so the setup works with more than one client.</p>
           </div>
         </article>
         <article class="code-window">
@@ -104,21 +104,21 @@ providers:
         </article>
       </div>
       <div class="prose">
-        <p>Cheap models handle the bulk, mechanical calls, and the frontier model is reserved for calls that need it.</p>
+        <p>Bulk edits, summaries and quick searches go to the open models. The frontier model is the default for everything else.</p>
       </div>
     </section>
 
     <section class="section">
       <div class="section-head"><div><h2>How spend is tracked</h2></div></div>
       <div class="prose">
-        <p>Routing to cheaper models only helps if I can see whether it works. A status-line readout shows live spend against a per-key budget with color thresholds: green while there is headroom, amber near the limit, red over it. The figure appears on every prompt.</p>
+        <p>A status line under every prompt shows live spend against a budget for each API key. It is green while there is headroom, amber near the limit and red over it.</p>
       </div>
       <article class="code-window">
         <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>status line</div>
         <pre><code>[frontier: $3.40 / $10.00]  [open-pool: $0.85 / $25.00]</code></pre>
       </article>
       <div class="prose">
-        <p>A small poller snapshots key spend into a Postgres table every few minutes, so the cost history can be queried over time and does not disappear when a dashboard refreshes. Whether routing saved money becomes a query.</p>
+        <p>A small poller (a script that runs on a timer) copies each key&rsquo;s spend into a table in Postgres, a database, every few minutes. The cost history therefore survives dashboard refreshes and can be queried over time. Comparing spending before and after a routing change is one such query; this page does not report its result.</p>
       </div>
     </section>
 
@@ -126,13 +126,13 @@ providers:
       <div class="section-head"><div><h2>How API keys are handled</h2></div></div>
       <article class="note">
         <ul>
-          <li><strong>Keyless at rest.</strong> The gateway and router configs hold no plaintext keys on disk.</li>
-          <li><strong>Runtime injection.</strong> Keys are pulled from a secret broker (a separate service that stores them) at process start and are held only in memory.</li>
-          <li><strong>Scrubbed on exit.</strong> When the process ends, the config is rewritten to its keyless stub, so config at rest never contains a key.</li>
+          <li>The gateway and router config files contain no plaintext keys. They reference keys by name.</li>
+          <li>At process start, the keys are pulled from a secret broker (a separate service that stores them) and kept in the running process&rsquo;s memory.</li>
+          <li>When the process ends, it rewrites the config to its keyless stub as a second safeguard, so the file left on disk does not contain a key.</li>
         </ul>
       </article>
       <div class="prose">
-        <p>Config files can therefore be committed without leaking a key.</p>
+        <p>The config files can therefore be committed to a repository without leaking a key.</p>
       </div>
     </section>
 

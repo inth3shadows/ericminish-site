@@ -49,16 +49,17 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 09</b><span>Agent infrastructure · verification</span><span>2026</span></div>
-        <h1>An agent harness whose verdict on a code change comes from four checks and no language model</h1>
+        <h1>An agent harness that judges each code change with four mechanical checks</h1>
         <p class="lede">
           A language model writes the code, and a separate oracle (a program that reports pass or
-          fail) decides whether the change is acceptable. That oracle is mechanical and
-          deterministic, and no language model is part of it.
+          fail) decides whether the change is acceptable. The oracle runs four checks: the
+          project&rsquo;s tests, a scope check on which functions and types changed, a credential scan,
+          and a vulnerability scan. No language model is part of it.
         </p>
       </div>
       <aside class="note">
-        <p><strong>What it is</strong> — two halves: a model-free verdict on a code change, and the runtime that drives the loop producing those changes.</p>
-        <p><strong>Status</strong> — private repository. The gate and the role runtime are built and in use; the self-driving loop is the work in progress.</p>
+        <p><strong>What it is</strong>: two parts. One is the verdict on a code change. The other is the runtime that gives models their jobs and tools while they produce those changes.</p>
+        <p><strong>Status</strong>: private repository. The gate and the role runtime are built and in use. The loop that plans, produces and verifies a change without a person in it still runs in a separate agent runtime, and moving it into this project is the work in progress.</p>
       </aside>
     </section>
 
@@ -67,7 +68,7 @@
         <div><span class="fk">checks in the verdict</span><span class="fv">4</span></div>
         <div><span class="fk">model calls in the verdict</span><span class="fv good">0</span></div>
         <div><span class="fk">auto-commits</span><span class="fv good">0</span></div>
-        <div><span class="fk">runtime dependencies</span><span class="fv">stdlib</span></div>
+        <div><span class="fk">runtime dependencies (Python standard library)</span><span class="fv">stdlib</span></div>
       </div>
     </section>
 
@@ -75,49 +76,60 @@
       <div class="section-head"><div><h2>How the verdict is decided</h2></div></div>
       <div class="prose">
         <p>
-          An agent that writes code is driven by a language model. Something else has to decide
-          whether the change is acceptable. A common choice is a second model reviewing the first,
-          but that reviewer can be confident about a bad diff, and it cannot be re-run to the same
+          An agent that writes code is driven by a language model, and something else has to decide
+          whether the change is acceptable. A common choice is a second model reviewing the first.
+          That reviewer can be confident about a bad diff, and it cannot be re-run to get the same
           answer tomorrow.
         </p>
         <p>
-          So <strong>the language model has no part in the verdict.</strong> The verdict is four
-          stateless checks (each keeps no memory between runs), and each one is a program that
-          reports an exit code. Run it twice on the same tree and it gives the same answer, on any
-          machine, with no network.
+          Here the verdict is four stateless checks (each keeps no memory between runs). Each one is
+          a program that finishes with an exit code: 0 for pass, anything else for fail. Run twice on
+          the same tree, the checks give the same answer, on any machine and with no network.
         </p>
       </div>
       <div class="table-scroll">
         <table class="data-table">
           <tr><th>Check</th><th>Fails when</th></tr>
-          <tr><td><code>tests</code></td><td>the project&rsquo;s own suite does not pass</td></tr>
-          <tr><td><code>ir_contract</code></td><td>a change leaves its declared scope, or removes a symbol without opting in</td></tr>
+          <tr><td><code>tests</code></td><td>the project&rsquo;s own test suite does not pass</td></tr>
+          <tr><td><code>ir_contract</code> (symbol contract)</td><td>a change leaves its declared scope, or removes a symbol without opting in</td></tr>
           <tr><td><code>secrets</code></td><td>a credential is found in the staged change</td></tr>
-          <tr><td><code>cve</code></td><td>a <em>reachable</em> vulnerability is found (one the project&rsquo;s code can trigger, as opposed to one that is only listed)</td></tr>
+          <tr><td><code>cve</code> (known vulnerabilities)</td><td>a <em>reachable</em> vulnerability is found (one the project&rsquo;s code can trigger, as opposed to one that is only listed)</td></tr>
         </table>
       </div>
       <div class="prose">
         <p>
-          The symbol contract check uses the same deterministic index that powers
-          <a href="/portfolio/runecho/">RunEcho</a>. A change declares the scope it intends to touch,
-          and the gate compares the structural diff against that declaration. If an agent deletes a
-          function while working on something else, a hash comparison catches it, and nobody has to
-          notice it in review.
+          A symbol is a named piece of code, such as a function, type or constant. The symbol contract
+          check uses the same deterministic index of symbols that powers
+          <a href="/portfolio/runecho/">RunEcho</a>, my pre-write check for coding agents. A change
+          declares the scope it intends to touch, and the gate compares the structural diff (the list of
+          symbols added, removed or changed) against that declaration. Each symbol&rsquo;s content is
+          hashed, so comparing hashes shows which ones changed. If an agent deletes a function while
+          working on something else, the hash comparison catches it, and nobody has to notice it in review.
         </p>
+      </div>
+      <div class="code-window" style="margin-top:20px">
+        <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>the four checks, illustrated</div>
+        <pre><code>tests        the suite passes
+ir_contract  scope held, no silent symbol removal
+secrets      nothing credential-shaped is staged
+cve          no reachable vulnerability
+
+any failure  &#8594;  exit 1, nothing proceeds
+all four     &#8594;  the branch waits for a human</code></pre>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>Passing the checks does not merge the change</h2></div></div>
+      <div class="section-head"><div><h2>A human commits the change after the checks pass</h2></div></div>
       <div class="prose">
         <p>
-          When all four checks pass, the harness leaves the branch for a human to commit.
-          <strong>There is no auto-commit.</strong> This is a deliberate guardrail.
+          When all four checks pass, the harness leaves the branch for a person to commit.
+          <strong>There is no auto-commit.</strong>
         </p>
         <p>
           &ldquo;Autonomous&rdquo; here means the plan, produce and verify cycle runs unattended,
           and a person still sees the result. The gate matters most when nobody is watching each
-          step. In an interactive tool the human already judges every diff, so a mechanical oracle
+          step. In an interactive tool the person already judges every diff, so a mechanical oracle
           adds the least there.
         </p>
       </div>
@@ -125,41 +137,24 @@
 
     <section class="section">
       <div class="section-head"><div><h2>Roles and the model gateway</h2></div></div>
-      <div class="grid-2">
-        <article class="panel">
-          <div class="prose">
-            <p>
-              The second half is the runtime. A <em>role</em> is a job — consult, scout, builder,
-              reviewer, scribe — and a gateway resolves each role to whatever model currently does
-              that job well. Swapping a model is a gateway configuration change and needs no code
-              change here.
-            </p>
-            <p>
-              Roles carry tools, and the runtime runs the full request, tool call, result, request
-              loop against them. There are two tool sets, a code-intelligence set and a retrieval set,
-              and <strong>every tool in them is read-only</strong>. They can find, trace, fetch and
-              reason. They cannot yet edit a file or run a command, and that is the remaining
-              distance to a self-driving loop.
-            </p>
-          </div>
-        </article>
-        <article class="code-window">
-          <div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>the four checks, illustrated</div>
-          <pre><code>tests        the suite passes
-ir_contract  scope held, no silent symbol removal
-secrets      nothing credential-shaped is staged
-cve          no reachable vulnerability
-
-any failure  &#8594;  exit 1, nothing proceeds
-all four     &#8594;  the branch waits for a human</code></pre>
-        </article>
-      </div>
       <div class="prose">
         <p>
+          The second part is the runtime. A <em>role</em> is a job (consult, scout, builder,
+          reviewer or scribe), and a gateway assigns a model to each role. Swapping a model is a
+          gateway configuration change and needs no code change here.
+        </p>
+        <p>
+          Roles carry tools, and the runtime runs the full loop against them: request, tool call,
+          result, next request. There are two tool sets, a code-intelligence set and a retrieval set,
+          and <strong>every tool in them is read-only</strong>. They can find, trace, fetch and
+          reason. They cannot yet edit a file or run a command, and that is what still separates them
+          from a self-driving loop.
+        </p>
+        <p>
           The code-intelligence set picks its index by the question being asked. One index answers
-          <em>where a symbol is</em>, live and always current. Another answers <em>how things
-          connect</em>, stored and able to lag behind uncommitted edits. A structural answer costs a few
-          hundred tokens where the file it was derived from costs thousands.
+          <em>where a symbol is</em>, read live from the code so it is always current. Another answers
+          <em>how things connect</em>; it is stored, so it can lag behind uncommitted edits. A
+          structural answer costs a few hundred tokens where the file it was derived from costs thousands.
         </p>
       </div>
     </section>
@@ -168,21 +163,20 @@ all four     &#8594;  the branch waits for a human</code></pre>
       <div class="section-head"><div><h2>What runs the plan, produce and verify loop today</h2></div></div>
       <div class="prose">
         <p>
-          The orchestration that ties plan, produce and verify together does not yet run inside this
-          project. It runs in a separate agent runtime, with each phase as an agent call. Today the
-          harness supplies the judge and the tools, and that runtime supplies the loop.
+          The orchestration that ties plan, produce and verify together runs in a separate agent
+          runtime, with each phase as an agent call. Today this harness supplies the judge and the
+          tools, and that runtime supplies the loop.
         </p>
         <p>
           One known gap: the harness&rsquo;s own event records are currently written by asking a
-          model to run a shell command. That conflicts with the project&rsquo;s rule of keeping
-          models out of the mechanical parts, on the write side. It is the first thing being fixed,
-          before the event bus gets a read side and well before any write-capable tool set exists.
+          model to run a shell command. That breaks the project&rsquo;s rule of keeping models out of
+          the mechanical parts. It is the first thing being fixed, before the event log gets a way to
+          be read back and well before any tool set that can write exists.
         </p>
       </div>
       <p class="fine">
-        Runtime state is kept outside the repository: code lives here and state does not.
-        Every step of a run is appended to a local event log as newline-delimited JSON (one JSON
-        record per line).
+        Runtime state is kept outside the repository. Every step of a run is appended to a local
+        event log as newline-delimited JSON (one JSON record per line).
       </p>
     </section>
 
@@ -190,14 +184,11 @@ all four     &#8594;  the branch waits for a human</code></pre>
       <div class="section-head"><div><h2>Why the project is not an interactive coding tool</h2></div></div>
       <div class="prose">
         <p>
-          The alternative I considered and rejected was a model-agnostic interactive tool that a
-          person drives. Matching an interactive coding assistant means matching its write tools,
-          session loop, approval layer and context management, against teams orders of magnitude
-          larger than one person.
-        </p>
-        <p>
-          The mechanical verdict has no equivalent in any of those tools, so the roadmap points at
-          it.
+          I considered and rejected building a model-agnostic interactive tool that a person drives.
+          Matching an interactive coding assistant means matching its write tools, session loop,
+          approval layer and context management, against teams orders of magnitude larger than one
+          person. Those tools have no equivalent of the mechanical verdict, so the roadmap is built
+          around the verdict.
         </p>
       </div>
       <div class="tag-row">
@@ -210,7 +201,7 @@ all four     &#8594;  the branch waits for a human</code></pre>
     </section>
 
     <p class="closing-line">
-      Questions or a use case in mind? Email is best — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+      Questions or a use case in mind? Email <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
     </p>
   </main>
 

@@ -55,7 +55,7 @@
         </p>
       </div>
       <aside class="note">
-        <p>Public routes come through Cloudflare Tunnel. Nothing is port-forwarded.</p>
+        <p>Public traffic arrives through Cloudflare Tunnel, an outbound connection from the lab to Cloudflare. No ports on the home router are opened to the internet (nothing is port-forwarded).</p>
         <p>Last updated <strong>July 2026</strong>.</p>
       </aside>
     </section>
@@ -70,8 +70,29 @@
     </section>
 
     <section class="section">
+      <div class="section-head"><div><h2>What running it has taught me</h2></div></div>
+      <div class="prose">
+        <p>
+          Machines, services and public surfaces are kept separate. That makes a change easier to
+          reason about, and a failure on one machine less likely to spread to the others.
+        </p>
+        <p>
+          One service spent weeks returning nothing because its configuration pointed at an IP address the machine no longer held.
+          Everything was up and nothing errored, but the results were empty. The fix was to stop
+          referring to that machine by IP address.
+        </p>
+        <p>
+          Another failure involved a workload that had to reach the internet through one specific
+          network interface (one of the machine&rsquo;s network connections). Restarting things in the
+          right order did not guarantee that it used that interface. The lesson was to bind the
+          workload to the interface by name.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
       <div class="section-head"><div><h2>Nodes</h2></div></div>
-      <p class="fine" style="margin:-4px 0 16px">Open a machine to see what it is and what it carries.</p>
+      <p class="fine" style="margin:-4px 0 16px">Open a machine to see what it is and what it runs. In the specs, 2c/4t means two processor cores and four threads.</p>
       <div class="nodes nodes-wide">
         <details class="node">
           <summary class="node-head">
@@ -82,7 +103,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Intel NUC5i7RYB</p>
-            <p>Knowledge graph and a task-scheduler app, each in its own container.</p>
+            <p>Runs the knowledge graph and a task-scheduler app, each in its own container (an isolated package that holds one service and everything it needs).</p>
           </div>
         </details>
         <details class="node">
@@ -94,7 +115,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Intel D53427RKE</p>
-            <p>The always-on core: primary DNS, this website, a fantasy-football projection UI, a weekly competitive-intelligence pipeline, and the print server.</p>
+            <p>This is the always-on core. It runs primary DNS (the service that turns names into network addresses), this website, a fantasy-football projection UI, a weekly competitive-intelligence pipeline, and the print server.</p>
           </div>
         </details>
         <details class="node">
@@ -106,7 +127,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Intel NUC5i5RYB</p>
-            <p>Media playback — film, television and music servers — plus backup DNS and the internal HTTPS proxy that fronts every LAN service.</p>
+            <p>Runs the film, television and music servers, plus backup DNS and the internal HTTPS proxy. The proxy sits in front of every service on the local network (LAN) and serves each one over an encrypted connection.</p>
           </div>
         </details>
         <details class="node">
@@ -118,7 +139,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">ECS mini PC</p>
-            <p>Media library storage and processing, kept off the public network entirely.</p>
+            <p>This is a Proxmox host (Proxmox is software for running virtual machines). It stores and processes the media library and is kept off the public network entirely.</p>
           </div>
         </details>
         <details class="node">
@@ -130,7 +151,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Lenovo ThinkCentre M710q</p>
-            <p>Runs the origin-health sentinel, a watchdog that checks services from behind the public edge (the Cloudflare layer visitors reach first).</p>
+            <p>Runs the origin-health sentinel, a watchdog that checks the health of services from behind Cloudflare, which is the layer visitors reach first.</p>
           </div>
         </details>
         <details class="node">
@@ -142,7 +163,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Lenovo ThinkCentre M710q</p>
-            <p>Reserve capacity. It is left unassigned so there is somewhere to move a workload in a hurry.</p>
+            <p>Kept as reserve capacity. It is left unassigned so there is somewhere to move a workload in a hurry.</p>
           </div>
         </details>
         <details class="node">
@@ -154,7 +175,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Lenovo ThinkCentre M710q</p>
-            <p>Client site hosting: the edge proxy and the web server behind it.</p>
+            <p>Hosts client websites. It runs the edge proxy (the first server a visitor&rsquo;s request reaches) and the web server behind it.</p>
           </div>
         </details>
         <details class="node">
@@ -166,7 +187,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Lenovo ThinkCentre M93p</p>
-            <p>Scraping and data-collection jobs, and the push-notification server that alerts me when one of them stops.</p>
+            <p>Runs scraping and data-collection jobs, and the push-notification server that alerts me when one of them stops.</p>
           </div>
         </details>
         <details class="node">
@@ -178,7 +199,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">Dell OptiPlex</p>
-            <p>Staging and odd jobs. It currently runs a time-tracking app that has no permanent home.</p>
+            <p>Used for staging and odd jobs. It currently runs a time-tracking app that has no permanent home.</p>
           </div>
         </details>
         <details class="node">
@@ -190,7 +211,7 @@
           </summary>
           <div class="node-detail">
             <p class="node-board">HP ProDesk 600 G3 SFF</p>
-            <p>Storage. Network shares for media, backups and a lab scratch area.</p>
+            <p>Stores media, backups and a lab scratch area on network shares.</p>
           </div>
         </details>
       </div>
@@ -206,41 +227,20 @@
         <table class="data-table">
           <tr><th>Service</th><th>Job</th></tr>
           <tr><td>AdGuard Home</td><td>Primary and backup DNS, on separate machines</td></tr>
-          <tr><td>Caddy</td><td>Public edge, TLS, and the internal HTTPS proxy</td></tr>
+          <tr><td>Caddy</td><td>Public edge, TLS (the encryption behind HTTPS), and the internal HTTPS proxy</td></tr>
           <tr><td>Nginx</td><td>Client sites</td></tr>
           <tr><td>Uptime Kuma</td><td>Monitoring</td></tr>
           <tr><td>ntfy</td><td>Push alerts when something stops</td></tr>
           <tr><td>Proxmox Backup Server</td><td>Nightly, written to a different machine than the one it backs up</td></tr>
           <tr><td>Postgres</td><td>Knowledge graph behind the agent tooling</td></tr>
-          <tr><td>SearXNG</td><td>Private metasearch for the scraping jobs</td></tr>
-          <tr><td>CUPS</td><td>Print server bridging two VLANs</td></tr>
+          <tr><td>SearXNG</td><td>Private metasearch (one query sent to several search engines) for the scraping jobs</td></tr>
+          <tr><td>CUPS</td><td>Print server bridging two VLANs (separate virtual networks that share the same hardware)</td></tr>
         </table>
       </div>
     </section>
 
-    <section class="section">
-      <div class="section-head"><div><h2>What it has taught me</h2></div></div>
-      <div class="prose">
-        <p>
-          Machines, services and public surfaces are kept separate. A change is then easy to reason
-          about, and a failure stays contained to one place.
-        </p>
-        <p>
-          Some failures give no error. One service spent weeks returning nothing because its
-          configuration pointed at an IP address the machine no longer held. Everything was up and
-          nothing errored, but the results were empty. The fix was to stop referring to that
-          machine by IP address.
-        </p>
-        <p>
-          Another failure showed a related problem. A workload that has to reach the internet
-          through a specific network interface needs to be bound to that interface by name.
-          Restarting things in the right order is not enough to guarantee that.
-        </p>
-      </div>
-    </section>
-
     <p class="closing-line">
-      Email is the best way to reach me — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
+      Email is the best way to reach me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
     </p>
   </main>
 

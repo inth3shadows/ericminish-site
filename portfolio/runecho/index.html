@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RunEcho — case study | Eric Minish</title>
-  <meta name="description" content="Case study: RunEcho, a deterministic pre-write guard that stops a coding agent referencing a symbol your repository does not have — ~12 ms, no model, and zero context cost on a clean check.">
+  <meta name="description" content="Case study: RunEcho, a deterministic pre-write guard that stops a coding agent from calling a bare function, type or constant name your repository does not declare. About 12 ms per check, no model, and zero context cost on a clean check.">
   <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/runecho/">
   <meta property="og:type" content="website">
@@ -51,7 +51,7 @@
         <div class="entry-stamp"><b>Entry 05</b><span>Developer tooling · Go</span><span>2026</span></div>
         <h1>Stopping a call to a function that does not exist</h1>
         <p class="lede">
-          RunEcho checks every edit a coding agent is about to write against the symbols (function, type and constant names) that your code declares, and stops edits that reference a symbol that does not exist. It covers one kind of mistake with one cheap check.
+          RunEcho checks each edit a coding agent is about to write against the symbols (function, type and constant names) that your code declares. When the edit uses a bare name that is not declared anywhere, RunEcho stops it. The check takes about 12 ms and covers one kind of mistake: on a set of nine confirmed hallucinated names, it caught four.
         </p>
       </div>
       <aside class="note">
@@ -64,7 +64,8 @@
       <div class="facts">
         <div><span class="fk">per check</span><span class="fv">~12 ms</span></div>
         <div><span class="fk">context cost, clean check</span><span class="fv good">0 tokens</span></div>
-        <div><span class="fk">false positive rate</span><span class="fv">15.3%</span></div>
+        <div><span class="fk">false positives, share of flags</span><span class="fv">15.3%</span></div>
+        <div><span class="fk">hallucinated names caught</span><span class="fv">4 of 9</span></div>
         <div><span class="fk">models, keys, network</span><span class="fv good">none</span></div>
       </div>
     </section>
@@ -73,10 +74,10 @@
       <div class="section-head"><div><h2>A deterministic check: same input, same answer</h2></div></div>
       <div class="prose">
         <p>
-          Every check parses the code and looks the names up in an index. The same code gives the same answer on every run, machine and agent, because no model is involved. It needs no API keys, network, build or language server.
+          Each check parses the edit and looks its names up in an index built from your code. No model is involved, so the same code and the same index give the same answer on every run, machine and agent. The check needs no API keys, network, build or language server.
         </p>
         <p>
-          <strong>A clean check costs zero context tokens</strong> (tokens are the units a model reads and is billed for). It writes nothing unless it stops an edit, and then about a hundred tokens. Because it runs as a hook, the agent spends no context deciding whether to call it. The companion server, which answers structural questions about the code on demand, is a separate piece and does cost context: its tool schemas take around 968 tokens at session start. Both figures are published in the repository.
+          <strong>A clean check costs zero context tokens</strong> (tokens are the units a model reads and is billed for). The hook writes nothing unless it stops an edit, and then writes about a hundred tokens. Because it runs as a hook, the agent spends no context deciding whether to call it. The companion server, which answers structural questions about the code on demand, is a separate piece and does use context: its tool schemas take around 968 tokens at session start. Both figures are published in the repository.
         </p>
       </div>
     </section>
@@ -85,23 +86,23 @@
       <div class="section-head"><div><h2>How often it is wrong, and how that was measured</h2></div></div>
       <div class="prose">
         <p>
-          The first idea was to count how often the user overrides the guard. That gave nothing to measure: across thirty days of traffic, all 308 gated edits were approved and none were denied. A rate from that would have called the guard perfect while only reflecting the user&rsquo;s willingness to approve.
+          The first idea was to count how often the user overrides the guard. That gave nothing to measure: across thirty days of traffic, all 308 gated edits were approved and none were denied. A rate from that data would have called the guard perfect while only reflecting the user&rsquo;s willingness to approve.
         </p>
         <p>
-          So each flagged symbol is judged against <strong>dated git history</strong>: whether it was defined when the guard objected, and whether it is defined now.
+          So each flagged symbol is judged against <strong>dated git history</strong>: whether it was defined when the guard objected, and whether it is defined now. Each flag falls into one of three groups.
         </p>
       </div>
       <div class="table-scroll">
         <table class="data-table">
           <tr><th>Verdict on a flag</th><th style="text-align:right">Share</th><th>Meaning</th></tr>
           <tr><td>Stands</td><td class="num win">51.0%</td><td>a reference to something that does not exist</td></tr>
-          <tr><td>Premature</td><td class="num">33.7%</td><td>correct, but fired before the symbol existed — an agent writing a caller ahead of its callee</td></tr>
-          <tr><td>False positive</td><td class="num lose">15.3%</td><td>the symbol was there; the guard was wrong</td></tr>
+          <tr><td>Premature</td><td class="num">33.7%</td><td>correct, but fired before the symbol existed, as when an agent writes a caller before the function it calls</td></tr>
+          <tr><td>False positive</td><td class="num lose">15.3%</td><td>the symbol was there and the guard was wrong</td></tr>
         </table>
       </div>
       <div class="prose">
         <p>
-          The 51% is a share of the flagged edits only, so it says nothing about how much of an agent&rsquo;s output is hallucinated.
+          The shares are of flagged symbols only. The 51% therefore says nothing about how much of an agent&rsquo;s output is hallucinated.
         </p>
       </div>
     </section>
@@ -110,25 +111,25 @@
       <div class="section-head"><div><h2>What RunEcho checks and what it misses</h2></div></div>
       <div class="prose">
         <p>
-          RunEcho reads <em>unqualified</em> references, meaning names used on their own: bare function calls, constant references and type annotations. It was tested on a corpus of model hallucinations taken from live session transcripts: fifteen hand-verified cases, each confirmed by a compiler or runtime error. Nine of the fifteen are hallucinated names, and it catches <strong>four of those nine</strong>.
+          RunEcho checks <em>unqualified</em> references, meaning names used on their own: bare function calls, constant references and type annotations. It was tested on fifteen hand-verified mistakes taken from live session transcripts, each confirmed by a compiler or runtime error. Nine of the fifteen are hallucinated names, and RunEcho catches <strong>four of those nine</strong>.
         </p>
         <p>
-          The other five are qualified references, where a name hangs off an object: <code>df.groupby(&hellip;)</code>, <code>tree.Root()</code>. Resolving those needs receiver-type inference (working out what type the object on the left is), a semantic analysis RunEcho does not do. The index covers more languages than the guard checks: shell, Rust and Ruby feed the index but are not validated at edit time.
+          The five hallucinated names it misses are qualified references, where a name is accessed through an object: <code>df.groupby(&hellip;)</code>, <code>tree.Root()</code>. Checking those needs receiver-type inference (working out what type the object on the left is), a semantic analysis RunEcho does not do. The index also covers more languages than the guard checks: shell, Rust and Ruby feed the index but are not checked at edit time.
         </p>
         <p>
-          Use it the way you use a type checker: one layer that removes one class of mistake, next to the tests and review that catch the rest.
+          It is meant to be used the way a type checker is used: one layer that removes one class of mistake, next to the tests and review that catch the rest.
         </p>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>A design dropped after using RunEcho on its own development</h2></div></div>
+      <div class="section-head"><div><h2>Why an edit-scope contract belongs to a task</h2></div></div>
       <div class="prose">
         <p>
-          An edit-scope contract declares what a piece of work is allowed to touch, so the guard can object when an agent edits outside it. The planned next step was to bind a contract automatically when a session starts. Using the guard on its own development, on the day it merged, ended that plan: the contract went stale <strong>within the same session</strong>, at the moment the work it described was merged.
+          Besides checking symbols, the guard can check edits against an edit-scope contract. A contract declares which files a piece of work is allowed to touch, so the guard can object when an agent edits outside it. The planned next step was to bind a contract automatically when a session starts.
         </p>
         <p>
-          A session often spans several unrelated pieces of work. A contract belongs to a <strong>task</strong>. Between tasks the right state is no active contract: the guard costs nothing, says nothing and abstains. Binding a contract per session would leave the guard enforcing an outdated scope, which produces wrong flags and wrong passes.
+          Running the guard on RunEcho&rsquo;s own development ended that plan on the day the feature merged. The contract went stale <strong>within the same session</strong>, at the moment the work it described was merged. A session often spans several unrelated pieces of work, and a contract describes only one of them. Between tasks the correct state is no active contract, in which case the guard makes no contract check and writes nothing. A contract bound per session would keep enforcing an outdated scope and produce both wrong flags and wrong passes.
         </p>
       </div>
     </section>
@@ -137,7 +138,7 @@
       <div class="section-head"><div><h2>Choosing a parser by what a shortcut would get wrong</h2></div></div>
       <div class="prose">
         <p>
-          Each language gets a parser chosen by one test: whether it contains constructs that a cheap masker cannot tell apart without parsing. A masker blanks out strings and comments while keeping character positions, so a regex can search the rest. Languages that fail the test get a full tree-sitter grammar (a parser that builds a syntax tree); the others use regex plus a masker.
+          The cheap way to find names in a file is a regular expression (a text-pattern match) run after a masker. A masker blanks out strings and comments while keeping every character in place, so the pattern match cannot be fooled by a name inside a string. Each language gets one of two engines, chosen by one test: whether the language has constructs a masker cannot tell apart without parsing. Languages that fail the test get a full tree-sitter grammar (a parser that builds a syntax tree). The others use a regular expression plus a masker.
         </p>
       </div>
       <div class="table-scroll">
@@ -149,10 +150,10 @@
       </div>
       <div class="prose">
         <p>
-          Ambiguity is the right test because of how a masker fails. If it guesses wrong, it fails <em>silently</em> and loses every symbol after the mistake. The result looks the same as a file with no symbols, which is the worst failure for a guard. In Rust, <code>'a</code> is a lifetime in one line and a character literal in the next, and only parsing tells them apart.
+          The test is about ambiguity because of how a masker fails. When it guesses wrong it fails <em>silently</em> and loses every symbol after the mistake, and the result looks the same as a file with no symbols, which is the worst failure for a guard. Rust shows the problem. A single quote can start a character literal such as <code>'a'</code>, or a lifetime (Rust&rsquo;s label for how long a reference stays valid) such as the <code>'a</code> in <code>&amp;'a str</code>, which has no closing quote. A masker that reads the lifetime&rsquo;s quote as the start of a character literal blanks out the code that follows it. In shell, quoting rules and heredocs (blocks of literal text embedded in a script) can be resolved in a single pass that tracks state, so a masker is enough.
         </p>
         <p>
-          Visibility rules follow from the language. Go extracts only exported (capitalised) names, because an unexported Go name cannot be referenced from outside its package. Rust extracts everything, because a reference to a private function from elsewhere in the same crate is ordinary, and filtering it out would miss the common case.
+          Which names get extracted follows each language&rsquo;s visibility rules. Go extracts only exported (capitalised) names, because an unexported Go name cannot be referenced from outside its package. Rust extracts every name, because calling a private function from elsewhere in the same crate (a Rust package) is ordinary, and filtering private names out would miss the common case.
         </p>
       </div>
     </section>
@@ -160,9 +161,17 @@
     <section class="section">
       <div class="section-head"><div><h2>Reducing false alarms and per-edit cost</h2></div></div>
       <div class="subs">
-        <div><span class="st">Duplicate-symbol warnings</span><span class="sx">Build-constraint pairs (the same function defined once per platform) produced <b>91% false positives</b>. Suppressing the warning only when both files carry a build constraint removed all of them without calling out to the Go toolchain. A pair with one constrained and one unconstrained file still warns.</span></div>
-        <div><span class="st">Store access</span><span class="sx">Checking the contract meant opening the store a second time, measured at <b>+9.5 ms per edit</b>. Sharing the handle with the symbol lookup that was already running brought it down to <b>+0.36 ms</b>.</span></div>
-        <div><span class="st">Threat model</span><span class="sx">RunEcho runs locally behind a firewall, so it has no web attack surface. The binaries are distributed publicly, so the release pipeline is in scope; authentication and rate limiting are not.</span></div>
+        <div><span class="st">Duplicate-symbol warnings</span><span class="sx">Build-constraint pairs (the same function defined once per platform) produced <b>91% false positives</b>. The warning is now suppressed only when both files carry a build constraint, which removed all of those false positives without calling out to the Go toolchain. A pair with one constrained and one unconstrained file still warns.</span></div>
+        <div><span class="st">Store access</span><span class="sx">Checking the contract meant opening the store a second time, measured at <b>+9.5 ms per edit</b>. Sharing the handle with the symbol lookup that was already running brought that down to <b>+0.36 ms</b>.</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Security scope</h2></div></div>
+      <div class="prose">
+        <p>
+          RunEcho runs locally behind a firewall, so it has no web attack surface. The binaries are distributed publicly, so the release pipeline is in scope for security work. Authentication and rate limiting are out of scope.
+        </p>
       </div>
       <div class="tag-row" style="margin-top:20px">
         <span class="tag">Developer Tooling</span><span class="tag">Go</span>

@@ -50,7 +50,7 @@
       <div class="hero-copy">
         <h1>About</h1>
         <p class="lede">
-          I build infrastructure for AI agents and the data work that runs on it. I came to this work from operations. I live in Central Lake, Michigan.
+          I build infrastructure for AI agents, and I work on data modelling. I came to this work from operations, and I live in Central Lake, Michigan.
         </p>
       </div>
       <aside class="note">
@@ -63,15 +63,16 @@
       <div class="section-head"><div><h2>My design rule</h2></div></div>
       <div class="prose">
         <p>
-          A system should decline to answer rather than guess. Following that rule has a cost each
-          time, and these four projects show what it cost.
+          A system should report only what it can check, and say so when it cannot check something.
+          I apply the same rule to my own measurements. In each of these four projects, following it
+          cost something: a worse headline result, a dropped modelling target, slower output, or more review work.
         </p>
       </div>
       <div class="subs">
-        <div><span class="st">Lodestone, a search engine</span><span class="sx">A <a href="/portfolio/lodestone/">retrieval engine</a> I built beat keyword search on 1,271 documents and lost to it on 57,500. The write-up starts with the loss.</span></div>
-        <div><span class="st">Frostline, a well-depth model</span><span class="sx">A <a href="/portfolio/frostline/">modelling target</a> scored 38.8% better than its baseline. Measured against the right baseline, it turned out to repeat a variable the model already had, so I dropped it.</span></div>
-        <div><span class="st">terse, a compression proxy</span><span class="sx">The <a href="/portfolio/terse/">compression proxy</a> in front of my agent&rsquo;s tool servers sends the original, uncompressed output whenever it cannot prove the compressed version decodes back exactly. That is slower, but the agent never receives a damaged copy.</span></div>
-        <div><span class="st">kb, an agent knowledge base</span><span class="sx">My knowledge base accepts proposals from agents and reviews each one before saving it. Saving everything unreviewed was the cheaper option. I rejected it because past about 2,000 entries the important ones became hard to find.</span></div>
+        <div><span class="st">Lodestone</span><span class="sx">A <a href="/portfolio/lodestone/">search engine</a> I built over my own notes beat keyword search when tested on 1,271 documents and lost to it when tested on all 57,500. I report the loss first in the case study.</span></div>
+        <div><span class="st">Frostline</span><span class="sx">In my <a href="/portfolio/frostline/">well-record models</a>, one candidate prediction target scored 38.8% better than the global median, a simple reference prediction. Checked against the right baseline, the target only repeated a variable the model already had, so I dropped it.</span></div>
+        <div><span class="st">terse</span><span class="sx">This <a href="/portfolio/terse/">compression proxy</a> sits between my AI agent and the servers that run its tools. When it cannot prove that the compressed output decodes back exactly, it sends the original, uncompressed output. That is slower. In exchange, the agent receives either a compressed copy that has been checked or the original.</span></div>
+        <div><span class="st">kb</span><span class="sx">My knowledge base for AI agents accepts proposed entries from agents and reviews each one before saving it. Saving everything unreviewed was the cheaper option. I rejected it because past about 2,000 entries the important ones became hard to find.</span></div>
       </div>
     </section>
 
@@ -80,17 +81,17 @@
       <div class="prose">
         <p>
           My professional work has been in operational systems: tracking the state of workflows,
-          handling events, automating CRM processes, and building the reports that show afterwards
-          what happened. I spend most of my time on the places where someone needs to know what happened, what happens next, and whether the record can be trusted.
+          handling events, automating CRM (customer relationship management) processes, and building the reports that show afterwards
+          what happened.
         </p>
         <p>
-          AI agents have the same problem. An agent acts on information it cannot check directly,
-          so most of my work on agents is deciding what an agent may read, what it may change, and
-          what happens when one of those steps fails.
+          AI agents need the same things: a record of what they did and a defined response when a step
+          fails. An agent acts on information it cannot check directly, so most of my work on agents is
+          deciding what an agent may read, what it may change, and what happens when one of those steps fails.
         </p>
         <p>
-          I run these systems on my own <a href="/homelab/">homelab</a>: ten machines handling routing,
-          monitoring and recovery. I test how these systems fail on that hardware.
+          I run these systems on my <a href="/homelab/">homelab</a>, ten machines of my own that handle routing,
+          monitoring and recovery, and I test how the systems fail on that hardware.
         </p>
       </div>
     </section>
