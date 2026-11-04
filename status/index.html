@@ -50,12 +50,12 @@
       <div class="hero-copy">
         <h1>Current work</h1>
         <p class="lede">
-          These are the projects I am working on and what changed in each recently.
+          What I am working on, and what changed in each recently.
         </p>
       </div>
 
       <aside class="note">
-        <p>Updated September 2026.</p>
+        <p>Updated 4 November 2026. Each card has its own date.</p>
       </aside>
     </section>
 
@@ -65,37 +65,55 @@
       </div>
 
       <div class="grid-2">
-        <article class="timeline">
-          <h3><a href="/portfolio/terse/">terse</a></h3>
-          <p>terse compresses the output of MCP tools (MCP is the Model Context Protocol, the standard that connects tools to AI agents). It reduces that output by 59 percent, counted in tokens (the units a model reads and is billed by). Whenever it cannot prove the compressed version restores exactly, it forwards the original output unchanged, so no information is lost.</p>
-          <p>Recent work has been on security. Credentials must not be sent along when a request is redirected to another site, and the configuration generator, which tunes settings for speed, may not overwrite a safety setting. <a href="/portfolio/terse/">Case study</a>.</p>
-        </article>
-        <article class="timeline">
-          <h3><a href="/portfolio/testgraph/">testgraph</a></h3>
-          <p>Given a code change, testgraph names the user journeys the change could have broken. It traces a static call graph (a map of which code calls which) instead of reading a test coverage report, so it works on a repository that has never run its tests.</p>
-          <p>It was recently made public and published on PyPI. Current work compares the journeys it selected against what running them found, so its miss rate can be reported as a number. <a href="/portfolio/testgraph/">Case study</a>.</p>
-        </article>
-        <article class="timeline">
-          <h3><a href="/portfolio/harness/">harness</a></h3>
-          <p>harness decides whether a code change written by an AI agent is acceptable with <a href="/portfolio/harness/">four fixed checks</a>. No language model takes part in that decision, and nothing is committed automatically afterward.</p>
-          <p>The loop that drives harness still runs inside someone else&rsquo;s runtime. The current build moves that loop into harness itself and adds tools that can write files, each limited by isolation rules that set what it may reach. <a href="/portfolio/harness/">Case study</a>.</p>
-        </article>
-        <article class="timeline">
+        <article class="timeline" data-as-of="2026-11-04">
           <h3>Day job</h3>
-          <p>I work on integration and data-pipeline engineering: workflow automation in a CRM, services that ingest data, scheduled jobs on managed cloud infrastructure, and reporting from a data warehouse with access control. One of those services uses a language model to score call transcripts against a rubric. Fixed rule-based checks run first, and a person reviews the result afterward, so the model does not make the final decision.</p>
+          <p>I am a Senior AI Engineer at a company whose sales, operations and partner teams run on software I build: a console that gathers a consultant&rsquo;s tools in one place, a partner portal, a lead-intake API for partners, Python services that sync call activity and clean CRM records, monitoring, and a call-compliance auditor. Two of these services use a language model as a judge; in the call auditor, rule-based checks run first and a person reviews every result.</p>
+          <p>As of 4 November 2026 that work spans 60 repositories, and 29 of them changed in the last 30 days. I wrote about 95% of the commits since September.</p>
         </article>
-        <article class="timeline">
-          <h3>Knowledge graph</h3>
-          <p>My personal knowledge base runs on Postgres. Agents can add to it only by proposing an entry, and every proposal is reviewed before it is saved.</p>
-          <p>This quarter its embeddings (the numeric text representations used for search) moved into a separate service that runs alongside it, which cut the deployed container image from 2.14 GB to 442 MB. It also dropped half its tools, because the size of each tool response mattered more than the number of tools.</p>
+        <article class="timeline" data-as-of="2026-11-04">
+          <h3><a href="/portfolio/codegraph/">codegraph</a></h3>
+          <p>codegraph is an open-source tool that maps which functions call which, for coding agents. I check its map against type checkers and against freshly built indexes and send fixes upstream.</p>
+          <p>Recent fixes, 29 October to 3 November: index updates that drifted from a fresh build of the same commit, and TypeScript variance annotations. <a href="/portfolio/codegraph/">Case study</a>.</p>
         </article>
-        <article class="timeline">
-          <h3><a href="/portfolio/frostline/">Frostline</a></h3>
-          <p>Frostline applies spatial modeling (predicting from location) to fifty thousand Michigan well records, and includes the contractor-intake business built around it. On these records, well depth can be predicted from location. Well yield (how much water a well produces) cannot.</p>
+        <article class="timeline" data-as-of="2026-11-04">
+          <h3><a href="/portfolio/terse/">terse</a></h3>
+          <p>terse compresses the output of MCP tools (the tools AI agents call) by 59% in tokens, and forwards the original whenever it cannot prove the compressed version restores exactly.</p>
+          <p>Late October: fixes from a red-team review that found 37 problems (28 October), and a decoder that treats an integer longer than Python&rsquo;s 4,300-digit limit as plain text instead of crashing. <a href="/portfolio/terse/">Case study</a>.</p>
         </article>
-        <article class="timeline">
-          <h3><a href="/homelab/">Homelab</a></h3>
-          <p>The homelab is ten machines under Proxmox (a server virtualization platform) that run live routing, monitoring and backups. A workload whose traffic must go through a VPN is bound to the VPN&rsquo;s network interface by name, because starting services in the right order does not guarantee that the traffic uses it.</p>
+        <article class="timeline" data-as-of="2026-11-04">
+          <h3><a href="/portfolio/runecho/">RunEcho</a></h3>
+          <p>RunEcho checks each edit a coding agent makes against the names the repository declares, before the file changes.</p>
+          <p>Late October: a setting that blocks a flagged edit instead of asking (28 October), and blocking by default under Cursor, which does not enforce the ask step (30 October). <a href="/portfolio/runecho/">Case study</a>.</p>
+        </article>
+        <article class="timeline" data-as-of="2026-11-04">
+          <h3><a href="/portfolio/modelbench/">modelbench</a></h3>
+          <p>modelbench replays real bug-fix commits against cheaper models and reports the cost per solved task.</p>
+          <p>Late October: a blinded sample for judging RunEcho&rsquo;s own checker. Flagged lines and clean lines are mixed, the labels are kept in a separate file, and two models judge each item. <a href="/portfolio/modelbench/">Case study</a>.</p>
+        </article>
+        <article class="timeline" data-as-of="2026-11-04">
+          <h3><a href="/portfolio/testgraph/">testgraph</a></h3>
+          <p>Given a code change, testgraph names the user journeys it could have broken, from a static call graph, so it works on a repository that has never run its tests.</p>
+          <p>30 October: CI now runs its verify step end to end with pytest and its tracing plugin, which records what each journey&rsquo;s tests execute, so the static selection can be scored against what ran. <a href="/portfolio/testgraph/">Case study</a>.</p>
+        </article>
+        <article class="timeline" data-as-of="2026-11-04">
+          <h3><a href="/portfolio/secret-broker/">secret-broker</a></h3>
+          <p>secret-broker lets coding agents use credentials without receiving them, and writes a receipt for every call to a log that shows any later edit.</p>
+          <p>3 November: it can now rotate a credential it created, through a write route on the vault service, and only after a person approves the request. <a href="/portfolio/secret-broker/">Case study</a>.</p>
+        </article>
+        <article class="timeline" data-as-of="2026-11-04">
+          <h3><a href="/portfolio/harness/">harness</a></h3>
+          <p>harness decides whether an agent&rsquo;s code change is acceptable with four fixed checks. No language model takes part, and nothing is committed automatically.</p>
+          <p>The gate and the role runtime are done. Next is a set of tools that can write files, so the loop that produces changes runs inside harness. Early November: fixes to its mutation-testing tool. <a href="/portfolio/harness/">Case study</a>.</p>
+        </article>
+        <article class="timeline" data-as-of="2026-11-04">
+          <h3><a href="/portfolio/knowledge-base/">Knowledge base</a></h3>
+          <p>Long-term memory for my coding agents. Agents can only propose an entry, and an AI reviewer approves, edits or rejects each proposal.</p>
+          <p>Late October: each session now records what it set out to do and how it ended, and the status command warns when the reviewer runs different code from the deployed tree. <a href="/portfolio/knowledge-base/">Case study</a>.</p>
+        </article>
+        <article class="timeline" data-as-of="2026-11-04">
+          <h3>soundings</h3>
+          <p>A store of US county economic data that keeps every published version of each number, so a backtest uses only the figures known at the time.</p>
+          <p>30 October: county employment from the Bureau of Labor Statistics&rsquo; quarterly census (QCEW) became the default employment input for its detector.</p>
         </article>
       </div>
     </section>

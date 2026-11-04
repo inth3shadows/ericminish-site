@@ -17,13 +17,12 @@ add('gap')
 add('h','EXPERIENCE')
 add('role','Senior AI Engineer')
 add('sub','Transactly  |  Jul 2023 - Present  |  Remote  |  At Transactly since Sep 2020.')
-add('p','I own the internal systems layer: the workflow logic, its integrations with the other systems, and the reporting that explains the results to people who were not involved. That covers roughly sixty active projects, two-thirds of which changed in the last month.')
-for b in ["Built an LLM-assisted compliance service. It transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.",
+add('p','I build and run the software our sales, operations and partner teams work in: the workflow logic, its integrations with the other systems, and the reporting that explains the results. As of November 2026 that is 60 repositories, 29 of which changed in the last 30 days; I wrote about 95% of the commits since September.')
+for b in ['Built an LLM-assisted compliance service. It transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.',
+          "Own the company's HubSpot CRM: its workflows, automations and integrations, and the services built around it.",
+          "Built and run a console that gathers a consultant's tools in one place, a partner portal, and a lead-intake API for partners, each released to production repeatedly in October and November 2026.",
           "Scope and deploy technical workflows for customer success, onboarding and internal operations, using SQL, our CRM's APIs, and tools shared by several departments.",
-          "Built and maintain SQL-backed reporting for subscription logic and billing reconciliation.",
-          "Lead the employee onboarding and offboarding workflows, which are tied to access control and system provisioning.",
-          "Design and implement CRM automations for customer success, sales and partnerships.",
-          "Write custom workflows and scripts for internal infrastructure. These include ingestion services and scheduled jobs on managed cloud infrastructure, reporting built on a data warehouse and protected by access control, and operational microservices. The code is mostly Python, with TypeScript for user-facing work. These systems have around 140 test files."]:
+          'Write the services and jobs behind them: call-activity sync and CRM record cleanup, ingestion and scheduled cloud jobs, warehouse reporting behind access control, and monitoring. About evenly Python and TypeScript, with about 940 test files across the 33 repositories active in the last 90 days.']:
     add('li',b)
 add('gap')
 add('role','Customer Success Operations Manager')
