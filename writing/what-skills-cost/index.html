@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What installed skills cost in context | Eric Minish</title>
+  <meta name="description" content="Anthropic says you can install many Claude Code skills without context penalty, at about 100 tokens per skill. In my transcripts the per-skill figure holds, but the full listing is paid in every session, grew 72% in three months, and 18 of its 50 skills were never invoked.">
+  <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
+  <link rel="canonical" href="https://www.ericminish.com/writing/what-skills-cost/">
+  <link rel="alternate" type="application/atom+xml" title="Eric Minish — Writing" href="/writing/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Eric Minish">
+  <meta property="og:title" content="What installed skills cost in context">
+  <meta property="og:description" content="Anthropic's per-skill figure of about 100 tokens holds in my transcripts. The total listing is paid in every session, and a few large skills dominate what invocations load.">
+  <meta property="og:url" content="https://www.ericminish.com/writing/what-skills-cost/">
+  <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-11-03">
+  <meta property="article:modified_time" content="2026-11-03">
+  <meta property="article:author" content="Eric Minish">
+  <meta property="article:tag" content="Agent evaluation">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="What installed skills cost in context">
+  <meta name="twitter:description" content="Anthropic's per-skill figure of about 100 tokens holds in my transcripts. The total listing is paid in every session, and a few large skills dominate what invocations load.">
+  <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"What installed skills cost in context","datePublished":"2026-11-03","dateModified":"2026-11-03","author":{"@type":"Person","name":"Eric Minish","url":"https://www.ericminish.com/about/"},"mainEntityOfPage":"https://www.ericminish.com/writing/what-skills-cost/","image":"https://www.ericminish.com/assets/og.png"}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/writing/" aria-current="page">Writing</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/resume/">Resume</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="post-shell" id="main">
+    <article class="post">
+      <header class="post-header">
+        <h1>What installed skills cost in context</h1>
+        <p class="post-dek">Anthropic says you can install many Claude Code skills without context penalty, at about
+          100 tokens each. I checked that against five months of my own transcripts.</p>
+        <p class="post-meta">
+          <span>By <a href="/about/">Eric Minish</a></span>
+          <span>Published <time datetime="2026-11-03">3 November 2026</time></span>
+          <!-- auto:start readtime --><span>7 min read</span><!-- auto:end readtime -->
+        </p>
+      </header>
+
+      <div class="summary">
+        <p><b>Result.</b> The per-skill figure holds. The median entry in my skill listing is about 113 tokens,
+          against the documented 100. The total is not free. My latest listing has 50 skills and about 6,660 tokens,
+          every session that recorded a listing carried it, the median listing grew 72% from July to October
+          (13,116 to 22,549 characters), and 18 of the 50 skills were never invoked. A second finding: 34 of 1,076
+          loaded skill bodies were over the documented 5,000 tokens, and they hold 64% of all the text loaded.</p>
+        <p><b>Data.</b> 4,278 session transcripts and 7,091 subagent transcripts from one machine, June to early
+          November 2026. Token figures are characters divided by four. I did not measure cost after caching or
+          whether any skill improved results.</p>
+      </div>
+
+      <nav class="toc" aria-label="Contents">
+        <p>Contents</p>
+        <ol>
+          <li><a href="#claim">The claim I tested</a></li>
+          <li><a href="#per-skill">Cost of one skill</a></li>
+          <li><a href="#total">Cost of the whole listing</a></li>
+          <li><a href="#growth">Growth from July to October</a></li>
+          <li><a href="#unused">Skills never invoked</a></li>
+          <li><a href="#bodies">What invocations load</a></li>
+          <li><a href="#limits">Method and limits</a></li>
+          <li><a href="#open">What I changed and what is open</a></li>
+          <li><a href="#corrections">Corrections</a></li>
+        </ol>
+      </nav>
+
+      <h2 id="claim">The claim I tested <a class="anchor" href="#claim" aria-label="Link to this section">#</a></h2>
+      <p>A skill in Claude Code is a folder with a <code>SKILL.md</code> file of instructions for one kind of task.
+        At the start of a session, Claude Code puts a listing in the prompt: the name and a short description of
+        every installed skill. The full text of <code>SKILL.md</code>, called the body, loads only when the skill
+        is used. The context window is the text the model reads on each request. A token is a unit of text,
+        roughly four characters of English.</p>
+      <p>Anthropic&rsquo;s <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">overview of Agent Skills</a>
+        says: &ldquo;you can install many Skills without context penalty: until a Skill is triggered, only its
+        name and description occupy context.&rdquo; Its table gives the listing level as &ldquo;~100 tokens per
+        Skill&rdquo; and the body as &ldquo;Under 5k tokens&rdquo;. The Claude Code page on
+        <a href="https://code.claude.com/docs/en/skills">skills</a> says: &ldquo;Every skill in the skill listing adds to
+        your context on every turn, whether or not Claude ever uses it.&rdquo; Both quotes were on those pages on 3 November 2026.
+        I checked the per-skill figure, the total, and whether bodies stay under 5,000 tokens.</p>
+
+      <h2 id="per-skill">Cost of one skill <a class="anchor" href="#per-skill" aria-label="Link to this section">#</a></h2>
+      <p>The most recent listing in my transcripts has 50 skills and 26,635 characters, about 6,660 tokens. The median entry is 451 characters, about
+        113 tokens. The mean is 532 characters, about 133 tokens. The documented 100 tokens is close to the median. Fifty skills at 100 tokens would be
+        5,000 tokens; the measured total is 6,660, 33% higher, because the mean is above the median.</p>
+      <p>One estimate of mine was too low. In July I planned to replace an always-loaded 25,184-character file of
+        machine notes (about 6,296 tokens) with a skill, and wrote that a skill would take it to &ldquo;~50&rdquo;
+        tokens. The skill&rsquo;s listing entry is 543 characters, about 136 tokens, 2.7 times my estimate. The
+        change still saved space: the body is about 680 tokens and loaded 24 times, where the file had been in
+        every session.</p>
+
+      <h2 id="total">Cost of the whole listing <a class="anchor" href="#total" aria-label="Link to this section">#</a></h2>
+      <p>Of 4,278 session transcripts, 2,157 recorded a listing at session start. A few recorded more than one,
+        for 2,200 listings in all. Every one of them carried the full listing: the smallest was 5,849 characters
+        (about 1,460 tokens) and the largest 26,635. I did not check why the other 2,121 transcripts have none.
+        Added up, the 2,200 listings are 30.97 million
+        characters, about 7.7 million tokens, one copy per session start.</p>
+      <p>That counts context space and overstates the money. If the listing is cached after the first turn, later
+        turns read it at the lower cache price. In the weights I use for my usage limit (see my
+        <a href="/writing/measuring-coding-agents/">previous post</a>), a cache read counts 0 and a fresh input
+        token 0.94. I did not measure the listing&rsquo;s cache cost. The listing does take about 6,660 tokens of
+        context before I type anything.</p>
+
+      <h2 id="growth">Growth from July to October <a class="anchor" href="#growth" aria-label="Link to this section">#</a></h2>
+      <p>Each row is the median across the initial listings recorded that month.</p>
+      <div class="table-scroll">
+        <table>
+          <tr><th>Month</th><th class="num">Listings</th><th class="num">Skills</th><th class="num">Characters</th><th class="num">Tokens (estimate)</th></tr>
+          <tr><td>July</td><td class="num">758</td><td class="num">31</td><td class="num">13,116</td><td class="num">3,279</td></tr>
+          <tr><td>August</td><td class="num">563</td><td class="num">31</td><td class="num">13,719</td><td class="num">3,430</td></tr>
+          <tr><td>September</td><td class="num">422</td><td class="num">41</td><td class="num">17,826</td><td class="num">4,457</td></tr>
+          <tr><td>October</td><td class="num">352</td><td class="num">44</td><td class="num">22,549</td><td class="num">5,637</td></tr>
+        </table>
+      </div>
+      <p>From July to October the median listing grew by 9,433 characters, or 72%, while the median skill count
+        grew from 31 to 44, or 42%. At the October median, 9 of the 44 skills carry
+        the prefix <code>anthropic-skills:</code>, which no July listing had, and the count of other skills rose from
+        31 to 35. The 13 entries with that prefix in the latest listing average 730 characters each, against 462
+        for the other 37. I left November out: its 104 listings have a median of 6,850 characters
+        and 14 skills, and I did not work out why.</p>
+
+      <h2 id="unused">Skills never invoked <a class="anchor" href="#unused" aria-label="Link to this section">#</a></h2>
+      <p>I counted a skill as invoked if Claude called it through the Skill tool or I typed it as a slash command.
+        Of the 50 skills in the latest listing, 32 were invoked at least once between June and 3 November. The
+        other 18 were not.</p>
+      <div class="table-scroll">
+        <table>
+          <tr><th>Group</th><th class="num">Skills</th><th class="num">Listing characters</th><th class="num">Share of listing</th></tr>
+          <tr><td>Never invoked, prefix <code>anthropic-skills:</code></td><td class="num">12</td><td class="num">8,460</td><td class="num">31.8%</td></tr>
+          <tr><td>Never invoked, other</td><td class="num">6</td><td class="num">1,277</td><td class="num">4.8%</td></tr>
+          <tr><td>Invoked at least once</td><td class="num">32</td><td class="num">16,849</td><td class="num">63.4%</td></tr>
+          <tr><td>Total</td><td class="num">50</td><td class="num">26,586</td><td class="num">100%</td></tr>
+        </table>
+      </div>
+      <p>The 18 never-invoked entries are 9,737 characters, 36.6% of the listing, about 2,430 tokens. The
+        skills were not all listed for five months. Four of the unused
+        <code>anthropic-skills:</code> entries first appear in October and were listed in 191 sessions. The other
+        eight first appear in September and were listed in 262 to 468 sessions. Four unused built-in skills
+        (<code>init</code>, <code>simplify</code>, <code>keybindings-help</code> and
+        <code>fewer-permission-prompts</code>) were listed in all 2,200 sessions, and together they are 694
+        characters, about 174 tokens. So five months applies to a few skills, and those are small.
+        One was called seven times under its bare name (<code>deep-research</code>), so by name 17 are unused.</p>
+
+      <h2 id="bodies">What invocations load <a class="anchor" href="#bodies" aria-label="Link to this section">#</a></h2>
+      <p>The transcripts hold 2,240 distinct Skill tool calls, counted once per call ID. They split three ways.</p>
+      <div class="table-scroll">
+        <table>
+          <tr><th>Outcome</th><th class="num">Calls</th></tr>
+          <tr><td>Body loaded into the conversation</td><td class="num">1,076</td></tr>
+          <tr><td>Run in a separate context (forked), all of them <code>code-review</code></td><td class="num">1,098</td></tr>
+          <tr><td>Refused with an error</td><td class="num">66</td></tr>
+        </table>
+      </div>
+      <p>A forked skill runs in its own context, so its body stays out of the main conversation. Of the 1,076
+        loaded bodies, 1,042 (97%) were 20,000 characters or fewer, which is the documented 5,000 tokens. Those
+        have a median of 4,726 characters (about 1,180 tokens), a 90th percentile of 9,854 (about 2,460) and a
+        largest of 16,627 (about 4,160). The other 34 bodies, 3.2% of loads, were bigger.</p>
+      <div class="table-scroll">
+        <table>
+          <tr><th>Skill</th><th class="num">Loads over 20,000 characters</th><th class="num">Median characters</th><th class="num">Median tokens (estimate)</th></tr>
+          <tr><td><code>claude-api</code></td><td class="num">18</td><td class="num">564,334</td><td class="num">141,000</td></tr>
+          <tr><td><code>update-config</code></td><td class="num">12</td><td class="num">179,808</td><td class="num">45,000</td></tr>
+          <tr><td>Three others, 4 loads in total</td><td class="num">4</td><td class="num">20,705 to 31,691</td><td class="num">5,200 to 7,900</td></tr>
+        </table>
+      </div>
+      <p>These 34 loads hold 10.31 million of the 16.07 million characters loaded, 64%. Both large skills come with
+        Claude Code. The largest <code>SKILL.md</code> among my own 21
+        installed skills is 14,988 bytes (343 lines), under the 500 lines the docs recommend. Also, 599 of the
+        4,278 session transcripts (14%) loaded at least one skill body, while all 2,157 transcripts that recorded
+        a listing carried it.</p>
+
+      <h2 id="limits">Method and limits <a class="anchor" href="#limits" aria-label="Link to this section">#</a></h2>
+      <p>A script read the transcripts Claude Code writes to disk (11,369 files) and kept only counts and lengths,
+        never message text. Listings come from the skill-listing record at session start, skill calls from Skill
+        tool uses matched to their results, and typed slash commands from the command-name tag. Calls are counted
+        once per call ID, because resumed sessions copy history. These are counts from my machine, not
+        samples of a larger population, so I give no confidence intervals. The limits, largest first:</p>
+      <ol>
+        <li><b>No outcome comparison.</b> I measured space and did not measure benefit. I do not know whether any
+          skill made a session better, or whether the 18 unused skills would have been called with different
+          descriptions.</li>
+        <li><b>Token figures are characters divided by four.</b> They are not billed counts, and code splits into
+          tokens differently from English.</li>
+        <li><b>Cache cost was not measured.</b> The listing is probably cached after the first turn, which would
+          lower its price below what its size suggests.</li>
+        <li><b>One person, one setup.</b> The sessions include automated runs, entry sizes come from one
+          snapshot, and listings vary by project.</li>
+        <li><b>Invocation is narrowly defined.</b> A skill read some other way, such as opening its file, would show
+          as unused. The Claude Code page says the listing is limited to 1% of the context window and drops
+          descriptions of the least-used skills on overflow. I did not check whether that shortened any listing.</li>
+      </ol>
+
+      <h2 id="open">What I changed and what is open <a class="anchor" href="#open" aria-label="Link to this section">#</a></h2>
+      <p>My records show one change, the July move of the machine notes into a skill described above. It came
+        before these measurements. The skill costs about 136 tokens in the listing against 6,296 for the file it
+        replaced.</p>
+      <p>What is open is whether the 18 unused entries, about 2,430 tokens, are worth their space. Answering it
+        takes the comparison the best-practices page recommends: &ldquo;Measure Claude&rsquo;s performance without
+        the Skill&rdquo;, on tasks each skill is meant for, with a record of whether the skill fired at all. The
+        Claude Code page also describes <code>/skill-doctor</code>, which reports each skill&rsquo;s cost and use.
+        This post covers the cost side of the question.</p>
+
+      <h2 id="corrections">Corrections <a class="anchor" href="#corrections" aria-label="Link to this section">#</a></h2>
+      <p class="corrections">None yet. Corrections will be listed here with their date.</p>
+    </article>
+
+    <p class="closing-line">
+      Questions or corrections: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/writing/">All writing</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+        <a href="/writing/feed.xml">Feed</a>
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -4,8 +4,16 @@
   <link href="https://www.ericminish.com/writing/feed.xml" rel="self"/>
   <link href="https://www.ericminish.com/writing/"/>
   <id>https://www.ericminish.com/writing/</id>
-  <updated>2026-11-01T00:00:00Z</updated>
+  <updated>2026-11-03T00:00:00Z</updated>
   <author><name>Eric Minish</name></author>
+  <entry>
+    <title>What installed skills cost in context</title>
+    <link href="https://www.ericminish.com/writing/what-skills-cost/"/>
+    <id>https://www.ericminish.com/writing/what-skills-cost/</id>
+    <published>2026-11-03T00:00:00Z</published>
+    <updated>2026-11-03T00:00:00Z</updated>
+    <summary>Anthropic says you can install many Claude Code skills without context penalty, at about 100 tokens per skill. In my transcripts the per-skill figure holds, but the full listing is paid in every session, grew 72% in three months, and 18 of its 50 skills were never invoked.</summary>
+  </entry>
   <entry>
     <title>Measuring coding agents by what happens to their code</title>
     <link href="https://www.ericminish.com/writing/measuring-coding-agents/"/>
