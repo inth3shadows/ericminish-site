@@ -61,7 +61,7 @@
       </div>
       <aside class="note">
         <p><strong>What it is</strong>: a Python MCP proxy and router, MIT licensed, on PyPI as <code>terse-mcp</code>.</p>
-        <p><strong>Status</strong>: in daily use in front of my knowledge base, code-intelligence and RunEcho servers, with the credentials broker wrapped on its own. Since 7 October 2026 only narrow improvements, chosen from the replay. Figures as of 4 November 2026.</p>
+        <p><strong>Status</strong>: in daily use in front of my knowledge base, code-intelligence and RunEcho servers, with the credentials broker wrapped on its own. Figures as of 4 November 2026.</p>
       </aside>
     </section>
 
@@ -69,7 +69,7 @@
       <div class="facts">
         <div><span class="fk">fewer tokens, nine GitHub payloads</span><span class="fv">59.1%</span></div>
         <div><span class="fk">MCP result cost removed, my sessions</span><span class="fv good">23.4%</span></div>
-        <div><span class="fk">share of the whole bill, Opus 5.5 sessions</span><span class="fv bad">0.81%</span></div>
+        <div><span class="fk">share of the whole bill, sessions that used it</span><span class="fv bad">0.77%</span></div>
         <div><span class="fk">saving from two tools</span><span class="fv">92%</span></div>
       </div>
     </section>
@@ -117,7 +117,7 @@
             <span class="node-spec">+24.2% to &minus;15.5%</span>
           </summary>
           <div class="node-detail">
-            <p>terse sends a short note once per session that teaches the model its format. In sessions of more than 100 API calls it removed 24.2% of MCP result cost, because a result is re-read many times. In sessions of 1 to 5 calls it added 15.5%, because the note is never paid back.</p>
+            <p>In sessions of more than 100 API calls terse removed 24.2% of MCP result cost, because a result is re-read many times. In sessions of 1 to 5 calls it added 15.5%. The compressed results still came out ahead there, including terse&rsquo;s one-time note on its format. The loss was the model fetching back code blocks that terse had held back: 111,698 input-equivalent tokens against a 44,615 saving, most of it in Claude Haiku 4.5 sessions. Holding code blocks back only pays in longer sessions, and fixing that is the next piece of work.</p>
           </div>
         </details>
         <details class="node">
@@ -146,8 +146,8 @@
       <div class="section-head"><div><h2>What Claude Code now does itself</h2></div></div>
       <div class="prose">
         <p>
-          Since terse started, Claude Code has taken on part of the same job. It saves any MCP text result over
-          50,000 characters to a file and shows the model only the path and a preview. It loads only tool names
+          Since terse started, Claude Code has taken on part of the same job. It saves any MCP result over 25,000
+          tokens (by default) or 50,000 characters to a file and shows the model only the path and a preview. It loads only tool names
           at the start of a session and fetches a tool&rsquo;s description when it is needed. It compacts long
           sessions and clears old tool results. The result most worth compressing is often the one Claude Code
           now moves out of the conversation anyway: in the replay, 72 such results saved nothing.
@@ -171,8 +171,7 @@
           <li>In the measurement. The replay prices a change to tool output at what each later call was billed. It replaced a headline of 59% with 23% of MCP cost and under 1% of the bill, and it overturned an earlier verdict to stop the project that rested on short test tasks. It can price any tool that changes what an agent reads.</li>
         </ul>
         <p>
-          I stopped adding general compression rules on 7 October 2026. The saving does not justify them, and
-          the larger costs, shell output and file reads, are outside what an MCP proxy can reach.
+          The larger costs, shell output and file reads, are outside what an MCP proxy can reach.
         </p>
       </div>
     </section>
