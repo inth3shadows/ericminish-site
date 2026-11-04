@@ -50,7 +50,7 @@ add('role','Data work and shipped applications')
 add('sub','Independent  |  2025 - Present  |  Data, delivery and evidence')
 for b in ["Lodestone is local search over years of my working notes. Its evaluation showed that it gave useful answers to 5 of 10 test questions at full scale, and I published that result.",
           "Frostline: spatial models on 50,083 well records, and a business built on what they can predict. The aquifer interval showed +38.8% apparent skill against the global median, but against a depth baseline it was about 96% a restatement of depth, so I cut it.",
-          "Filed 32 issues against codegraph, an open-source code-intelligence tool I use daily (21 since closed), and built fault-injection harnesses that reproduce two of the bugs on demand.",
+          "Filed 111 issues against codegraph, an open-source code-intelligence tool I use daily (86 since closed; 17 of my pull requests merged), and built fault-injection harnesses that reproduce two of the bugs on demand.",
           "Deployed three applications end to end: a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client."]:
     add('li',b)
 add('gap')
