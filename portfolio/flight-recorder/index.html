@@ -49,12 +49,13 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 11</b><span>Agent evaluation · measurement</span><span>2026</span></div>
-        <h1>Measuring whether my coding agents improve, from what happened to their code</h1>
+        <h1>flight-recorder measures what coding-agent sessions cost and how much of their code survives</h1>
         <p class="lede">
           flight-recorder reads every coding-agent session saved on my machines and scores each one
           two ways: what it cost, and how much of the code it wrote was still in the repository later.
           It ignores the agent&rsquo;s own report of success, because agents often report success
-          on work that failed.
+          on work that failed. Code that stays in the repository is a sign the work held up, though it
+          does not prove the work was correct.
         </p>
       </div>
       <aside class="note">
@@ -76,8 +77,8 @@
       <div class="section-head"><div><h2>Cost and outcome are reported separately</h2></div></div>
       <div class="prose">
         <p>
-          Each session gets two sets of numbers, shown side by side. They are not combined into one
-          score: a session can produce good code at a wasteful cost, and an average of the two would hide that.
+          Each session gets two sets of numbers, shown side by side. They are kept apart because a
+          session can produce good code at a wasteful cost, and a single combined score would hide that.
         </p>
       </div>
       <div class="table-scroll">
@@ -89,14 +90,19 @@
       </div>
       <div class="prose">
         <p>
-          To check whether a line survived, the tool hashes each line a session adds and looks for that
-          line in the current version of the file. It matches on the line&rsquo;s content, not on
-          commit IDs, because rebasing or squashing changes every commit ID while the code stays the same.
+          The outcome numbers describe what happened to the code afterwards: whether it stayed,
+          was rewritten, or was reverted.
         </p>
         <p>
-          It reads saved transcripts after the fact instead of running inside each session. That adds no
-          delay to any session, loses nothing if a session crashes, and let it score 6,264 past
-          sessions on the first day.
+          To check whether a line survived, the tool hashes each line a session adds (turns it into a
+          short fingerprint of its content) and looks for that line in the current version of the file.
+          It matches lines by their content because rebasing or squashing, git operations that rewrite
+          commit history, change every commit ID while the code stays the same.
+        </p>
+        <p>
+          The tool reads saved transcripts after the fact instead of running inside each session. That
+          adds no delay to any session, and nothing is lost if a session crashes. Reading the existing backlog this way let it score 6,264 past sessions on
+          the first day.
         </p>
       </div>
     </section>
@@ -111,24 +117,25 @@
           session edited the same file within 7 days&rdquo;, which normal follow-up work also triggers.
           Rework is now measured from which lines survived, and the old signal is kept only as a
           secondary number over one day.</li>
-        <li><b>One repository scored 0.448 survival; the true figure was 0.796.</b> The rate was divided
-          by every line recorded, including lines whose files the tool could not find. It now divides by
-          lines it was able to check, and records an unchecked line as unknown rather than lost.</li>
-        <li><b>One model looked much worse than another, 0.508 against 0.826.</b> The weaker-looking
-          model had mostly been used in one difficult repository. Models are now compared only on
-          similar work: the same repository, the same task type and a similar change size.</li>
+        <li><b>One repository showed a line-survival rate of 0.448 (44.8%); the corrected rate was 0.796 (79.6%).</b>
+          The rate was divided by every line recorded, including lines whose files the tool could not find.
+          It now divides by the lines it was able to check, and records an unchecked line as unknown
+          instead of lost.</li>
+        <li><b>One model looked much worse than another, 0.508 against 0.826.</b> The weaker-looking model had mostly been
+          used in one difficult repository. Models are now compared only on similar work: the same
+          repository, the same task type and a similar change size.</li>
       </ol>
     </section>
 
     <section class="section">
       <div class="section-head"><div><h2>Checks built into the reports</h2></div></div>
       <div class="subs">
-        <div><span class="st">Intervals per session</span><span class="sx">Each average has a bootstrap 95% interval computed over sessions rather than lines, since lines from one session are not independent. A difference whose interval includes zero is printed as <b>inconclusive</b>.</span></div>
-        <div><span class="st">No averages from tiny samples</span><span class="sx">Below a minimum number of sessions, the report prints the count instead of a value.</span></div>
-        <div><span class="st">Credit by cost</span><span class="sx">A session is attributed to the command that accounts for most of its cost. Counting tagged messages instead had credited the most expensive sessions to a wrap-up command that runs at the end of every long session.</span></div>
-        <div><span class="st">Missing is not zero</span><span class="sx">When a rate has no denominator it is stored as empty, so missing data cannot show up as a perfect score.</span></div>
-        <div><span class="st">Call-level verification</span><span class="sx">A companion check confirms that each tool call in a transcript matches the call that was sent over the wire, and that each result matches the one delivered. It is used to check <a href="/portfolio/terse/">terse</a>&rsquo;s claim that its compression loses nothing.</span></div>
-        <div><span class="st">Weaknesses listed up front</span><span class="sx">The README lists seven known weaknesses. The largest: commits are linked to sessions by time, so a session that overlaps a manual commit gets credit for it.</span></div>
+        <div><span class="st">Intervals are computed per session</span><span class="sx">Each average comes with a bootstrap 95% interval computed over whole sessions instead of individual lines, since lines from one session are not independent of each other. A difference whose interval includes zero is printed as <b>inconclusive</b>.</span></div>
+        <div><span class="st">Small samples show a count</span><span class="sx">Below a minimum number of sessions, the report prints the session count instead of an average.</span></div>
+        <div><span class="st">Sessions are credited by cost</span><span class="sx">A session is attributed to the command that accounts for most of its cost. Counting tagged messages instead had credited the most expensive sessions to a wrap-up command that runs at the end of every long session.</span></div>
+        <div><span class="st">Missing rates are stored as empty</span><span class="sx">When a rate has no denominator it is stored as an empty value, so missing data cannot show up as a perfect score.</span></div>
+        <div><span class="st">Tool calls are checked against what was sent</span><span class="sx">A companion check confirms that each tool call in a transcript matches the call that was sent over the network, and that each result matches the one delivered. It is used to test the claim of <a href="/portfolio/terse/">terse</a>, a separate compression project, that its compression loses nothing.</span></div>
+        <div><span class="st">Known weaknesses are documented</span><span class="sx">The README lists seven known weaknesses. The largest is that commits are linked to sessions by time, so a session that overlaps a manual commit gets credit for it.</span></div>
       </div>
       <div class="tag-row" style="margin-top:20px">
         <span class="tag">Agent evaluation</span><span class="tag">Statistics</span>

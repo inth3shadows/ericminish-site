@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Measuring coding agents by what happens to their code | Eric Minish</title>
-  <meta name="description" content="Four Claude models across 681 coding sessions: I could not tell their code survival apart, but their cost per session differed clearly. Method, results with 95% intervals, and limits.">
+  <meta name="description" content="A comparison of four Claude models on 612 coding sessions from my own repositories. I detected no difference in how much of their code survived, but how much of my usage limit each session used, measured in weighted tokens, differed clearly. Method, results with 95% intervals, and limits.">
   <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
   <link rel="canonical" href="https://www.ericminish.com/writing/measuring-coding-agents/">
   <link rel="alternate" type="application/atom+xml" title="Eric Minish — Writing" href="/writing/feed.xml">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="Measuring coding agents by what happens to their code">
-  <meta property="og:description" content="Four Claude models across 681 coding sessions: code survival I could not tell apart, and clear differences in cost.">
+  <meta property="og:description" content="Four Claude models compared on 612 coding sessions: no detectable difference in how much of their code survived, and clear differences in usage per session.">
   <meta property="og:url" content="https://www.ericminish.com/writing/measuring-coding-agents/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
@@ -22,7 +22,7 @@
   <meta property="article:tag" content="Agent evaluation">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Measuring coding agents by what happens to their code">
-  <meta name="twitter:description" content="Four Claude models across 681 coding sessions: code survival I could not tell apart, and clear differences in cost.">
+  <meta name="twitter:description" content="Four Claude models compared on 612 coding sessions: no detectable difference in how much of their code survived, and clear differences in usage per session.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <script type="application/ld+json">
@@ -57,47 +57,52 @@
     <article class="post">
       <header class="post-header">
         <h1>Measuring coding agents by what happens to their code</h1>
-        <p class="post-dek">I compared four Claude models across 681 coding sessions in my own repositories.
-          I could not tell their code survival apart. Their cost per session differed clearly.</p>
+        <p class="post-dek">I compared four Claude models on 612 coding sessions in my own repositories.
+          How much of their code survived did not differ detectably, but how much of my usage limit each session used did.</p>
         <p class="post-meta">
           <span>By <a href="/about/">Eric Minish</a></span>
           <span>Published <time datetime="2026-11-01">1 November 2026</time></span>
-          <!-- auto:start readtime --><span>6 min read</span><!-- auto:end readtime -->
+          <!-- auto:start readtime --><span>7 min read</span><!-- auto:end readtime -->
         </p>
       </header>
 
       <div class="summary">
         <p><b>Result.</b> Between 30 June and 1 November 2026, the share of an agent&rsquo;s code still
           present later did not differ detectably between Claude Opus 4.8, Opus 5, Opus 5.5 and Sonnet 5.
-          All six pairwise intervals include zero. Cost did differ: on comparable work, Opus 5.5 used about
-          91,000 more weighted tokens per session than Opus 5 (95% interval 43,000 to 138,000).</p>
-        <p><b>Data.</b> 681 coding sessions with checked survival, from 11,611 sessions recorded by
-          <a href="/portfolio/flight-recorder/">flight-recorder</a>. The models were not assigned at random,
-          which is the main limit on these results.</p>
+          For every pair of models, the 95% interval (the range the difference plausibly falls in) runs
+          from negative to positive. Usage did differ: on comparable work, Opus 5.5 used about 91,000 more
+          weighted tokens per session than Opus 5 (95% interval 43,000 to 138,000). Weighted tokens measure
+          how fast a session uses up my five-hour usage limit. They do not reflect the models&rsquo; different
+          prices.</p>
+        <p><b>Data.</b> 681 coding sessions with checked survival, 612 of them from the four models
+          compared, out of 11,611 sessions recorded by <a href="/portfolio/flight-recorder/">flight-recorder</a>.
+          The models were not assigned at random, which is
+          the main limit on these results.</p>
       </div>
 
       <nav class="toc" aria-label="Contents">
         <p>Contents</p>
         <ol>
-          <li><a href="#question">The question</a></li>
-          <li><a href="#data">The data</a></li>
+          <li><a href="#question">What I wanted to know</a></li>
+          <li><a href="#data">Where the data comes from</a></li>
           <li><a href="#survival">How survival is measured</a></li>
           <li><a href="#comparison">How models are compared</a></li>
-          <li><a href="#results">Results</a></li>
+          <li><a href="#results">What the comparison found</a></li>
           <li><a href="#limits">What these results cannot show</a></li>
-          <li><a href="#mistakes">Mistakes in earlier versions</a></li>
+          <li><a href="#mistakes">Errors found in earlier versions of the tool</a></li>
           <li><a href="#reproduce">How to reproduce it</a></li>
           <li><a href="#corrections">Corrections</a></li>
         </ol>
       </nav>
 
-      <h2 id="question">The question <a class="anchor" href="#question" aria-label="Link to this section">#</a></h2>
-      <p>When I switch the model my coding agent uses, does the code it writes hold up better, and what
-        does the switch cost? Most model comparisons answer this with public benchmarks or with the
-        agent&rsquo;s own report that a task succeeded. I wanted an answer from my own repositories, using
-        evidence the agent cannot influence: whether its code is still there weeks later.</p>
+      <h2 id="question">What I wanted to know <a class="anchor" href="#question" aria-label="Link to this section">#</a></h2>
+      <p>When I switch the model my coding agent uses, I want to know whether more of the code it writes
+        stays in place, and what the switch costs. Most model comparisons answer this with public
+        benchmarks or with the agent&rsquo;s own report that a task succeeded. I wanted an answer from my
+        own repositories, using evidence that does not depend on the agent&rsquo;s report: whether its
+        code is still there days or weeks later. Code that remains is not necessarily correct.</p>
 
-      <h2 id="data">The data <a class="anchor" href="#data" aria-label="Link to this section">#</a></h2>
+      <h2 id="data">Where the data comes from <a class="anchor" href="#data" aria-label="Link to this section">#</a></h2>
       <p>Every coding-agent session on my machines leaves a transcript on disk. flight-recorder reads
         those transcripts after the fact and stores one row per session in SQLite. Between 30 June and
         1 November 2026 it recorded 11,611 sessions, 1,297 of them coding sessions, meaning sessions that edited at least one file.
@@ -111,21 +116,26 @@
           <tr><td>Claude Opus 5.5</td><td class="num">121</td></tr>
         </table>
       </div>
-      <p>Other models appear in the data with fewer than 20 sessions each and are left out of the comparison.</p>
-      <p>Cost is measured in weighted tokens: input and output tokens weighted by their relative price,
-        with reads from the prompt cache counted as zero.<sup id="fn1-ref"><a href="#fn1">1</a></sup>
-        Each session&rsquo;s cost is reported in thousands of weighted tokens.</p>
+      <p>These four models account for 612 of the 681 sessions. Other models appear in the data with
+        fewer than 20 sessions each and are left out of the comparison.</p>
+      <p>Cost is measured in weighted tokens. Each kind of token (input, output, writes to the prompt
+        cache, reads from it) gets a weight for how fast it uses up my five-hour usage limit, fitted by
+        regression (R&sup2; 0.94).<sup id="fn1-ref"><a href="#fn1">1</a></sup> The same weights apply to
+        every model, so this measures usage against a limit and does not reflect the models&rsquo;
+        different prices. Each session&rsquo;s cost is reported in thousands of weighted tokens.</p>
 
       <h2 id="survival">How survival is measured <a class="anchor" href="#survival" aria-label="Link to this section">#</a></h2>
-      <p>For each session, flight-recorder hashes every substantive line the agent added. Later, it looks
-        for each hashed line in the current version of the file. A session&rsquo;s survival is the share of
-        its checked lines that are still present. A survival of 0.85 means 85% of the lines it wrote are
-        still in the code.</p>
-      <p>Matching on line content matters. Tracking commit IDs instead would score surviving code as
-        deleted whenever history is rebased or squashed, because both operations change every commit ID.</p>
-      <p>Lines whose file cannot be found are recorded as unknown and left out of the denominator. An
-        early version counted them as deleted, which made one repository score 0.448 when the correct
-        figure was 0.796.</p>
+      <p>For each session, flight-recorder hashes every substantive line the agent added, turning each
+        line into a short fingerprint. When the session is scored, it looks for each fingerprint in the
+        file as it is at that time, checking up to 60 files per session. A session&rsquo;s survival is
+        the share of its checked lines that are still present. A survival of 0.85 means 85% of the lines
+        checked are still in the code.</p>
+      <p>Lines are matched by content because rebasing (replaying commits onto a different starting
+        point) and squashing (combining several commits into one) both change every commit ID. Tracking
+        commit IDs would score surviving code as deleted whenever history is rewritten this way.</p>
+      <p>Lines whose file cannot be found are recorded as unknown and are not counted when computing the
+        share. An early version counted them as deleted, which made one repository score 0.448 when the
+        correct figure was 0.796.</p>
 
       <h2 id="comparison">How models are compared <a class="anchor" href="#comparison" aria-label="Link to this section">#</a></h2>
       <p>Comparing all sessions of one model with all sessions of another mixes in the kind of work
@@ -133,14 +143,15 @@
         sessions are grouped into cohorts: the same repository, the same task type, and a similar change
         size (small, medium or large).</p>
       <p>Within each cohort where both models have at least 4 sessions, the tool takes the difference
-        between their averages. Those differences are then averaged across cohorts. Every figure comes
-        with a 95% interval from a bootstrap over sessions.<sup id="fn2-ref"><a href="#fn2">2</a></sup>
+        between their averages. Those differences are then averaged across cohorts, so every result
+        below is a difference between two models. Each figure comes with a 95% interval from a bootstrap,
+        which resamples the sessions many times with replacement and recomputes the difference each time.<sup id="fn2-ref"><a href="#fn2">2</a></sup>
         When an interval includes zero, the data does not distinguish the two models on that measure.</p>
 
-      <h2 id="results">Results <a class="anchor" href="#results" aria-label="Link to this section">#</a></h2>
-      <h3>Survival</h3>
-      <p>No pair of models differs detectably in survival. The point estimates are all within 0.08 of
-        zero, and every interval crosses it.</p>
+      <h2 id="results">What the comparison found <a class="anchor" href="#results" aria-label="Link to this section">#</a></h2>
+      <h3>How much code survived</h3>
+      <p>No pair of models differs detectably in survival. The estimated differences are all within 0.08 of zero, and
+        every interval crosses it.</p>
       <figure>
         <figcaption>Difference in survival for each pair of models, first model minus second. Dots are
           averages across shared cohorts; lines are 95% intervals. Grey intervals include zero.</figcaption>
@@ -181,10 +192,10 @@
 <!-- auto:end chart-survival -->
       </figure>
 
-      <h3>Cost per session</h3>
-      <p>Cost separates the models in five of the six pairs. Opus 5.5 was the most expensive model in
-        every pair it appears in. On comparable work it used about 71,000 more weighted tokens per session
-        than Opus 4.8, 91,000 more than Opus 5, and 138,000 more than Sonnet 5.</p>
+      <h3>Cost per session in weighted tokens</h3>
+      <p>Weighted tokens separate the models in five of the six pairs. Opus 5.5 used the most weighted
+        tokens in every pair it appears in. On comparable work it used about 71,000 more weighted tokens
+        per session than Opus 4.8, 91,000 more than Opus 5, and 138,000 more than Sonnet 5.</p>
       <figure>
         <figcaption>Difference in cost per session, in thousands of weighted tokens, first model minus
           second. Green intervals exclude zero.</figcaption>
@@ -231,14 +242,13 @@
 <!-- auto:end chart-ktok -->
       </figure>
 
-      <h3>Other measures</h3>
-      <p>Sonnet 5 had a higher tool error rate than each Opus model, by 1.3 to 1.8 percentage points.
-        These differences are small, but their intervals exclude zero. Opus 5 read fewer files it never
-        edited, and rewrote less of its own output, than Sonnet 5. The remaining differences in those two
-        measures were inconclusive.</p>
-      <p>Taken together: on my repositories over these four months, the more expensive models did not
-        produce code that lasted longer. If cost matters, the cheaper models were the better choice on
-        this evidence.</p>
+      <h3>What the other measures showed</h3>
+      <p>Sonnet 5&rsquo;s tool error rate was higher than each Opus model&rsquo;s, by 1.3 to 1.8
+        percentage points, and the intervals for these differences exclude zero. Two more measures
+        separated Opus 5 from Sonnet 5: Opus 5 read fewer files it never edited, and rewrote less of its
+        own output. The other model pairs were inconclusive on those two measures.</p>
+      <p>On my repositories over these four months, I detected no difference in survival between the
+        model that used the most weighted tokens and the models that used fewer. The limits below apply to that finding.</p>
 
       <h2 id="limits">What these results cannot show <a class="anchor" href="#limits" aria-label="Link to this section">#</a></h2>
       <ol>
@@ -248,18 +258,19 @@
         <li><b>No detectable difference does not mean no difference.</b> Each model has between 4 and 32 sessions
           per cohort, and most cohorts have fewer than 15. With intervals this wide, a survival gap of around 10 percentage points between two
           models could go unseen.</li>
-        <li><b>Older sessions have had longer to be rewritten.</b> Survival is checked once, against the
-          current code. A model used mostly in July has had more time for its lines to be replaced than one
-          used in October.</li>
-        <li><b>Commits are linked to sessions by time.</b> A session that overlaps a commit I made by hand
-          gets credit for it. This adds noise to interactive sessions.</li>
-        <li><b>One developer, one set of repositories.</b> These are my projects and my habits. The method
-          transfers; the numbers do not.</li>
+        <li><b>Sessions were checked at different ages.</b> Survival was measured when each session was
+          scored. The tool re-scores a session only until it is seven days old, and then keeps that
+          figure. Only 37 of the 1,296 scored sessions were scored on or after 31 October. Many older sessions were scored more
+          than a week after they ended, which gave their lines longer to be rewritten: 666 of the 1,146
+          sessions that ended before 20 October were scored more than 8 days after they ended.</li>
+        <li><b>The data comes from one developer&rsquo;s repositories.</b> These are my projects and my
+          habits. The method can be run elsewhere, but these numbers describe only mine.</li>
       </ol>
 
-      <h2 id="mistakes">Mistakes in earlier versions <a class="anchor" href="#mistakes" aria-label="Link to this section">#</a></h2>
-      <p>Each of these produced a confident number that was wrong. They are described in more detail
-        in the <a href="/portfolio/flight-recorder/">flight-recorder case study</a>.</p>
+      <h2 id="mistakes">Errors found in earlier versions of the tool <a class="anchor" href="#mistakes" aria-label="Link to this section">#</a></h2>
+      <p>Earlier versions of flight-recorder reported each figure below, and each was wrong for the
+        reason given. The <a href="/portfolio/flight-recorder/">flight-recorder case study</a> has more
+        detail.</p>
       <ul>
         <li>The tool error rate read 0.000 everywhere, because about half of failed tool calls are not
           flagged as errors. It now also checks the text of each result.</li>
@@ -285,10 +296,9 @@ python3 report.py models --min-n 4 # matched-pair model comparison</code></pre>
 
       <ol class="footnotes">
         <li id="fn1">Weights: output tokens 1.0, input tokens 0.94, cache writes 0.11, cache reads 0. They
-          come from the ledger I use to track token spend. <a href="#fn1-ref" aria-label="Back to text">↩</a></li>
-        <li id="fn2">A bootstrap resamples the sessions many times with replacement and recomputes the
-          difference each time; the middle 95% of those results is the interval. It resamples whole
-          sessions, because lines from one session are not independent of each other.
+          come from the ledger I use to track token use. <a href="#fn1-ref" aria-label="Back to text">↩</a></li>
+        <li id="fn2">The middle 95% of the resampled results is the interval. The bootstrap resamples
+          whole sessions, because lines from one session are not independent of each other.
           <a href="#fn2-ref" aria-label="Back to text">↩</a></li>
       </ol>
     </article>

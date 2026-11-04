@@ -12,6 +12,6 @@
     <id>https://www.ericminish.com/writing/measuring-coding-agents/</id>
     <published>2026-11-01T00:00:00Z</published>
     <updated>2026-11-01T00:00:00Z</updated>
-    <summary>Four Claude models across 681 coding sessions: I could not tell their code survival apart, but their cost per session differed clearly. Method, results with 95% intervals, and limits.</summary>
+    <summary>A comparison of four Claude models on 612 coding sessions from my own repositories. I detected no difference in how much of their code survived, but how much of my usage limit each session used, measured in weighted tokens, differed clearly. Method, results with 95% intervals, and limits.</summary>
   </entry>
 </feed>

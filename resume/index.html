@@ -10,14 +10,14 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="Resume — Eric Minish">
-  <meta property="ogdescription" content="Systems engineer. I build checks that find problems in systems before people notice them.">
+  <meta property="og:description" content="Systems engineer. I build checks that find problems in systems before people notice them.">
   <meta property="og:url" content="https://www.ericminish.com/resume/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Resume — Eric Minish">
-  <meta name="twitterdescription" content="Systems engineer. I build checks that find problems in systems before people notice them.">
+  <meta name="twitter:description" content="Systems engineer. I build checks that find problems in systems before people notice them.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -61,18 +61,19 @@
     <section class="section">
       <div class="prose">
         <p>
-          <strong>AI infrastructure and backend engineering, built while working in operations.</strong>
-          Python, Go and SQL; MCP servers, retrieval and evaluation harnesses, ingestion pipelines
-          and the cloud services they run on. I built, deployed and maintain most of it myself.
+          I work in Python, Go and SQL. I build MCP servers (MCP is the standard that connects tools
+          to AI agents), retrieval systems, evaluation harnesses, ingestion pipelines, and the cloud
+          services they run on. I built, deployed and maintain most of it myself.
         </p>
         <p>
           I look for problems that do not raise an error, and build checks that catch them. In
-          customer-success operations that meant account risk: churn fell from 30% to under 10%
-          after the system began flagging at-risk customers before they left. More recently it has
-          meant my own tools: a proxy that only sends compressed output it can decode back exactly,
-          a search engine whose evaluation showed it answered half of the test questions usefully,
-          and a well-depth model that lost its strongest variable once it was measured against the
-          right baseline.
+          customer-success operations the problem was account risk: churn fell from 30% to under 10%
+          after the system began flagging at-risk customers before they left. More recently I have
+          applied the same approach to my own tools: a proxy that only sends compressed output it can
+          decode back exactly, a search engine whose evaluation showed it gave useful answers to half
+          of the test questions, and a well-record model in which a target that looked like new signal
+          turned out to be about 96% a restatement of well depth, once it was compared with a baseline
+          computed from depth (a baseline is the simple prediction a model has to beat).
         </p>
       </div>
     </section>
@@ -86,17 +87,17 @@
         <p class="fine" style="margin:0 0 12px">Internal title: Lead Customer Account Specialist. At Transactly since Sep 2020.</p>
         <div class="prose">
           <p>
-            I own the internal systems layer: the workflow logic, the integrations between it and
-            everything else, and the reporting that explains the results to people who were not involved. Roughly sixty
-            active projects, two-thirds of them changed in the last month.
+            I own the internal systems layer: the workflow logic, its integrations with the other
+            systems, and the reporting that explains the results to people who were not involved.
+            That covers roughly sixty active projects, two-thirds of which changed in the last month.
           </p>
           <ul>
-            <li>Scope and deploy technical workflows across customer success, onboarding and internal operations using SQL, CRM APIs and multi-department tooling.</li>
+            <li>Built a compliance service assisted by a large language model (LLM). It transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.</li>
+            <li>Scope and deploy technical workflows for customer success, onboarding and internal operations, using SQL, the APIs (programming interfaces) of our CRM (customer relationship management) system, and tools shared by several departments.</li>
             <li>Built and maintain SQL-backed reporting for subscription logic and billing reconciliation.</li>
-            <li>Lead employee onboarding and offboarding workflows tied to access control and system provisioning.</li>
-            <li>Design and implement CRM automations across customer success, sales and partnerships.</li>
-            <li>Support internal infrastructure through custom workflow development and scripting — ingestion services and scheduled jobs on managed cloud infrastructure, warehouse-backed reporting behind access control, and operational microservices. Python-dominant, TypeScript for user-facing work, around 140 test files across the estate.</li>
-            <li>Built an LLM-assisted compliance service: it transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.</li>
+            <li>Lead the employee onboarding and offboarding workflows, which are tied to access control and system provisioning.</li>
+            <li>Design and implement CRM automations for customer success, sales and partnerships.</li>
+            <li>Write custom workflows and scripts for internal infrastructure. These include ingestion services and scheduled jobs on managed cloud infrastructure, reporting built on a data warehouse and protected by access control, and operational microservices. The code is mostly Python, with TypeScript for user-facing work. These systems have around 140 test files.</li>
           </ul>
         </div>
       </article>
@@ -112,12 +113,12 @@
             risk early.
           </p>
           <ul>
-            <li>Cut client churn from <strong>30% to under 10%</strong> through process and engagement redesign backed by real-time risk scoring.</li>
+            <li>Cut client churn from <strong>30% to under 10%</strong> by redesigning processes and customer engagement around real-time risk scoring.</li>
             <li>Built and ran SQL-driven credit, billing and subscription reporting.</li>
-            <li>Coordinated ticket workflows across success and transaction-coordination operations, <strong>halving</strong> issue resolution time.</li>
-            <li>Served as the customer-success stakeholder for CRM, internal tooling and platform workflows.</li>
-            <li>Wrote and deployed the customer-success playbooks and onboarding documentation.</li>
-            <li>Kept every system running through a 30% headcount reduction.</li>
+            <li>Coordinated ticket workflows between the success and transaction-coordination teams. Issue resolution time fell by <strong>half</strong>.</li>
+            <li>Represented customer success in decisions about the CRM, internal tools and platform workflows.</li>
+            <li>Wrote and rolled out the customer-success playbooks and onboarding documentation.</li>
+            <li>Kept the systems I was responsible for running through a 30% headcount reduction.</li>
           </ul>
         </div>
       </article>
@@ -127,11 +128,11 @@
         <h3>Agent infrastructure</h3>
         <div class="prose">
           <ul>
-            <li><a href="/portfolio/runecho/">RunEcho</a> — stops a coding agent writing a call to a function the repo does not have, before the write lands. It takes about 12 ms, uses no model or network, and adds nothing to the agent&rsquo;s context when the check passes. Public, MIT.</li>
-            <li><a href="/portfolio/terse/">terse</a> — compresses AI tool output losslessly: 59% fewer tokens across 365,144 tokens of real API payloads, compared with the TOON format, which made the same payloads 7% larger. Public, MIT.</li>
-            <li><a href="/portfolio/testgraph/">testgraph</a> — given a diff, names the user journeys it could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT, on PyPI.</li>
-            <li><a href="/portfolio/modelbench/">modelbench</a> — benchmarks models on real bug-fix commits mined from my own repositories, three runs per pair, scored on cost per solved task. The write-up lists the earlier figures it had to correct.</li>
-            <li><a href="/portfolio/harness/">harness</a> — an agent harness that judges each change with four rule-based checks, uses no model to judge, and never commits on its own.</li>
+            <li><a href="/portfolio/runecho/">RunEcho</a> stops a coding agent from writing a call to a function the repository does not have. The check runs before the code is written, takes about 12 ms, uses no model or network, and adds nothing to the agent&rsquo;s context when it passes. Public, MIT license.</li>
+            <li><a href="/portfolio/terse/">terse</a> is a proxy that compresses AI tool output without losing information. Across 365,144 tokens of real API payloads it used 59% fewer tokens than the original payloads. TOON 4.1.1 (Token-Oriented Object Notation, a compact JSON encoding written for model prompts) made the same payloads 6.5% larger. Public, MIT license.</li>
+            <li><a href="/portfolio/testgraph/">testgraph</a> reads a diff (the lines a code change adds and removes) and names the user journeys the change could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT license, published on PyPI.</li>
+            <li><a href="/portfolio/modelbench/">modelbench</a> benchmarks models on real bug-fix commits mined from my own repositories. Each model runs each task three times, and models are scored on cost per solved task. Its write-up lists the earlier figures that were later corrected.</li>
+            <li><a href="/portfolio/harness/">harness</a> runs a coding agent and judges each change it makes with four rule-based checks. No model takes part in the judging, and the harness never commits on its own.</li>
           </ul>
         </div>
       </article>
@@ -141,10 +142,10 @@
         <h3>Data work and shipped applications</h3>
         <div class="prose">
           <ul>
-            <li><a href="/portfolio/lodestone/">Lodestone</a> — local search over years of my working notes. Its evaluation showed it gave useful answers to 5 of 10 test questions at full scale, and I published that result.</li>
-            <li><a href="/portfolio/frostline/">Frostline</a> — spatial models over 50,083 well records, and a business built around what they can predict.</li>
-            <li>Reported <strong>32 bugs</strong> in a code-analysis tool I use daily, including two race conditions reproduced on demand with purpose-built harnesses.</li>
-            <li>Three applications deployed end to end — a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client.</li>
+            <li><a href="/portfolio/lodestone/">Lodestone</a> is local search over years of my working notes. Its evaluation showed that it gave useful answers to 5 of 10 test questions at full scale, and I published that result.</li>
+            <li><a href="/portfolio/frostline/">Frostline</a> is a set of spatial models built on 50,083 well records, and a business built around what the models can predict. One candidate target, the aquifer interval (the top and bottom depths of the water-bearing layer), showed +38.8% apparent skill against the global median. Against a baseline computed from well depth, that skill disappeared: the interval was about 96% a restatement of depth, so I cut it.</li>
+            <li>Filed <strong>32 issues</strong> against codegraph (colbymchenry/codegraph), an open-source code-intelligence tool I use daily; 21 have since been closed. I built fault-injection harnesses (programs that force the failure on demand) that reproduce two of the bugs.</li>
+            <li>Deployed three applications end to end: a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client.</li>
           </ul>
         </div>
       </article>
@@ -154,9 +155,9 @@
         <h3>Customer Success Manager</h3>
         <div class="prose">
           <ul>
-            <li>Handled customer service for 70+ partners, 3,000+ partner clients and 400,000+ end customers, responding to every ticket within two hours.</li>
-            <li>Tested issues for reproducibility before escalating, documented what would not reproduce, and ran the weekly session that fed that back to product.</li>
-            <li>Wrote the FAQ and knowledge-base documentation, and carried customer feedback into product recommendations.</li>
+            <li>Handled customer service for 70+ partners, 3,000+ partner clients and 400,000+ end customers. Every ticket received a response within two hours.</li>
+            <li>Tested each issue for reproducibility before escalating it, documented the ones that would not reproduce, and ran the weekly session that reported them back to product.</li>
+            <li>Wrote the FAQ and knowledge-base documentation, and turned customer feedback into product recommendations.</li>
           </ul>
         </div>
       </article>
@@ -166,8 +167,8 @@
         <h3>Owner and founder</h3>
         <div class="prose">
           <ul>
-            <li>Ran day-to-day operations under five service contracts, handling up to 70 calls and 100 emails a day.</li>
-            <li>Created and documented the processes underneath — refunds, chargebacks, phone sales, fulfilment.</li>
+            <li>Ran day-to-day operations under five service contracts. The work involved up to 70 calls and 100 emails a day.</li>
+            <li>Created and documented the processes behind refunds, chargebacks, phone sales and fulfillment.</li>
           </ul>
         </div>
       </article>
@@ -178,7 +179,7 @@
         <div class="prose">
           <ul>
             <li>Managed complex caseloads for four attorneys.</li>
-            <li>Worked across departments to keep discovery moving, so attorneys had time to prepare for hearings.</li>
+            <li>Worked across departments to keep discovery moving, so the attorneys had time to prepare for hearings.</li>
           </ul>
         </div>
       </article>
@@ -188,11 +189,11 @@
       <div class="section-head"><div><h2>What I work with</h2></div></div>
       <div class="subs">
         <div><span class="st">Languages</span><span class="sx">Python, TypeScript/JavaScript, Go, SQL, Bash</span></div>
-        <div><span class="st">AI &amp; ML</span><span class="sx">LLM evaluation and benchmarking, retrieval and RAG, embeddings, cross-encoder re-ranking, MCP servers and clients, agent tooling, prompt and eval harnesses, LiteLLM</span></div>
-        <div><span class="st">Data</span><span class="sx">PostgreSQL, BigQuery, SQLite, ETL and ingestion pipelines, spatial modelling, conformal prediction intervals, reporting and dashboards</span></div>
+        <div><span class="st">AI &amp; ML</span><span class="sx">LLM evaluation and benchmarking, retrieval and retrieval-augmented generation (RAG, where a model answers from passages a search step found), embeddings (text stored as numbers so similar passages can be found), cross-encoder re-ranking (re-scoring search results with a model that reads the query and each result together), MCP servers and clients, agent tooling, prompt and eval harnesses, LiteLLM (one interface to many model providers)</span></div>
+        <div><span class="st">Data</span><span class="sx">PostgreSQL, BigQuery, SQLite, ETL (extract, transform, load) and ingestion pipelines, spatial modeling, conformal prediction intervals (prediction ranges with a stated chance of containing the true value), reporting and dashboards</span></div>
         <div><span class="st">Cloud &amp; infra</span><span class="sx">Google Cloud Platform (Cloud Run, Cloud Scheduler, Cloud Tasks, BigQuery), Docker, Proxmox, Cloudflare Tunnel and Access, Caddy, nginx, systemd, Linux</span></div>
-        <div><span class="st">Platforms &amp; integration</span><span class="sx">HubSpot Ops Hub, REST APIs, webhooks, Google Apps Script, Stripe, OAuth and access provisioning</span></div>
-        <div><span class="st">Practice</span><span class="sx">pytest and Go test, CI/CD with GitHub Actions, git, technical writing and documentation</span></div>
+        <div><span class="st">Platforms &amp; integration</span><span class="sx">HubSpot Ops Hub, REST APIs, webhooks, Google Apps Script, Stripe, OAuth (the standard for giving an app access to an account without sharing its password) and access provisioning</span></div>
+        <div><span class="st">Practice</span><span class="sx">pytest and Go test, CI/CD (tests and deployments that run automatically on each change) with GitHub Actions, git, technical writing and documentation</span></div>
       </div>
       <p class="fine" style="margin-top:12px">
         Each of these is used in work listed above.
@@ -209,7 +210,7 @@
     </section>
 
     <p class="closing-line">
-      <a class="button" href="/resume/eric-minish-resume-c621cda2.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
+      <a class="button" href="/resume/eric-minish-resume-e4e94c56.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
     </p>
   </main>
 
