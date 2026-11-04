@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>kb-mcp — case study | Eric Minish</title>
-  <meta name="description" content="Case study: kb-mcp, a knowledge base that coding agents write to only through proposals an AI reviewer approves, edits or rejects, with the reviewer and the search both measured.">
+  <meta name="description" content="Case study: kb-mcp, a knowledge base that coding agents write to through proposals an AI reviewer approves, edits or rejects, with the reviewer and the search both measured.">
   <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/knowledge-base/">
   <meta property="og:type" content="website">
@@ -49,7 +49,7 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 12</b><span>Agent memory · LLM review</span><span>2026</span></div>
-        <h1>A knowledge base that coding agents can write to only through an AI reviewer</h1>
+        <h1>A knowledge base that coding agents write to through an AI reviewer</h1>
         <p class="lede">
           Coding agents start each session with no memory of the last one. kb-mcp gives them a shared
           store of infrastructure facts, past decisions and standing rules, served over MCP (Model Context
@@ -138,8 +138,8 @@
         </p>
         <p>
           To find out whether the reviewer was scoring length, it was tested offline with canaries: 48 bad
-          rules (vague, duplicate, short-lived, or claiming too wide a scope), each written at about 140 and
-          about 380 characters with the same defect, plus 24 approved rules as controls. The harness calls
+          rules (vague, duplicate, short-lived, or claiming too wide a scope) in matched pairs, one at about 140
+          and one at about 380 characters with the same defect, plus 24 approved rules as controls. The harness calls
           the production prompt and model code with database connections disabled, and the pass and fail
           bars were written before the run.
         </p>
@@ -156,8 +156,8 @@
         <p>
           Short-lived and over-broad canaries were caught equally at both lengths. A second set of 12 new
           vague pairs pointed the same way (25.0% caught when long, 52.8% when short) but missed the pre-set
-          bar for the short cell, so the length effect is recorded as inconclusive. Both sets agree that the
-          reviewer approves most vague rules at either length.
+          bar for the short cell, so the length effect is recorded as inconclusive. Both sets agree that most long vague rules get through:
+          27.8% and 25.0% were caught, against 63.0% and 52.8% of the short ones.
         </p>
         <p>
           The live record matches. Of 13 coding-session rules rejected in the 60 days to 29 October, most

@@ -165,7 +165,7 @@
           Against npm codegraph 1.5.0, a callee query for a name defined in two files returned both definitions&rsquo; callees, so a two-file fixture drew 4 edges where 2 existed. codeshot re-queries such names per file and discards answers it cannot trust, such as a list codegraph cut off at 12 entries for a function with 23 callees. It then falls back to the broader query and names each affected symbol in a warning.
         </p>
         <p>
-          Reading codegraph&rsquo;s SQLite index directly, in place of about 130 sequential CLI calls, cut an architecture scan of codeshot&rsquo;s own repository from 48.7 s to 1.3 s. With its one intended difference switched off, the direct read drew byte-identical diagrams to the CLI path on five test targets. The suite reports 195 passed and 0 failed (3 November 2026). It has no measured catches in other people&rsquo;s repositories yet. Its four CI failures were all on its own development branches.
+          Reading codegraph&rsquo;s SQLite index directly, in place of about 130 sequential CLI calls, cut an architecture scan of codeshot&rsquo;s own repository from 48.7 s to 1.3 s. With its one intended difference switched off, the direct read drew byte-identical diagrams to the CLI path on five test targets. The suite reports 195 passed and 0 failed (3 November 2026). It has no measured catches in other people&rsquo;s repositories yet. Of its six CI failures, four were its own diagram check failing on development branches.
         </p>
       </div>
     </section>

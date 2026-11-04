@@ -74,10 +74,10 @@
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>The agent asks for an operation and never gets the key</h2></div></div>
+      <div class="section-head"><div><h2>The agent asks for an operation and the broker holds the key</h2></div></div>
       <div class="prose">
         <p>
-          No tool returns a credential. The agent asks for a named operation, and the broker makes
+          Only one tool can return a credential: a reveal for key rotation, which needs two gates the operator sets, and it has never been used. Otherwise the agent asks for a named operation, and the broker makes
           the request and returns the filtered response.
         </p>
       </div>
@@ -192,7 +192,7 @@
       <div class="section-head"><div><h2>Measuring the entropy layer on the broker&rsquo;s own credentials</h2></div></div>
       <div class="prose">
         <p>
-          Layer 3 is the only layer that can catch a credential the broker has never seen. In July
+          Layer 3 is the only layer that needs neither the credential&rsquo;s value nor a known pattern for it. In July
           both of its error types were measured.
         </p>
       </div>
