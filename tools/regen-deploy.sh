@@ -23,6 +23,8 @@ trap 'rm -rf "$work"' EXIT
 git -C "$REPO" fetch -q origin
 git -C "$REPO" archive "$REF" | tar -x -C "$work"
 python3 -I "$work/tools/gen-gitstrip.py" --root "$work"
+# Fill each Now-page card's generated facts; on an API error the committed facts ship unchanged.
+python3 -I "$work/tools/gen-now.py" --write --root "$work" || true
 # Refuse to ship a stale writing index/feed or a broken internal link; report copy-rule findings.
 python3 -I "$work/tools/gen-writing.py" --check
 python3 -I "$work/tools/lint-copy.py" --warn | tail -1

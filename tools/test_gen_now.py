@@ -141,5 +141,46 @@ class MainTest(unittest.TestCase):
             g.GitHub = real
 
 
+class FactsTest(unittest.TestCase):
+    def test_private_card_has_no_link_and_public_card_does(self):
+        f = g.facts(Fake({f"{U}/terse": prs(3), f"{U}/modelbench": prs(2)}), "2026-11-04")
+        self.assertIn("pulls?q=", g.fact_line(f["terse"]))
+        self.assertNotIn("href", g.fact_line(f["modelbench"]))
+        self.assertIn("2 pull requests merged in the last 30 days", g.fact_line(f["modelbench"]))
+
+    def test_fork_dates_the_card_but_adds_no_merges(self):
+        f = g.facts(Fake({"colbymchenry/codegraph": prs(4), f"{U}/codegraph": prs(9)}), "2026-11-04")
+        self.assertEqual(f["codegraph"]["merged30"], 4)
+
+    def test_one_pull_request_is_singular(self):
+        self.assertIn("1 pull request merged", g.fact_line({"last": "2026-11-01", "merged30": 1, "link": None}))
+
+    def test_write_replaces_only_inside_markers(self):
+        html = "<h3>t</h3><!-- auto:start now-terse -->old<!-- auto:end now-terse --><p>keep</p>"
+        out = g.write_facts(html, {"terse": {"last": "2026-10-30", "merged30": 5, "link": None}})
+        self.assertIn("Last change 30 October 2026", out)
+        self.assertNotIn("old", out)
+        self.assertTrue(out.endswith("<p>keep</p>"))
+
+    def test_write_refuses_a_missing_marker(self):
+        with self.assertRaises(ValueError):
+            g.write_facts("<p>no markers</p>", {"terse": {"last": None, "merged30": 0, "link": None}})
+
+    def test_write_failure_leaves_the_page_untouched(self):
+        import tempfile
+        class Boom(Fake):
+            def repo(self, full):
+                raise g.ApiError("down")
+        with tempfile.TemporaryDirectory() as d:
+            page = pathlib.Path(d, "status"); page.mkdir(); page = page / "index.html"
+            page.write_text("unchanged")
+            real, g.GitHub = g.GitHub, Boom
+            try:
+                self.assertEqual(g.main(["--write", "--root", d, "--today", "2026-11-04"]), 0)
+            finally:
+                g.GitHub = real
+            self.assertEqual(page.read_text(), "unchanged")
+
+
 if __name__ == "__main__":
     unittest.main()
