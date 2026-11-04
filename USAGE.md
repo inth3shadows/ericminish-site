@@ -7,13 +7,13 @@ working on now, and shows the infrastructure work in enough detail that a
 reader can check it. It is deliberately not a sales page — contractor work is
 pointed at The Frostline Co. by link.
 
-The site is a handful of main pages — home, about, portfolio, homelab, status,
-contact, résumé — plus a set of long-form case studies under `/portfolio`.
-Almost everything is hand-written: what is in this repo is what visitors see.
-The one exception is the commit strip on the home page, between the
-`<!-- auto:start gitstrip -->` markers. A daily job regenerates it from the
-GitHub API and deploys the latest `main` with it, so edit outside those
-markers. Anything merged to `main` goes live within a day.
+The main pages are home, about, portfolio, writing, homelab, status, contact
+and résumé, with long-form case studies under `/portfolio`. Most page content
+is hand-written. Helpers generate the writing index, feed, sitemap entries,
+reading times and charts. A daily job regenerates the home page's commit strip
+from the GitHub API between the `<!-- auto:start gitstrip -->` markers, so edit
+outside those markers. Merged changes normally go live within a day when the
+workstation is available and deployment checks pass.
 
 ## How to Use It
 
@@ -39,8 +39,11 @@ content-addressed name, deletes the old one, and rewrites the download link,
 so the file on the page always matches what was last built.
 
 **Publishing.** Changes are not live until the site is deployed. Deployment
-copies the files onto the server that hosts the site, and is a manual step —
-saving a file, or even committing it, changes nothing that a visitor sees.
+copies the files onto the server that hosts the site. A daily workstation job
+deploys `origin/main` after regenerating the contribution strip and checking
+the writing index, feed and internal links. Saving or committing locally does
+not publish a change; it must reach `origin/main` and be deployed. Manual
+deployment is also available through the private runbook.
 
 ## Writing a Post
 
