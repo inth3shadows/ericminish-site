@@ -49,9 +49,9 @@
     <section class="hero">
       <div class="hero-copy">
         <p class="eyebrow">Case study · AI infrastructure</p>
-        <h1>Cutting agent token cost without losing a byte</h1>
+        <h1>Reducing agent token cost with lossless compression of tool output</h1>
         <p class="lede">
-          An AI agent calls tools such as search, file listings and API requests (an API is the interface a service exposes to other programs), and the model reads every result, so tool output is a large part of the token bill. Tokens are the units a model is limited and billed by. terse is a drop-in proxy that sits in front of any MCP server (Model Context Protocol, the standard way agents connect to tools) and compresses its output so the original can always be rebuilt exactly. On nine GitHub API payloads it used 59% fewer tokens.
+          An AI agent calls tools such as search, file listings and API requests, and the model reads every result, so tool output is a large part of the token bill. Tokens are the units a model is limited and billed by. terse is a drop-in proxy that sits in front of any MCP server. MCP (Model Context Protocol) is the standard way agents connect to tools. terse compresses the server&rsquo;s output in a form that can always be turned back into the exact original. On nine GitHub API payloads it used 59% fewer tokens. Those results describe GitHub payloads only, and the saving on other tools depends on the shape of their output.
         </p>
       </div>
       <aside class="note">
@@ -80,10 +80,10 @@
         <article class="panel">
           <div class="prose">
             <ul>
-              <li><strong>Table form.</strong> Field names that repeat on every record are written once as a table header, and each row becomes a list of values in header order.</li>
-              <li><strong>Dictionary form.</strong> Values that repeat are written once in a legend (a lookup table) and replaced by short references to it.</li>
-              <li><strong>Cross-call diffs.</strong> When a tool returns something similar to its previous result, terse can send only the difference, and does so only when it can prove the difference rebuilds the full result.</li>
-              <li><strong>Field offload.</strong> A very large value can be replaced by a handle (a short reference) that fetches the exact value on demand, so only the handle takes up context until the value is needed.</li>
+              <li>In table form, field names that repeat on every record are written once as a header, and each row becomes a list of values in header order.</li>
+              <li>Values that repeat are written once in a legend (a lookup table) and replaced by short references to it. This is the dictionary form.</li>
+              <li>When a tool returns something similar to its previous result, terse can send only the difference between the two calls. It does so only when it can prove the difference rebuilds the full result.</li>
+              <li>A very large field value can be offloaded: it is replaced by a handle (a short reference) that fetches the exact value on demand, so only the handle takes up context until the value is needed.</li>
             </ul>
           </div>
         </article>
@@ -105,7 +105,7 @@ cl100k tokens: 1810 -> 881 (51.3% saved)</code></pre>
       <div class="section-head"><div><h2>Measured against TOON</h2></div></div>
       <div class="prose">
         <p>
-          To test the claim against something outside the project, the benchmark compares terse with TOON, a published token-oriented serialisation format with the same goal. Both run over the same nine GitHub API payloads (365,144 raw tokens), every row is verified lossless, and tokens are counted with the same tokenizer. The results describe these GitHub payloads only; the saving on other tools depends on the shape of their output.
+          To test the claim against something outside the project, the benchmark compares terse with TOON, a published token-oriented serialisation format with the same goal. Both run over the same nine GitHub API payloads (365,144 raw tokens), every row is verified lossless, and tokens are counted with the same tokenizer.
         </p>
       </div>
       <div class="table-scroll">
@@ -132,11 +132,12 @@ cl100k tokens: 1810 -> 881 (51.3% saved)</code></pre>
         </p>
       </div>
       <p class="fine">
-        Re-measured on 4 August 2026 against a pinned corpus (a fixed, saved set of payloads). One row
-        changed: <code>gh_issues</code> went from 32.7% to 38.8% when the encoder learned to build one
-        schema (a description of a record's fields) that covers records of different shapes, which moved the weighted total from
-        58.3% to 59.1%. Every other row is byte-identical to the previous measurement, and
-        <code>uv run scripts/bench/benchmark.py</code> in the repository reproduces the table.
+        Re-measured on 4 August 2026 against a pinned corpus (a fixed, saved set of payloads). Only
+        <code>gh_issues</code> changed, from 32.7% to 38.8%, which moved the weighted total from 58.3% to
+        59.1%. Every other row is byte-identical to the previous measurement, and
+        <code>uv run scripts/bench/benchmark.py</code> in the repository reproduces the table. The
+        gh_issues gain came from the encoder learning to build one schema (a description of a
+        record&rsquo;s fields) that covers records of different shapes.
       </p>
     </section>
 
@@ -178,7 +179,7 @@ terse proxy -- uvx some-mcp-server --flags</code></pre>
     </section>
 
     <p class="closing-line">
-      Questions or a use case in mind? Email is best — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+      For questions or a use case, email <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
     </p>
   </main>
 

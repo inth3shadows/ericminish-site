@@ -50,11 +50,10 @@
         With your permission, inbox-triage reads headers from messages in your Gmail inbox.
         Headers are the short fields at the top of a message that describe it, such as who sent it
         and when. It reads From (sender address and display name), Subject, and Date. It also reads
-        List-Id, List-Unsubscribe, Precedence, and Auto-Submitted, four standard fields that mark
-        mailing-list and automated mail.
+        List-Id, List-Unsubscribe, Precedence, and Auto-Submitted.
       </p>
       <p>
-        It also reads Gmail's message and thread IDs (the identifiers Gmail gives each message and
+        In addition, it reads Gmail's message and thread IDs (the identifiers Gmail gives each message and
         each conversation) and labels. <strong>It does not read message bodies or attachments.</strong>
       </p>
 
@@ -69,7 +68,7 @@
 
       <h2>What is stored, and where</h2>
       <ul>
-        <li>A list of sender addresses and the group each was sorted into, the digest, and a small run-state file.
+        <li>A list of sender addresses and the group each was sorted into, the digest, and a small run-state file, which the tool uses to keep track of its state between runs.
           These live on a private computer controlled by Eric Minish.</li>
         <li>The Google sign-in token, which lets the tool access your Gmail account, is kept in a private password vault and is used only by the tool's daily run.</li>
       </ul>
@@ -95,7 +94,7 @@
       <h2>How to revoke access or delete your data</h2>
       <ul>
         <li>Revoke access at any time at <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>. The tool stops working for your account immediately.</li>
-        <li>Ask for your stored sender list and digest to be deleted by writing to <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>. They will be deleted within 30 days.</li>
+        <li>Ask for your stored sender list and digest to be deleted by writing to <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>. The stored sender list and digest will be deleted within 30 days.</li>
       </ul>
 
       <h2>What happens when this policy changes</h2>

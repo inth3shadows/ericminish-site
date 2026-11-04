@@ -49,15 +49,13 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 07</b><span>AI infrastructure · cost</span><span>2026</span></div>
-        <h1>A gateway that sends each coding-agent task to a frontier model or a cheaper open model</h1>
+        <h1>A gateway that routes coding-agent tasks across several models</h1>
         <p class="lede">
-          A coding agent does not need a frontier model (the most capable and most expensive tier of
-          large language model, or LLM) for every call, because much of its work is mechanical. I
-          built a personal gateway that connects one agent front-end (the program I type requests
-          into, which then calls a model) to a subscription frontier model and to cheaper open
-          models such as DeepSeek, GLM and Kimi. No API keys (the credentials that authorize calls
-          to a provider&rsquo;s application programming interface) are stored in config files on
-          disk, and a live display shows what the usage costs.
+          A coding agent does not need a frontier model (the most capable and most expensive tier)
+          for every call, because much of its work is mechanical. I built a personal gateway that
+          connects one agent front-end to a subscription frontier model and to cheaper open models
+          such as DeepSeek, GLM and Kimi. No API keys are stored in config files on disk, and a live
+          display shows what the usage costs.
         </p>
       </div>
       <aside class="note">
@@ -78,7 +76,7 @@
     <section class="section">
       <div class="section-head"><div><h2>Why calls go to different models</h2></div></div>
       <div class="prose">
-        <p>A subscription frontier model suits hard reasoning. Much of what an agent does, such as searching a repository, summarizing a diff or running a mechanical refactor, can be done by a cheaper model. Sending all of that work to the frontier model costs more than it needs to, and picking a model by hand before every call would take away much of the convenience of using an agent. The gateway lets each type of task go to a model chosen for it in advance.</p>
+        <p>A subscription frontier model suits hard reasoning. Much of what an agent does, such as searching a repository, summarizing code changes or making the same simple edit in many files, can be done by a cheaper model. Sending all of that work to the frontier model costs more than it needs to, and picking a model by hand before every call would take away much of the convenience of using an agent. The gateway lets each type of task go to a model chosen for it in advance.</p>
       </div>
     </section>
 
@@ -88,7 +86,7 @@
         <article class="panel">
           <div class="prose">
             <p>LiteLLM runs as an OpenAI-compatible proxy: a server that accepts requests in the format of OpenAI&rsquo;s API and forwards them to whichever provider serves the requested model. It sits in front of every provider I use. The agent talks to one endpoint whichever model answers.</p>
-            <p>A router maps task types to models, as in the config shown here, and lets me switch provider and model mid-session without restarting the agent. A second agent front-end, the OpenCode agent harness, runs with a browser interface against the same pool of models, so the setup works with more than one client.</p>
+            <p>A router maps task types to models, as in the config shown here. Separately, it lets me switch provider and model mid-session without restarting the agent. A second agent front-end, OpenCode, runs with a browser interface against the same pool of models, so the setup works with more than one client.</p>
           </div>
         </article>
         <article class="code-window">
@@ -120,7 +118,7 @@ providers:
         <pre><code>[frontier: $3.40 / $10.00]  [open-pool: $0.85 / $25.00]</code></pre>
       </article>
       <div class="prose">
-        <p>A small poller (a script that runs on a timer) copies each key&rsquo;s spend into a Postgres database table every few minutes. The cost history therefore survives dashboard refreshes and can be queried over time. Comparing spending before and after a routing change is one such query; this page does not report its result.</p>
+        <p>A small poller (a script that runs on a timer) copies each key&rsquo;s spend into a Postgres database table every few minutes. The cost history therefore survives dashboard refreshes and can be queried over time, for example to compare spending before and after a routing change.</p>
       </div>
     </section>
 
@@ -130,7 +128,7 @@ providers:
         <ul>
           <li>The gateway and router config files contain no plaintext keys. They reference keys by name.</li>
           <li>At process start, the keys are pulled from a secret broker (a separate service that stores them) and held only in memory.</li>
-          <li>When the process ends, the config is rewritten to its keyless stub, so the config file at rest never contains a key.</li>
+          <li>As an extra safeguard, the config is rewritten to its keyless stub when the process ends, so the config file at rest never contains a key.</li>
         </ul>
       </article>
       <div class="prose">

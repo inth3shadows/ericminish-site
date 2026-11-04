@@ -54,8 +54,7 @@
           A language model writes the code, and a separate oracle (a program that reports pass or
           fail) decides whether the change is acceptable. The oracle runs four checks: the
           project&rsquo;s tests, a symbol contract, a credential scan and a vulnerability scan. It is
-          mechanical and deterministic, and no language model is part of it. The gate and the role
-          runtime are built and in use.
+          mechanical and deterministic, and no language model is part of it.
         </p>
       </div>
       <aside class="note">
@@ -79,13 +78,13 @@
         <p>
           An agent that writes code is driven by a language model, and something else has to decide
           whether the change is acceptable. A common choice is a second model reviewing the first.
-          That reviewer can be confident about a bad code change, and it cannot be re-run to get the same
-          answer tomorrow.
+          That reviewer can be confident about a bad code change, and running it again does not
+          guarantee the same answer tomorrow.
         </p>
         <p>
           Here the verdict is four stateless checks (each keeps no memory between runs). Each one is
-          a program that finishes with an exit code: 0 for pass, anything else for fail. Run twice on
-          the same tree, the checks give the same answer, on any machine and with no network.
+          a program that reports an exit code. Run twice on the same tree, the checks give the same
+          answer, on any machine and with no network.
         </p>
       </div>
       <div class="table-scroll">
@@ -93,7 +92,7 @@
           <tr><th>Check</th><th>Fails when</th></tr>
           <tr><td><code>tests</code></td><td>the project&rsquo;s own test suite does not pass</td></tr>
           <tr><td><code>ir_contract</code> (symbol contract)</td><td>a change leaves its declared scope, or removes a symbol without opting in</td></tr>
-          <tr><td><code>secrets</code></td><td>a credential is found in the staged change</td></tr>
+          <tr><td><code>secrets</code></td><td>a credential is found in the staged change (the edits prepared for the next commit)</td></tr>
           <tr><td><code>cve</code> (known vulnerabilities)</td><td>a <em>reachable</em> vulnerability is found (one the project&rsquo;s code can trigger, as opposed to one that is only listed)</td></tr>
         </table>
       </div>
@@ -129,7 +128,7 @@ all four     &#8594;  the branch waits for a human</code></pre>
         <p>
           &ldquo;Autonomous&rdquo; here means the plan, produce and verify cycle runs unattended,
           and a person still sees the result. The gate matters most when nobody is watching each
-          step. In an interactive tool the person already judges every diff, so a mechanical oracle
+          step. In an interactive tool the person already judges every diff (each set of line changes), so a mechanical oracle
           adds the least there.
         </p>
       </div>

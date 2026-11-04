@@ -61,12 +61,9 @@
     <section class="section">
       <div class="prose">
         <p>
-          I work in Python, Go and SQL. I build MCP servers (MCP, the Model Context Protocol, is the
-          standard that connects tools to AI agents), retrieval systems that find the passages
-          relevant to a question, evaluation harnesses that test a system against a fixed set of
-          tasks, ingestion pipelines that bring data in from other systems, and the cloud services
-          they run on. I built, deployed and maintain
-          most of it myself.
+          I work in Python, Go and SQL. I build MCP servers (MCP is the standard that connects tools
+          to AI agents), retrieval systems, evaluation harnesses, ingestion pipelines, and the cloud
+          services they run on. I built, deployed and maintain most of it myself.
         </p>
         <p>
           I look for problems that do not raise an error, and build checks that catch them. In
@@ -75,7 +72,7 @@
           applied the same approach to my own tools: a proxy that only sends compressed output it can
           decode back exactly, a search engine whose evaluation showed it gave useful answers to half
           of the test questions, and a well-depth model that lost its strongest variable once it was
-          measured against the right baseline.
+          measured against the right baseline (the simple prediction a model has to beat).
         </p>
       </div>
     </section>
@@ -95,7 +92,7 @@
           </p>
           <ul>
             <li>Built a compliance service assisted by a large language model (LLM). It transcribes calls and scores them against a rubric. Rule-based checks run first, then a person reviews; the model never makes the final decision.</li>
-            <li>Scope and deploy technical workflows for customer success, onboarding and internal operations, using SQL, CRM (customer relationship management) APIs, and tools shared by several departments.</li>
+            <li>Scope and deploy technical workflows for customer success, onboarding and internal operations, using SQL, the APIs (programming interfaces) of our CRM (customer relationship management) system, and tools shared by several departments.</li>
             <li>Built and maintain SQL-backed reporting for subscription logic and billing reconciliation.</li>
             <li>Lead the employee onboarding and offboarding workflows, which are tied to access control and system provisioning.</li>
             <li>Design and implement CRM automations for customer success, sales and partnerships.</li>
@@ -130,9 +127,9 @@
         <h3>Agent infrastructure</h3>
         <div class="prose">
           <ul>
-            <li><a href="/portfolio/runecho/">RunEcho</a> stops a coding agent from writing a call to a function the repository does not have, before the write lands. The check takes about 12 ms, uses no model or network, and adds nothing to the agent&rsquo;s context when it passes. Public, MIT license.</li>
-            <li><a href="/portfolio/terse/">terse</a> is a proxy that compresses AI tool output without losing information: it only sends compressed output it can decode back exactly. Across 365,144 tokens of real API payloads it used 59% fewer tokens than the original payloads. TOON, a published format with the same goal, made the same payloads 7% larger. Public, MIT license.</li>
-            <li><a href="/portfolio/testgraph/">testgraph</a> reads a diff and names the user journeys the change could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT license, published on PyPI.</li>
+            <li><a href="/portfolio/runecho/">RunEcho</a> stops a coding agent from writing a call to a function the repository does not have. The check runs before the code is written, takes about 12 ms, uses no model or network, and adds nothing to the agent&rsquo;s context when it passes. Public, MIT license.</li>
+            <li><a href="/portfolio/terse/">terse</a> is a proxy that compresses AI tool output without losing information. Across 365,144 tokens of real API payloads it used 59% fewer tokens than the original payloads. The TOON format made the same payloads 7% larger. Public, MIT license.</li>
+            <li><a href="/portfolio/testgraph/">testgraph</a> reads a diff (the lines a code change adds and removes) and names the user journeys the change could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT license, published on PyPI.</li>
             <li><a href="/portfolio/modelbench/">modelbench</a> benchmarks models on real bug-fix commits mined from my own repositories. Each model runs each task three times, and models are scored on cost per solved task. Its write-up lists the earlier figures that were later corrected.</li>
             <li><a href="/portfolio/harness/">harness</a> runs a coding agent and judges each change it makes with four rule-based checks. No model takes part in the judging, and the harness never commits on its own.</li>
           </ul>
@@ -145,7 +142,7 @@
         <div class="prose">
           <ul>
             <li><a href="/portfolio/lodestone/">Lodestone</a> is local search over years of my working notes. Its evaluation showed that it gave useful answers to 5 of 10 test questions at full scale, and I published that result.</li>
-            <li><a href="/portfolio/frostline/">Frostline</a> is a set of spatial models built on 50,083 well records, and a business built around what they can predict, which is well depth. When the well-depth model was measured against the right baseline (the simple prediction a model has to beat), it lost the variable that had looked like its strongest.</li>
+            <li><a href="/portfolio/frostline/">Frostline</a> is a set of spatial models built on 50,083 well records, including the well-depth model above, and a business built around what the models can predict.</li>
             <li>Reported <strong>32 bugs</strong> in a code-analysis tool I use daily. Two of them were race conditions, which I reproduced on demand with purpose-built test harnesses.</li>
             <li>Deployed three applications end to end: a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client.</li>
           </ul>
@@ -191,11 +188,11 @@
       <div class="section-head"><div><h2>What I work with</h2></div></div>
       <div class="subs">
         <div><span class="st">Languages</span><span class="sx">Python, TypeScript/JavaScript, Go, SQL, Bash</span></div>
-        <div><span class="st">AI &amp; ML</span><span class="sx">LLM evaluation and benchmarking, retrieval and retrieval-augmented generation (RAG), embeddings, cross-encoder re-ranking (re-scoring search results with a model that reads the query and each result together), MCP servers and clients, agent tooling, prompt and eval harnesses, LiteLLM (one interface to many model providers)</span></div>
-        <div><span class="st">Data</span><span class="sx">PostgreSQL, BigQuery, SQLite, ETL and ingestion pipelines, spatial modeling, conformal prediction intervals (prediction ranges with a stated chance of containing the true value), reporting and dashboards</span></div>
+        <div><span class="st">AI &amp; ML</span><span class="sx">LLM evaluation and benchmarking, retrieval and retrieval-augmented generation (RAG, where a model answers from passages a search step found), embeddings (text stored as numbers so similar passages can be found), cross-encoder re-ranking (re-scoring search results with a model that reads the query and each result together), MCP servers and clients, agent tooling, prompt and eval harnesses, LiteLLM (one interface to many model providers)</span></div>
+        <div><span class="st">Data</span><span class="sx">PostgreSQL, BigQuery, SQLite, ETL (extract, transform, load) and ingestion pipelines, spatial modeling, conformal prediction intervals (prediction ranges with a stated chance of containing the true value), reporting and dashboards</span></div>
         <div><span class="st">Cloud &amp; infra</span><span class="sx">Google Cloud Platform (Cloud Run, Cloud Scheduler, Cloud Tasks, BigQuery), Docker, Proxmox, Cloudflare Tunnel and Access, Caddy, nginx, systemd, Linux</span></div>
-        <div><span class="st">Platforms &amp; integration</span><span class="sx">HubSpot Ops Hub, REST APIs, webhooks, Google Apps Script, Stripe, OAuth and access provisioning</span></div>
-        <div><span class="st">Practice</span><span class="sx">pytest and Go test, CI/CD with GitHub Actions, git, technical writing and documentation</span></div>
+        <div><span class="st">Platforms &amp; integration</span><span class="sx">HubSpot Ops Hub, REST APIs, webhooks, Google Apps Script, Stripe, OAuth (the standard for giving an app access to an account without sharing its password) and access provisioning</span></div>
+        <div><span class="st">Practice</span><span class="sx">pytest and Go test, CI/CD (tests and deployments that run automatically on each change) with GitHub Actions, git, technical writing and documentation</span></div>
       </div>
       <p class="fine" style="margin-top:12px">
         Each of these is used in work listed above.

@@ -51,8 +51,9 @@
         <div class="entry-stamp"><b>Entry 04</b><span>Frostline · spatial modelling</span><span>2026</span></div>
         <h1>Frostline: what spatial models can and cannot predict about wells</h1>
         <p class="lede">
-          Well depth can be predicted from location. Well yield (how much water a well produces)
-          cannot. This page shows the evidence for each, and one model target I cut after testing it
+          Well depth can be predicted from location, because neighbouring wells have similar depths.
+          Well yield (how much water a well produces) cannot: it is only weakly related to the yield
+          of neighbouring wells. This page shows the evidence for each, and one model target I cut after testing it
           against the right baseline.
         </p>
       </div>
@@ -65,8 +66,8 @@
     <section class="section">
       <div class="facts">
         <div><span class="fk">well records</span><span class="fv">50,083</span></div>
-        <div><span class="fk">Moran&rsquo;s I for well depth</span><span class="fv good">0.393</span></div>
-        <div><span class="fk">Moran&rsquo;s I for tested yield</span><span class="fv bad">0.089</span></div>
+        <div><span class="fk">how alike neighbouring areas are in well depth (Moran&rsquo;s I)</span><span class="fv good">0.393</span></div>
+        <div><span class="fk">how alike neighbouring areas are in tested yield (Moran&rsquo;s I)</span><span class="fv bad">0.089</span></div>
         <div><span class="fk">aquifer-interval target</span><span class="fv">cut</span></div>
       </div>
     </section>
@@ -95,8 +96,10 @@
         <p>
           Both maps use the same 49,527 of the 50,083 well records, the same grid and the same method:
           the median of every well in a two-kilometre cell. The left map shows well depth and the right
-          map shows tested yield. Depth forms large connected regions. Yield is scattered with no
-          visible pattern. Moran&rsquo;s I, explained below the table, puts a number on that difference.
+          map shows tested yield. Depth forms large connected regions. Yield shows little similarity
+          between neighbouring cells. Moran&rsquo;s I puts a number on that difference. It measures
+          whether neighbouring cells resemble each other: a value near 0 means neighbours are no more
+          alike than randomly chosen cells, and higher values mean more similar neighbours.
         </p>
       </div>
 
@@ -123,9 +126,7 @@
         </table>
       </div>
       <p class="fine" style="margin-top:12px">
-        Moran&rsquo;s I measures whether neighbouring cells resemble each other. A value near 0 means
-        neighbours are no more alike than randomly chosen cells, and higher values mean more similar
-        neighbours. The area covers Grand Traverse, Antrim, Kalkaska and Charlevoix counties, in cells of
+        The area covers Grand Traverse, Antrim, Kalkaska and Charlevoix counties, in cells of
         roughly two kilometres with at least five wells each. These are the project&rsquo;s own numbers,
         computed from the well table on 29 July 2026.
       </p>

@@ -54,8 +54,8 @@
           flight-recorder reads every coding-agent session saved on my machines and scores each one
           two ways: what it cost, and how much of the code it wrote was still in the repository later.
           It ignores the agent&rsquo;s own report of success, because agents often report success
-          on work that failed. The first version got four results wrong. In one, a repository&rsquo;s
-          line-survival rate read 44.8% and was 79.6% once corrected.
+          on work that failed. Code that stays in the repository is a sign the work held up, though it
+          does not prove the work was correct.
         </p>
       </div>
       <aside class="note">
@@ -91,8 +91,7 @@
       <div class="prose">
         <p>
           The outcome numbers describe what happened to the code afterwards: whether it stayed,
-          was rewritten, or was reverted. Code that stays is a sign the work held up, though it does
-          not prove the work was correct.
+          was rewritten, or was reverted.
         </p>
         <p>
           To check whether a line survived, the tool hashes each line a session adds (turns it into a
@@ -131,11 +130,11 @@
     <section class="section">
       <div class="section-head"><div><h2>Checks built into the reports</h2></div></div>
       <div class="subs">
-        <div><span class="st">Intervals are computed per session</span><span class="sx">Each average comes with a bootstrap 95% interval. The tool resamples the sessions many times, recomputes the average each time, and reports the range that holds 95% of those results. It resamples whole sessions, since lines from one session are not independent of each other. A difference whose interval includes zero is printed as <b>inconclusive</b>.</span></div>
-        <div><span class="st">Small samples show a count</span><span class="sx">When there are too few sessions to compute a reliable average, the report prints the session count instead of a value.</span></div>
+        <div><span class="st">Intervals are computed per session</span><span class="sx">Each average comes with a bootstrap 95% interval computed over whole sessions instead of individual lines, since lines from one session are not independent of each other. A difference whose interval includes zero is printed as <b>inconclusive</b>.</span></div>
+        <div><span class="st">Small samples show a count</span><span class="sx">Below a minimum number of sessions, the report prints the session count instead of an average.</span></div>
         <div><span class="st">Sessions are credited by cost</span><span class="sx">A session is attributed to the command that accounts for most of its cost. Counting tagged messages instead had credited the most expensive sessions to a wrap-up command that runs at the end of every long session.</span></div>
         <div><span class="st">Missing rates are stored as empty</span><span class="sx">When a rate has no denominator it is stored as an empty value, so missing data cannot show up as a perfect score.</span></div>
-        <div><span class="st">Tool calls are checked against the wire</span><span class="sx">A companion check confirms that each tool call in a transcript matches the call that was sent over the network, and that each result matches the one delivered. It is used to test <a href="/portfolio/terse/">terse</a>&rsquo;s claim that its compression loses nothing.</span></div>
+        <div><span class="st">Tool calls are checked against what was sent</span><span class="sx">A companion check confirms that each tool call in a transcript matches the call that was sent over the network, and that each result matches the one delivered. It is used to test the claim of <a href="/portfolio/terse/">terse</a>, a separate compression project, that its compression loses nothing.</span></div>
         <div><span class="st">Known weaknesses are documented</span><span class="sx">The README lists seven known weaknesses. The largest is that commits are linked to sessions by time, so a session that overlaps a manual commit gets credit for it.</span></div>
       </div>
       <div class="tag-row" style="margin-top:20px">

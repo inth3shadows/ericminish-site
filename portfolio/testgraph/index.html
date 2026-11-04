@@ -51,13 +51,13 @@
         <div class="entry-stamp"><b>Entry 08</b><span>Verification · static analysis</span><span>2026</span></div>
         <h1>Finding the user journeys a code change could break</h1>
         <p class="lede">
-          Test-impact tools such as pytest-testmon and Ekstazi report which tests to run, and they need coverage data (a record of which code each test executed) from a previous run. testgraph reports which user journeys a change could break. It works from a static call graph, a map of which functions call which that is built without running anything, so it works on a repository that has never run its test suite.
+          Test-impact tools such as pytest-testmon and Ekstazi report which tests to run, and they need coverage data (a record of which code each test executed) from a previous run. testgraph reports which user journeys (user-facing flows through a product) a change could break. It uses a static call graph, a map of which functions call which that is built without running anything, so it can be used on a repository that has never run its test suite.
         </p>
       </div>
       <aside class="note">
         <p>A diff (the set of changed lines) goes in, and a short ranked list of user journeys comes out, each with a confidence level. testgraph also runs as an MCP server (Model Context Protocol, the standard way agents call tools).</p>
-        <p>On one repository it found every affected journey (recall of 1.00) across five hand-labelled commits and roughly twenty seeded mutation sites.</p>
-        <p>Public, MIT licensed and on PyPI. It uses the standard library only, with no third-party dependencies.</p>
+        <p>On one repository it found every affected journey (recall of 1.00) across five hand-labelled commits and roughly twenty seeded mutation sites (small code changes injected to simulate bugs).</p>
+        <p>The package is public, MIT licensed and on PyPI. It uses the standard library only, with no third-party dependencies.</p>
       </aside>
     </section>
 
@@ -111,7 +111,7 @@ d9174b7e1..0305ada6f, ranked:
       <p class="fine">Output from a git hook (a script git runs automatically, here before a push) on a private repository, name removed. The number in brackets is the journey&rsquo;s fan-in, the count used for ranking, and J1 and J10 are the journeys&rsquo; identifiers in that repository&rsquo;s registry.</p>
       <div class="prose">
         <p>
-          An edge is one link in the call graph, from a caller to the function it calls. A journey&rsquo;s confidence level is set by the strongest path that reaches it: for each path take its weakest edge, then take the maximum across paths. A chain is as trustworthy as its worst link, and one solid route is enough. A journey reached only through weak or synthesized edges (links the analyzer inferred instead of reading a direct call) is labelled <code>VERIFY MANUALLY</code> and stays on the list.
+          An edge is one link in the call graph, from a caller to the function it calls. A journey&rsquo;s confidence level is set by the strongest path that reaches it. Each path is rated by its weakest edge, and the journey gets the rating of its best path. A chain is as trustworthy as its worst link, and one solid route is enough. A journey reached only through weak or synthesized edges (links the analyzer inferred instead of reading a direct call) is labelled <code>VERIFY MANUALLY</code> and stays on the list.
         </p>
       </div>
     </section>
@@ -138,10 +138,10 @@ d9174b7e1..0305ada6f, ranked:
       <div class="section-head"><div><h2>What the evaluation measured, and what it did not</h2></div></div>
       <div class="prose">
         <p>
-          Test selection is usually judged by how much it shrinks the suite. On that measure the regression-test-selection literature finds static selection weaker than dynamic selection: the static tool STARTS reduced suites by 68.3% against Ekstazi&rsquo;s 84.1%, and had a 5.9% safety-violation rate (cases where a test that should have run was skipped).
+          Test selection is usually judged by how much it shrinks the suite. Static selection chooses tests by analysing the code without running it. Dynamic selection chooses them from coverage recorded on earlier runs. In one comparison from the regression-test-selection literature, the static tool STARTS reduced suites by 68.3% against 84.1% for the dynamic tool Ekstazi, and had a 5.9% safety-violation rate (cases where a test that should have run was skipped).
         </p>
         <p>
-          testgraph has selectivity numbers of its own across four repositories. They are not published here: no missed-fault rate has been measured at those sizes to set beside them. Recall of 1.00 was measured on one target only: five hand-labelled commits and roughly twenty seeded mutation sites (small code changes injected to simulate bugs). A recall figure from one repository does not describe the tool in general.
+          testgraph has been measured on four repositories for how many journeys it selects. Those counts are left off this page because no missed-fault rate (how often a journey that broke was left off the list) has been measured on those repositories to set beside them. Recall of 1.00 was measured on one target only: five hand-labelled commits and roughly twenty seeded mutation sites. A recall figure from one repository does not describe the tool in general.
         </p>
         <p>
           The claim the evidence supports is that <strong>testgraph can answer on a cold start</strong>: no coverage, no CI (continuous integration, the automated build-and-test service), no prior runs. An incumbent tool could close that gap by collecting coverage on the first build or by adding static analysis. The approach also has a cost: someone has to maintain the journey registry. testgraph can draft one, but a person has to review and approve it and keep it current as the product changes.
@@ -188,7 +188,7 @@ python3 -m testgraph.select  --repo &lt;path&gt;   # rank the journeys a diff to
     </section>
 
     <p class="closing-line">
-      Questions or a use case in mind? Email is best — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+      For questions or a use case, email <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
     </p>
   </main>
 

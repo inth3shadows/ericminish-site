@@ -77,10 +77,9 @@
         <div class="prow">
           <div>
             <div class="prow-name"><a href="/portfolio/terse/">terse</a></div>
-            <p class="prow-desc">A proxy (a program that sits between two others and passes their traffic along)
-              between my AI agent and the servers that run its tools. It compresses the tool output so the
-              model reads fewer tokens (the units a model reads and is billed by). When it
-              cannot prove the compressed version decodes back exactly, it sends the original output.</p>
+            <p class="prow-desc">A proxy between my AI agent and the servers that run its tools. It compresses
+              the tool output so the model reads fewer tokens. When it cannot prove the compressed version
+              decodes back exactly, it sends the original output.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">59% fewer tokens</span>
@@ -91,7 +90,7 @@
         <div class="prow">
           <div>
             <div class="prow-name"><a href="/portfolio/testgraph/">testgraph</a></div>
-            <p class="prow-desc">Given a code change, it names the user journeys the change could have broken.
+            <p class="prow-desc">Given a code change, it names the user journeys (the sequences of actions a user takes) the change could have broken.
               Similar tools need coverage data (a record of which code an earlier test run executed). This one
               works on a repository whose tests have never been run.</p>
           </div>
@@ -106,7 +105,7 @@
             <div class="prow-name"><a href="/portfolio/runecho/">RunEcho</a></div>
             <p class="prow-desc">Stops an AI agent from writing a call to a function that does not exist in the
               repository. The check runs before the file is changed and takes about 12&nbsp;ms. It uses no model and no
-              network, and when the check passes it adds nothing to the agent&rsquo;s context (the text the model reads).</p>
+              network, and when the check passes it adds nothing to the agent&rsquo;s context.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">0 context tokens</span>
@@ -118,7 +117,7 @@
           <div>
             <div class="prow-name"><a href="/portfolio/modelbench/">modelbench</a></div>
             <p class="prow-desc">Replays real bug-fix commits from my own repositories against lower-cost models,
-              several times each, and reports the cost per solved task. The write-up lists the earlier figures I had to correct.</p>
+              several times each, and reports the cost per solved task. The write-up lists the earlier figures that had to be corrected.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">cost per solved task</span>
@@ -129,10 +128,8 @@
         <div class="prow">
           <div>
             <div class="prow-name"><a href="/portfolio/lodestone/">Lodestone</a></div>
-            <p class="prow-desc">Local retrieval (software that finds the passages relevant to a question) over
-              years of my own working notes, running on my own machines. It beat keyword search at a thousand
-              documents and lost to it at fifty-seven thousand. I published both results, including the null
-              result (a test in which the new method showed no improvement).</p>
+            <p class="prow-desc">Local retrieval over years of my own working notes. It beat keyword search
+              at a thousand documents and lost to it at fifty-seven thousand. I published both results.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">5 of 10 at full scale</span>
@@ -143,10 +140,9 @@
         <div class="prow">
           <div>
             <div class="prow-name"><a href="/portfolio/frostline/">Frostline</a></div>
-            <p class="prow-desc">Spatial models (models that predict from location) over Michigan well
-              records. A well&rsquo;s location predicts how deep it will be. Location does not predict its yield
-              (how much water it produces). The project also includes the contractor-intake business built
-              around these models.</p>
+            <p class="prow-desc">Spatial models over Michigan well records. Depth is predictable from location.
+              Yield (how much water a well produces) is not. The project also includes the contractor-intake
+              business built around these models.</p>
           </div>
           <div class="prow-right">
             <span class="prow-value">50,000 records</span>
@@ -190,7 +186,7 @@
         <span class="also-label">Also running</span>
         <a href="/portfolio/harness/">harness</a>
         <a href="/portfolio/origin-sentinel/">Origin Sentinel</a>
-        <a href="/portfolio/llm-gateway/">LLM (large language model) gateway</a>
+        <a href="/portfolio/llm-gateway/">LLM gateway</a>
         <a href="/homelab/">Homelab</a>
         <a href="/portfolio/">Everything else</a>
       </div>

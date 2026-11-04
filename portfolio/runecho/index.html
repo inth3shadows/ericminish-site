@@ -64,7 +64,7 @@
       <div class="facts">
         <div><span class="fk">per check</span><span class="fv">~12 ms</span></div>
         <div><span class="fk">context cost, clean check</span><span class="fv good">0 tokens</span></div>
-        <div><span class="fk">false positives, share of flags</span><span class="fv">15.3%</span></div>
+        <div><span class="fk">false positives among flagged symbols</span><span class="fv">15.3%</span></div>
         <div><span class="fk">hallucinated names caught</span><span class="fv">4 of 9</span></div>
         <div><span class="fk">models, keys, network</span><span class="fv good">none</span></div>
       </div>
@@ -129,7 +129,7 @@
           Besides checking symbols, the guard can check edits against an edit-scope contract. A contract declares what a piece of work is allowed to touch, so the guard can object when an agent edits outside it. The planned next step was to bind a contract automatically when a session starts.
         </p>
         <p>
-          Using the guard on its own development, on the day it merged, ended that plan. The contract went stale <strong>within the same session</strong>, at the moment the work it described was merged. A session often spans several unrelated pieces of work, and a contract describes only one of them. Between tasks the correct state is no active contract, in which case the guard makes no contract check and writes nothing. A contract bound per session would keep enforcing an outdated scope and produce both wrong flags and wrong passes.
+          That plan ended on the day the guard was merged, while the guard was being used on its own development. The contract went stale <strong>within the same session</strong>, at the moment the work it described was merged. A session often spans several unrelated pieces of work, and a contract describes only one of them. Between tasks the correct state is no active contract, in which case the guard makes no contract check and writes nothing. A contract bound per session would keep enforcing an outdated scope and produce both wrong flags and wrong passes.
         </p>
       </div>
     </section>
@@ -138,7 +138,7 @@
       <div class="section-head"><div><h2>How each language&rsquo;s parser is chosen</h2></div></div>
       <div class="prose">
         <p>
-          The cheap way to find names in a file is a regular expression (regex, a text-pattern match) run after a masker. A masker blanks out strings and comments while keeping every character in place, so the pattern match cannot be fooled by a name inside a string. Each language gets one of two engines, chosen by one test: whether the language has constructs a masker cannot tell apart without parsing. Languages that fail the test get a full tree-sitter grammar (a parser that builds a syntax tree). The others use a regular expression plus a masker.
+          Each language gets one of two engines, chosen by one test: whether the language has constructs that a masker cannot tell apart without parsing. A masker blanks out strings and comments while keeping every character in place, so a regular expression (regex, a text-pattern match) can search the rest without being fooled by a name inside a string. Languages that fail the test get a full tree-sitter grammar (a parser that builds a syntax tree). The others use a regex plus a masker.
         </p>
       </div>
       <div class="table-scroll">
@@ -150,10 +150,10 @@
       </div>
       <div class="prose">
         <p>
-          The test is about ambiguity because of how a masker fails. When it guesses wrong it fails <em>silently</em> and loses every symbol after the mistake, and the result looks the same as a file with no symbols, which is the worst failure for a guard. In Rust, <code>'a</code> is a lifetime in one line and a character literal in the next, and only parsing tells them apart. In shell, quoting rules and heredocs (blocks of literal text embedded in a script) can be resolved in a single pass that tracks state, so a masker is enough.
+          The test is about ambiguity because of how a masker fails. When it guesses wrong it fails <em>silently</em> and loses every symbol after the mistake, and the result looks the same as a file with no symbols, so nothing in the output shows that the error happened. In Rust, a single quote can begin a lifetime such as <code>'a</code> (a label the compiler uses to track how long a reference stays valid) or a character literal such as <code>'a'</code> (one character written in quotes), and only parsing tells them apart. In shell, quoting rules and heredocs (blocks of literal text embedded in a script) can be resolved in a single pass that tracks state, so a masker is enough.
         </p>
         <p>
-          Which names get extracted follows each language&rsquo;s visibility rules. Go extracts only exported (capitalised) names, because an unexported Go name cannot be referenced from outside its package. Rust extracts every name, because calling a private function from elsewhere in the same crate is ordinary, and filtering private names out would miss the common case.
+          Which names get extracted follows each language&rsquo;s visibility rules. Go extracts only exported (capitalised) names, because an unexported Go name cannot be referenced from outside its package. Rust extracts every name, because calling a private function from elsewhere in the same crate (Rust&rsquo;s unit of compilation, such as one library) is ordinary, and filtering private names out would miss the common case.
         </p>
       </div>
     </section>
@@ -161,7 +161,7 @@
     <section class="section">
       <div class="section-head"><div><h2>Reducing false alarms and per-edit cost</h2></div></div>
       <div class="subs">
-        <div><span class="st">Duplicate-symbol warnings</span><span class="sx">Build-constraint pairs (the same function defined once per platform) produced <b>91% false positives</b>. The warning is now suppressed only when both files carry a build constraint, which removed all of those false positives without calling out to the Go toolchain. A pair with one constrained and one unconstrained file still warns.</span></div>
+        <div><span class="st">Duplicate-symbol warnings</span><span class="sx">A build constraint is a line in a Go file that limits which platforms the file is compiled for. Build-constraint pairs (the same function defined once per platform) produced <b>91% false positives</b>. The warning is now suppressed only when both files carry a build constraint, which removed all of those false positives without calling out to the Go toolchain. A pair with one constrained and one unconstrained file still warns.</span></div>
         <div><span class="st">Store access</span><span class="sx">Checking the contract meant opening the store a second time, measured at <b>+9.5 ms per edit</b>. Reusing the store already opened by the symbol lookup that was running brought that down to <b>+0.36 ms</b>.</span></div>
       </div>
     </section>
@@ -170,7 +170,7 @@
       <div class="section-head"><div><h2>What security work RunEcho needs</h2></div></div>
       <div class="prose">
         <p>
-          RunEcho runs locally behind a firewall, so it has no web attack surface. The binaries are distributed publicly, so the release pipeline is in scope for security work. Authentication and rate limiting are out of scope.
+          RunEcho runs locally behind a firewall and has no web attack surface. Because the binaries are distributed publicly, the release pipeline is in scope for security work. Authentication and rate limiting are out of scope.
         </p>
       </div>
       <div class="tag-row" style="margin-top:20px">
@@ -183,7 +183,7 @@
     </section>
 
     <p class="closing-line">
-      Questions about the approach? Email is best — <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+      For questions about the approach, email <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
     </p>
   </main>
 

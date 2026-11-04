@@ -109,7 +109,7 @@ docs/                 architecture and the scope statement</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Given a diff, it answers which user journeys the change could have broken, and in what order to test them. Test-impact tools usually answer with a list of tests, and they need coverage data (a record of which code each test ran) from a previous run. testgraph walks a static call graph (a map of which code calls which) backwards from the changed lines, so it works on a repo that has never run its test suite. It is tuned to catch every journey that broke, so it will sometimes flag one that turned out fine.</p>
+            <p>Given a diff (a set of line changes to the code), it answers which user journeys the change could have broken, and in what order to test them. Test-impact tools usually answer with a list of tests, and they need coverage data (a record of which code each test ran) from a previous run. testgraph walks a static call graph (a map of which code calls which) backwards from the changed lines, so it works on a repo that has never run its test suite. It is tuned to catch every journey that broke, so it will sometimes flag one that turned out fine.</p>
             <div class="tree">
               <div class="tree-head"><span>testgraph</span><span>a4baa9a · 68 files</span></div>
               <pre><code>testgraph/            graph traversal, integrity guard, registry, CLI
@@ -129,7 +129,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A harness for coding agents, built for a single developer, in two parts. The first is a gate that gives a fixed-rule verdict on a code change. It runs four checks that keep no state: the test suite, a symbol contract, a scan for staged secrets, and a scan for reachable vulnerabilities. A pass leaves the branch for a human to commit. Nothing is committed automatically, and no language model makes the judgment. The second part is the runtime that drives its own loop.</p>
+            <p>A harness for coding agents, built for a single developer, in two parts. The first is a gate that gives a fixed-rule verdict on a code change. It runs four checks that keep no state: the test suite, a symbol contract (a check on the functions and other named symbols a change touches), a scan for staged secrets, and a scan for reachable vulnerabilities. A pass leaves the branch for a human to commit. Nothing is committed automatically, and no language model makes the judgment. The second part is the runtime that drives its own loop.</p>
           </div>
         </details>
         </div>
@@ -144,7 +144,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>A personal benchmark that takes bug-fix commits from my own repositories and replays them against lower-cost models, several times each, so a gap between two models can be told apart from noise. Its headline figure is cost per solved task. It also publishes its own corrections: one defective task, which affected three capability tiers, had pulled down four figures it stated earlier.</p>
+            <p>A personal benchmark that takes bug-fix commits from my own repositories and replays them against lower-cost models, several times each, so a gap between two models can be told apart from noise. Its headline figure is cost per solved task. It also publishes its own corrections: one defective task had pulled down four figures it stated earlier, across three capability tiers.</p>
           </div>
         </details>
         <details class="node">
@@ -179,7 +179,7 @@ skills/               the agent skill that reads a map pre-commit</code></pre>
             <span class="node-state">open</span>
           </summary>
           <div class="node-detail">
-            <p>Spatial models over the public Michigan well record. Depth is predictable from location, with a Moran&rsquo;s I of 0.393. Moran&rsquo;s I measures how strongly nearby wells resemble each other, from 0 (no pattern) to 1 (strong). Yield scores 0.089. One promising target was dropped after it turned out to be about 96% a restatement of depth.</p>
+            <p>Spatial models over the public Michigan well record. Depth is predictable from location because nearby wells have similar depths. Moran&rsquo;s I measures how strongly nearby wells resemble each other, from 0 (no pattern) to 1 (strong); it is 0.393 for depth and 0.089 for yield. One promising target was dropped after it turned out to be about 96% a restatement of depth.</p>
             <div class="tree">
               <div class="tree-head"><span>frostline</span><span>8ef8a4d · 145 files</span></div>
               <pre><code>template/scripts/     the Track B pipeline — export, backtest,
@@ -275,7 +275,7 @@ site/                 the public build</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>Long-term memory for my agents. They can only propose a fact, and every fact is reviewed before it is stored. Moving the embeddings into a sidecar (a separate container that runs beside the main one) took the production image from 2.14 GB to 442 MB. Trimming the tools it exposes to agents cut one response from 271 KB to 26 KB.</p>
+            <p>Long-term memory for my agents. They can only propose a fact, and every fact is reviewed before it is stored. Moving the embeddings (numeric representations of text, used to find similar passages) into a sidecar (a separate container that runs beside the main one) took the production image from 2.14 GB to 442 MB. Trimming the tools it exposes to agents cut one response from 271 KB to 26 KB.</p>
           </div>
         </details>
         <details class="node">
@@ -295,7 +295,7 @@ site/                 the public build</code></pre>
             <span class="node-state">private</span>
           </summary>
           <div class="node-detail">
-            <p>Projection and auction-price engine for fantasy football. Players with no valid baseline to compare against return null, so the engine does not output an invented number.</p>
+            <p>Projection and auction-price engine for fantasy football. Players with no valid baseline to compare against return null (an empty value), so the engine does not output an invented number.</p>
           </div>
         </details>
         <details class="node">
@@ -363,8 +363,8 @@ site/                 the public build</code></pre>
         <p>
           My whole working environment is a browser tab. A terminal multiplexer (a program that keeps
           shell sessions running and lets several screens attach to them) runs on a machine at home.
-          A small web terminal serves it, and an identity-proxied tunnel publishes that, meaning the
-          tunnel checks who you are before any traffic reaches the machine. No port is open to the
+          A small web terminal serves it, and an identity-proxied tunnel (a tunnel that checks who you
+          are before any traffic reaches the machine) publishes it. No port is open to the
           internet, and no session starts without single sign-on. Opening the same address from a
           phone, a laptop or a borrowed machine attaches to the <em>same</em> live session, so work
           carries over between devices.
@@ -374,6 +374,9 @@ site/                 the public build</code></pre>
           the one that is open. Hover it, or give it focus, to watch it fill in.
         </p>
       </div>
+      <p class="fine" style="margin:0 0 12px">
+        This is a model of the console, built from illustrative sessions, output and usage figures. No host name, address, path or session content from the actual environment appears here.
+      </p>
 
             <div class="code-window aui" tabindex="0" role="img"
      aria-label="A model of the browser terminal: a rail of coding-agent sessions on the left, each card showing its state, model, mode, context use and diff size, beside one open session on the right — a transcript of tool calls and agent replies, a prompt line, a status line and a row of key shortcuts.">
@@ -452,9 +455,6 @@ site/                 the public build</code></pre>
 
   </div>
 </div>
-      <p class="fine" style="margin-top:12px">
-        This is a model of the console, built from illustrative sessions, output and usage figures. No host name, address, path or session content from the actual environment appears here.
-      </p>
     </section>
 
     <p class="closing-line">

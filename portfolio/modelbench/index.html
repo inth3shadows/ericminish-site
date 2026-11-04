@@ -55,12 +55,14 @@
           repositories, measure models on other people&rsquo;s code and run each task once. I wanted
           to know which model to route my own work to. This benchmark turns bug-fix commits from
           the repositories on my machines into tasks and runs each task three times per model by
-          default. It scores each model by what it costs per task it solves.
+          default. It scores each model by what it costs per task it solves. In one comparison of
+          fifteen tasks, the small tier solved 10 and the large tier solved 15, at $0.51 per solved
+          task against $2.09.
         </p>
       </div>
       <aside class="note">
         <p><strong>What it is</strong> — a pipeline that harvests tasks, runs models on them, grades the results and writes a report. A task is a commit from git history, and a pass means that commit&rsquo;s test suite goes green.</p>
-        <p><strong>Status</strong> — private repository, in use for routing decisions across a local model gateway.</p>
+        <p><strong>Status</strong> — private repository, in use for routing decisions across a local model gateway (a proxy that sends each request to one of several models).</p>
       </aside>
     </section>
 
@@ -97,7 +99,7 @@
       <div class="section-head"><div><h2>Results by model tier, scored on cost per solved task</h2></div></div>
       <div class="table-scroll">
         <table class="data-table">
-          <tr><th>Model tier</th><th style="text-align:right">pass@1</th><th style="text-align:right">tasks solved</th><th style="text-align:right">timeouts</th><th style="text-align:right">$ / solved task</th></tr>
+          <tr><th>Model tier</th><th style="text-align:right">share of runs passing (pass@1)</th><th style="text-align:right">tasks solved</th><th style="text-align:right">timeouts</th><th style="text-align:right">$ / solved task</th></tr>
           <tr><td>large</td><td class="num win">1.00</td><td class="num">15 / 15</td><td class="num">0 / 30</td><td class="num">$2.09</td></tr>
           <tr><td>mid</td><td class="num">0.83</td><td class="num">14 / 15</td><td class="num lose">4 / 30</td><td class="num">$1.26</td></tr>
           <tr><td>small</td><td class="num">0.57</td><td class="num">10 / 15</td><td class="num">0 / 30</td><td class="num win">$0.51</td></tr>
@@ -119,8 +121,8 @@
         <p>
           The dollar amounts are higher than normal use would produce, because a large system
           preamble (fixed instructions sent before each task) goes with every call. It is the same
-          for all three tiers, so <strong>compare the ratios between tiers and treat the dollar
-          amounts as inflated.</strong>
+          for all three tiers, so <strong>compare the ratios between tiers in this experiment and
+          treat the dollar amounts as inflated.</strong>
         </p>
       </div>
     </section>
@@ -136,8 +138,8 @@
         </p>
         <p>
           The cause was the harness, the benchmark code that sets up and runs each task. The graded
-          test was asynchronous, the repository declared the plugin its test runner needs for
-          asynchronous tests as an optional extra, and the command the benchmark ran did not
+          test was asynchronous, the repository listed the plugin needed to run asynchronous tests
+          as an optional install, and the command the benchmark ran did not
           install extras, so the test could not run at all. The check that confirmed it cost no model calls:
           check out the commit that holds the correct fix and run the graded command against it. It
           scored zero, so no patch any model wrote could have passed.
@@ -166,9 +168,9 @@
           that context.
         </p>
         <p>
-          Scores from different corpora could be made comparable only by setting aside what differs
-          between codebases: their conventions, their test shapes and their commit habits. Those
-          differences are what the benchmark is meant to measure.
+          Scores from different corpora reflect different conventions, test shapes and commit
+          habits. Making them comparable would mean setting those differences aside, and they are
+          what the benchmark is meant to measure.
         </p>
         <p>
           The corpora differ before any model is called. Across a hundred repositories on two
@@ -199,10 +201,11 @@
           <li><strong>Scout</strong> checks how accurately the model locates a symbol (a function, class or variable). It runs as a tool loop, in which the model calls tools and reads the results over several turns. Its answers are checked against a deterministic symbol index, a lookup of where each symbol is defined that gives the same answer every time.</li>
         </ul>
         <p>
-          Two failure modes are scored as failures and not retried. Determinism decays with output
-          length, so identical prompts stop returning identical text past a few hundred tokens. A
-          reasoning model can also return an empty response when its whole token budget went on
-          reasoning it does not show. A retry would hide both.
+          Two failure modes are scored as failures and not retried. The first is output that does
+          not repeat: determinism decays with output length, so identical prompts stop returning
+          identical text past a few hundred tokens. The second is an empty response from a
+          reasoning model whose whole token budget went on reasoning it does not show. A retry
+          would hide both.
         </p>
       </div>
       <div class="tag-row">

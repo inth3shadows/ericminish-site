@@ -10,14 +10,14 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="Lodestone — Eric Minish">
-  <meta property="og:description" content="Semantic search that beat keyword search on 1,271 chunks of notes and lost to it on the full collection, and the evaluation that showed it.">
+  <meta property="og:description" content="Embedding search that beat keyword search on 1,271 chunks of notes and lost to it on the full collection, and the evaluation that showed it.">
   <meta property="og:url" content="https://www.ericminish.com/portfolio/lodestone/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Lodestone — Eric Minish">
-  <meta name="twitter:description" content="Semantic search that beat keyword search on 1,271 chunks of notes and lost to it on the full collection, and the evaluation that showed it.">
+  <meta name="twitter:description" content="Embedding search that beat keyword search on 1,271 chunks of notes and lost to it on the full collection, and the evaluation that showed it.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -49,12 +49,12 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="entry-stamp"><b>Entry 03</b><span>Retrieval · evaluation</span><span>2026</span></div>
-        <h1>My semantic search beat keyword search on 1,271 chunks of notes and lost to it on the full collection</h1>
+        <h1>My embedding search beat keyword search on 1,271 chunks of notes and lost to it on the full collection of 57,500</h1>
         <p class="lede">
           I built a hybrid retrieval engine over years of my own working notes. It combines keyword
           search with embedding-based search, which compares numeric representations of what each
           passage means, and I measured how well it finds things. On a 1,271-chunk development set
-          the embedding side beat keyword search. On the full collection, keyword search alone beat
+          the embedding side beat keyword search. On the full collection of 57,500, keyword search alone beat
           every hybrid configuration I tried, and four of the five paraphrased questions returned
           nothing useful.
         </p>
@@ -80,13 +80,13 @@
         <p>
           The notes are split into chunks (short passages of text). On a development set of 1,271
           chunks, I tested paraphrased questions, which describe a memory in different words from
-          the ones I originally wrote. The embedding side scored 0.731 and keyword search scored
-          0.436. That result justified building a hybrid.
+          the ones I originally wrote. On the evaluation score, where higher is better, the
+          embedding side scored 0.731 and keyword search scored 0.436. I then built the hybrid.
         </p>
         <p>
           I then measured it on the full collection for the first time, with ten
-          questions whose results were labelled by Claude (an AI model) and not yet checked by me.
-          It returned something useful for five of the ten. All five successes were questions that
+          questions whose results were labelled by Claude (an AI model) with no partial credit and
+          not yet checked by me. The hybrid engine returned something useful for five of the ten. All five successes were questions that
           share words with the notes they should find. Four of the five paraphrased questions, the
           case the embedding side was built for, returned nothing useful.
         </p>
@@ -119,8 +119,7 @@
     <section class="section">
       <div class="section-head"><div><h2>How the investigation went</h2></div></div>
       <ol class="beats">
-        <li>After the development-set result above, the first full-scale run found something useful for five of ten questions. Claude labelled the results with no partial credit, and I have not yet re-checked the labels.</li>
-        <li>My first explanation was that the larger collection was diluted by lower-quality material. I tested it by restricting the search to the single highest-quality source of notes. Results did not improve in that run, and I rejected that explanation.</li>
+        <li>My first explanation was that the larger collection was diluted by lower-quality material. I tested it by restricting the search to the single highest-quality source of notes. Restricting the search to that source did not improve results in that run, so I rejected that explanation.</li>
         <li>A diagnostic then separated answers that were never retrieved (a recall problem) from answers that were retrieved and ranked too low (a ranking problem). The failures were ranking problems.</li>
         <li>A query-adaptive router, the component that decides for each question whether to run the expensive re-ranker, had been shipped as the default. It ran the re-ranker only when a question looked like a keyword search, and it had been tuned on the development set. At full scale it scored worst of six configurations: 0.000 on paraphrased questions, against 0.200 when the re-ranker always ran. I removed it as the default the same day.</li>
         <li>A code review found that the scorer retrieved deeper than the set of results that had been judged. The re-ranked configuration was returning documents nobody had graded and was marked wrong for them. Fixing the bug raised that configuration&rsquo;s score from 0.352 to 0.447. The overall conclusion stayed the same.</li>
