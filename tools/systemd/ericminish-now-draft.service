@@ -1,0 +1,15 @@
+# Monthly Now-page draft: opens one pull request with drafted updates for stale cards. Never merges.
+# Install: cp tools/systemd/ericminish-now-draft.* ~/.config/systemd/user/ && systemctl --user daemon-reload
+#          && systemctl --user enable --now ericminish-now-draft.timer
+# Uses the same private environment file as ericminish-regen.service (REPO = the deploy checkout).
+[Unit]
+Description=Draft Now-page updates for ericminish.com as a pull request
+After=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=%h/.config/ericminish-site/deploy.env
+Environment=PATH=/home/ericm/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStartPre=/usr/bin/git -C ${REPO} pull -q --ff-only
+ExecStart=/bin/bash -c 'exec /usr/bin/python3 -I "$REPO/tools/draft-now.py"'
+TimeoutStartSec=30min
