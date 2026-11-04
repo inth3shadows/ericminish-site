@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>secret-broker — case study | Eric Minish</title>
+  <meta name="description" content="Case study: a local MCP server that lets coding agents use credentials without receiving them, with 2,568 hash-chained receipts over six months and a measurement of entropy-based secret detection.">
+  <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
+  <link rel="canonical" href="https://www.ericminish.com/portfolio/secret-broker/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Eric Minish">
+  <meta property="og:title" content="secret-broker — Eric Minish">
+  <meta property="og:description" content="Coding agents make credential-backed calls without seeing the credential. 2,568 receipts, chain intact, zero reveals.">
+  <meta property="og:url" content="https://www.ericminish.com/portfolio/secret-broker/">
+  <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="secret-broker — Eric Minish">
+  <meta name="twitter:description" content="Coding agents make credential-backed calls without seeing the credential. 2,568 receipts, chain intact, zero reveals.">
+  <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/writing/">Writing</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/resume/">Resume</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell" id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="entry-stamp"><b>Entry 13</b><span>Agent security · credentials</span><span>2026</span></div>
+        <h1>secret-broker lets coding agents use credentials without receiving them</h1>
+        <p class="lede">
+          An agent that holds an API key can print it, write it into a file, or be talked into
+          sending it somewhere by text it reads on a web page (prompt injection). secret-broker is a
+          local MCP server (Model Context Protocol, the standard way agents call tools) that makes the credential-backed call itself and hands
+          the agent the cleaned-up result. Every call writes a receipt to a log that shows if it
+          has been edited.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong>: a Python MCP server and command-line tool for one operator on one workstation. It reads credentials from a self-hosted password vault.</p>
+        <p><strong>Status</strong>: private repository, 136 commits since May 2026. Figures as of 3 November 2026.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="facts">
+        <div><span class="fk">receipts written</span><span class="fv">2,568</span></div>
+        <div><span class="fk">receipt chain check</span><span class="fv good">intact</span></div>
+        <div><span class="fk">raw-value reveals</span><span class="fv good">0</span></div>
+        <div><span class="fk">own credentials the entropy layer caught</span><span class="fv bad">5 of 13</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The agent asks for an operation and the broker holds the key</h2></div></div>
+      <div class="prose">
+        <p>
+          Only one tool can return a credential: a reveal for key rotation, which needs two gates the operator sets, and it has never been used. Otherwise the agent asks for a named operation, and the broker makes
+          the request and returns the filtered response.
+        </p>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Tool</th><th>The agent supplies</th><th>The broker supplies</th></tr>
+          <tr><td><code>secret.call</code>, <code>secret.mutate</code></td><td>a service name and the request</td><td>the host, credential and response fields to keep, from the operator&rsquo;s config</td></tr>
+          <tr><td><code>secret.gh_api</code></td><td>a GitHub API path</td><td>the GitHub token</td></tr>
+          <tr><td><code>secret.inject_env</code></td><td>a program from an approved list and the credential names it needs</td><td>the values, in that program&rsquo;s environment; its output is scrubbed</td></tr>
+          <tr><td><code>secret.reveal_credential</code></td><td>a token and a written reason</td><td>the raw value, only when two operator-set gates are open</td></tr>
+        </table>
+      </div>
+      <div class="prose">
+        <p>
+          The agent names a service and cannot pass a URL. If the caller could choose the host, a
+          prompt injection could choose where the credential is sent.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>How a response is filtered and recorded</h2></div></div>
+      <div class="nodes nodes-wide">
+        <details class="node">
+          <summary class="node-head"><span class="node-name">Field allowlist</span><span class="node-spec">runs first</span></summary>
+          <div class="node-detail">
+            <p>Each operation declares the top-level JSON fields it uses, and the rest of the response is dropped before any other step sees it, including debug fields that might repeat the authorization header. A non-JSON response is refused when an allowlist is set.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head"><span class="node-name">Three redaction layers</span><span class="node-spec">exact, pattern, entropy</span></summary>
+          <div class="node-detail">
+            <p>Layer 1 removes exact copies of every credential the broker has fetched, including encoded and JSON-escaped forms. Layer 2 matches a per-credential pattern to catch same-shape keys the broker never issued. Layer 3 removes any token of 32 or more characters with Shannon entropy (a measure of how random its characters are) of at least 4.5 bits per character.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head"><span class="node-name">Redaction on parsed values</span><span class="node-spec">closes escape leaks</span></summary>
+          <div class="node-detail">
+            <p>A credential with one character written as a JSON escape, such as <code>&#92;u0041</code> for <code>A</code>, slips past a text search and reappears once the JSON is parsed. The broker parses the body first and scrubs each decoded string value.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head"><span class="node-name">Hash-chained receipts</span><span class="node-spec">SQLite</span></summary>
+          <div class="node-detail">
+            <p>Every call, including one refused before it runs, appends a row to a local SQLite log: operation, credential name, outcome and a redaction count, with no values or response bodies. Each row&rsquo;s hash covers the previous row&rsquo;s hash, so editing an old row breaks every hash after it. <code>secret-broker audit verify</code> recomputes the chain.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head"><span class="node-name">Two-gate reveal</span><span class="node-spec">for key rotation</span></summary>
+          <div class="node-detail">
+            <p>Rotating a key sometimes needs the raw value. <code>reveal_credential</code> returns it only when the supplied token matches one set in the broker&rsquo;s launch environment and a one-shot flag file for that credential exists, which is deleted on use. Every attempt writes a receipt marked as a bypass.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What six months of receipts show</h2></div></div>
+      <div class="prose">
+        <p>
+          From 18 May to 3 November 2026 the broker wrote 2,568 receipts, and <code>secret-broker audit verify</code>
+          reported the chain intact. None is marked as a bypass, so the reveal path was never used.
+        </p>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <tr><th>Operation</th><th>Receipts</th><th>Succeeded</th></tr>
+          <tr><td>Run a program with credentials in its environment</td><td>1,165</td><td>900</td></tr>
+          <tr><td>Cloudflare API</td><td>585</td><td>433</td></tr>
+          <tr><td>git credential helper (supplies git&rsquo;s password)</td><td>382</td><td>254</td></tr>
+          <tr><td>LLM, web search and other configured services</td><td>276</td><td>215</td></tr>
+          <tr><td>GitHub API</td><td>131</td><td>112</td></tr>
+          <tr><td>Create, rotate or declare a credential</td><td>29</td><td>23</td></tr>
+          <tr><td><b>Total</b></td><td><b>2,568</b></td><td><b>1,937</b></td></tr>
+        </table>
+      </div>
+      <div class="prose">
+        <p>
+          1,937 calls (75.4%) succeeded and 631 failed. Receipts store the kind of failure without
+          the error message.
+        </p>
+      </div>
+      <div class="nodes nodes-wide">
+        <details class="node">
+          <summary class="node-head"><span class="node-name">The broker could not complete the call</span><span class="node-spec">252</span></summary>
+          <div class="node-detail">
+            <p>128 came from the git credential helper between 15 and 29 July, the only two weeks with any helper receipts; the cause is not recorded. 84 were refused before running, for example a program missing from the approved list. Of the 40 that failed while running, 27 were programs that hit a timeout of 60 seconds or more.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head"><span class="node-name">The upstream API returned an error status</span><span class="node-spec">230</span></summary>
+          <div class="node-detail">
+            <p>Mostly 404 (107) and 403 (57), then 400 (26) and 401 (12); 151 came from the Cloudflare API. Twelve are May and June receipts where an early version logged a program&rsquo;s non-zero exit under this label.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head"><span class="node-name">A program run with credentials exited with an error</span><span class="node-spec">149</span></summary>
+          <div class="node-detail">
+            <p>127 of these exited with code 1.</p>
+          </div>
+        </details>
+      </div>
+      <div class="prose">
+        <p>
+          341 receipts (13.3%) record a scrubbed token, 217 of them a Layer 3 hit. Receipts do not
+          say whether a scrubbed token was a credential, so these are not counts of leaks prevented.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Measuring the entropy layer on the broker&rsquo;s own credentials</h2></div></div>
+      <div class="prose">
+        <p>
+          Layer 3 is the only layer that needs neither the credential&rsquo;s value nor a known pattern for it. In July
+          both of its error types were measured.
+        </p>
+      </div>
+      <ol class="beats">
+        <li><b>566 false positives on one clean response.</b> A GitHub listing of 30 commits (269 KB)
+          with no credential in it triggered Layer 3 566 times, mostly on PGP signatures and URLs.
+          Those tokens scored 4.503 to 5.426 bits per character.</li>
+        <li><b>5 of 13 credential tokens caught (38%).</b> A script run through <code>inject_env</code>
+          printed only the length and entropy of 13 tokens from the broker&rsquo;s own vault. They
+          scored 3.501 to 5.357 bits per character.</li>
+        <li><b>8 of the 13 scored below every false positive.</b> The two ranges overlap, so no
+          threshold separates credentials from noise.</li>
+        <li><b>The proposed fix lost two credential shapes.</b> Splitting tokens on <code>/</code> and
+          <code>.</code> cut false positives from 566 to 306 and stopped catching 2 of the 5 credential
+          shapes in the test set, so it was dropped.</li>
+      </ol>
+      <div class="prose">
+        <p>
+          The fix shipped on 7 August keeps the thresholds. Layer 3 now skips a value
+          only when the whole value is a plain absolute URL, with no query string, fragment or
+          <code>user:password@</code> part, or an armored block whose BEGIN and END labels match. On a
+          384 KB commits listing with no credential in it, Layer 3 hits fell from 592 to 52 (91.2%).
+          Tests pin the 4.5 and 32 thresholds and check that three credential shapes are still caught.
+        </p>
+        <p>
+          The accepted cost: an unissued credential wrapped in fake armor or shaped like a URL path
+          (a Slack webhook, for example) now passes Layer 3. Layer 1 still removes any issued
+          credential, whatever its wrapping. The change reduces noise and leaves the 5-of-13 catch
+          rate unchanged, so for unissued credentials the design leans on the field allowlist, which
+          drops a field without having to recognise its contents.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What the broker does not prove</h2></div></div>
+      <article class="note">
+        <ul>
+          <li>A receipt shows that redaction ran and the log was not edited later. It cannot show a credential is absent from a response, only that the matchers found nothing in what the allowlist let through.</li>
+          <li>The field allowlist applies to successful responses. Error bodies (4xx and 5xx) skip it and get redaction alone.</li>
+          <li>The reveal token sits in the broker&rsquo;s process environment, which any process of the same user can read on Linux. The threat model lists this as a known, unfixed weak spot.</li>
+          <li>The agent runs as the same user as the broker and could edit its config file, so the per-machine credential list guards against accidents only.</li>
+          <li>Side channels such as timing are out of scope, as is anyone with root or debugger access. It serves one operator on one workstation, over stdio or loopback only.</li>
+        </ul>
+      </article>
+      <div class="prose">
+        <p>
+          All 1,007 tests pass, and <code>mypy --strict</code> and <code>ruff</code> report no issues.
+        </p>
+      </div>
+      <div class="tag-row" style="margin-top:20px">
+        <span class="tag">Agent security</span><span class="tag">MCP</span>
+        <span class="tag">Python</span><span class="tag">SQLite</span>
+      </div>
+    </section>
+
+    <p class="closing-line">
+      Questions about the design? Email <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

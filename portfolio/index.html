@@ -213,6 +213,36 @@ site/                 the public build</code></pre>
             <p>Routes one coding agent across several large language model (LLM) providers by task, and tracks cost against a budget as it accrues. Secrets are kept out of the environment: keys are pulled from a secret broker at process start and held only in memory.</p>
           </div>
         </details>
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name"><a href="/portfolio/knowledge-base/">Knowledge base for agents</a></span>
+            <span class="node-spec">92.0% of 238 proposals accepted</span>
+            <span class="node-state">private</span>
+          </summary>
+          <div class="node-detail">
+            <p>Long-term memory for my coding agents. Agents can only propose a fact; an AI reviewer approves, edits or rejects each proposal before it is stored. Over the last 30 days the reviewer accepted 92.0% of 238 decided proposals. On hand-built vague rules it caught 63.0% of the short ones and 27.8% of the long ones, and the write-up measures that weakness alongside the search quality.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name"><a href="/portfolio/secret-broker/">secret-broker</a></span>
+            <span class="node-spec">2,568 receipts, chain intact</span>
+            <span class="node-state">private</span>
+          </summary>
+          <div class="node-detail">
+            <p>A local MCP server (MCP is the standard that connects tools to AI agents) that lets coding agents use credentials without receiving them. Every call writes a hash-chained receipt, so a later edit to the log is detectable; 2,568 receipts over six months verify intact. Entropy-based secret detection caught 5 of 13 of the broker's own credentials and flagged 566 harmless tokens on one clean response before it was fixed.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name"><a href="/portfolio/codegraph/">codegraph correctness</a></span>
+            <span class="node-spec">111 issues filed, 17 PRs merged</span>
+            <span class="node-state">open</span>
+          </summary>
+          <div class="node-detail">
+            <p>Checks codegraph, an open-source code-intelligence tool, against compiler type checkers and against freshly built indexes, and reports the differences upstream. 111 issues filed, 81 closed as completed by the maintainer, and 17 of my pull requests merged. A replay of 2,979 index updates found 12 places where the updated index differed from a fresh one.</p>
+          </div>
+        </details>
         </div>
       </div>
     </section>
@@ -268,16 +298,6 @@ site/                 the public build</code></pre>
       <div class="node-group">
         <p class="node-group-label">Systems I run</p>
         <div class="nodes">
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name">Knowledge graph</span>
-            <span class="node-spec">442 MB image</span>
-            <span class="node-state">private</span>
-          </summary>
-          <div class="node-detail">
-            <p>Long-term memory for my agents. They can only propose a fact, and every fact is reviewed before it is stored. Moving the embeddings (numeric representations of text, used to find similar passages) into a sidecar (a separate container that runs beside the main one) took the production image from 2.14 GB to 442 MB. Trimming the tools it exposes to agents cut one response from 271 KB to 26 KB.</p>
-          </div>
-        </details>
         <details class="node">
           <summary class="node-head">
             <span class="node-name">Competitive intelligence</span>
