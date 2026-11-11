@@ -1,5 +1,7 @@
 # Severity grading instructions
 
+> **Note added in version 4 of the paper.** These are the instructions the graders received. Their first sentence says that both judges reproduced every item. That was not true for all items: in 39 of the 206 real clusters at least one judge did not report a reproduction. The paper reports a sensitivity count that uses only clusters both judges reproduced.
+
 You are grading how much each defect matters. Every item below was already judged a REAL defect by two
 independent judges who reproduced it; do not re-decide whether it is real unless it is plainly false, and
 then say so in `why` and still give your best level. You do not know who reported each item and must not
