@@ -16,7 +16,7 @@ from html.parser import HTMLParser
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 RULES = [
     (r"\b(honest|honestly|quietly|genuinely|truly|actually)\b", "intensifier"),
-    (r"\breal(ly)?\b(?!-time| (estate|world|users?|data|payloads?|API|bug-fix|model|defects?|clusters?|items?|commits?)\b)", "'real' as emphasis"),
+    (r"\breal(ly)?\b(?!-time| (estate|world|users?|data|payloads?|API|bug-fix|model|defects?|clusters?|items?|commits?|code)\b)", "'real' as emphasis"),
     (r"\b(the whole point|what this demonstrates|it turns out|at its core|fundamentally|in short)\b", "filler phrase"),
     (r"\b(delve|leverage[sd]?|seamless(ly)?|robust|cutting-edge|game-?changer)\b", "stock AI word"),
     (r"\w, not (a |an |the )?\w+[.,;]", "'X, not Y' reversal"),
