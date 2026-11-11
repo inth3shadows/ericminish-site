@@ -30,7 +30,7 @@ NAMES = {
     "ponytail_review": ("Ponytail", "ponytail-review"),
     "caveman": ("Caveman", "caveman-review"),
     "tob_diffreview": ("Trail of Bits", "trailofbits/skills, differential-review"),
-    "builtin": ("Built-in /code-review", "Claude Code's own review command"),
+    "builtin": ("Built-in /code-review", "Claude Code's own review command, at the level the agent chose: low in 40 of 42 reviews, none named in 2 (dual review passes high)"),
     "ecc": ("ECC", "everything-claude-code, code-reviewer agent"),
 }
 HYB = ("sp_pair", "dual_fast", "sp_inline")
@@ -640,6 +640,11 @@ def main():
           and {tot['excluded_findings']} findings near dropped plant candidates were not adjudicated.</li>
         <li><b>Bundles are compared whole.</b> Arms differ in models, subagents, instructions, compute and credential mix;
           these effects cannot be separated from the bundle comparisons.</li>
+        <li><b>The built-in arm ran at low.</b> The force line named the skill but no level, and the agent passed
+          <code>low</code> in 40 of the 42 Built-in /code-review reviews (no level in the other 2). Dual review passes
+          <code>high</code> to the same command. So that row measures the built-in command at low, not the command at
+          its best, and its difference from bare and from dual review should be read that way. A rerun at
+          <code>high</code> is planned.</li>
         <li><b>A small, personal task set.</b> {ntask} tasks from four repositories I wrote, in Python and Go.</li>
         <li><b>I built one arm and the hybrids.</b> I wrote dual review, and designed the hybrids after seeing
           the round-1 results; they need held-out tasks before any claim about them generalises.</li>
