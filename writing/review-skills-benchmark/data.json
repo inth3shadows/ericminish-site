@@ -1,0 +1,1578 @@
+{
+ "source": "tooling#268 / modelbench#248",
+ "version": 3,
+ "bootstrap": {
+  "resamples": 10000,
+  "seed": 248,
+  "levels": "shared task resamples for all arms, then reps within task per arm",
+  "estimand": "expected review yield on a task drawn like these 14, with run-to-run variation"
+ },
+ "tasks": [
+  "competitive-intel:C:4077ab79e2",
+  "competitive-intel:M:6de779a13d",
+  "competitive-intel:M:d737313695",
+  "kb-mcp:C:1729bb943f",
+  "kb-mcp:C:c4a6b3ce26",
+  "kb-mcp:M:6d4f886876",
+  "kb-mcp:M:7679dbee62",
+  "modelbench:C:2e993d4963",
+  "modelbench:M:9ff901de5b",
+  "modelbench:M:e360c16283",
+  "runecho:E:bb642a435a",
+  "runecho:E:fa00b5d0d4",
+  "runecho:M:6a55f3e15a",
+  "runecho:M:a8aded1a19"
+ ],
+ "rounds": {
+  "r0": {
+   "cells": 140,
+   "cost_estimate": 58.06
+  },
+  "r12": {
+   "cells": 406,
+   "cost_estimate": 198.23
+  }
+ },
+ "agreement": {
+  "r0": {
+   "items": 130,
+   "same_verdict": 125,
+   "contested": 3,
+   "kappa_6way": 0.935,
+   "kappa_real_vs_not": 0.953,
+   "verdicts": {
+    "NOT_DEFECT": 41,
+    "REAL_NEW": 70,
+    "NOT_A_CLAIM": 5,
+    "CONTESTED": 3,
+    "FALSE": 7,
+    "REAL_OLD": 4
+   },
+   "judge_verdicts": {
+    "NOT_DEFECT": 85,
+    "REAL_NEW": 141,
+    "NOT_A_CLAIM": 10,
+    "REAL_OLD": 10,
+    "FALSE": 14
+   },
+   "same_spot_as_round_before": 86,
+   "same_real_call_as_round_before": 77,
+   "severity": {
+    "real_items": 74,
+    "graded_opus": 74,
+    "graded_codex": 48,
+    "codex_models": [
+     "gpt-6-astra"
+    ],
+    "both": 48,
+    "exact": 26,
+    "one_apart": 20,
+    "two_plus_apart": 2,
+    "kappa_linear": 0.331,
+    "kappa_exact": 0.251
+   }
+  },
+  "r12": {
+   "items": 272,
+   "same_verdict": 253,
+   "contested": 15,
+   "kappa_6way": 0.884,
+   "kappa_real_vs_not": 0.89,
+   "verdicts": {
+    "NOT_DEFECT": 105,
+    "NOT_A_CLAIM": 10,
+    "CONTESTED": 15,
+    "REAL_NEW": 122,
+    "FALSE": 10,
+    "REAL_OLD": 10
+   },
+   "judge_verdicts": {
+    "NOT_DEFECT": 227,
+    "NOT_A_CLAIM": 20,
+    "REAL_NEW": 255,
+    "FALSE": 18,
+    "REAL_OLD": 24
+   },
+   "same_spot_as_round_before": 116,
+   "same_real_call_as_round_before": 100,
+   "severity": {
+    "real_items": 132,
+    "graded_opus": 131,
+    "graded_codex": 132,
+    "codex_models": [
+     "gpt-6.1-sol"
+    ],
+    "both": 131,
+    "exact": 80,
+    "one_apart": 45,
+    "two_plus_apart": 6,
+    "kappa_linear": 0.424,
+    "kappa_exact": 0.366
+   }
+  }
+ },
+ "attribution": {
+  "r0": {
+   "defects_both_judges": 59,
+   "defects_single_judge": 3,
+   "claims_mapped": 228,
+   "claims_null": 122,
+   "tasks_missing": 0,
+   "claims_total": 350
+  },
+  "r12": {
+   "defects_both_judges": 73,
+   "defects_single_judge": 8,
+   "claims_mapped": 693,
+   "claims_null": 589,
+   "tasks_missing": 0,
+   "claims_total": 1282
+  }
+ },
+ "arms": {
+  "builtin": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 27.33,
+    "ci95": [
+     21.0,
+     33.33
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 27.33,
+    "ci95": [
+     21.0,
+     33.67
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8,
+     24.33
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 11.0,
+    "ci95": [
+     5.33,
+     17.67
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0.67,
+    "ci95": [
+     0,
+     2.0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 5.33,
+    "ci95": [
+     2.0,
+     9.67
+    ]
+   },
+   "real_by_rep": {
+    "0": 28,
+    "1": 26,
+    "2": 28
+   },
+   "real_rep_sd": 1.15,
+   "minus_bare": {
+    "value": -8.33,
+    "ci95": [
+     -16.0,
+     -1.0
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": -3.67,
+    "ci95": [
+     -8.67,
+     0.67
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -8.0,
+    "ci95": [
+     -16.0,
+     0.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.2,
+    "ci95": [
+     0.17,
+     0.25
+    ]
+   },
+   "secs_per_review": {
+    "value": 30.74,
+    "ci95": [
+     24.05,
+     41.02
+    ]
+   },
+   "cost_estimate_per_real": 0.104,
+   "precision_claims": 0.611,
+   "claim_occurrences": {
+    "real": 33,
+    "all": 54
+   },
+   "auth": {
+    "oauth": 28,
+    "key": 14
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 3,
+   "excluded_findings": 1
+  },
+  "caveman": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 33.67,
+    "ci95": [
+     25.67,
+     42.33
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 33.67,
+    "ci95": [
+     25.67,
+     42.67
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8,
+     24.67
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 17.33,
+    "ci95": [
+     9.33,
+     25.67
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 9.33,
+    "ci95": [
+     4.0,
+     15.67
+    ]
+   },
+   "real_by_rep": {
+    "0": 37,
+    "1": 34,
+    "2": 30
+   },
+   "real_rep_sd": 3.51,
+   "minus_bare": {
+    "value": -2.0,
+    "ci95": [
+     -7.33,
+     3.0
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 0.33,
+    "ci95": [
+     -3.33,
+     4.33
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -3.0,
+    "ci95": [
+     -7.5,
+     1.5
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.24,
+    "ci95": [
+     0.21,
+     0.28
+    ]
+   },
+   "secs_per_review": {
+    "value": 41.12,
+    "ci95": [
+     32.81,
+     51.69
+    ]
+   },
+   "cost_estimate_per_real": 0.1,
+   "precision_claims": 0.821,
+   "claim_occurrences": {
+    "real": 55,
+    "all": 67
+   },
+   "auth": {
+    "oauth": 25,
+    "key": 17
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 1,
+   "excluded_findings": 1
+  },
+  "dual_cg": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 53.0,
+    "ci95": [
+     42.0,
+     64.33
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 53.0,
+    "ci95": [
+     42.33,
+     64.67
+    ]
+   },
+   "planted_per_rep": {
+    "value": 17,
+    "ci95": [
+     9,
+     25
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 36.0,
+    "ci95": [
+     26.0,
+     47.0
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 2.67,
+    "ci95": [
+     0.33,
+     5.33
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 15.33,
+    "ci95": [
+     8.33,
+     23.33
+    ]
+   },
+   "real_by_rep": {
+    "0": 56,
+    "1": 52,
+    "2": 51
+   },
+   "real_rep_sd": 2.65,
+   "minus_bare": {
+    "value": 17.33,
+    "ci95": [
+     10.67,
+     24.33
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 6.33,
+    "ci95": [
+     1.67,
+     12.0
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": 16.5,
+    "ci95": [
+     8.5,
+     25.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 1.04,
+    "ci95": [
+     0.94,
+     1.17
+    ]
+   },
+   "secs_per_review": {
+    "value": 232.43,
+    "ci95": [
+     190.95,
+     286.79
+    ]
+   },
+   "cost_estimate_per_real": 0.276,
+   "precision_claims": 0.476,
+   "claim_occurrences": {
+    "real": 111,
+    "all": 233
+   },
+   "auth": {
+    "oauth": 31,
+    "key": 11
+   },
+   "models": {
+    "claude-opus-5-5": 42,
+    "claude-sonnet-5-5": 42
+   },
+   "equiv_mutant_flags": 1,
+   "excluded_findings": 5
+  },
+  "dual_fast": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 38.0,
+    "ci95": [
+     27.67,
+     49.33
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 51.33,
+    "ci95": [
+     39.33,
+     64.67
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8.33,
+     24.67
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 21.67,
+    "ci95": [
+     11.33,
+     33.33
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0.33,
+    "ci95": [
+     0,
+     1.33
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 11.0,
+    "ci95": [
+     3.67,
+     19.67
+    ]
+   },
+   "real_by_rep": {
+    "0": 38,
+    "1": 41,
+    "2": 35
+   },
+   "real_rep_sd": 3.0,
+   "minus_bare": {
+    "value": 2.33,
+    "ci95": [
+     -3.33,
+     8.67
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 2.0,
+    "ci95": [
+     -3.0,
+     7.67
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": 3.0,
+    "ci95": [
+     -4.0,
+     10.5
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.9,
+    "ci95": [
+     0.81,
+     0.99
+    ]
+   },
+   "secs_per_review": {
+    "value": 286.12,
+    "ci95": [
+     169.62,
+     446.4
+    ]
+   },
+   "cost_estimate_per_real": 0.331,
+   "precision_claims": 0.823,
+   "claim_occurrences": {
+    "real": 65,
+    "all": 79
+   },
+   "auth": {
+    "oauth": 21,
+    "key": 21
+   },
+   "models": {
+    "claude-opus-5-5": 42,
+    "claude-sonnet-5-5": 42
+   },
+   "equiv_mutant_flags": 0,
+   "excluded_findings": 1
+  },
+  "dual_nocg": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 53.33,
+    "ci95": [
+     43.0,
+     65.33
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 53.33,
+    "ci95": [
+     43.0,
+     65.0
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.67,
+    "ci95": [
+     8.67,
+     25
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 36.67,
+    "ci95": [
+     26.0,
+     47.67
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 3.0,
+    "ci95": [
+     0.33,
+     6.33
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 16.67,
+    "ci95": [
+     8.67,
+     26.67
+    ]
+   },
+   "real_by_rep": {
+    "0": 51,
+    "1": 56,
+    "2": 53
+   },
+   "real_rep_sd": 2.52,
+   "minus_bare": {
+    "value": 17.67,
+    "ci95": [
+     10.33,
+     25.67
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 7.67,
+    "ci95": [
+     2.33,
+     15.0
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": 19.5,
+    "ci95": [
+     11.5,
+     28.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.8,
+    "ci95": [
+     0.72,
+     0.88
+    ]
+   },
+   "secs_per_review": {
+    "value": 210.26,
+    "ci95": [
+     178.38,
+     244.52
+    ]
+   },
+   "cost_estimate_per_real": 0.209,
+   "precision_claims": 0.481,
+   "claim_occurrences": {
+    "real": 115,
+    "all": 239
+   },
+   "auth": {
+    "oauth": 22,
+    "key": 20
+   },
+   "models": {
+    "claude-opus-5-5": 42,
+    "claude-sonnet-5-5": 42
+   },
+   "equiv_mutant_flags": 2,
+   "excluded_findings": 4
+  },
+  "ecc": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 23.0,
+    "ci95": [
+     17.0,
+     28.67
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 23.0,
+    "ci95": [
+     17.0,
+     28.67
+    ]
+   },
+   "planted_per_rep": {
+    "value": 14.67,
+    "ci95": [
+     7.33,
+     22.33
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 8.33,
+    "ci95": [
+     3.67,
+     13.67
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 4.67,
+    "ci95": [
+     1.0,
+     9.67
+    ]
+   },
+   "real_by_rep": {
+    "0": 23,
+    "1": 21,
+    "2": 25
+   },
+   "real_rep_sd": 2.0,
+   "minus_bare": {
+    "value": -12.67,
+    "ci95": [
+     -20.0,
+     -6.0
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": -4.33,
+    "ci95": [
+     -8.67,
+     -0.67
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -12.0,
+    "ci95": [
+     -20.0,
+     -4.5
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.16,
+    "ci95": [
+     0.15,
+     0.18
+    ]
+   },
+   "secs_per_review": {
+    "value": 37.5,
+    "ci95": [
+     31.64,
+     46.36
+    ]
+   },
+   "cost_estimate_per_real": 0.099,
+   "precision_claims": 0.605,
+   "claim_occurrences": {
+    "real": 26,
+    "all": 43
+   },
+   "auth": {
+    "oauth": 26,
+    "key": 16
+   },
+   "models": {
+    "claude-opus-5-5": 42,
+    "claude-sonnet-5-5": 42
+   },
+   "equiv_mutant_flags": 1,
+   "excluded_findings": 0
+  },
+  "none": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 35.67,
+    "ci95": [
+     27.0,
+     44.67
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 35.67,
+    "ci95": [
+     27.0,
+     44.67
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8.33,
+     24.33
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 19.33,
+    "ci95": [
+     10.67,
+     29.33
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 9.0,
+    "ci95": [
+     4.0,
+     14.67
+    ]
+   },
+   "real_by_rep": {
+    "0": 37,
+    "1": 34,
+    "2": 36
+   },
+   "real_rep_sd": 1.53,
+   "minus_bare": {
+    "value": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.24,
+    "ci95": [
+     0.19,
+     0.28
+    ]
+   },
+   "secs_per_review": {
+    "value": 45.0,
+    "ci95": [
+     34.98,
+     56.76
+    ]
+   },
+   "cost_estimate_per_real": 0.093,
+   "precision_claims": 0.842,
+   "claim_occurrences": {
+    "real": 64,
+    "all": 76
+   },
+   "auth": {
+    "oauth": 26,
+    "key": 16
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 1,
+   "excluded_findings": 0
+  },
+  "none_b": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 31.67,
+    "ci95": [
+     24.33,
+     39.33
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 31.67,
+    "ci95": [
+     24.33,
+     39.67
+    ]
+   },
+   "planted_per_rep": {
+    "value": 15.67,
+    "ci95": [
+     8,
+     24
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 16.0,
+    "ci95": [
+     9.0,
+     24.33
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 9.0,
+    "ci95": [
+     4.0,
+     15.0
+    ]
+   },
+   "real_by_rep": {
+    "0": 30,
+    "1": 33,
+    "2": 32
+   },
+   "real_rep_sd": 1.53,
+   "minus_bare": {
+    "value": -4.0,
+    "ci95": [
+     -8.67,
+     0.33
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 0.0,
+    "ci95": [
+     -3.67,
+     3.67
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -2.5,
+    "ci95": [
+     -7.0,
+     2.5
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.23,
+    "ci95": [
+     0.2,
+     0.26
+    ]
+   },
+   "secs_per_review": {
+    "value": 41.69,
+    "ci95": [
+     32.98,
+     52.07
+    ]
+   },
+   "cost_estimate_per_real": 0.1,
+   "precision_claims": 0.806,
+   "claim_occurrences": {
+    "real": 50,
+    "all": 62
+   },
+   "auth": {
+    "oauth": 25,
+    "key": 17
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 0,
+   "excluded_findings": 2
+  },
+  "ponytail_review": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 34.33,
+    "ci95": [
+     24.67,
+     44.33
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 34.33,
+    "ci95": [
+     24.67,
+     44.33
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8,
+     24.33
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 18.0,
+    "ci95": [
+     10.33,
+     26.67
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 9.33,
+    "ci95": [
+     3.67,
+     16.33
+    ]
+   },
+   "real_by_rep": {
+    "0": 36,
+    "1": 32,
+    "2": 35
+   },
+   "real_rep_sd": 2.08,
+   "minus_bare": {
+    "value": -1.33,
+    "ci95": [
+     -7.0,
+     4.33
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 0.33,
+    "ci95": [
+     -4.33,
+     5.33
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -1.5,
+    "ci95": [
+     -8.0,
+     6.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.24,
+    "ci95": [
+     0.22,
+     0.27
+    ]
+   },
+   "secs_per_review": {
+    "value": 43.29,
+    "ci95": [
+     36.14,
+     51.64
+    ]
+   },
+   "cost_estimate_per_real": 0.1,
+   "precision_claims": 0.805,
+   "claim_occurrences": {
+    "real": 62,
+    "all": 77
+   },
+   "auth": {
+    "oauth": 26,
+    "key": 16
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 2,
+   "excluded_findings": 2
+  },
+  "sp_inline": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 29.67,
+    "ci95": [
+     22.67,
+     37.0
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 32.67,
+    "ci95": [
+     25.67,
+     40.33
+    ]
+   },
+   "planted_per_rep": {
+    "value": 15.67,
+    "ci95": [
+     7.67,
+     24
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 14.0,
+    "ci95": [
+     7.67,
+     21.0
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 8.0,
+    "ci95": [
+     3.33,
+     13.67
+    ]
+   },
+   "real_by_rep": {
+    "0": 33,
+    "1": 29,
+    "2": 27
+   },
+   "real_rep_sd": 3.06,
+   "minus_bare": {
+    "value": -6.0,
+    "ci95": [
+     -12.33,
+     -0.67
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": -1.0,
+    "ci95": [
+     -4.67,
+     2.33
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -7.0,
+    "ci95": [
+     -15.5,
+     0.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.29,
+    "ci95": [
+     0.25,
+     0.33
+    ]
+   },
+   "secs_per_review": {
+    "value": 85.62,
+    "ci95": [
+     55.74,
+     145.31
+    ]
+   },
+   "cost_estimate_per_real": 0.136,
+   "precision_claims": 0.86,
+   "claim_occurrences": {
+    "real": 43,
+    "all": 50
+   },
+   "auth": {
+    "oauth": 27,
+    "key": 15
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 0,
+   "excluded_findings": 2
+  },
+  "sp_pair": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 43.67,
+    "ci95": [
+     30.33,
+     60.0
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 50.0,
+    "ci95": [
+     35.33,
+     67.33
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.67,
+    "ci95": [
+     8.67,
+     25
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 27.0,
+    "ci95": [
+     15.0,
+     41.33
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0.33,
+    "ci95": [
+     0,
+     1.33
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 14.67,
+    "ci95": [
+     4.33,
+     29.67
+    ]
+   },
+   "real_by_rep": {
+    "0": 46,
+    "1": 43,
+    "2": 42
+   },
+   "real_rep_sd": 2.08,
+   "minus_bare": {
+    "value": 8.0,
+    "ci95": [
+     -1.67,
+     20.0
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 5.67,
+    "ci95": [
+     -2.67,
+     17.67
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": 7.5,
+    "ci95": [
+     -2.0,
+     19.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.88,
+    "ci95": [
+     0.78,
+     1.0
+    ]
+   },
+   "secs_per_review": {
+    "value": 176.52,
+    "ci95": [
+     147.26,
+     210.02
+    ]
+   },
+   "cost_estimate_per_real": 0.283,
+   "precision_claims": 0.732,
+   "claim_occurrences": {
+    "real": 82,
+    "all": 112
+   },
+   "auth": {
+    "oauth": 29,
+    "key": 13
+   },
+   "models": {
+    "claude-opus-5-5": 42,
+    "claude-sonnet-5-5": 42
+   },
+   "equiv_mutant_flags": 0,
+   "excluded_findings": 4
+  },
+  "superpowers": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 43.67,
+    "ci95": [
+     33.0,
+     55.67
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 43.67,
+    "ci95": [
+     32.67,
+     55.67
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.67,
+    "ci95": [
+     8.67,
+     25
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 27.0,
+    "ci95": [
+     16.33,
+     39.33
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0.67,
+    "ci95": [
+     0,
+     2.0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 12.67,
+    "ci95": [
+     6.0,
+     21.0
+    ]
+   },
+   "real_by_rep": {
+    "0": 45,
+    "1": 42,
+    "2": 44
+   },
+   "real_rep_sd": 1.53,
+   "minus_bare": {
+    "value": 8.0,
+    "ci95": [
+     1.67,
+     15.33
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 3.67,
+    "ci95": [
+     -0.67,
+     9.0
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": 8.0,
+    "ci95": [
+     0.5,
+     16.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.58,
+    "ci95": [
+     0.51,
+     0.65
+    ]
+   },
+   "secs_per_review": {
+    "value": 131.45,
+    "ci95": [
+     109.21,
+     155.98
+    ]
+   },
+   "cost_estimate_per_real": 0.185,
+   "precision_claims": 0.732,
+   "claim_occurrences": {
+    "real": 82,
+    "all": 112
+   },
+   "auth": {
+    "oauth": 26,
+    "key": 16
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 1,
+   "excluded_findings": 3
+  },
+  "tob_diffreview": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 34.0,
+    "ci95": [
+     25.33,
+     43.33
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 34.0,
+    "ci95": [
+     25.33,
+     43.33
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.67,
+    "ci95": [
+     8.67,
+     25
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 17.33,
+    "ci95": [
+     9.0,
+     26.67
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 8.33,
+    "ci95": [
+     3.33,
+     14.33
+    ]
+   },
+   "real_by_rep": {
+    "0": 37,
+    "1": 32,
+    "2": 33
+   },
+   "real_rep_sd": 2.65,
+   "minus_bare": {
+    "value": -1.67,
+    "ci95": [
+     -6.33,
+     3.0
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": -0.67,
+    "ci95": [
+     -4.67,
+     3.0
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -2.5,
+    "ci95": [
+     -7.5,
+     2.5
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.3,
+    "ci95": [
+     0.26,
+     0.35
+    ]
+   },
+   "secs_per_review": {
+    "value": 51.43,
+    "ci95": [
+     41.79,
+     62.38
+    ]
+   },
+   "cost_estimate_per_real": 0.125,
+   "precision_claims": 0.797,
+   "claim_occurrences": {
+    "real": 55,
+    "all": 69
+   },
+   "auth": {
+    "oauth": 27,
+    "key": 15
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 0,
+   "excluded_findings": 1
+  }
+ },
+ "comparisons": {
+  "dual_cg - dual_nocg": {
+   "value": -0.33,
+   "ci95": [
+    -7.67,
+    6.33
+   ]
+  },
+  "none_b - none": {
+   "value": -4.0,
+   "ci95": [
+    -8.67,
+    0.33
+   ]
+  },
+  "superpowers - none": {
+   "value": 8.0,
+   "ci95": [
+    1.67,
+    15.33
+   ]
+  },
+  "sp_pair - superpowers": {
+   "value": 0.0,
+   "ci95": [
+    -7.33,
+    7.67
+   ]
+  },
+  "dual_fast (reported) - dual_nocg": {
+   "value": -2.0,
+   "ci95": [
+    -9.67,
+    5.67
+   ]
+  },
+  "sp_pair (reported) - dual_nocg": {
+   "value": -3.33,
+   "ci95": [
+    -11.0,
+    5.0
+   ]
+  },
+  "sp_inline (reported) - dual_nocg": {
+   "value": -20.67,
+   "ci95": [
+    -30.67,
+    -12.67
+   ]
+  }
+ },
+ "totals": {
+  "cells": 546,
+  "cost_estimate": 256.29,
+  "max_review_cost_estimate": 1.63,
+  "excluded_findings": 26,
+  "auth": {
+   "oauth": 339,
+   "key": 207
+  }
+ }
+}
