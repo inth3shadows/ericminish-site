@@ -2179,8 +2179,14 @@
    }
   },
   "real_use": {
-   "rounds_found": 202,
-   "rounds_timed": 198,
+   "launches": 221,
+   "rounds_found": 200,
+   "censored": {
+    "no_agent": 1,
+    "next_launch_first": 1,
+    "no_report": 19
+   },
+   "rounds_timed": 196,
    "rounds_used": 146,
    "agent_min_median": 7.6,
    "agent_min_lo": 0.8,
@@ -2224,7 +2230,8 @@
    "period": [
     "2026-08-20",
     "2026-11-11"
-   ]
+   ],
+   "until": "2026-11-11T13:37:57+00:00"
   }
  },
  "totals": {

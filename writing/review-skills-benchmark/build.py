@@ -317,10 +317,14 @@ def main():
     if ru:
         old, new = ru["by_report_format"]["inline"], ru["by_report_format"]["handback"]
         ru_par = (
-            f'      <p><b>Run time in everyday use.</b> I reconstructed {ru["rounds_found"]} dual-review rounds from my own '
-            f'session transcripts ({ru["period"][0]} to {ru["period"][1]}, looking up to two hours after each launch) and kept '
-            f'the {ru["rounds_used"]} where the code-reviewer half ran 30 seconds or more and its report cited at least one '
-            f'code location. These are the rounds that could be extracted, not an unrestricted sample. That half alone ran '
+            f'      <p><b>Run time in everyday use.</b> Of {ru["launches"]} dual-review launches in my own session transcripts '
+            f'({ru["period"][0]} to {ru["period"][1]}, looking up to two hours after each launch), {ru["rounds_found"]} had a '
+            f'timed code-reviewer report, and I kept the {ru["rounds_used"]} where that half ran 30 seconds or more and its '
+            f'report cited at least one code location. The other {ru["launches"] - ru["rounds_found"]} launches are left out: '
+            f'{ru["censored"]["no_report"]} had no report within two hours, {ru["censored"]["next_launch_first"]} '
+            f'{"was" if ru["censored"]["next_launch_first"] == 1 else "were"} overtaken by the next round before its report, '
+            f'and {ru["censored"]["no_agent"]} launched no code-reviewer. Dropping late and missing reports under-represents '
+            f'slow rounds, so these are the rounds that could be extracted, not an unrestricted sample. That half alone ran '
             f'{ru["agent_min_lo"]:.0f} to {ru["agent_min_hi"]:.0f} minutes (median {ru["agent_min_median"]:.1f}), far longer '
             f'than in the benchmark. In the {new["n"]} rounds since {new["period"][0]}, whose reports arrive as a separate '
             f'message, I split the rounds by the code-reviewer\'s run time into the {new["n"] // 2} shorter and the '
@@ -627,6 +631,11 @@ def main():
           {s12['kappa_linear']} in round 2), and round 1 used a different Codex model, with {s0['real_items'] - s0['both']}
           of its {s0['real_items']} real clusters graded by one family. The graders were also told, wrongly for {n_unrep} of
           {n_items} clusters, that both judges had reproduced each one (Section 3.4).</li>
+        <li><b>Blinding was imperfect.</b> In the attribution judges' packets, between 15 and 31 of 1,632 claim texts
+          (a narrow and a broad text scan), most of them from the dual-review arms, still showed that more than one reviewer
+          had written them, through a label such as "(A only)" or "the two reviewers disagree" or two reviewers' views side
+          by side. In one claim the blinding step also cut code (<code>A(B)</code> shown as <code>A</code>). The
+          judges were not asked which arm wrote a claim, and these claims were not re-judged.</li>
         <li><b>Coverage.</b> Planted hits are matched by location, not meaning (a mapped claim can also credit a plant),
           and {tot['excluded_findings']} findings near dropped plant candidates were not adjudicated.</li>
         <li><b>Bundles are compared whole.</b> Arms differ in models, subagents, instructions, compute and credential mix;
