@@ -1914,6 +1914,271 @@
    ]
   }
  },
+ "economics": {
+  "reviews_per_rep": 14,
+  "steps": {
+   "builtin - none": {
+    "real_per_rep": {
+     "value": -8.67,
+     "ci95": [
+      -16.0,
+      -1.67
+     ]
+    },
+    "s1s2_per_rep": {
+     "value": -4.0,
+     "ci95": [
+      -8.67,
+      -0.67
+     ]
+    },
+    "d_findings": -0.643,
+    "d_false_findings": 0.19,
+    "d_cost": -0.04,
+    "d_secs": -14.26
+   },
+   "caveman - none": {
+    "real_per_rep": {
+     "value": -3.67,
+     "ci95": [
+      -7.33,
+      -0.33
+     ]
+    },
+    "s1s2_per_rep": {
+     "value": -1.67,
+     "ci95": [
+      -4.33,
+      0.33
+     ]
+    },
+    "d_findings": -0.238,
+    "d_false_findings": 0.0,
+    "d_cost": 0.0,
+    "d_secs": -3.88
+   },
+   "dual_cg - none": {
+    "real_per_rep": {
+     "value": 18.0,
+     "ci95": [
+      10.33,
+      26.67
+     ]
+    },
+    "s1s2_per_rep": {
+     "value": 5.67,
+     "ci95": [
+      2.0,
+      10.67
+     ]
+    },
+    "d_findings": 3.952,
+    "d_false_findings": 2.619,
+    "d_cost": 0.8,
+    "d_secs": 187.43
+   },
+   "dual_fast - none": {
+    "real_per_rep": {
+     "value": 4.33,
+     "ci95": [
+      -2.0,
+      11.67
+     ]
+    },
+    "s1s2_per_rep": {
+     "value": 3.67,
+     "ci95": [
+      -2.0,
+      11.67
+     ]
+    },
+    "d_findings": 0.024,
+    "d_false_findings": 0.048,
+    "d_cost": 0.66,
+    "d_secs": 241.12
+   },
+   "dual_nocg - none": {
+    "real_per_rep": {
+     "value": 17.67,
+     "ci95": [
+      10.33,
+      26.0
+     ]
+    },
+    "s1s2_per_rep": {
+     "value": 6.67,
+     "ci95": [
+      2.0,
+      13.0
+     ]
+    },
+    "d_findings": 4.286,
+    "d_false_findings": 2.619,
+    "d_cost": 0.56,
+    "d_secs": 165.26
+   },
+   "ecc - none": {
+    "real_per_rep": {
+     "value": -13.0,
+     "ci95": [
+      -20.33,
+      -6.33
+     ]
+    },
+    "s1s2_per_rep": {
+     "value": -4.67,
+     "ci95": [
+      -9.33,
+      -1.0
+     ]
+    },
+    "d_findings": -1.0,
+    "d_false_findings": 0.095,
+    "d_cost": -0.08,
+    "d_secs": -7.5
+   },
+   "none_b - none": {
+    "real_per_rep": {
+     "value": -4.67,
+     "ci95": [
+      -8.67,
+      -0.67
+     ]
+    },
+    "s1s2_per_rep": {
+     "value": -1.0,
+     "ci95": [
+      -2.67,
+      1.0
+     ]
+    },
+    "d_findings": -0.429,
+    "d_false_findings": 0.0,
+    "d_cost": -0.01,
+    "d_secs": -3.31
+   },
+   "ponytail_review - none": {
+    "real_per_rep": {
+     "value": -3.67,
+     "ci95": [
+      -7.0,
+      -0.67
+     ]
+    },
+    "s1s2_per_rep": {
+     "value": -1.67,
+     "ci95": [
+      -3.67,
+      0.33
+     ]
+    },
+    "d_findings": -0.024,
+    "d_false_findings": 0.071,
+    "d_cost": 0.0,
+    "d_secs": -1.71
+   },
+   "sp_inline - none": {
+    "real_per_rep": {
+     "value": -6.0,
+     "ci95": [
+      -11.33,
+      -2.0
+     ]
+    },
+    "s1s2_per_rep": {
+     "value": -1.0,
+     "ci95": [
+      -2.0,
+      0.0
+     ]
+    },
+    "d_findings": -0.738,
+    "d_false_findings": -0.119,
+    "d_cost": 0.05,
+    "d_secs": 40.62
+   },
+   "sp_pair - none": {
+    "real_per_rep": {
+     "value": 7.67,
+     "ci95": [
+      -1.67,
+      19.33
+     ]
+    },
+    "s1s2_per_rep": {
+     "value": 5.0,
+     "ci95": [
+      -2.67,
+      16.67
+     ]
+    },
+    "d_findings": 0.857,
+    "d_false_findings": 0.405,
+    "d_cost": 0.64,
+    "d_secs": 131.52
+   },
+   "superpowers - none": {
+    "real_per_rep": {
+     "value": 8.67,
+     "ci95": [
+      2.33,
+      15.67
+     ]
+    },
+    "s1s2_per_rep": {
+     "value": 4.67,
+     "ci95": [
+      0.67,
+      9.33
+     ]
+    },
+    "d_findings": 0.833,
+    "d_false_findings": 0.429,
+    "d_cost": 0.34,
+    "d_secs": 86.45
+   },
+   "tob_diffreview - none": {
+    "real_per_rep": {
+     "value": -1.67,
+     "ci95": [
+      -4.67,
+      1.0
+     ]
+    },
+    "s1s2_per_rep": {
+     "value": -0.67,
+     "ci95": [
+      -3.67,
+      1.67
+     ]
+    },
+    "d_findings": -0.262,
+    "d_false_findings": 0.048,
+    "d_cost": 0.06,
+    "d_secs": 6.43
+   },
+   "dual_nocg - superpowers": {
+    "real_per_rep": {
+     "value": 9.0,
+     "ci95": [
+      4.33,
+      13.67
+     ]
+    },
+    "s1s2_per_rep": {
+     "value": 2.0,
+     "ci95": [
+      -1.67,
+      6.0
+     ]
+    },
+    "d_findings": 3.452,
+    "d_false_findings": 2.19,
+    "d_cost": 0.22,
+    "d_secs": 78.81
+   }
+  }
+ },
  "totals": {
   "cells": 546,
   "cost_estimate": 256.29,
