@@ -16,6 +16,7 @@ SLUG = "review-skills-benchmark"
 TITLE = "Review skills on real code: a three-rep benchmark of Claude Code review setups"
 DATE = "2026-11-11"
 D = json.load(open(os.path.join(HERE, "data.json")))
+FU = json.load(open(os.path.join(HERE, "followup-builtin-high.json")))  # Section 5.7, a separate adjudication round
 A, C = D["arms"], D["comparisons"]
 
 NAMES = {
@@ -346,6 +347,16 @@ def main():
                  A[a]["equiv_mutant_flags"], A[a]["excluded_findings"],
                  f'{A[a]["auth"].get("key", 0)} / {A[a]["auth"].get("oauth", 0)}'] for a in ORDER])
 
+    fu_lo, fu_hi, fu_dn = FU["arms"]["builtin"], FU["arms"]["builtin_high"], FU["arms"]["dual_nocg"]
+    fu_c = FU["contrasts"]
+    fu_ci = lambda k: f"{sg(fu_c[k]['ci95'][0])} to {sg(fu_c[k]['ci95'][1])}"  # noqa: E731
+    fu_row = lambda name, a: (f"<tr><td>{name}</td><td>{', '.join(str(r) for r in a['reps'])}</td>"  # noqa: E731
+                              f"<td>{f1(a['real_per_rep'])}</td><td>{f1(a['ci95'][0])} to {f1(a['ci95'][1])}</td>"
+                              f"<td>{a['precision']:.2f}</td><td>{a['cost_per_review']:.2f}</td><td>{a['secs_per_review']}</td></tr>")
+    t8 = ("<div class=\"table-scroll\"><table><tr><th>Arm</th><th>Reps</th><th>Real / rep</th><th>95% interval</th>"
+          "<th>Precision</th><th>Est. $ / review</th><th>s / review</th></tr>"
+          + fu_row("Built-in /code-review, low (as run)", fu_lo) + fu_row("Built-in /code-review, high", fu_hi)
+          + fu_row("Dual review", fu_dn) + "</table></div>")
     abstract = (
         f"Skill packs for Claude Code promise better code review, but they are rarely measured on their users' own code. "
         f"I ran {narms} review bundles (bare Claude Code twice, the built-in review command, five public skill packs, "
@@ -362,6 +373,9 @@ def main():
         f"lowest precision of those tested. Of the public packs and the built-in command, {names_of(better_public)} scored "
         f"above bare Claude Code, while {names_of(worse_public)} scored below it, all with 95% intervals that exclude zero; two identical "
         f"bare arms also differed by {sg(aa['value'])} ({ci(aa, sg)}), so differences of that size arise between reruns. "
+        f"The built-in command had run at the low level its agent chose; in a follow-up round at high it found "
+        f"{f1(fu_hi['real_per_rep'])} real defects per rep against {f1(fu_dn['real_per_rep'])} for dual review judged in the same round "
+        f"(difference {sg(fu_c['dual_nocg - builtin_high']['value'])}, {fu_ci('dual_nocg - builtin_high')}). "
         f"These are comparisons of "
         f"whole bundles, which differ in "
         f"models, instructions and compute as well as in skill.")
@@ -380,7 +394,8 @@ def main():
       <div class="note"><p><b>Review.</b> Checked independently against the data by two models from other families
         over five review rounds, and Section 5.6 (economics) over two more; the headline difference moved from +22.0 to {sg(dn['minus_bare']['value'])} as
         attribution was tightened (<a href="protocol/changelog.md">changelog</a>). Every number on this page is
-        generated from <a href="data.json">data.json</a>.</p></div>
+        generated from <a href="data.json">data.json</a>, and Section 5.7's from
+        <a href="followup-builtin-high.json">followup-builtin-high.json</a>.</p></div>
 
       <div class="summary"><p><b>Abstract.</b> {html.escape(abstract)}</p></div>
 
@@ -619,6 +634,29 @@ def main():
         distribution on the value of a caught defect and report the probability that each step pays. That is left for
         the replay on past pull requests.</p>
 
+      <h3>5.7 Follow-up: the built-in command at high</h3>
+      <p>The Built-in /code-review arm ran at the level its agent chose, which was <code>low</code> in 40 of 42
+        reviews, while dual review passes <code>high</code> to the same command (Section 6). So I ran the built-in
+        command forced to <code>high</code> on the same {FU['tasks']} tasks, three more reps
+        ({fu_hi['cells']} reviews, every one at <code>high</code>). Its findings were adjudicated in one new round
+        together with two controls judged again in the same round: the built-in arm as run (reps 1–2) and dual review
+        (reps 1–2). Judging all three together keeps one set of labels, since labels move between rounds (Section 6).
+        The round used the same protocol and credit rule as above: two blind Opus judges per task, then one attribution
+        judge per task. One change: a stricter scrub also removed reviewer labels such as "(a reviewer only)" from the
+        adjudication packets. Intervals are from the same task bootstrap ({FU['bootstrap']['B']:,} resamples).
+        The controls' values differ from Table 2 because the labels differ, so compare within Table 8 only.</p>
+      <figure><figcaption>Table 8. The built-in command at high, judged in one round with its controls. Estimated cost is
+        Claude Code's token-cost estimate.</figcaption>{t8}</figure>
+      <p>At <code>high</code> the built-in command found {f1(fu_c['builtin_high - builtin']['value'])} more real
+        defects per rep than as run ({fu_ci('builtin_high - builtin')}). Dual review found
+        {f1(fu_c['dual_nocg - builtin_high']['value'])} more than the built-in command at high
+        ({fu_ci('dual_nocg - builtin_high')}), an interval that includes zero, at about
+        {fu_dn['cost_per_review'] / fu_hi['cost_per_review']:.1f} times the estimated cost and
+        {fu_dn['secs_per_review'] / fu_hi['secs_per_review']:.1f} times the time per review. So the Built-in row of
+        Table 2 measures the command at the level its agent picked, and most of dual review's lead over it comes from
+        running the same command at <code>high</code>. Whether dual review's second reviewer adds defects beyond
+        that is not settled by these reps. This follow-up was not checked by the two reviewing models.</p>
+
       <h2 id="limits">6 Limitations <a class="anchor" href="#limits" aria-label="Link to this section">#</a></h2>
       <ul>
         <li><b>Judges from one family.</b> Adjudication and attribution were done by Claude Opus 5.5, grading Claude
@@ -643,8 +681,8 @@ def main():
         <li><b>The built-in arm ran at low.</b> The force line named the skill but no level, and the agent passed
           <code>low</code> in 40 of the 42 Built-in /code-review reviews (no level in the other 2). Dual review passes
           <code>high</code> to the same command. So that row measures the built-in command at low, not the command at
-          its best, and its difference from bare and from dual review should be read that way. A rerun at
-          <code>high</code> is planned.</li>
+          its best, and its difference from bare and from dual review should be read that way. Section 5.7 reruns it
+          at <code>high</code>.</li>
         <li><b>A small, personal task set.</b> {ntask} tasks from four repositories I wrote, in Python and Go.</li>
         <li><b>I built one arm and the hybrids.</b> I wrote dual review, and designed the hybrids after seeing
           the round-1 results; they need held-out tasks before any claim about them generalises.</li>
@@ -665,7 +703,9 @@ def main():
         ({prec('dual_fast')} against {prec('dual_nocg')}) at a lower scored yield, a trade-off these bundle comparisons
         cannot attribute to the verifier alone. On the break-even analysis (Section 5.6), dual review pays over bare
         when a caught defect is worth more than about {dn_be[3]:.0f} minutes of the reader's time at 3 minutes of triage
-        per finding, and most of its cost is the time spent reading its findings. Next steps are a replay on past pull requests, a cross-family or human
+        per finding, and most of its cost is the time spent reading its findings. The built-in command at
+        <code>high</code> came within {f1(fu_c['dual_nocg - builtin_high']['value'])} real defects per rep of dual review
+        ({fu_ci('dual_nocg - builtin_high')}; Section 5.7). Next steps are a replay on past pull requests, a cross-family or human
         check of the adjudication, a matched-compute baseline, and held-out tasks for the hybrids.</p>
 
       <h2 id="appendix">Appendix <a class="anchor" href="#appendix" aria-label="Link to this section">#</a></h2>
@@ -687,7 +727,8 @@ def main():
         <a href="protocol/seeds/round1-code-graph-rerun.json">round 1 code-graph rerun</a>,
         <a href="protocol/seeds/round2.json">round 2</a>, <a href="protocol/seeds/round2-hybrid-rep0.json">round 2
         hybrids, rep 0</a>. <a href="data.json">data.json</a> holds every figure on this page with its interval, and
-        <a href="attribution.json">attribution.json</a> the defect catalogue and claim mappings behind them.</p>
+        <a href="attribution.json">attribution.json</a> the defect catalogue and claim mappings behind them;
+        <a href="followup-builtin-high.json">followup-builtin-high.json</a> holds Section 5.7's figures.</p>
 
       <h2 id="cite">How to cite <a class="anchor" href="#cite" aria-label="Link to this section">#</a></h2>
       <pre><code>@misc{{minish2026reviewskills,
