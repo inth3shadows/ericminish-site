@@ -13,7 +13,7 @@ import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLUG = "review-skills-benchmark"
-TITLE = "Review skills on my own code: a three-rep benchmark of Claude Code review setups"
+TITLE = "Review skills on real code: a three-rep benchmark of Claude Code review setups"
 DATE = "2026-11-11"
 D = json.load(open(os.path.join(HERE, "data.json")))
 A, C = D["arms"], D["comparisons"]
@@ -223,14 +223,14 @@ def main():
         <h1>{html.escape(TITLE)}</h1>
         <p class="post-meta">
           <span>By <a href="/about/">Eric Minish</a></span>
-          <span>Version 5, <time datetime="{DATE}">11 November 2026</time></span>
+          <span><time datetime="{DATE}">11 November 2026</time></span>
           <!-- auto:start readtime --><span>18 min read</span><!-- auto:end readtime -->
         </p>
       </header>
 
-      <div class="note"><p><b>Status.</b> Version 5. Before publication, each version was checked independently against the data file
-        by two models from other families for factual and statistical errors. Versions 1 to 4 were reviewed this way
-        and changed substantially; see <a href="#corrections">Corrections</a>. Every number on this page is
+      <div class="note"><p><b>Review.</b> Checked independently against the data by two models from other families
+        over five review rounds; the headline difference moved from +22.0 to {sg(dn['minus_bare']['value'])} as
+        attribution was tightened (<a href="protocol/changelog.md">changelog</a>). Every number on this page is
         generated from <a href="data.json">data.json</a>.</p></div>
 
       <div class="summary"><p><b>Abstract.</b> {html.escape(abstract)}</p></div>
@@ -246,7 +246,6 @@ def main():
           <li><a href="#limits">Limitations</a></li>
           <li><a href="#conclusion">Conclusion</a></li>
           <li><a href="#appendix">Appendix</a></li>
-          <li><a href="#corrections">Corrections</a></li>
           <li><a href="#cite">How to cite</a></li>
         </ol>
       </nav>
@@ -472,46 +471,13 @@ def main():
         hybrids, rep 0</a>. <a href="data.json">data.json</a> holds every figure on this page with its interval, and
         <a href="attribution.json">attribution.json</a> the defect catalogue and claim mappings behind them.</p>
 
-      <h2 id="corrections">Corrections <a class="anchor" href="#corrections" aria-label="Link to this section">#</a></h2>
-      <p><b>Version 5 (11 November 2026).</b> The fourth review (Codex gpt-6.1-sol and GLM 5.3 Prime) found that version
-        4's new rule, counting a difference from bare only when it exceeded the gap between the two bare arms, compared
-        two noisy point estimates, and that Section 5.1 drew a conclusion about the intervals from one comparison. Version
-        5 drops the rule and reports the bare arms as a negative control. It also corrects the run manifest's rerun rule,
-        adds launch settings, file hashes and extraction rules, publishes the structure of the defect catalogue and the
-        claim mappings (texts as hashes only), states
-        the precision trade-off of the parallel-dual hybrid in the conclusion, relabels the reproduced-only severity count
-        as a sensitivity check, and gives the abstract's adjudication exception. No number changed.</p>
-      <p><b>Version 4.</b> The third review (Codex gpt-6.1-sol and GLM 5.3 Prime) found that planted
-        defects were outside the defect catalogue, so a real cluster caused by a plant could count again as a separate
-        defect; that each claim could map to only one defect; that precision left out planted hits; that provenance was
-        set per cluster rather than per defect; that the two-level bootstrap counted within-task variance twice; that the
-        severity graders were wrongly told every cluster was reproduced; and that the treatment files and run manifest
-        were unpublished. Version 4 puts plants in the catalogue, maps claims to lists of defects, measures precision over
-        the whole scored list, takes provenance from the attribution judge, uses a task-cluster bootstrap, adds a
-        reproduced-only severity count, renames the CONTESTED row, publishes the treatment files and run manifest, and
-        cites code-review-bench. Dual review's lead over bare is +17.7, and under the new
-        intervals the two bare arms' gap excludes zero.</p>
-      <p><b>Version 3.</b> The second review (GLM 5.3 Prime and Codex gpt-6.1-sol) found that version
-        2's attribution judged each claim only against its own cluster's defect, which dropped correct claims about defects
-        accepted at other clusters and merged two different defects in one case; and that precision collapsed several claims
-        from one review into one. Version 3 lists the accepted defects per task and maps every claim to them, measures
-        precision per claim, uses one shared set of resamples so each comparison has a single interval, states the estimand
-        and the exchangeability assumption, labels costs as estimates, reports the reps-1–2-only differences, the findings
-        not adjudicated and the credential imbalance, and publishes the protocol files. Superpowers' difference from bare
-        now excludes zero, and dual review's lead is +17.7.</p>
-      <p><b>Version 2.</b> The first review found that every reviewer in a cluster inherited the cluster's verdict, that
-        one root cause could count twice, that the model mix was misstated, that the hybrids' Unconfirmed lists were
-        ignored, and that an ad hoc noise floor was used. Claim-level attribution, two-level resampling and the other fixes
-        lowered dual review's lead over bare from +22.0 to +15.3.</p>
-
       <h2 id="cite">How to cite <a class="anchor" href="#cite" aria-label="Link to this section">#</a></h2>
       <pre><code>@misc{{minish2026reviewskills,
   author = {{Eric Minish}},
   title  = {{{TITLE}}},
   year   = {{2026}},
   month  = {{nov}},
-  url    = {{https://www.ericminish.com/writing/{SLUG}/}},
-  note   = {{Version 5}}
+  url    = {{https://www.ericminish.com/writing/{SLUG}/}}
 }}</code></pre>
 """
     tpl = open(os.path.join(HERE, "..", "measuring-coding-agents", "index.html"), encoding="utf-8").read()
