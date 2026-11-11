@@ -282,14 +282,18 @@ def main():
         return f'{s2(c["value"] / PER)} ({s2(c["ci95"][0] / PER)} to {s2(c["ci95"][1] / PER)})'
 
     def be_cell(k, m, metric="real_per_rep"):
+        e, d = E[k], E[k][metric]["value"]
         if not clear(E[k][metric]):
             return "no bound"
-        v = breakeven(k, m, metric)
-        if v is None or v < 0.5:
-            return "never" if E[k][metric]["value"] < 0 else "always"
-        return ("more than " if E[k][metric]["value"] > 0 else "less than ") + f"{v:.0f}"
+        cost = e["d_cost"] / VT * 60 + e["d_findings"] * m
+        if d < 0 and cost >= 0:
+            return "never"  # finds fewer and costs at least as much: no value of a defect makes the switch pay
+        if d > 0 and cost <= 0:
+            return "always"
+        v = cost / (d / PER)
+        return ("more than " if d > 0 else "less than ") + (f"{v:.1f}" if v < 1 else f"{v:.0f}")
 
-    t8 = table(["Step", "Δ real defects / review (95%)", "Δ serious / review", "Δ findings to read / review",
+    t8 = table(["Step", "Δ real defects / review (95%)", "Δ serious / review", "Δ items to read / review",
                 "Δ est. $ / review", "Δ wait, s", "Pays if a caught defect is worth (min), triage 1 min",
                 "3 min", "10 min", "Serious only, 3 min"],
                [[step_label(k), per_review_ci(E[k]["real_per_rep"]), s2(E[k]["s1s2_per_rep"]["value"] / PER),
@@ -303,8 +307,34 @@ def main():
     ds_be, ds_ser_clear = breakeven("dual_nocg - superpowers", 3), clear(ds["s1s2_per_rep"])
     sp_be = breakeven("superpowers - none", 3)
     below = econ_rows[3:]
-    below_max = max(breakeven(k, 3) or 0 for k in below) if below else None
+    below_never = [k for k in below if be_cell(k, 3) == "never"]
+    below_ceil = [k for k in below if k not in below_never]
+    below_max = max(breakeven(k, 3) for k in below_ceil) if below_ceil else None
+    p_hour = dn_be[3] / 60
     vt_low = breakeven("dual_nocg - none", 3, vt=20) - dn_be[3]
+    ru = D["economics"].get("real_use")
+    ru_par = ""
+    if ru:
+        old, new = ru["by_report_format"]["inline"], ru["by_report_format"]["handback"]
+        ru_par = (
+            f'      <p><b>Run time in everyday use.</b> I reconstructed {ru["rounds_found"]} dual-review rounds from my own '
+            f'session transcripts ({ru["period"][0]} to {ru["period"][1]}, looking up to two hours after each launch) and kept '
+            f'the {ru["rounds_used"]} where the code-reviewer half ran 30 seconds or more and its report cited at least one '
+            f'code location. These are the rounds that could be extracted, not an unrestricted sample. That half alone ran '
+            f'{ru["agent_min_lo"]:.0f} to {ru["agent_min_hi"]:.0f} minutes (median {ru["agent_min_median"]:.1f}), far longer '
+            f'than in the benchmark. In the {new["n"]} rounds since {new["period"][0]}, whose reports arrive as a separate '
+            f'message, I split the rounds by the code-reviewer\'s run time into the {new["n"] // 2} shorter and the '
+            f'{new["n"] - new["n"] // 2} longer. The longer rounds took a median {new["longer_half"]["agent_min_median"]:.1f} '
+            f'minutes and their reports cited {new["longer_half"]["locations_median"]:g} locations, against '
+            f'{new["shorter_half"]["agent_min_median"]:.1f} minutes and {new["shorter_half"]["locations_median"]:g} for the '
+            f'shorter ones (Spearman {new["spearman_minutes_locations"]:.2f}); in the {old["n"]} earlier rounds there was '
+            f'no trend ({old["spearman_minutes_locations"]:.2f}). The two report formats cite locations at very different rates, so '
+            f'they are not pooled. So longer rounds cited a few more locations and far fewer per minute. This is an '
+            f'association across different reviews: it cannot show what a review would have found if stopped earlier, and '
+            f'longer rounds may be harder changes. For a reader who waits, it suggests a long review costs more per '
+            f'finding; running reviews in the background avoids the wait, though nothing here tests that. Cited locations '
+            f'are only a proxy for findings: they were not adjudicated, and diff size was recorded for only '
+            f'{ru["rounds_with_diff_size"]} rounds.</p>')
     t7 = table(["Arm", "Rep 0", "Rep 1", "Rep 2", "SD across reps", "Minus Bare A, reps 1–2 only", "Equivalent-mutant flags",
                 "Findings not adjudicated", "Reviews on API key / subscription"],
                [[name(a)] + [A[a]["real_by_rep"].get(str(r), "") for r in (0, 1, 2)] +
@@ -344,7 +374,7 @@ def main():
       </header>
 
       <div class="note"><p><b>Review.</b> Checked independently against the data by two models from other families
-        over five review rounds (Section 5.6, on economics, was added after them); the headline difference moved from +22.0 to {sg(dn['minus_bare']['value'])} as
+        over five review rounds, and Section 5.6 (economics) over two more; the headline difference moved from +22.0 to {sg(dn['minus_bare']['value'])} as
         attribution was tightened (<a href="protocol/changelog.md">changelog</a>). Every number on this page is
         generated from <a href="data.json">data.json</a>.</p></div>
 
@@ -533,19 +563,27 @@ def main():
         ship. Since there is no reliable figure for what an escaped defect costs (the widely cited phase-escalation
         multipliers rest on weak evidence; see <a href="https://leanpub.com/leprechauns">Bossavit</a>), I do not assume
         one. Instead, for each step from one bundle to another I compute the break-even: how many minutes of the reader's
-        time a caught defect must be worth, after weighting by the chance it would otherwise have shipped, for the step
-        to pay. This applies the quality-economics framing of
-        <a href="https://arxiv.org/abs/1612.03785">Wagner (ISSTA 2006)</a> to measured per-review differences:
-        break-even = (Δ token cost ÷ hourly value + Δ findings × triage minutes per finding [+ Δ run time]) ÷ Δ defects
-        caught. The token cost term uses ${VT:.0f} an hour and barely matters: at $20 an hour it would add
-        {vt_low:.1f} minutes to dual review's break-even. Triage minutes per finding is the reader's to choose; an
-        industrial study of static-analysis alarms puts manual triage at 10 to 20 minutes each
-        (<a href="https://arxiv.org/abs/2601.18844">arXiv:2601.18844</a>), and a review finding with a failing input is
-        usually quicker to check.</p>
+        time a caught defect must be worth for the step to pay. That value is the reader's to judge. It is the expected
+        cost avoided by catching the defect now: the chance it would otherwise ship, times what it would then cost,
+        minus anything catching it early does not save, such as the fix itself. This applies the quality-economics
+        framing of <a href="https://arxiv.org/abs/1612.03785">Wagner (ISSTA 2006)</a> to measured per-review
+        differences: break-even = (60 × Δ token cost ÷ hourly value + Δ items to read × triage minutes per item
+        [+ Δ minutes waited]) ÷ Δ defects caught, in minutes. Items to read are everything the reader sees: the whole
+        scored list, including findings next to dropped plants, and the hybrids' Unconfirmed lists. The token cost term
+        uses ${VT:.0f} an hour and barely matters: at $20 an hour it would add {vt_low:.1f} minutes to dual review's
+        break-even. Triage minutes per item is the reader's to choose; an industrial study of static-analysis alarms
+        puts manual triage at 10 to 20 minutes each (<a href="https://arxiv.org/abs/2601.18844">arXiv:2601.18844</a>). No human triage times were measured
+        here, so the 1, 3 and 10 minutes in Table 7 are scenarios for the reader to pick from.</p>
       <figure><figcaption>Table 7. Break-even per step, per review. "More than <i>x</i>": the step pays when a caught
         defect is worth more than <i>x</i> minutes of the reader's time. "Less than <i>x</i>": the cheaper bundle finds
         fewer defects, and switching to it pays only when a caught defect is worth less than <i>x</i> minutes. "No bound":
-        the difference in defects has an interval that includes zero, so no threshold is supported. Run time is not
+        the difference in defects has an interval that includes zero, so no threshold is supported. "Never": the
+        bundle finds fewer defects and costs at least as much, so no value of a defect makes switching to it pay.
+        Rows are Superpowers and dual review over bare, dual review over Superpowers, and every bundle below
+        bare whose interval excludes zero; left out are Bare (B), the identical-setup control
+        (Section 5.1); the code-graph variant, whose break-even at 3 minutes ({breakeven("dual_cg - none", 3):.0f}) is
+        close to dual review's; and Trail of Bits and the pair and parallel-dual hybrids, whose differences from bare
+        include zero. Run time is not
         counted; estimated token cost at ${VT:.0f}/h.</figcaption>{t8}</figure>
       <figure><figcaption>Figure 2. Break-even against triage minutes per finding. Above a line, the step pays. The band
         is the break-even of dual review over bare at the ends of the 95% interval of its extra defects.</figcaption>
@@ -554,23 +592,25 @@ def main():
       <p><b>When dual review is worth it.</b> Over bare Claude Code it pays whenever a caught defect is worth more than
         about {dn_be[3]:.0f} minutes of the reader's time at 3 minutes of triage per finding ({dn_band[0]:.0f} to
         {dn_band[1]:.0f} across the interval), or {dn_be[1]:.0f} minutes at 1 minute per finding. Counting only serious
-        (S1–S2) defects, the bar is about {dn_ser:.0f} minutes. If the reader waits for each review, add about
-        {dn_wait:.0f} minutes. For code where a shipped defect costs an hour or more of someone's time, that bar is low.</p>
-      <p><b>When it is not.</b> The break-even grows with triage time: at 10 minutes per finding it is about
-        {dn_be[10]:.0f} minutes per caught defect, so slow-to-verify findings on low-stakes code (prototypes, throwaway
-        scripts) do not repay it. Most of dual review's cost is its extra findings to read
-        ({sg(E['dual_nocg - none']['d_findings'])} per review, {sg(E['dual_nocg - none']['d_false_findings'])} of them
-        identifying no defect), not its tokens.</p>
+        (S1–S2) defects, the bar is about {dn_ser:.0f} minutes. Run time counts only for a reader who waits for the review;
+        one who works on something else meanwhile, such as another session, can count it as near zero. A reader who
+        waits adds about {dn_wait:.0f} minutes at the benchmark's run times, and each further minute of waiting adds
+        {PER / E['dual_nocg - none']['real_per_rep']['value']:.1f} minutes to the break-even. Put another way, a defect
+        that would cost an hour if it shipped clears the bar at 3 minutes of triage only if it would ship at least
+        {p_hour:.0%} of the time.</p>
+      <p><b>When it is not.</b> The break-even grows with triage time: at 10 minutes per item it is about
+        {dn_be[10]:.0f} minutes per caught defect. Where findings are slow to check, or where tests and later review
+        would probably catch the defects anyway, the expected cost avoided per defect may not reach that. Most of dual
+        review's cost is its extra items to read ({sg(E['dual_nocg - none']['d_findings'])} per review; of its scored
+        findings, {sg(E['dual_nocg - none']['d_false_findings'])} more per review identify no defect), not its tokens.</p>
       <p><b>Dual review or Superpowers.</b> Superpowers pays over bare above about {sp_be:.0f} minutes per caught defect
-        at 3 minutes of triage, because it adds only {sg(E['superpowers - none']['d_findings'])} findings per review. Going
-        on to dual review adds {s2(ds['real_per_rep']['value'] / PER)} defects per review
-        (95% interval {s2(ds['real_per_rep']['ci95'][0] / PER)} to {s2(ds['real_per_rep']['ci95'][1] / PER)}) for
-        {ds['d_findings']:.1f} more findings to read, a break-even
-        of about {ds_be:.0f} minutes. {"Its extra serious defects, " + s2(ds['s1s2_per_rep']['value'] / PER) + " per review, have an interval that includes zero, so a reader who counts only serious defects and whose triage time is dear has no evidence here that the step from Superpowers to dual review pays." if not ds_ser_clear else ""}</p>
-      <p><b>Bundles below bare.</b> {names_of([k.split(" - ")[0] for k in below])} find fewer defects than bare and save
-        a little reading. Switching to one pays only if a caught defect is worth less than about {below_max:.0f} minutes at
-        3 minutes of triage, so as replacements for bare Claude Code they are not worth it for any code where defects
-        matter.</p>
+        at 3 minutes of triage, because it adds only {sg(E['superpowers - none']['d_findings'])} items to read per review.
+        Going on to dual review adds {s2(ds['real_per_rep']['value'] / PER)} defects per review (95% interval
+        {s2(ds['real_per_rep']['ci95'][0] / PER)} to {s2(ds['real_per_rep']['ci95'][1] / PER)}) for
+        {ds['d_findings']:.1f} more items to read, a break-even of about {ds_be:.0f} minutes. {"Its extra serious defects, " + s2(ds['s1s2_per_rep']['value'] / PER) + " per review, have an interval that includes zero, so a reader who counts only serious defects and whose triage time is dear has no evidence here that the step from Superpowers to dual review pays." if not ds_ser_clear else ""}</p>
+      <p><b>Bundles below bare.</b> {names_of([k.split(" - ")[0] for k in below])} find fewer defects than bare.
+        {(names_of([k.split(" - ")[0] for k in below_never]) + (" also gives" if len(below_never) == 1 else " also give") + " at least as much to read, so switching to " + ("it" if len(below_never) == 1 else "them") + " never pays under this model. ") if below_never else ""}{(names_of([k.split(" - ")[0] for k in below_ceil]) + " save some reading; switching to one pays only if a caught defect's expected avoided cost is below about " + f"{below_max:.0f}" + " minutes at 3 minutes of triage. For a reader whose caught defects are worth more than that, they do not pay as replacements for bare Claude Code.") if below_ceil else ""}</p>
+{ru_par}
       <p>These are point estimates of a linear model for one reader and one task set. A fuller treatment would put a
         distribution on the value of a caught defect and report the probability that each step pays. That is left for
         the replay on past pull requests.</p>

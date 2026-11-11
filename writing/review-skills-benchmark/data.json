@@ -1932,7 +1932,7 @@
       -0.67
      ]
     },
-    "d_findings": -0.643,
+    "d_findings": -0.619,
     "d_false_findings": 0.19,
     "d_cost": -0.04,
     "d_secs": -14.26
@@ -1952,7 +1952,7 @@
       0.33
      ]
     },
-    "d_findings": -0.238,
+    "d_findings": -0.214,
     "d_false_findings": 0.0,
     "d_cost": 0.0,
     "d_secs": -3.88
@@ -1972,7 +1972,7 @@
       10.67
      ]
     },
-    "d_findings": 3.952,
+    "d_findings": 4.071,
     "d_false_findings": 2.619,
     "d_cost": 0.8,
     "d_secs": 187.43
@@ -1992,7 +1992,7 @@
       11.67
      ]
     },
-    "d_findings": 0.024,
+    "d_findings": 6.0,
     "d_false_findings": 0.048,
     "d_cost": 0.66,
     "d_secs": 241.12
@@ -2012,7 +2012,7 @@
       13.0
      ]
     },
-    "d_findings": 4.286,
+    "d_findings": 4.381,
     "d_false_findings": 2.619,
     "d_cost": 0.56,
     "d_secs": 165.26
@@ -2052,7 +2052,7 @@
       1.0
      ]
     },
-    "d_findings": -0.429,
+    "d_findings": -0.381,
     "d_false_findings": 0.0,
     "d_cost": -0.01,
     "d_secs": -3.31
@@ -2072,7 +2072,7 @@
       0.33
      ]
     },
-    "d_findings": -0.024,
+    "d_findings": 0.024,
     "d_false_findings": 0.071,
     "d_cost": 0.0,
     "d_secs": -1.71
@@ -2092,7 +2092,7 @@
       0.0
      ]
     },
-    "d_findings": -0.738,
+    "d_findings": 0.571,
     "d_false_findings": -0.119,
     "d_cost": 0.05,
     "d_secs": 40.62
@@ -2112,7 +2112,7 @@
       16.67
      ]
     },
-    "d_findings": 0.857,
+    "d_findings": 3.595,
     "d_false_findings": 0.405,
     "d_cost": 0.64,
     "d_secs": 131.52
@@ -2132,7 +2132,7 @@
       9.33
      ]
     },
-    "d_findings": 0.833,
+    "d_findings": 0.905,
     "d_false_findings": 0.429,
     "d_cost": 0.34,
     "d_secs": 86.45
@@ -2152,7 +2152,7 @@
       1.67
      ]
     },
-    "d_findings": -0.262,
+    "d_findings": -0.238,
     "d_false_findings": 0.048,
     "d_cost": 0.06,
     "d_secs": 6.43
@@ -2172,11 +2172,59 @@
       6.0
      ]
     },
-    "d_findings": 3.452,
+    "d_findings": 3.476,
     "d_false_findings": 2.19,
     "d_cost": 0.22,
     "d_secs": 78.81
    }
+  },
+  "real_use": {
+   "rounds_found": 202,
+   "rounds_timed": 198,
+   "rounds_used": 146,
+   "agent_min_median": 7.6,
+   "agent_min_lo": 0.8,
+   "agent_min_hi": 60.9,
+   "by_report_format": {
+    "inline": {
+     "n": 53,
+     "spearman_minutes_locations": 0.04,
+     "period": [
+      "2026-08-20",
+      "2026-09-14"
+     ],
+     "shorter_half": {
+      "agent_min_median": 6.7,
+      "locations_median": 14.0
+     },
+     "longer_half": {
+      "agent_min_median": 16.1,
+      "locations_median": 15
+     }
+    },
+    "handback": {
+     "n": 93,
+     "spearman_minutes_locations": 0.16,
+     "period": [
+      "2026-09-16",
+      "2026-11-11"
+     ],
+     "shorter_half": {
+      "agent_min_median": 4.1,
+      "locations_median": 3.5
+     },
+     "longer_half": {
+      "agent_min_median": 11.2,
+      "locations_median": 5
+     }
+    }
+   },
+   "rounds_with_diff_size": 17,
+   "spearman_diff_lines_locations": -0.02,
+   "period": [
+    "2026-08-20",
+    "2026-11-11"
+   ]
   }
  },
  "totals": {
