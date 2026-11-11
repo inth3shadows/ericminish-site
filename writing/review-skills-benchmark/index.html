@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Review skills on my own code: a three-rep benchmark of Claude Code review setups | Eric Minish</title>
+  <meta name="description" content="Skill packs for Claude Code promise better code review, but they are rarely measured on their users&#x27; own code. I ran 13 review bundles (bare Claude Code twice, the built-in review command, five public skill packs, my own dual-review skill with and without code-graph tools, and three exploratory…">
+  <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
+  <link rel="canonical" href="https://www.ericminish.com/writing/review-skills-benchmark/">
+  <link rel="alternate" type="application/atom+xml" title="Eric Minish — Writing" href="/writing/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Eric Minish">
+  <meta property="og:title" content="Review skills on my own code: a three-rep benchmark of Claude Code review setups">
+  <meta property="og:description" content="Skill packs for Claude Code promise better code review, but they are rarely measured on their users&#x27; own code. I ran 13 review bundles (bare Claude Code twice, the built-in review command, five public skill packs, my own dual-review skill with and without code-graph tools, and three exploratory…">
+  <meta property="og:url" content="https://www.ericminish.com/writing/review-skills-benchmark/">
+  <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-11-11">
+  <meta property="article:modified_time" content="2026-11-11">
+  <meta property="article:author" content="Eric Minish">
+  <meta property="article:tag" content="Agent evaluation">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Review skills on my own code: a three-rep benchmark of Claude Code review setups">
+  <meta name="twitter:description" content="Skill packs for Claude Code promise better code review, but they are rarely measured on their users&#x27; own code. I ran 13 review bundles (bare Claude Code twice, the built-in review command, five public skill packs, my own dual-review skill with and without code-graph tools, and three exploratory…">
+  <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"Review skills on my own code: a three-rep benchmark of Claude Code review setups","datePublished":"2026-11-11","dateModified":"2026-11-11","author":{"@type":"Person","name":"Eric Minish","url":"https://www.ericminish.com/about/"},"mainEntityOfPage":"https://www.ericminish.com/writing/review-skills-benchmark/","image":"https://www.ericminish.com/assets/og.png"}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/writing/" aria-current="page">Writing</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/resume/">Resume</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="post-shell" id="main">
+    <article class="post">
+      <header class="post-header">
+        <p class="post-kicker">Preprint · Agent evaluation · Software engineering</p>
+        <h1>Review skills on my own code: a three-rep benchmark of Claude Code review setups</h1>
+        <p class="post-meta">
+          <span>By <a href="/about/">Eric Minish</a></span>
+          <span>Version 5, <time datetime="2026-11-11">11 November 2026</time></span>
+          <!-- auto:start readtime --><span>21 min read</span><!-- auto:end readtime -->
+        </p>
+      </header>
+
+      <div class="note"><p><b>Status.</b> Version 5. Before publication, each version was checked independently against the data file
+        by two models from other families for factual and statistical errors. Versions 1 to 4 were reviewed this way
+        and changed substantially; see <a href="#corrections">Corrections</a>. Every number on this page is
+        generated from <a href="data.json">data.json</a>.</p></div>
+
+      <div class="summary"><p><b>Abstract.</b> Skill packs for Claude Code promise better code review, but they are rarely measured on their users&#x27; own code. I ran 13 review bundles (bare Claude Code twice, the built-in review command, five public skill packs, my own dual-review skill with and without code-graph tools, and three exploratory hybrids) on 14 review tasks built from real commits in four of my repositories, three times each: 546 reviews. Two blind Claude Opus 5.5 judges adjudicated the findings that matched no planted defect, except 26 next to dropped plant candidates (Cohen&#x27;s κ 0.884 on the larger round); the planted and accepted defects were then listed per task, and each review was credited once for each listed defect it hit by location or identified in a claim. Dual review found 53.0 real defects per rep against 35.3 for bare Claude Code, a difference of +17.7 (95% interval +10.3 to +26.0), including +6.7 serious (S1–S2) defects per rep (+2.0 to +13.0). Its estimated token cost per review was about 3.3 times that of bare Claude Code and its elapsed time 4.7 times, and the two dual-review bundles had the lowest precision of those tested. Of the public packs and the built-in command, Superpowers scored above bare Claude Code, while Caveman, Ponytail, Built-in /code-review and ECC scored below it, all with 95% intervals that exclude zero; two identical bare arms also differed by −4.7 (−8.7 to −0.7), so differences of that size arise between reruns. These are comparisons of whole bundles, which differ in models, instructions and compute as well as in skill.</p></div>
+
+      <nav class="toc" aria-label="Contents">
+        <p>Contents</p>
+        <ol>
+          <li><a href="#intro">Introduction</a></li>
+          <li><a href="#related">Related work</a></li>
+          <li><a href="#method">Method</a></li>
+          <li><a href="#results">Results</a></li>
+          <li><a href="#analysis">Analysis</a></li>
+          <li><a href="#limits">Limitations</a></li>
+          <li><a href="#conclusion">Conclusion</a></li>
+          <li><a href="#appendix">Appendix</a></li>
+          <li><a href="#corrections">Corrections</a></li>
+          <li><a href="#cite">How to cite</a></li>
+        </ol>
+      </nav>
+
+      <h2 id="intro">1 Introduction <a class="anchor" href="#intro" aria-label="Link to this section">#</a></h2>
+      <p>Claude Code skills package instructions, agents, hooks and scripts that change how the agent works, and review
+        skills are among the most installed. Their claims are usually supported by examples rather than measurement, and
+        the measurements that exist use other people's code. I wanted to know which review setup to run on my own work.</p>
+      <p>This paper contributes: (1) a review benchmark built from real commits in the repositories I work in, with
+        planted defects, clean controls and equivalent-mutant traps; (2) a three-rep comparison of 13 bundles, with
+        bare Claude Code run as two independent arms; (3) blind two-judge adjudication of findings, followed by a
+        defect-level attribution step that credits a reviewer only for what it said; (4) two-family severity
+        grading of the real defects; and (5) the estimated cost and runtime of each bundle.</p>
+
+      <h2 id="related">2 Related work <a class="anchor" href="#related" aria-label="Link to this section">#</a></h2>
+      <p>SWE-bench and its successors score agents on resolving issues in open-source repositories by whether a test
+        suite passes. METR's study of maintainer review found that many changes passing that grader would not be merged,
+        which is the gap a reviewer is meant to close. Project-level benchmarks such as ProjDevBench fold review
+        compliance into a score. Mutation testing supplies the planted-defect method used here, and its equivalent mutants
+        (changes that alter no behaviour) supply a false-alarm trap. The closest work is kamui's code-review-bench
+        (<a href="https://github.com/kamui/code-review-bench">github.com/kamui/code-review-bench</a>), which compares
+        Claude Code and Codex review setups, including review skills, on 16 open-source pull requests. Its reference
+        problems are checked by reproduction before and after the change, and it reports detection, claim reliability,
+        clean-change silence and cost separately, with no blended score. When I checked it in November 2026 its
+        scorecard was marked a preview. This paper differs in using my own repositories, planted defects
+        and three reps per arm.</p>
+
+      <h2 id="method">3 Method <a class="anchor" href="#method" aria-label="Link to this section">#</a></h2>
+      <h3>3.1 Tasks</h3>
+      <p>Each task is a pull-request-sized change from the history of one of four repositories of mine: a Python
+        market-intelligence pipeline, a Python knowledge-base MCP server, this benchmark's own Python harness, and a Go
+        code-index tool. A task is materialised as a two-commit repository (base and change) with history squashed, so the
+        reviewer cannot read the answer from the log. Of the 14 tasks, 8 carry planted defects (mutations that a test
+        suite shows change behaviour), 4 are clean real commits, and 2 carry an equivalent mutant, which no correct reviewer
+        should flag. Real defects already present in the original commits are counted too.</p>
+      <h3>3.2 Arms</h3>
+      <p>An arm is a whole bundle: skill, agents, hooks and scripts, installed into a fresh sandboxed Claude Code home.
+        The main agent is Claude Opus 5.5 in every arm and Claude Code is pinned to version 2.1.318, but five bundles also
+        start subagents on Claude Sonnet 5.5 (Table 1), so the comparison is between bundles, not skills on a fixed model.
+        The dual-review and hybrid files are published as run (Appendix), except for one redacted passage in the
+        dual-review skill that describes a private project; the unredacted file is identified by its hash.
+        Each review runs in a network-restricted sandbox with the same prompt, preceded by a line telling the agent to use
+        the arm's skill (<a href="protocol/reviewer-prompt.md">protocol</a>). A guard checked every transcript for the
+        skill or subagent call: every skill arm fired in every review.</p>
+      <figure><figcaption>Table 1. The 13 arms, with the models that appeared in their transcripts (all
+        42 reviews of each arm).</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th>What it is</th><th>Models used</th></tr><tr><td>Dual review + code graph</td><td>the same bundle, with code-graph and symbol-index MCP tools available</td><td>Opus 5.5 + Sonnet 5.5</td></tr><tr><td>Dual review</td><td>my dual-review skill: Claude Code&#x27;s built-in /code-review and a briefed code-reviewer subagent, run in parallel and merged</td><td>Opus 5.5 + Sonnet 5.5</td></tr><tr><td>Superpowers</td><td>obra/superpowers, requesting-code-review</td><td>Opus 5.5</td></tr><tr><td>Hybrid: pair + verifier</td><td>a Superpowers-style reviewer and a terse reviewer, then a verifier that splits findings into Confirmed and Unconfirmed</td><td>Opus 5.5 + Sonnet 5.5</td></tr><tr><td>Hybrid: parallel dual + verifier</td><td>both halves of dual review launched in parallel, then the same verifier</td><td>Opus 5.5 + Sonnet 5.5</td></tr><tr><td>Bare (A)</td><td>Claude Code with no review skill</td><td>Opus 5.5</td></tr><tr><td>Trail of Bits</td><td>trailofbits/skills, differential-review</td><td>Opus 5.5</td></tr><tr><td>Caveman</td><td>caveman-review</td><td>Opus 5.5</td></tr><tr><td>Ponytail</td><td>ponytail-review</td><td>Opus 5.5</td></tr><tr><td>Bare (B)</td><td>the same setup, as a second independent arm</td><td>Opus 5.5</td></tr><tr><td>Hybrid: single loop</td><td>the pair&#x27;s instructions in one loop with no subagents, ending in Confirmed and Unconfirmed lists</td><td>Opus 5.5</td></tr><tr><td>Built-in /code-review</td><td>Claude Code&#x27;s own review command</td><td>Opus 5.5</td></tr><tr><td>ECC</td><td>everything-claude-code, code-reviewer agent</td><td>Opus 5.5 + Sonnet 5.5</td></tr></table></div></figure>
+      <h3>3.3 Runs</h3>
+      <p>Round 1 ran rep 0 for the ten arms that existed then (140 reviews). The hybrids were
+        designed after round 1, using round-1 transcripts, so they are exploratory. Round 2 ran reps 1 and 2 for all
+        13 arms and rep 0 for the hybrids (406 reviews). Claude Code's own estimate of the
+        token cost of all 546 reviews, at API prices, is $256.29; it is an estimate, not
+        what was paid. 207 reviews ran on an API key under a batch spend limit ($85 and $13 for the
+        two main key batches, with the 25 reviews of the second also capped at $2.50 per review by Claude Code's
+        <code>--max-budget-usd</code>), and 339 ran on a subscription token. Every attempt that exited
+        non-zero was rerun, whatever it had produced; two such parallel-dual attempts had done work before a usage limit
+        stopped them, and their time and estimated cost ($0.39) are not in the per-review figures. The per-review timeout
+        was 1500 s and the longest review took 1494 s. Launch settings, batches, limits, the rerun rule, file hashes for
+        every arm and the finding-extraction rules are in the <a href="protocol/run-manifest.md">run manifest</a>. No review's estimated cost exceeded $1.63, so no limit cut a
+        review short. The credential type (API key or subscription) was set by batch rather than per arm, and the
+        batches did not balance it across arms (Table A1).</p>
+      <h3>3.4 Scoring</h3>
+      <p><b>Planted defects.</b> A finding that names a planted defect's location counts as a hit; the rule does not
+        check that the finding describes the planted fault (Section 6). A review is also credited with a planted defect
+        when the attribution step below maps one of its claims to it.</p>
+      <p><b>Adjudication.</b> Findings that match no planted defect are clustered with nearby findings from other arms by
+        file and line, stripped of wording that reveals the arm, and judged blind by two independent Claude Opus 5.5 judges
+        in separate copies of the repository (<a href="protocol/adjudication.md">protocol</a>). Each judge gives one of six
+        verdicts (<code>REAL_NEW</code>, <code>REAL_OLD</code> for pre-existing, <code>NOT_DEFECT</code>,
+        <code>FALSE</code>, <code>NOT_A_CLAIM</code>, <code>UNVERIFIABLE</code>; no judge used the last), cites the
+        deciding line, and gives a failing input for a <code>REAL_*</code> verdict, running code where it can. A cluster
+        counts as a real defect only when both judges give a <code>REAL_*</code> verdict (<code>REAL_NEW</code> if
+        either says new, otherwise <code>REAL_OLD</code>). When one judge gives a <code>REAL_*</code> verdict and the
+        other does not, the cluster is assigned <code>CONTESTED</code> and not counted as a defect; when neither does and
+        their reasons differ, the first judge's verdict is recorded. 26 findings that fell next
+        to a dropped plant candidate were neither scored as hits nor adjudicated (Table A1).</p>
+      <p><b>Defect attribution.</b> A cluster can hold several different claims, and two clusters can describe one
+        defect. So, per task, a further blind Opus judge built a catalogue of defects: every planted defect
+        (36 over both rounds), and each other defect that both judges' evidence supports (103; 9
+        supported by one judge only were dropped). A real cluster that is a consequence of a planted defect is listed
+        under the plant, so it cannot count twice. The judge marked each defect pre-existing or introduced by the
+        change, then mapped each of the 1632 distinct claims in the task, at any cluster, to every catalogue defect
+        it identifies (928 were mapped to at least one, 31 of them to two or more;
+        <a href="protocol/defect-attribution.md">protocol</a>). A review is credited once for each catalogue defect it
+        hits by location or identifies in a mapped claim. One judge did this step per task. The catalogue and every mapping
+        are published as <a href="attribution.json">attribution.json</a>, with texts given as SHA-256 hashes because
+        the repositories are private.</p>
+      <p><b>Severity.</b> Each real cluster was graded S1 (critical) to S4 (trivial) by Claude Opus 5.5 and by a Codex
+        model (Table 6; <a href="protocol/severity.md">protocol</a>). Disagreements of one level take the more severe grade;
+        disagreements of two or more levels take the less severe; a cluster graded by only one family takes that grade. A defect takes the most severe
+        grade among its clusters; planted defects are not graded. The graders were told that both judges had reproduced
+        every cluster, but in 39 of the 206 real clusters at least one judge did not report a reproduction.
+        Table 5 therefore also counts serious defects using only clusters that both judges flagged as reproduced. The
+        flag is per cluster: a cluster that supports several defects may not have reproduced each of them, and one
+        cluster's grade can pass to several defects, so this is a sensitivity check, not a count of verified
+        reproductions.</p>
+      <p><b>Scored and reported lists.</b> The hybrids end with a Confirmed and an Unconfirmed list, and the reader sees
+        both. The main results score the Confirmed list, as designed; Table 4 adds the Unconfirmed list.</p>
+      <p><b>Precision</b> is over a bundle's whole scored list: findings that hit a planted defect plus adjudicated claim
+        occurrences mapped to a catalogue defect, divided by all findings in the list except those near a dropped plant
+        candidate. Equivalent-mutant flags and unmapped claims count against it.</p>
+      <h3>3.5 Statistics</h3>
+      <p>The quantity estimated is a bundle's expected yield per rep, that is per 14 reviews (one per task), on tasks
+        like these. Per-rep figures sum each task's mean across reps. Intervals are 95% percentile
+        intervals from a task-cluster bootstrap (10,000 resamples, fixed seed): each arm's
+        rep-averaged per-task values are resampled by task, with the same task resamples for every arm; reps are not
+        resampled, since resampling them again within tasks double-counts their variance. Differences are paired by
+        task and computed once. Treating the
+        tasks as exchangeable is an assumption: they were chosen by hand and several share a repository. Rep 0 of the ten
+        original arms ran in round 1 under a different adjudication batch, so Table A1 also gives each difference from
+        reps 1–2 alone. The paper reports 29 primary intervals for differences and 24 sensitivity
+        intervals (Tables 5 and A1); at the 95% level about one in twenty
+        would exclude zero by chance even with no true difference, so single borderline results should be read as
+        exploratory.</p>
+
+      <h2 id="results">4 Results <a class="anchor" href="#results" aria-label="Link to this section">#</a></h2>
+      <figure><figcaption>Table 2. Per-arm results over three reps; a rep is 14 reviews, one per task. Real defects are
+        catalogue defects credited from the scored list; planted counts plants hit by location or by a mapped claim. Estimated cost is Claude Code's token-cost estimate at API prices.</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th class="num">Real / rep</th><th class="num">95% interval</th><th class="num">Minus Bare A</th><th class="num">95% interval</th><th class="num">Planted</th><th class="num">Other real</th><th class="num">of which pre-existing</th><th class="num">Precision</th><th class="num">Est. $ / review</th><th class="num">s / review</th></tr><tr><td>Dual review + code graph</td><td class="num">53.3</td><td class="num">41.7 to 67.7</td><td class="num">+18.0</td><td class="num">+10.3 to +26.7</td><td class="num">17.0</td><td class="num">36.3</td><td class="num">3.3</td><td class="num">0.59</td><td class="num">1.04</td><td class="num">232</td></tr><tr><td>Dual review</td><td class="num">53.0</td><td class="num">42.7 to 66.0</td><td class="num">+17.7</td><td class="num">+10.3 to +26.0</td><td class="num">17.0</td><td class="num">36.0</td><td class="num">4.0</td><td class="num">0.61</td><td class="num">0.80</td><td class="num">210</td></tr><tr><td>Superpowers</td><td class="num">44.0</td><td class="num">33.0 to 56.3</td><td class="num">+8.7</td><td class="num">+2.3 to +15.7</td><td class="num">16.7</td><td class="num">27.3</td><td class="num">1.3</td><td class="num">0.82</td><td class="num">0.58</td><td class="num">131</td></tr><tr><td>Hybrid: pair + verifier</td><td class="num">43.0</td><td class="num">30.3 to 59.7</td><td class="num">+7.7</td><td class="num">−1.7 to +19.3</td><td class="num">17.3</td><td class="num">25.7</td><td class="num">0.7</td><td class="num">0.82</td><td class="num">0.88</td><td class="num">177</td></tr><tr><td>Hybrid: parallel dual + verifier</td><td class="num">39.7</td><td class="num">28.0 to 53.0</td><td class="num">+4.3</td><td class="num">−2.0 to +11.7</td><td class="num">16.7</td><td class="num">23.0</td><td class="num">0.3</td><td class="num">0.89</td><td class="num">0.90</td><td class="num">286</td></tr><tr><td>Bare (A)</td><td class="num">35.3</td><td class="num">26.7 to 44.7</td><td class="num"></td><td class="num"></td><td class="num">16.3</td><td class="num">19.0</td><td class="num">0.0</td><td class="num">0.91</td><td class="num">0.24</td><td class="num">45</td></tr><tr><td>Trail of Bits</td><td class="num">33.7</td><td class="num">25.3 to 42.3</td><td class="num">−1.7</td><td class="num">−4.7 to +1.0</td><td class="num">16.7</td><td class="num">17.0</td><td class="num">0.0</td><td class="num">0.88</td><td class="num">0.30</td><td class="num">51</td></tr><tr><td>Caveman</td><td class="num">31.7</td><td class="num">25.0 to 38.0</td><td class="num">−3.7</td><td class="num">−7.3 to −0.3</td><td class="num">16.3</td><td class="num">15.3</td><td class="num">0.0</td><td class="num">0.90</td><td class="num">0.24</td><td class="num">41</td></tr><tr><td>Ponytail</td><td class="num">31.7</td><td class="num">23.7 to 39.7</td><td class="num">−3.7</td><td class="num">−7.0 to −0.7</td><td class="num">16.3</td><td class="num">15.3</td><td class="num">0.0</td><td class="num">0.88</td><td class="num">0.24</td><td class="num">43</td></tr><tr><td>Bare (B)</td><td class="num">30.7</td><td class="num">24.0 to 37.7</td><td class="num">−4.7</td><td class="num">−8.7 to −0.7</td><td class="num">16.0</td><td class="num">14.7</td><td class="num">0.0</td><td class="num">0.89</td><td class="num">0.23</td><td class="num">42</td></tr><tr><td>Hybrid: single loop</td><td class="num">29.3</td><td class="num">23.0 to 35.7</td><td class="num">−6.0</td><td class="num">−11.3 to −2.0</td><td class="num">15.7</td><td class="num">13.7</td><td class="num">0.0</td><td class="num">0.93</td><td class="num">0.29</td><td class="num">86</td></tr><tr><td>Built-in /code-review</td><td class="num">26.7</td><td class="num">21.0 to 32.3</td><td class="num">−8.7</td><td class="num">−16.0 to −1.7</td><td class="num">16.3</td><td class="num">10.3</td><td class="num">0.7</td><td class="num">0.81</td><td class="num">0.20</td><td class="num">31</td></tr><tr><td>ECC</td><td class="num">22.3</td><td class="num">16.7 to 28.0</td><td class="num">−13.0</td><td class="num">−20.3 to −6.3</td><td class="num">14.7</td><td class="num">7.7</td><td class="num">0.0</td><td class="num">0.82</td><td class="num">0.16</td><td class="num">38</td></tr></table></div></figure>
+      <figure><figcaption>Figure 1. Real defects per rep, each arm minus Bare (A), with 95% intervals. Grey intervals
+        include zero.</figcaption>
+<svg viewBox="0 0 680 430" role="img" aria-labelledby="t-forest" class="chart">
+<title id="t-forest">Real defects per rep, difference from bare Claude Code (A)</title>
+<line class="c-zero" x1="408.3" x2="408.3" y1="10" y2="380"/>
+<text class="c-label" x="208" y="34" text-anchor="end">Dual review + code graph</text>
+<line class="c-clear" x1="495.4" x2="633.1" y1="30" y2="30"/>
+<circle class="c-clear" cx="560.0" cy="30" r="4.5"/>
+<text class="c-label" x="208" y="64" text-anchor="end">Dual review</text>
+<line class="c-clear" x1="495.4" x2="627.5" y1="60" y2="60"/>
+<circle class="c-clear" cx="557.3" cy="60" r="4.5"/>
+<text class="c-label" x="208" y="94" text-anchor="end">Superpowers</text>
+<line class="c-clear" x1="427.9" x2="540.4" y1="90" y2="90"/>
+<circle class="c-clear" cx="481.4" cy="90" r="4.5"/>
+<text class="c-label" x="208" y="124" text-anchor="end">Hybrid: pair + verifier</text>
+<line class="c-unclear" x1="394.2" x2="571.3" y1="120" y2="120"/>
+<circle class="c-unclear" cx="472.9" cy="120" r="4.5"/>
+<text class="c-label" x="208" y="154" text-anchor="end">Hybrid: parallel dual + verifier</text>
+<line class="c-unclear" x1="391.4" x2="506.7" y1="150" y2="150"/>
+<circle class="c-unclear" cx="444.8" cy="150" r="4.5"/>
+<text class="c-label" x="208" y="184" text-anchor="end">Trail of Bits</text>
+<line class="c-unclear" x1="368.9" x2="416.7" y1="180" y2="180"/>
+<circle class="c-unclear" cx="394.2" cy="180" r="4.5"/>
+<text class="c-label" x="208" y="214" text-anchor="end">Caveman</text>
+<line class="c-clear" x1="346.5" x2="405.5" y1="210" y2="210"/>
+<circle class="c-clear" cx="377.3" cy="210" r="4.5"/>
+<text class="c-label" x="208" y="244" text-anchor="end">Ponytail</text>
+<line class="c-clear" x1="349.3" x2="402.6" y1="240" y2="240"/>
+<circle class="c-clear" cx="377.3" cy="240" r="4.5"/>
+<text class="c-label" x="208" y="274" text-anchor="end">Bare (B)</text>
+<line class="c-clear" x1="335.2" x2="402.6" y1="270" y2="270"/>
+<circle class="c-clear" cx="368.9" cy="270" r="4.5"/>
+<text class="c-label" x="208" y="304" text-anchor="end">Hybrid: single loop</text>
+<line class="c-clear" x1="312.7" x2="391.4" y1="300" y2="300"/>
+<circle class="c-clear" cx="357.7" cy="300" r="4.5"/>
+<text class="c-label" x="208" y="334" text-anchor="end">Built-in /code-review</text>
+<line class="c-clear" x1="273.4" x2="394.2" y1="330" y2="330"/>
+<circle class="c-clear" cx="335.2" cy="330" r="4.5"/>
+<text class="c-label" x="208" y="364" text-anchor="end">ECC</text>
+<line class="c-clear" x1="236.9" x2="354.9" y1="360" y2="360"/>
+<circle class="c-clear" cx="298.7" cy="360" r="4.5"/>
+<line class="c-tick" x1="239.6" x2="239.6" y1="380" y2="385"/>
+<text class="c-axis" x="239.6" y="398" text-anchor="middle">-20</text>
+<line class="c-tick" x1="281.8" x2="281.8" y1="380" y2="385"/>
+<text class="c-axis" x="281.8" y="398" text-anchor="middle">-15</text>
+<line class="c-tick" x1="324.0" x2="324.0" y1="380" y2="385"/>
+<text class="c-axis" x="324.0" y="398" text-anchor="middle">-10</text>
+<line class="c-tick" x1="366.1" x2="366.1" y1="380" y2="385"/>
+<text class="c-axis" x="366.1" y="398" text-anchor="middle">-5</text>
+<line class="c-tick" x1="408.3" x2="408.3" y1="380" y2="385"/>
+<text class="c-axis" x="408.3" y="398" text-anchor="middle">+0</text>
+<line class="c-tick" x1="450.4" x2="450.4" y1="380" y2="385"/>
+<text class="c-axis" x="450.4" y="398" text-anchor="middle">+5</text>
+<line class="c-tick" x1="492.6" x2="492.6" y1="380" y2="385"/>
+<text class="c-axis" x="492.6" y="398" text-anchor="middle">+10</text>
+<line class="c-tick" x1="534.7" x2="534.7" y1="380" y2="385"/>
+<text class="c-axis" x="534.7" y="398" text-anchor="middle">+15</text>
+<line class="c-tick" x1="576.9" x2="576.9" y1="380" y2="385"/>
+<text class="c-axis" x="576.9" y="398" text-anchor="middle">+20</text>
+<line class="c-tick" x1="619.1" x2="619.1" y1="380" y2="385"/>
+<text class="c-axis" x="619.1" y="398" text-anchor="middle">+25</text>
+<text class="c-axis" x="435" y="418" text-anchor="middle">Difference in real defects per rep (arm minus Bare A)</text>
+</svg>
+      </figure>
+      <figure><figcaption>Table 3. Other comparisons.</figcaption><div class="table-scroll"><table><tr><th>Comparison</th><th class="num">Difference in real defects / rep</th><th class="num">95% interval</th></tr><tr><td>Dual review + code graph - Dual review</td><td class="num">+0.3</td><td class="num">−3.7 to +4.3</td></tr><tr><td>Bare (B) - Bare (A)</td><td class="num">−4.7</td><td class="num">−8.7 to −0.7</td></tr><tr><td>Superpowers - Bare (A)</td><td class="num">+8.7</td><td class="num">+2.3 to +15.7</td></tr><tr><td>Hybrid: pair - Superpowers</td><td class="num">−1.0</td><td class="num">−8.0 to +6.3</td></tr><tr><td>Hybrid: parallel dual (reported) - Dual review</td><td class="num">−1.3</td><td class="num">−6.0 to +3.7</td></tr><tr><td>Hybrid: pair (reported) - Dual review</td><td class="num">−5.0</td><td class="num">−10.3 to +0.7</td></tr><tr><td>Hybrid: single loop (reported) - Dual review</td><td class="num">−21.0</td><td class="num">−31.3 to −12.7</td></tr></table></div></figure>
+      <figure><figcaption>Table 4. Hybrids with and without their Unconfirmed lists.</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th class="num">Scored list / rep</th><th class="num">Scored + Unconfirmed / rep</th><th class="num">Scored-list precision</th></tr><tr><td>Hybrid: pair + verifier</td><td class="num">43.0</td><td class="num">48.0</td><td class="num">0.82</td></tr><tr><td>Hybrid: parallel dual + verifier</td><td class="num">39.7</td><td class="num">51.7</td><td class="num">0.89</td></tr><tr><td>Hybrid: single loop</td><td class="num">29.3</td><td class="num">32.0</td><td class="num">0.93</td></tr><tr><td>Dual review</td><td class="num">53.0</td><td class="num">no Unconfirmed list</td><td class="num">0.61</td></tr></table></div></figure>
+      <figure><figcaption>Table 5. Serious (S1 or S2) non-planted defects per rep. Round-1 clusters graded by one family
+        are included at that grade. The last three columns grade each defect only from clusters both judges
+        flagged as reproduced (Section 3.4).</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th class="num">S1+S2 / rep</th><th class="num">95% interval</th><th class="num">Minus Bare A</th><th class="num">95% interval</th><th class="num">Clusters flagged reproduced / rep</th><th class="num">Minus Bare A</th><th class="num">95% interval</th></tr><tr><td>Dual review</td><td class="num">15.3</td><td class="num">7.0 to 26.3</td><td class="num">+6.7</td><td class="num">+2.0 to +13.0</td><td class="num">12.7</td><td class="num">+5.7</td><td class="num">+1.3 to +11.3</td></tr><tr><td>Dual review + code graph</td><td class="num">14.3</td><td class="num">7.0 to 23.7</td><td class="num">+5.7</td><td class="num">+2.0 to +10.7</td><td class="num">11.3</td><td class="num">+4.3</td><td class="num">+1.0 to +9.0</td></tr><tr><td>Hybrid: pair + verifier</td><td class="num">13.7</td><td class="num">3.3 to 29.3</td><td class="num">+5.0</td><td class="num">−2.7 to +16.7</td><td class="num">12.0</td><td class="num">+5.0</td><td class="num">−1.7 to +15.3</td></tr><tr><td>Superpowers</td><td class="num">13.3</td><td class="num">6.3 to 22.0</td><td class="num">+4.7</td><td class="num">+0.7 to +9.3</td><td class="num">11.3</td><td class="num">+4.3</td><td class="num">+0.7 to +8.7</td></tr><tr><td>Hybrid: parallel dual + verifier</td><td class="num">12.3</td><td class="num">3.7 to 24.3</td><td class="num">+3.7</td><td class="num">−2.0 to +11.7</td><td class="num">10.7</td><td class="num">+3.7</td><td class="num">−1.0 to +11.0</td></tr><tr><td>Bare (A)</td><td class="num">8.7</td><td class="num">4.0 to 14.0</td><td class="num"></td><td class="num"></td><td class="num">7.0</td><td class="num"></td><td class="num"></td></tr><tr><td>Trail of Bits</td><td class="num">8.0</td><td class="num">3.3 to 13.7</td><td class="num">−0.7</td><td class="num">−3.7 to +1.7</td><td class="num">6.7</td><td class="num">−0.3</td><td class="num">−2.7 to +1.3</td></tr><tr><td>Bare (B)</td><td class="num">7.7</td><td class="num">2.7 to 14.0</td><td class="num">−1.0</td><td class="num">−2.7 to +1.0</td><td class="num">6.7</td><td class="num">−0.3</td><td class="num">−1.7 to +1.0</td></tr><tr><td>Hybrid: single loop</td><td class="num">7.7</td><td class="num">3.3 to 12.7</td><td class="num">−1.0</td><td class="num">−2.0 to 0.0</td><td class="num">6.0</td><td class="num">−1.0</td><td class="num">−2.0 to 0.0</td></tr><tr><td>Caveman</td><td class="num">7.0</td><td class="num">3.0 to 12.3</td><td class="num">−1.7</td><td class="num">−4.3 to +0.3</td><td class="num">6.0</td><td class="num">−1.0</td><td class="num">−4.0 to +1.7</td></tr><tr><td>Ponytail</td><td class="num">7.0</td><td class="num">2.7 to 12.7</td><td class="num">−1.7</td><td class="num">−3.7 to +0.3</td><td class="num">6.3</td><td class="num">−0.7</td><td class="num">−2.3 to +0.7</td></tr><tr><td>Built-in /code-review</td><td class="num">4.7</td><td class="num">1.3 to 9.0</td><td class="num">−4.0</td><td class="num">−8.7 to −0.7</td><td class="num">4.0</td><td class="num">−3.0</td><td class="num">−8.0 to 0.0</td></tr><tr><td>ECC</td><td class="num">4.0</td><td class="num">0.3 to 9.3</td><td class="num">−4.7</td><td class="num">−9.3 to −1.0</td><td class="num">3.3</td><td class="num">−3.7</td><td class="num">−8.3 to −0.3</td></tr></table></div></figure>
+      <figure><figcaption>Table 6. Agreement between judges and graders. In round 2 the individual judges gave
+        279 <code>REAL_*</code>, 227 <code>NOT_DEFECT</code>,
+        18 <code>FALSE</code>, 20 <code>NOT_A_CLAIM</code> and
+        0 <code>UNVERIFIABLE</code> verdicts.</figcaption><div class="table-scroll"><table><tr><th>Measure</th><th class="num">Round 1</th><th class="num">Round 2</th></tr><tr><td>Reviews</td><td class="num">140</td><td class="num">406</td></tr><tr><td>Adjudicated clusters</td><td class="num">130</td><td class="num">272</td></tr><tr><td>Same verdict from both judges</td><td class="num">125</td><td class="num">253</td></tr><tr><td>Cohen's κ between the two judges' verdicts</td><td class="num">0.935</td><td class="num">0.884</td></tr><tr><td>Cohen's κ, <code>REAL_*</code> verdict or not</td><td class="num">0.953</td><td class="num">0.89</td></tr><tr><td>Clusters assigned <code>CONTESTED</code> (one judge <code>REAL_*</code>, the other not; not counted as a defect)</td><td class="num">3</td><td class="num">15</td></tr><tr><td>Real clusters / reproduced by both judges</td><td class="num">74 / 69</td><td class="num">132 / 98</td></tr><tr><td>Catalogue: planted defects / other defects both judges accepted</td><td class="num">18 / 47</td><td class="num">18 / 56</td></tr><tr><td>Other defects: accepted by one judge only (dropped) / pre-existing</td><td class="num">3 / 5</td><td class="num">6 / 9</td></tr><tr><td>Distinct claims mapped to a defect / to two or more / to none</td><td class="num">230 / 7 / 120</td><td class="num">698 / 24 / 584</td></tr><tr><td>Severity: real clusters / graded by both families</td><td class="num">74 / 48</td><td class="num">132 / 131</td></tr><tr><td>Severity: exact / one apart / two or more apart</td><td class="num">26 / 20 / 2</td><td class="num">80 / 45 / 6</td></tr><tr><td>Severity: linear-weighted κ</td><td class="num">0.331</td><td class="num">0.424</td></tr><tr><td>Second severity grader</td><td class="num">gpt-6-astra</td><td class="num">gpt-6.1-sol</td></tr></table></div></figure>
+
+      <h2 id="analysis">5 Analysis <a class="anchor" href="#analysis" aria-label="Link to this section">#</a></h2>
+      <h3>5.1 The two bare arms</h3>
+      <p>Bare (A) and Bare (B) are the same setup. They differ by −4.7 real defects per rep
+        (−8.7 to −0.7), an interval that excludes zero. A correctly calibrated 95% interval
+        excludes zero for two identical arms about one time in twenty, so this one comparison cannot show whether the
+        intervals are too narrow or this is chance. I report it as a negative control, not a threshold: it shows that a
+        gap of this size can arise between identical setups, and differences of similar size below should be read with
+        that in mind.</p>
+      <h3>5.2 Which bundles differ from bare</h3>
+      <p>Dual review + code graph, Dual review and Superpowers are above bare Claude Code, while Caveman, Ponytail, Hybrid: single loop, Built-in /code-review and ECC are below it, all with intervals that
+        exclude zero (Figure 1). Caveman and Ponytail differ from bare by no more than the two bare arms differ from each other.
+        Superpowers' difference is +8.7 (+2.3 to +15.7), about 1.9
+        times the bare-arm gap, but how far it exceeds that gap is itself uncertain. Dual review's gain lies in real defects in the original commits
+        (36.0 per rep against 19.0), not in planted
+        ones, which all arms find at broadly similar rates (14.7 to 17.3 per rep); 4.0 of its defects per rep are
+        pre-existing, outside the change itself.</p>
+      <h3>5.3 Cost, time and precision</h3>
+      <p>Dual review took 210 s and an estimated $0.80
+        per review, against 45 s and $0.24 for
+        bare. Its precision (0.61) and that of its code-graph variant (0.59) are the lowest of all
+        arms: about 39% and 41% of their scored findings
+        identify no listed defect. The experiment does not show why
+        the bundle finds more. It uses more compute, two reviewers and a second model, and no matched-compute baseline was
+        run.</p>
+      <h3>5.4 Code-graph tools</h3>
+      <p>Adding code-graph tools changed real defects per rep by +0.3 (−3.7 to +4.3). The interval is wide;
+        the experiment cannot tell a moderate benefit or harm from none.</p>
+      <h3>5.5 Hybrids</h3>
+      <p>Counting their Unconfirmed lists, the hybrids report more real defects than their Confirmed lists alone (Table 4),
+        but none has an interval above dual review's: −1.3 (−6.0 to +3.7) for the parallel dual,
+        −5.0 (−10.3 to +0.7) for the pair, and −21.0 (−31.3 to −12.7) for the single loop. The
+        parallel dual uses dual review's two reviewers; its Confirmed list has precision
+        0.89 against dual review's 0.61, and it moves real defects
+        into the Unconfirmed list. Because the hybrids also change instructions and orchestration, these comparisons do not
+        isolate the verifier.</p>
+
+      <h2 id="limits">6 Limitations <a class="anchor" href="#limits" aria-label="Link to this section">#</a></h2>
+      <ul>
+        <li><b>Judges from one family.</b> Adjudication and attribution were done by Claude Opus 5.5, grading Claude
+          output, and attribution used one judge per task. No finding was labelled by a person or by a judge from another
+          family.</li>
+        <li><b>Labels move between rounds.</b> Of 116 round-2 clusters at a spot judged in
+          round 1, 16 got a different call on whether they were a defect. Wording and clustering differ, so this is not a pure
+          test-retest measure, but it is measurement noise the intervals do not include.</li>
+        <li><b>Severity is soft.</b> The two severity families agree only moderately (linear-weighted κ
+          0.424 in round 2), and round 1 used a different Codex model, with 26
+          of its 74 real clusters graded by one family. The graders were also told, wrongly for 39 of
+          206 clusters, that both judges had reproduced each one (Section 3.4).</li>
+        <li><b>Coverage.</b> Planted hits are matched by location, not meaning (a mapped claim can also credit a plant),
+          and 26 findings near dropped plant candidates were not adjudicated.</li>
+        <li><b>Bundles are compared whole.</b> Arms differ in models, subagents, instructions, compute and credential mix;
+          these effects cannot be separated from the bundle comparisons.</li>
+        <li><b>A small, personal task set.</b> 14 tasks from four repositories I wrote, in Python and Go.</li>
+        <li><b>I built one arm and the hybrids.</b> I wrote dual review, and designed the hybrids after seeing
+          the round-1 results; they need held-out tasks before any claim about them generalises.</li>
+        <li><b>Code is private.</b> The harness and analysis are in private repositories; the protocol files, the
+          treatment files for dual review and the hybrids (one passage redacted), the run manifest with every arm's file hashes,
+          <a href="attribution.json">attribution.json</a> and <a href="data.json">data.json</a> are public; transcripts
+          and claim texts are not. The public packs are identified by file hash only, and the number of reviews running
+          at once was not recorded per review.</li>
+      </ul>
+
+      <h2 id="conclusion">7 Conclusion <a class="anchor" href="#conclusion" aria-label="Link to this section">#</a></h2>
+      <p>On my code, the dual-review bundle found +17.7 more real defects per rep than bare Claude
+        Code (+10.3 to +26.0), including more serious ones, at about 3.3 times the estimated cost
+        and 4.7 times the time per review, and with the lowest precision of the bundles tested apart from its
+        code-graph variant. Superpowers also scored above bare Claude Code, by about 1.9 times the gap between the two
+        identical bare arms, while Caveman, Ponytail, Built-in /code-review and ECC scored below it. Code-graph tools did not change yield detectably. The
+        hybrids did not show a yield gain over dual review; the parallel dual's Confirmed list was more precise
+        (0.89 against 0.61) at a lower scored yield, a trade-off these bundle comparisons
+        cannot attribute to the verifier alone. Next steps are a replay on past pull requests, a cross-family or human
+        check of the adjudication, a matched-compute baseline, and held-out tasks for the hybrids.</p>
+
+      <h2 id="appendix">Appendix <a class="anchor" href="#appendix" aria-label="Link to this section">#</a></h2>
+      <figure><figcaption>Table A1. Per-rep totals, run-to-run spread, the difference from bare using reps 1–2 only,
+        equivalent-mutant flags (on the two equivalent-mutant tasks over three reps), findings not adjudicated, and the
+        credential split.</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th class="num">Rep 0</th><th class="num">Rep 1</th><th class="num">Rep 2</th><th class="num">SD across reps</th><th class="num">Minus Bare A, reps 1–2 only</th><th class="num">Equivalent-mutant flags</th><th class="num">Findings not adjudicated</th><th class="num">Reviews on API key / subscription</th></tr><tr><td>Dual review + code graph</td><td class="num">56</td><td class="num">51</td><td class="num">53</td><td class="num">2.52</td><td class="num">+17.5 (+9.0 to +26.5)</td><td class="num">1</td><td class="num">5</td><td class="num">11 / 31</td></tr><tr><td>Dual review</td><td class="num">49</td><td class="num">54</td><td class="num">56</td><td class="num">3.61</td><td class="num">+20.5 (+11.5 to +31.0)</td><td class="num">2</td><td class="num">4</td><td class="num">20 / 22</td></tr><tr><td>Superpowers</td><td class="num">44</td><td class="num">43</td><td class="num">45</td><td class="num">1.0</td><td class="num">+9.5 (+1.5 to +18.5)</td><td class="num">1</td><td class="num">3</td><td class="num">16 / 26</td></tr><tr><td>Hybrid: pair + verifier</td><td class="num">45</td><td class="num">44</td><td class="num">40</td><td class="num">2.65</td><td class="num">+7.5 (−2.0 to +19.0)</td><td class="num">0</td><td class="num">4</td><td class="num">13 / 29</td></tr><tr><td>Hybrid: parallel dual + verifier</td><td class="num">38</td><td class="num">44</td><td class="num">37</td><td class="num">3.79</td><td class="num">+6.0 (−1.5 to +14.0)</td><td class="num">0</td><td class="num">1</td><td class="num">21 / 21</td></tr><tr><td>Bare (A)</td><td class="num">37</td><td class="num">34</td><td class="num">35</td><td class="num">1.53</td><td class="num"></td><td class="num">1</td><td class="num">0</td><td class="num">16 / 26</td></tr><tr><td>Trail of Bits</td><td class="num">37</td><td class="num">31</td><td class="num">33</td><td class="num">3.06</td><td class="num">−2.5 (−7.0 to +2.0)</td><td class="num">0</td><td class="num">1</td><td class="num">15 / 27</td></tr><tr><td>Caveman</td><td class="num">35</td><td class="num">31</td><td class="num">29</td><td class="num">3.06</td><td class="num">−4.5 (−9.5 to 0.0)</td><td class="num">1</td><td class="num">1</td><td class="num">17 / 25</td></tr><tr><td>Ponytail</td><td class="num">32</td><td class="num">31</td><td class="num">32</td><td class="num">0.58</td><td class="num">−3.0 (−8.0 to +2.0)</td><td class="num">2</td><td class="num">2</td><td class="num">16 / 26</td></tr><tr><td>Bare (B)</td><td class="num">29</td><td class="num">32</td><td class="num">31</td><td class="num">1.53</td><td class="num">−3.0 (−7.0 to +1.5)</td><td class="num">0</td><td class="num">2</td><td class="num">17 / 25</td></tr><tr><td>Hybrid: single loop</td><td class="num">32</td><td class="num">29</td><td class="num">27</td><td class="num">2.52</td><td class="num">−6.5 (−15.0 to +1.0)</td><td class="num">0</td><td class="num">2</td><td class="num">15 / 27</td></tr><tr><td>Built-in /code-review</td><td class="num">28</td><td class="num">25</td><td class="num">27</td><td class="num">1.53</td><td class="num">−8.5 (−17.0 to 0.0)</td><td class="num">3</td><td class="num">1</td><td class="num">14 / 28</td></tr><tr><td>ECC</td><td class="num">22</td><td class="num">21</td><td class="num">24</td><td class="num">1.53</td><td class="num">−12.0 (−20.0 to −4.5)</td><td class="num">1</td><td class="num">0</td><td class="num">16 / 26</td></tr></table></div></figure>
+      <p>Protocol files: <a href="protocol/reviewer-prompt.md">reviewer prompt</a>,
+        <a href="protocol/adjudication.md">adjudication</a>, <a href="protocol/defect-attribution.md">defect attribution</a>,
+        <a href="protocol/severity.md">severity</a>, <a href="protocol/run-manifest.md">run manifest</a>. Treatment files:
+        <a href="protocol/treatment/dual-review-SKILL.md">dual-review skill</a> (one passage about a private project
+        redacted),
+        <a href="protocol/treatment/code-reviewer.md">code-reviewer agent</a>, the hybrids'
+        <a href="protocol/treatment/hybrid-sp-pair-SKILL.md">pair</a>
+        (<a href="protocol/treatment/hybrid-sp-pair-reviewer.md">deep reviewer brief</a>),
+        <a href="protocol/treatment/hybrid-dual-fast-SKILL.md">parallel dual</a>,
+        <a href="protocol/treatment/hybrid-sp-inline-SKILL.md">single loop</a> and
+        <a href="protocol/treatment/hybrid-review-verifier.md">verifier</a>; file hashes for every arm:
+        <a href="protocol/seeds/round1-batches-c-d.json">round 1</a>,
+        <a href="protocol/seeds/round1-code-graph-rerun.json">round 1 code-graph rerun</a>,
+        <a href="protocol/seeds/round2.json">round 2</a>, <a href="protocol/seeds/round2-hybrid-rep0.json">round 2
+        hybrids, rep 0</a>. <a href="data.json">data.json</a> holds every figure on this page with its interval, and
+        <a href="attribution.json">attribution.json</a> the defect catalogue and claim mappings behind them.</p>
+
+      <h2 id="corrections">Corrections <a class="anchor" href="#corrections" aria-label="Link to this section">#</a></h2>
+      <p><b>Version 5 (11 November 2026).</b> The fourth review (Codex gpt-6.1-sol and GLM 5.3 Prime) found that version
+        4's new rule, counting a difference from bare only when it exceeded the gap between the two bare arms, compared
+        two noisy point estimates, and that Section 5.1 drew a conclusion about the intervals from one comparison. Version
+        5 drops the rule and reports the bare arms as a negative control. It also corrects the run manifest's rerun rule,
+        adds launch settings, file hashes and extraction rules, publishes the structure of the defect catalogue and the
+        claim mappings (texts as hashes only), states
+        the precision trade-off of the parallel-dual hybrid in the conclusion, relabels the reproduced-only severity count
+        as a sensitivity check, and gives the abstract's adjudication exception. No number changed.</p>
+      <p><b>Version 4.</b> The third review (Codex gpt-6.1-sol and GLM 5.3 Prime) found that planted
+        defects were outside the defect catalogue, so a real cluster caused by a plant could count again as a separate
+        defect; that each claim could map to only one defect; that precision left out planted hits; that provenance was
+        set per cluster rather than per defect; that the two-level bootstrap counted within-task variance twice; that the
+        severity graders were wrongly told every cluster was reproduced; and that the treatment files and run manifest
+        were unpublished. Version 4 puts plants in the catalogue, maps claims to lists of defects, measures precision over
+        the whole scored list, takes provenance from the attribution judge, uses a task-cluster bootstrap, adds a
+        reproduced-only severity count, renames the CONTESTED row, publishes the treatment files and run manifest, and
+        cites code-review-bench. Dual review's lead over bare is +17.7, and under the new
+        intervals the two bare arms' gap excludes zero.</p>
+      <p><b>Version 3.</b> The second review (GLM 5.3 Prime and Codex gpt-6.1-sol) found that version
+        2's attribution judged each claim only against its own cluster's defect, which dropped correct claims about defects
+        accepted at other clusters and merged two different defects in one case; and that precision collapsed several claims
+        from one review into one. Version 3 lists the accepted defects per task and maps every claim to them, measures
+        precision per claim, uses one shared set of resamples so each comparison has a single interval, states the estimand
+        and the exchangeability assumption, labels costs as estimates, reports the reps-1–2-only differences, the findings
+        not adjudicated and the credential imbalance, and publishes the protocol files. Superpowers' difference from bare
+        now excludes zero, and dual review's lead is +17.7.</p>
+      <p><b>Version 2.</b> The first review found that every reviewer in a cluster inherited the cluster's verdict, that
+        one root cause could count twice, that the model mix was misstated, that the hybrids' Unconfirmed lists were
+        ignored, and that an ad hoc noise floor was used. Claim-level attribution, two-level resampling and the other fixes
+        lowered dual review's lead over bare from +22.0 to +15.3.</p>
+
+      <h2 id="cite">How to cite <a class="anchor" href="#cite" aria-label="Link to this section">#</a></h2>
+      <pre><code>@misc{minish2026reviewskills,
+  author = {Eric Minish},
+  title  = {Review skills on my own code: a three-rep benchmark of Claude Code review setups},
+  year   = {2026},
+  month  = {nov},
+  url    = {https://www.ericminish.com/writing/review-skills-benchmark/},
+  note   = {Version 5}
+}</code></pre>
+    </article>
+
+    <p class="closing-line">
+      Questions or corrections: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/writing/">All writing</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/writing/">Writing</a>
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+        <a href="/writing/feed.xml">Feed</a>
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

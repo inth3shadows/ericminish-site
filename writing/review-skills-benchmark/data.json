@@ -1,0 +1,1927 @@
+{
+ "source": "tooling#268 / modelbench#248",
+ "version": 4,
+ "bootstrap": {
+  "resamples": 10000,
+  "seed": 248,
+  "levels": "task-cluster: shared task resamples for all arms of each arm's rep-averaged per-task value; reps not resampled",
+  "estimand": "expected per-rep yield (14 reviews) on tasks drawn like these 14"
+ },
+ "tasks": [
+  "competitive-intel:C:4077ab79e2",
+  "competitive-intel:M:6de779a13d",
+  "competitive-intel:M:d737313695",
+  "kb-mcp:C:1729bb943f",
+  "kb-mcp:C:c4a6b3ce26",
+  "kb-mcp:M:6d4f886876",
+  "kb-mcp:M:7679dbee62",
+  "modelbench:C:2e993d4963",
+  "modelbench:M:9ff901de5b",
+  "modelbench:M:e360c16283",
+  "runecho:E:bb642a435a",
+  "runecho:E:fa00b5d0d4",
+  "runecho:M:6a55f3e15a",
+  "runecho:M:a8aded1a19"
+ ],
+ "rounds": {
+  "r0": {
+   "cells": 140,
+   "cost_estimate": 58.06
+  },
+  "r12": {
+   "cells": 406,
+   "cost_estimate": 198.23
+  }
+ },
+ "agreement": {
+  "r0": {
+   "items": 130,
+   "same_verdict": 125,
+   "contested": 3,
+   "kappa_6way": 0.935,
+   "kappa_real_vs_not": 0.953,
+   "verdicts": {
+    "NOT_DEFECT": 41,
+    "REAL_NEW": 70,
+    "NOT_A_CLAIM": 5,
+    "CONTESTED": 3,
+    "FALSE": 7,
+    "REAL_OLD": 4
+   },
+   "judge_verdicts": {
+    "NOT_DEFECT": 85,
+    "REAL_NEW": 141,
+    "NOT_A_CLAIM": 10,
+    "REAL_OLD": 10,
+    "FALSE": 14
+   },
+   "same_spot_as_round_before": 86,
+   "same_real_call_as_round_before": 77,
+   "severity": {
+    "real_items": 74,
+    "graded_opus": 74,
+    "graded_codex": 48,
+    "codex_models": [
+     "gpt-6-astra"
+    ],
+    "both": 48,
+    "exact": 26,
+    "one_apart": 20,
+    "two_plus_apart": 2,
+    "kappa_linear": 0.331,
+    "kappa_exact": 0.251
+   }
+  },
+  "r12": {
+   "items": 272,
+   "same_verdict": 253,
+   "contested": 15,
+   "kappa_6way": 0.884,
+   "kappa_real_vs_not": 0.89,
+   "verdicts": {
+    "NOT_DEFECT": 105,
+    "NOT_A_CLAIM": 10,
+    "CONTESTED": 15,
+    "REAL_NEW": 122,
+    "FALSE": 10,
+    "REAL_OLD": 10
+   },
+   "judge_verdicts": {
+    "NOT_DEFECT": 227,
+    "NOT_A_CLAIM": 20,
+    "REAL_NEW": 255,
+    "FALSE": 18,
+    "REAL_OLD": 24
+   },
+   "same_spot_as_round_before": 116,
+   "same_real_call_as_round_before": 100,
+   "severity": {
+    "real_items": 132,
+    "graded_opus": 131,
+    "graded_codex": 132,
+    "codex_models": [
+     "gpt-6.1-sol"
+    ],
+    "both": 131,
+    "exact": 80,
+    "one_apart": 45,
+    "two_plus_apart": 6,
+    "kappa_linear": 0.424,
+    "kappa_exact": 0.366
+   }
+  }
+ },
+ "attribution": {
+  "r0": {
+   "plants": 18,
+   "defects_both_judges": 47,
+   "defects_single_judge": 3,
+   "defects_pre_existing": 5,
+   "claims_total": 350,
+   "claims_mapped": 230,
+   "claims_mapped_two_plus": 7,
+   "claims_null": 120,
+   "claims_absent_from_output": 0,
+   "tasks_missing": 0,
+   "real_items": 74,
+   "real_items_both_reproduced": 69,
+   "transcript_recheck": {
+    "cells": 140,
+    "hit_mismatch": 0,
+    "excluded_mismatch": 0,
+    "n_findings_mismatch": 0
+   }
+  },
+  "r12": {
+   "plants": 18,
+   "defects_both_judges": 56,
+   "defects_single_judge": 6,
+   "defects_pre_existing": 9,
+   "claims_total": 1282,
+   "claims_mapped": 698,
+   "claims_mapped_two_plus": 24,
+   "claims_null": 584,
+   "claims_absent_from_output": 0,
+   "tasks_missing": 0,
+   "real_items": 132,
+   "real_items_both_reproduced": 98,
+   "transcript_recheck": {
+    "cells": 406,
+    "hit_mismatch": 0,
+    "excluded_mismatch": 0,
+    "n_findings_mismatch": 0
+   }
+  }
+ },
+ "arms": {
+  "builtin": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 26.67,
+    "ci95": [
+     21.0,
+     32.33
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 26.67,
+    "ci95": [
+     21.0,
+     32.33
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8.33,
+     24.33
+    ]
+   },
+   "planted_location_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8.33,
+     24.33
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 10.33,
+    "ci95": [
+     4.67,
+     17.33
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0.67,
+    "ci95": [
+     0,
+     1.67
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 4.67,
+    "ci95": [
+     1.33,
+     9.0
+    ]
+   },
+   "s1s2_reproduced_per_rep": {
+    "value": 4.0,
+    "ci95": [
+     0.67,
+     8.0
+    ]
+   },
+   "real_by_rep": {
+    "0": 28,
+    "1": 25,
+    "2": 27
+   },
+   "real_rep_sd": 1.53,
+   "minus_bare": {
+    "value": -8.67,
+    "ci95": [
+     -16.0,
+     -1.67
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": -4.0,
+    "ci95": [
+     -8.67,
+     -0.67
+    ]
+   },
+   "s1s2_reproduced_minus_bare": {
+    "value": -3.0,
+    "ci95": [
+     -8,
+     0.0
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -8.5,
+    "ci95": [
+     -17.0,
+     0.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.2,
+    "ci95": [
+     0.17,
+     0.24
+    ]
+   },
+   "secs_per_review": {
+    "value": 30.74,
+    "ci95": [
+     24.64,
+     38.79
+    ]
+   },
+   "cost_estimate_per_real": 0.106,
+   "precision_full_list": 0.806,
+   "precision_adjudicated_only": 0.667,
+   "findings": {
+    "planted_hit": 49,
+    "adjudicated_mapped": 34,
+    "adjudicated_all": 51,
+    "scored_list_minus_excluded": 103
+   },
+   "plants_credited_by_claim_only": 0,
+   "auth": {
+    "oauth": 28,
+    "key": 14
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 3,
+   "excluded_findings": 1
+  },
+  "caveman": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 31.67,
+    "ci95": [
+     25.0,
+     38.0
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 31.67,
+    "ci95": [
+     25.0,
+     38.0
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8.33,
+     24.33
+    ]
+   },
+   "planted_location_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8.33,
+     24.33
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 15.33,
+    "ci95": [
+     8.33,
+     23.0
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 7.0,
+    "ci95": [
+     3.0,
+     12.33
+    ]
+   },
+   "s1s2_reproduced_per_rep": {
+    "value": 6.0,
+    "ci95": [
+     2.33,
+     10.0
+    ]
+   },
+   "real_by_rep": {
+    "0": 35,
+    "1": 31,
+    "2": 29
+   },
+   "real_rep_sd": 3.06,
+   "minus_bare": {
+    "value": -3.67,
+    "ci95": [
+     -7.33,
+     -0.33
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": -1.67,
+    "ci95": [
+     -4.33,
+     0.33
+    ]
+   },
+   "s1s2_reproduced_minus_bare": {
+    "value": -1.0,
+    "ci95": [
+     -4.0,
+     1.67
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -4.5,
+    "ci95": [
+     -9.5,
+     0.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.24,
+    "ci95": [
+     0.21,
+     0.28
+    ]
+   },
+   "secs_per_review": {
+    "value": 41.12,
+    "ci95": [
+     33.24,
+     50.14
+    ]
+   },
+   "cost_estimate_per_real": 0.106,
+   "precision_full_list": 0.9,
+   "precision_adjudicated_only": 0.833,
+   "findings": {
+    "planted_hit": 53,
+    "adjudicated_mapped": 55,
+    "adjudicated_all": 66,
+    "scored_list_minus_excluded": 120
+   },
+   "plants_credited_by_claim_only": 0,
+   "auth": {
+    "oauth": 25,
+    "key": 17
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 1,
+   "excluded_findings": 1
+  },
+  "dual_cg": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 53.33,
+    "ci95": [
+     41.67,
+     67.67
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 53.33,
+    "ci95": [
+     41.67,
+     67.67
+    ]
+   },
+   "planted_per_rep": {
+    "value": 17,
+    "ci95": [
+     9,
+     25
+    ]
+   },
+   "planted_location_per_rep": {
+    "value": 17,
+    "ci95": [
+     9,
+     25
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 36.33,
+    "ci95": [
+     24.0,
+     50.67
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 3.33,
+    "ci95": [
+     0.67,
+     6.67
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 14.33,
+    "ci95": [
+     7.0,
+     23.67
+    ]
+   },
+   "s1s2_reproduced_per_rep": {
+    "value": 11.33,
+    "ci95": [
+     4.67,
+     20.0
+    ]
+   },
+   "real_by_rep": {
+    "0": 56,
+    "1": 51,
+    "2": 53
+   },
+   "real_rep_sd": 2.52,
+   "minus_bare": {
+    "value": 18.0,
+    "ci95": [
+     10.33,
+     26.67
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 5.67,
+    "ci95": [
+     2.0,
+     10.67
+    ]
+   },
+   "s1s2_reproduced_minus_bare": {
+    "value": 4.33,
+    "ci95": [
+     1.0,
+     9.0
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": 17.5,
+    "ci95": [
+     9.0,
+     26.5
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 1.04,
+    "ci95": [
+     0.94,
+     1.16
+    ]
+   },
+   "secs_per_review": {
+    "value": 232.43,
+    "ci95": [
+     192.69,
+     278.4
+    ]
+   },
+   "cost_estimate_per_real": 0.274,
+   "precision_full_list": 0.588,
+   "precision_adjudicated_only": 0.478,
+   "findings": {
+    "planted_hit": 63,
+    "adjudicated_mapped": 111,
+    "adjudicated_all": 232,
+    "scored_list_minus_excluded": 296
+   },
+   "plants_credited_by_claim_only": 0,
+   "auth": {
+    "oauth": 31,
+    "key": 11
+   },
+   "models": {
+    "claude-opus-5-5": 42,
+    "claude-sonnet-5-5": 42
+   },
+   "equiv_mutant_flags": 1,
+   "excluded_findings": 5
+  },
+  "dual_fast": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 39.67,
+    "ci95": [
+     28.0,
+     53.0
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 51.67,
+    "ci95": [
+     38.0,
+     68.0
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.67,
+    "ci95": [
+     8.67,
+     25.0
+    ]
+   },
+   "planted_location_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8.33,
+     24.67
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 23.0,
+    "ci95": [
+     11.67,
+     36.0
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0.33,
+    "ci95": [
+     0,
+     1.0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 12.33,
+    "ci95": [
+     3.67,
+     24.33
+    ]
+   },
+   "s1s2_reproduced_per_rep": {
+    "value": 10.67,
+    "ci95": [
+     2.67,
+     22
+    ]
+   },
+   "real_by_rep": {
+    "0": 38,
+    "1": 44,
+    "2": 37
+   },
+   "real_rep_sd": 3.79,
+   "minus_bare": {
+    "value": 4.33,
+    "ci95": [
+     -2.0,
+     11.67
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 3.67,
+    "ci95": [
+     -2.0,
+     11.67
+    ]
+   },
+   "s1s2_reproduced_minus_bare": {
+    "value": 3.67,
+    "ci95": [
+     -1.0,
+     11.0
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": 6.0,
+    "ci95": [
+     -1.5,
+     14.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.9,
+    "ci95": [
+     0.81,
+     0.99
+    ]
+   },
+   "secs_per_review": {
+    "value": 286.12,
+    "ci95": [
+     187.9,
+     401.67
+    ]
+   },
+   "cost_estimate_per_real": 0.317,
+   "precision_full_list": 0.893,
+   "precision_adjudicated_only": 0.823,
+   "findings": {
+    "planted_hit": 52,
+    "adjudicated_mapped": 65,
+    "adjudicated_all": 79,
+    "scored_list_minus_excluded": 131
+   },
+   "plants_credited_by_claim_only": 1,
+   "auth": {
+    "oauth": 21,
+    "key": 21
+   },
+   "models": {
+    "claude-opus-5-5": 42,
+    "claude-sonnet-5-5": 42
+   },
+   "equiv_mutant_flags": 0,
+   "excluded_findings": 1
+  },
+  "dual_nocg": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 53.0,
+    "ci95": [
+     42.67,
+     66.0
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 53.0,
+    "ci95": [
+     42.67,
+     66.0
+    ]
+   },
+   "planted_per_rep": {
+    "value": 17,
+    "ci95": [
+     9,
+     25
+    ]
+   },
+   "planted_location_per_rep": {
+    "value": 16.67,
+    "ci95": [
+     8.67,
+     24.67
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 36.0,
+    "ci95": [
+     24.67,
+     48.67
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 4.0,
+    "ci95": [
+     1.0,
+     8.33
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 15.33,
+    "ci95": [
+     7.0,
+     26.33
+    ]
+   },
+   "s1s2_reproduced_per_rep": {
+    "value": 12.67,
+    "ci95": [
+     5.0,
+     23.0
+    ]
+   },
+   "real_by_rep": {
+    "0": 49,
+    "1": 54,
+    "2": 56
+   },
+   "real_rep_sd": 3.61,
+   "minus_bare": {
+    "value": 17.67,
+    "ci95": [
+     10.33,
+     26.0
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 6.67,
+    "ci95": [
+     2.0,
+     13.0
+    ]
+   },
+   "s1s2_reproduced_minus_bare": {
+    "value": 5.67,
+    "ci95": [
+     1.33,
+     11.33
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": 20.5,
+    "ci95": [
+     11.5,
+     31.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.8,
+    "ci95": [
+     0.72,
+     0.88
+    ]
+   },
+   "secs_per_review": {
+    "value": 210.26,
+    "ci95": [
+     178.79,
+     244.19
+    ]
+   },
+   "cost_estimate_per_real": 0.21,
+   "precision_full_list": 0.606,
+   "precision_adjudicated_only": 0.494,
+   "findings": {
+    "planted_hit": 71,
+    "adjudicated_mapped": 117,
+    "adjudicated_all": 237,
+    "scored_list_minus_excluded": 310
+   },
+   "plants_credited_by_claim_only": 1,
+   "auth": {
+    "oauth": 22,
+    "key": 20
+   },
+   "models": {
+    "claude-opus-5-5": 42,
+    "claude-sonnet-5-5": 42
+   },
+   "equiv_mutant_flags": 2,
+   "excluded_findings": 4
+  },
+  "ecc": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 22.33,
+    "ci95": [
+     16.67,
+     28.0
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 22.33,
+    "ci95": [
+     16.67,
+     28.0
+    ]
+   },
+   "planted_per_rep": {
+    "value": 14.67,
+    "ci95": [
+     7.33,
+     22.0
+    ]
+   },
+   "planted_location_per_rep": {
+    "value": 14.67,
+    "ci95": [
+     7.33,
+     22.0
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 7.67,
+    "ci95": [
+     3.0,
+     13.33
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 4.0,
+    "ci95": [
+     0.33,
+     9.33
+    ]
+   },
+   "s1s2_reproduced_per_rep": {
+    "value": 3.33,
+    "ci95": [
+     0.33,
+     7.33
+    ]
+   },
+   "real_by_rep": {
+    "0": 22,
+    "1": 21,
+    "2": 24
+   },
+   "real_rep_sd": 1.53,
+   "minus_bare": {
+    "value": -13.0,
+    "ci95": [
+     -20.33,
+     -6.33
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": -4.67,
+    "ci95": [
+     -9.33,
+     -1.0
+    ]
+   },
+   "s1s2_reproduced_minus_bare": {
+    "value": -3.67,
+    "ci95": [
+     -8.33,
+     -0.33
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -12.0,
+    "ci95": [
+     -20.0,
+     -4.5
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.16,
+    "ci95": [
+     0.15,
+     0.18
+    ]
+   },
+   "secs_per_review": {
+    "value": 37.5,
+    "ci95": [
+     32.0,
+     44.62
+    ]
+   },
+   "cost_estimate_per_real": 0.102,
+   "precision_full_list": 0.818,
+   "precision_adjudicated_only": 0.643,
+   "findings": {
+    "planted_hit": 45,
+    "adjudicated_mapped": 27,
+    "adjudicated_all": 42,
+    "scored_list_minus_excluded": 88
+   },
+   "plants_credited_by_claim_only": 0,
+   "auth": {
+    "oauth": 26,
+    "key": 16
+   },
+   "models": {
+    "claude-opus-5-5": 42,
+    "claude-sonnet-5-5": 42
+   },
+   "equiv_mutant_flags": 1,
+   "excluded_findings": 0
+  },
+  "none": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 35.33,
+    "ci95": [
+     26.67,
+     44.67
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 35.33,
+    "ci95": [
+     26.67,
+     44.67
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8.33,
+     24.33
+    ]
+   },
+   "planted_location_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8.33,
+     24.33
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 19.0,
+    "ci95": [
+     10.33,
+     29.0
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 8.67,
+    "ci95": [
+     4,
+     14.0
+    ]
+   },
+   "s1s2_reproduced_per_rep": {
+    "value": 7.0,
+    "ci95": [
+     2.67,
+     12.33
+    ]
+   },
+   "real_by_rep": {
+    "0": 37,
+    "1": 34,
+    "2": 35
+   },
+   "real_rep_sd": 1.53,
+   "minus_bare": {
+    "value": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "s1s2_reproduced_minus_bare": {
+    "value": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.24,
+    "ci95": [
+     0.19,
+     0.28
+    ]
+   },
+   "secs_per_review": {
+    "value": 45.0,
+    "ci95": [
+     35.36,
+     55.79
+    ]
+   },
+   "cost_estimate_per_real": 0.094,
+   "precision_full_list": 0.908,
+   "precision_adjudicated_only": 0.853,
+   "findings": {
+    "planted_hit": 54,
+    "adjudicated_mapped": 64,
+    "adjudicated_all": 75,
+    "scored_list_minus_excluded": 130
+   },
+   "plants_credited_by_claim_only": 0,
+   "auth": {
+    "oauth": 26,
+    "key": 16
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 1,
+   "excluded_findings": 0
+  },
+  "none_b": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 30.67,
+    "ci95": [
+     24.0,
+     37.67
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 30.67,
+    "ci95": [
+     24.0,
+     37.67
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16,
+    "ci95": [
+     8,
+     24
+    ]
+   },
+   "planted_location_per_rep": {
+    "value": 15.67,
+    "ci95": [
+     8,
+     23.67
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 14.67,
+    "ci95": [
+     7.33,
+     23.33
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 7.67,
+    "ci95": [
+     2.67,
+     14.0
+    ]
+   },
+   "s1s2_reproduced_per_rep": {
+    "value": 6.67,
+    "ci95": [
+     2.33,
+     12.0
+    ]
+   },
+   "real_by_rep": {
+    "0": 29,
+    "1": 32,
+    "2": 31
+   },
+   "real_rep_sd": 1.53,
+   "minus_bare": {
+    "value": -4.67,
+    "ci95": [
+     -8.67,
+     -0.67
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": -1.0,
+    "ci95": [
+     -2.67,
+     1.0
+    ]
+   },
+   "s1s2_reproduced_minus_bare": {
+    "value": -0.33,
+    "ci95": [
+     -1.67,
+     1.0
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -3.0,
+    "ci95": [
+     -7.0,
+     1.5
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.23,
+    "ci95": [
+     0.2,
+     0.25
+    ]
+   },
+   "secs_per_review": {
+    "value": 41.69,
+    "ci95": [
+     33.45,
+     51.24
+    ]
+   },
+   "cost_estimate_per_real": 0.103,
+   "precision_full_list": 0.893,
+   "precision_adjudicated_only": 0.806,
+   "findings": {
+    "planted_hit": 50,
+    "adjudicated_mapped": 50,
+    "adjudicated_all": 62,
+    "scored_list_minus_excluded": 112
+   },
+   "plants_credited_by_claim_only": 1,
+   "auth": {
+    "oauth": 25,
+    "key": 17
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 0,
+   "excluded_findings": 2
+  },
+  "ponytail_review": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 31.67,
+    "ci95": [
+     23.67,
+     39.67
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 31.67,
+    "ci95": [
+     23.67,
+     39.67
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8.33,
+     24.33
+    ]
+   },
+   "planted_location_per_rep": {
+    "value": 16.33,
+    "ci95": [
+     8.33,
+     24.33
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 15.33,
+    "ci95": [
+     8.33,
+     23.0
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 7.0,
+    "ci95": [
+     2.67,
+     12.67
+    ]
+   },
+   "s1s2_reproduced_per_rep": {
+    "value": 6.33,
+    "ci95": [
+     2.33,
+     11.33
+    ]
+   },
+   "real_by_rep": {
+    "0": 32,
+    "1": 31,
+    "2": 32
+   },
+   "real_rep_sd": 0.58,
+   "minus_bare": {
+    "value": -3.67,
+    "ci95": [
+     -7.0,
+     -0.67
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": -1.67,
+    "ci95": [
+     -3.67,
+     0.33
+    ]
+   },
+   "s1s2_reproduced_minus_bare": {
+    "value": -0.67,
+    "ci95": [
+     -2.33,
+     0.67
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -3.0,
+    "ci95": [
+     -8.0,
+     2.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.24,
+    "ci95": [
+     0.22,
+     0.27
+    ]
+   },
+   "secs_per_review": {
+    "value": 43.29,
+    "ci95": [
+     36.64,
+     50.52
+    ]
+   },
+   "cost_estimate_per_real": 0.108,
+   "precision_full_list": 0.884,
+   "precision_adjudicated_only": 0.827,
+   "findings": {
+    "planted_hit": 52,
+    "adjudicated_mapped": 62,
+    "adjudicated_all": 75,
+    "scored_list_minus_excluded": 129
+   },
+   "plants_credited_by_claim_only": 0,
+   "auth": {
+    "oauth": 26,
+    "key": 16
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 2,
+   "excluded_findings": 2
+  },
+  "sp_inline": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 29.33,
+    "ci95": [
+     23.0,
+     35.67
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 32.0,
+    "ci95": [
+     26.0,
+     38.0
+    ]
+   },
+   "planted_per_rep": {
+    "value": 15.67,
+    "ci95": [
+     7.67,
+     23.67
+    ]
+   },
+   "planted_location_per_rep": {
+    "value": 15.67,
+    "ci95": [
+     7.67,
+     23.67
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 13.67,
+    "ci95": [
+     7.67,
+     20.0
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 7.67,
+    "ci95": [
+     3.33,
+     12.67
+    ]
+   },
+   "s1s2_reproduced_per_rep": {
+    "value": 6.0,
+    "ci95": [
+     2.33,
+     10.33
+    ]
+   },
+   "real_by_rep": {
+    "0": 32,
+    "1": 29,
+    "2": 27
+   },
+   "real_rep_sd": 2.52,
+   "minus_bare": {
+    "value": -6.0,
+    "ci95": [
+     -11.33,
+     -2.0
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": -1.0,
+    "ci95": [
+     -2.0,
+     0.0
+    ]
+   },
+   "s1s2_reproduced_minus_bare": {
+    "value": -1.0,
+    "ci95": [
+     -2.0,
+     0.0
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -6.5,
+    "ci95": [
+     -15.0,
+     1.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.29,
+    "ci95": [
+     0.26,
+     0.32
+    ]
+   },
+   "secs_per_review": {
+    "value": 85.62,
+    "ci95": [
+     56.43,
+     129.69
+    ]
+   },
+   "cost_estimate_per_real": 0.138,
+   "precision_full_list": 0.929,
+   "precision_adjudicated_only": 0.86,
+   "findings": {
+    "planted_hit": 49,
+    "adjudicated_mapped": 43,
+    "adjudicated_all": 50,
+    "scored_list_minus_excluded": 99
+   },
+   "plants_credited_by_claim_only": 0,
+   "auth": {
+    "oauth": 27,
+    "key": 15
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 0,
+   "excluded_findings": 2
+  },
+  "sp_pair": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 43.0,
+    "ci95": [
+     30.33,
+     59.67
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 48.0,
+    "ci95": [
+     34.33,
+     65.0
+    ]
+   },
+   "planted_per_rep": {
+    "value": 17.33,
+    "ci95": [
+     9,
+     25.33
+    ]
+   },
+   "planted_location_per_rep": {
+    "value": 16.67,
+    "ci95": [
+     8.67,
+     24.67
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 25.67,
+    "ci95": [
+     14.0,
+     40.33
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0.67,
+    "ci95": [
+     0,
+     1.67
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 13.67,
+    "ci95": [
+     3.33,
+     29.33
+    ]
+   },
+   "s1s2_reproduced_per_rep": {
+    "value": 12.0,
+    "ci95": [
+     2.67,
+     26.67
+    ]
+   },
+   "real_by_rep": {
+    "0": 45,
+    "1": 44,
+    "2": 40
+   },
+   "real_rep_sd": 2.65,
+   "minus_bare": {
+    "value": 7.67,
+    "ci95": [
+     -1.67,
+     19.33
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 5.0,
+    "ci95": [
+     -2.67,
+     16.67
+    ]
+   },
+   "s1s2_reproduced_minus_bare": {
+    "value": 5.0,
+    "ci95": [
+     -1.67,
+     15.33
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": 7.5,
+    "ci95": [
+     -2.0,
+     19.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.88,
+    "ci95": [
+     0.78,
+     0.99
+    ]
+   },
+   "secs_per_review": {
+    "value": 176.52,
+    "ci95": [
+     148.21,
+     208.1
+    ]
+   },
+   "cost_estimate_per_real": 0.287,
+   "precision_full_list": 0.825,
+   "precision_adjudicated_only": 0.741,
+   "findings": {
+    "planted_hit": 54,
+    "adjudicated_mapped": 83,
+    "adjudicated_all": 112,
+    "scored_list_minus_excluded": 166
+   },
+   "plants_credited_by_claim_only": 2,
+   "auth": {
+    "oauth": 29,
+    "key": 13
+   },
+   "models": {
+    "claude-opus-5-5": 42,
+    "claude-sonnet-5-5": 42
+   },
+   "equiv_mutant_flags": 0,
+   "excluded_findings": 4
+  },
+  "superpowers": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 44.0,
+    "ci95": [
+     33.0,
+     56.33
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 44.0,
+    "ci95": [
+     33.0,
+     56.33
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.67,
+    "ci95": [
+     8.67,
+     24.67
+    ]
+   },
+   "planted_location_per_rep": {
+    "value": 16.67,
+    "ci95": [
+     8.67,
+     24.67
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 27.33,
+    "ci95": [
+     16.33,
+     40.33
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 1.33,
+    "ci95": [
+     0,
+     3.0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 13.33,
+    "ci95": [
+     6.33,
+     22.0
+    ]
+   },
+   "s1s2_reproduced_per_rep": {
+    "value": 11.33,
+    "ci95": [
+     4.67,
+     19.67
+    ]
+   },
+   "real_by_rep": {
+    "0": 44,
+    "1": 43,
+    "2": 45
+   },
+   "real_rep_sd": 1.0,
+   "minus_bare": {
+    "value": 8.67,
+    "ci95": [
+     2.33,
+     15.67
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": 4.67,
+    "ci95": [
+     0.67,
+     9.33
+    ]
+   },
+   "s1s2_reproduced_minus_bare": {
+    "value": 4.33,
+    "ci95": [
+     0.67,
+     8.67
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": 9.5,
+    "ci95": [
+     1.5,
+     18.5
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.58,
+    "ci95": [
+     0.52,
+     0.64
+    ]
+   },
+   "secs_per_review": {
+    "value": 131.45,
+    "ci95": [
+     110.26,
+     153.95
+    ]
+   },
+   "cost_estimate_per_real": 0.184,
+   "precision_full_list": 0.818,
+   "precision_adjudicated_only": 0.739,
+   "findings": {
+    "planted_hit": 53,
+    "adjudicated_mapped": 82,
+    "adjudicated_all": 111,
+    "scored_list_minus_excluded": 165
+   },
+   "plants_credited_by_claim_only": 0,
+   "auth": {
+    "oauth": 26,
+    "key": 16
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 1,
+   "excluded_findings": 3
+  },
+  "tob_diffreview": {
+   "reps": [
+    0,
+    1,
+    2
+   ],
+   "cells": 42,
+   "real_scored_per_rep": {
+    "value": 33.67,
+    "ci95": [
+     25.33,
+     42.33
+    ]
+   },
+   "real_reported_per_rep": {
+    "value": 33.67,
+    "ci95": [
+     25.33,
+     42.33
+    ]
+   },
+   "planted_per_rep": {
+    "value": 16.67,
+    "ci95": [
+     8.67,
+     24.67
+    ]
+   },
+   "planted_location_per_rep": {
+    "value": 16.67,
+    "ci95": [
+     8.67,
+     24.67
+    ]
+   },
+   "other_real_per_rep": {
+    "value": 17.0,
+    "ci95": [
+     8.67,
+     26.67
+    ]
+   },
+   "real_old_per_rep": {
+    "value": 0,
+    "ci95": [
+     0,
+     0
+    ]
+   },
+   "s1s2_per_rep": {
+    "value": 8.0,
+    "ci95": [
+     3.33,
+     13.67
+    ]
+   },
+   "s1s2_reproduced_per_rep": {
+    "value": 6.67,
+    "ci95": [
+     3,
+     11.0
+    ]
+   },
+   "real_by_rep": {
+    "0": 37,
+    "1": 31,
+    "2": 33
+   },
+   "real_rep_sd": 3.06,
+   "minus_bare": {
+    "value": -1.67,
+    "ci95": [
+     -4.67,
+     1.0
+    ]
+   },
+   "s1s2_minus_bare": {
+    "value": -0.67,
+    "ci95": [
+     -3.67,
+     1.67
+    ]
+   },
+   "s1s2_reproduced_minus_bare": {
+    "value": -0.33,
+    "ci95": [
+     -2.67,
+     1.33
+    ]
+   },
+   "minus_bare_reps12_only": {
+    "value": -2.5,
+    "ci95": [
+     -7.0,
+     2.0
+    ]
+   },
+   "cost_estimate_per_review": {
+    "value": 0.3,
+    "ci95": [
+     0.27,
+     0.35
+    ]
+   },
+   "secs_per_review": {
+    "value": 51.43,
+    "ci95": [
+     42.19,
+     61.67
+    ]
+   },
+   "cost_estimate_per_real": 0.126,
+   "precision_full_list": 0.882,
+   "precision_adjudicated_only": 0.797,
+   "findings": {
+    "planted_hit": 50,
+    "adjudicated_mapped": 55,
+    "adjudicated_all": 69,
+    "scored_list_minus_excluded": 119
+   },
+   "plants_credited_by_claim_only": 0,
+   "auth": {
+    "oauth": 27,
+    "key": 15
+   },
+   "models": {
+    "claude-opus-5-5": 42
+   },
+   "equiv_mutant_flags": 0,
+   "excluded_findings": 1
+  }
+ },
+ "comparisons": {
+  "dual_cg - dual_nocg": {
+   "value": 0.33,
+   "ci95": [
+    -3.67,
+    4.33
+   ]
+  },
+  "none_b - none": {
+   "value": -4.67,
+   "ci95": [
+    -8.67,
+    -0.67
+   ]
+  },
+  "superpowers - none": {
+   "value": 8.67,
+   "ci95": [
+    2.33,
+    15.67
+   ]
+  },
+  "sp_pair - superpowers": {
+   "value": -1.0,
+   "ci95": [
+    -8.0,
+    6.33
+   ]
+  },
+  "dual_fast (reported) - dual_nocg": {
+   "value": -1.33,
+   "ci95": [
+    -6.0,
+    3.67
+   ]
+  },
+  "sp_pair (reported) - dual_nocg": {
+   "value": -5.0,
+   "ci95": [
+    -10.33,
+    0.67
+   ]
+  },
+  "sp_inline (reported) - dual_nocg": {
+   "value": -21.0,
+   "ci95": [
+    -31.33,
+    -12.67
+   ]
+  }
+ },
+ "totals": {
+  "cells": 546,
+  "cost_estimate": 256.29,
+  "max_review_cost_estimate": 1.63,
+  "excluded_findings": 26,
+  "auth": {
+   "oauth": 339,
+   "key": 207
+  }
+ }
+}

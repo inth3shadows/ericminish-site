@@ -1,0 +1,13 @@
+{
+ "dual_fast/": "",
+ "dual_fast/agents/code-reviewer.md": "069291ee24adf5a84c350c0c817172ccdd159f81ab0805fa91f9fa2f5e76cb12",
+ "dual_fast/agents/review-verifier.md": "063aa0a142a68194df9536f7c4f07352aee63830aa13050c5416201f30205546",
+ "dual_fast/skills/dual-fast/SKILL.md": "9b811d5c3fefb61a79a43a33873183851f5ac78908cc193534cbc355b21df279",
+ "sp_inline/": "",
+ "sp_inline/skills/sp-inline/SKILL.md": "71ff685673800eb4555b0fe65f8c0d68491ab17dda07008de84da6cdecebbba1",
+ "sp_pair/": "",
+ "sp_pair/agents/code-reviewer.md": "069291ee24adf5a84c350c0c817172ccdd159f81ab0805fa91f9fa2f5e76cb12",
+ "sp_pair/agents/review-verifier.md": "063aa0a142a68194df9536f7c4f07352aee63830aa13050c5416201f30205546",
+ "sp_pair/skills/sp-pair/SKILL.md": "61fbdd648170a6fe9fedbfbc175fb4bf0135b2804cb953c766378fe521e3b758",
+ "sp_pair/skills/sp-pair/reviewer.md": "2b0aa9d62c73a32d756a3cd64d2b9454dbe278d0fb93259f57048406e9000fe3"
+}
