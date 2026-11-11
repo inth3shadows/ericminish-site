@@ -61,7 +61,7 @@
         <p class="post-meta">
           <span>By <a href="/about/">Eric Minish</a></span>
           <span><time datetime="2026-11-11">11 November 2026</time></span>
-          <!-- auto:start readtime --><span>25 min read</span><!-- auto:end readtime -->
+          <!-- auto:start readtime --><span>26 min read</span><!-- auto:end readtime -->
         </p>
       </header>
 
@@ -399,7 +399,7 @@
         3.5 more items to read, a break-even of about 16 minutes. Its extra serious defects, +0.14 per review, have an interval that includes zero, so a reader who counts only serious defects and whose triage time is dear has no evidence here that the step from Superpowers to dual review pays.</p>
       <p><b>Bundles below bare.</b> Caveman, Ponytail, Hybrid: single loop, Built-in /code-review and ECC find fewer defects than bare.
         Ponytail and Hybrid: single loop also give at least as much to read, so switching to them never pays under this model. Caveman, Built-in /code-review and ECC save some reading; switching to one pays only if a caught defect's expected avoided cost is below about 3 minutes at 3 minutes of triage. For a reader whose caught defects are worth more than that, they do not pay as replacements for bare Claude Code.</p>
-      <p><b>Run time in everyday use.</b> I reconstructed 202 dual-review rounds from my own session transcripts (2026-08-20 to 2026-11-11, looking up to two hours after each launch) and kept the 146 where the code-reviewer half ran 30 seconds or more and its report cited at least one code location. These are the rounds that could be extracted, not an unrestricted sample. That half alone ran 1 to 61 minutes (median 7.6), far longer than in the benchmark. In the 93 rounds since 2026-09-16, whose reports arrive as a separate message, I split the rounds by the code-reviewer's run time into the 46 shorter and the 47 longer. The longer rounds took a median 11.2 minutes and their reports cited 5 locations, against 4.1 minutes and 3.5 for the shorter ones (Spearman 0.16); in the 53 earlier rounds there was no trend (0.04). The two report formats cite locations at very different rates, so they are not pooled. So longer rounds cited a few more locations and far fewer per minute. This is an association across different reviews: it cannot show what a review would have found if stopped earlier, and longer rounds may be harder changes. For a reader who waits, it suggests a long review costs more per finding; running reviews in the background avoids the wait, though nothing here tests that. Cited locations are only a proxy for findings: they were not adjudicated, and diff size was recorded for only 17 rounds.</p>
+      <p><b>Run time in everyday use.</b> Of 221 dual-review launches in my own session transcripts (2026-08-20 to 2026-11-11, looking up to two hours after each launch), 200 had a timed code-reviewer report, and I kept the 146 where that half ran 30 seconds or more and its report cited at least one code location. The other 21 launches are left out: 19 had no report within two hours, 1 was overtaken by the next round before its report, and 1 launched no code-reviewer. Dropping late and missing reports under-represents slow rounds, so these are the rounds that could be extracted, not an unrestricted sample. That half alone ran 1 to 61 minutes (median 7.6), far longer than in the benchmark. In the 93 rounds since 2026-09-16, whose reports arrive as a separate message, I split the rounds by the code-reviewer's run time into the 46 shorter and the 47 longer. The longer rounds took a median 11.2 minutes and their reports cited 5 locations, against 4.1 minutes and 3.5 for the shorter ones (Spearman 0.16); in the 53 earlier rounds there was no trend (0.04). The two report formats cite locations at very different rates, so they are not pooled. So longer rounds cited a few more locations and far fewer per minute. This is an association across different reviews: it cannot show what a review would have found if stopped earlier, and longer rounds may be harder changes. For a reader who waits, it suggests a long review costs more per finding; running reviews in the background avoids the wait, though nothing here tests that. Cited locations are only a proxy for findings: they were not adjudicated, and diff size was recorded for only 17 rounds.</p>
       <p>These are point estimates of a linear model for one reader and one task set. A fuller treatment would put a
         distribution on the value of a caught defect and report the probability that each step pays. That is left for
         the replay on past pull requests.</p>
@@ -416,6 +416,11 @@
           0.424 in round 2), and round 1 used a different Codex model, with 26
           of its 74 real clusters graded by one family. The graders were also told, wrongly for 39 of
           206 clusters, that both judges had reproduced each one (Section 3.4).</li>
+        <li><b>Blinding was imperfect.</b> In the attribution judges' packets, between 15 and 31 of 1,632 claim texts
+          (a narrow and a broad text scan), most of them from the dual-review arms, still showed that more than one reviewer
+          had written them, through a label such as "(A only)" or "the two reviewers disagree" or two reviewers' views side
+          by side. In one claim the blinding step also cut code (<code>A(B)</code> shown as <code>A</code>). The
+          judges were not asked which arm wrote a claim, and these claims were not re-judged.</li>
         <li><b>Coverage.</b> Planted hits are matched by location, not meaning (a mapped claim can also credit a plant),
           and 26 findings near dropped plant candidates were not adjudicated.</li>
         <li><b>Bundles are compared whole.</b> Arms differ in models, subagents, instructions, compute and credential mix;
