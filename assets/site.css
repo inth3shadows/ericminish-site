@@ -1446,7 +1446,7 @@ h3 {
 }
 
 /* ---------- Writing: long-form posts (scoped under .post so the shared tokens stay unchanged; see #32) ---------- */
-.post-shell { width: min(calc(100% - 32px), 72ch); margin: 0 auto; }
+.post-shell { width: min(calc(100% - 32px), 880px); margin: 0 auto; }
 .post { font-size: 1.12rem; line-height: 1.7; }
 .post-header { margin: 48px 0 28px; }
 .post-header h1 { font-size: clamp(1.7rem, 4.2vw, 2.4rem); line-height: 1.2; margin: 0 0 14px; text-wrap: balance; }
