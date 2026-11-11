@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Review skills on real code: a three-rep benchmark of Claude Code review setups | Eric Minish</title>
+  <title>Review skills on my own code: a three-rep benchmark of Claude Code review setups | Eric Minish</title>
   <meta name="description" content="Skill packs for Claude Code promise better code review, but they are rarely measured on their users&#x27; own code. I ran 13 review bundles (bare Claude Code twice, the built-in review command, five public skill packs, my own dual-review skill with and without code-graph tools, and three exploratory…">
   <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
   <link rel="canonical" href="https://www.ericminish.com/writing/review-skills-benchmark/">
   <link rel="alternate" type="application/atom+xml" title="Eric Minish — Writing" href="/writing/feed.xml">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Eric Minish">
-  <meta property="og:title" content="Review skills on real code: a three-rep benchmark of Claude Code review setups">
+  <meta property="og:title" content="Review skills on my own code: a three-rep benchmark of Claude Code review setups">
   <meta property="og:description" content="Skill packs for Claude Code promise better code review, but they are rarely measured on their users&#x27; own code. I ran 13 review bundles (bare Claude Code twice, the built-in review command, five public skill packs, my own dual-review skill with and without code-graph tools, and three exploratory…">
   <meta property="og:url" content="https://www.ericminish.com/writing/review-skills-benchmark/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
@@ -21,12 +21,12 @@
   <meta property="article:author" content="Eric Minish">
   <meta property="article:tag" content="Agent evaluation">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Review skills on real code: a three-rep benchmark of Claude Code review setups">
+  <meta name="twitter:title" content="Review skills on my own code: a three-rep benchmark of Claude Code review setups">
   <meta name="twitter:description" content="Skill packs for Claude Code promise better code review, but they are rarely measured on their users&#x27; own code. I ran 13 review bundles (bare Claude Code twice, the built-in review command, five public skill packs, my own dual-review skill with and without code-graph tools, and three exploratory…">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"BlogPosting","headline":"Review skills on real code: a three-rep benchmark of Claude Code review setups","datePublished":"2026-11-11","dateModified":"2026-11-11","author":{"@type":"Person","name":"Eric Minish","url":"https://www.ericminish.com/about/"},"mainEntityOfPage":"https://www.ericminish.com/writing/review-skills-benchmark/","image":"https://www.ericminish.com/assets/og.png"}
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"Review skills on my own code: a three-rep benchmark of Claude Code review setups","datePublished":"2026-11-11","dateModified":"2026-11-11","author":{"@type":"Person","name":"Eric Minish","url":"https://www.ericminish.com/about/"},"mainEntityOfPage":"https://www.ericminish.com/writing/review-skills-benchmark/","image":"https://www.ericminish.com/assets/og.png"}
   </script>
 </head>
 <body>
@@ -57,17 +57,17 @@
     <article class="post">
       <header class="post-header">
         <p class="post-kicker">Preprint · Agent evaluation · Software engineering</p>
-        <h1>Review skills on real code: a three-rep benchmark of Claude Code review setups</h1>
+        <h1>Review skills on my own code: a three-rep benchmark of Claude Code review setups</h1>
         <p class="post-meta">
           <span>By <a href="/about/">Eric Minish</a></span>
-          <span>Draft <time datetime="2026-11-11">11 November 2026</time></span>
-          <!-- auto:start readtime --><span>18 min read</span><!-- auto:end readtime -->
+          <span>Version 5, <time datetime="2026-11-11">11 November 2026</time></span>
+          <!-- auto:start readtime --><span>21 min read</span><!-- auto:end readtime -->
         </p>
       </header>
 
-      <div class="note"><p><b>Status.</b> Draft, version 5. Before publication, each version is checked independently against the data file by two
-        models from other families for factual and statistical errors. Versions 1 to 4 were reviewed
-        this way and changed substantially; see <a href="#corrections">Corrections</a>. Every number on this page is
+      <div class="note"><p><b>Status.</b> Version 5. Before publication, each version was checked independently against the data file
+        by two models from other families for factual and statistical errors. Versions 1 to 4 were reviewed this way
+        and changed substantially; see <a href="#corrections">Corrections</a>. Every number on this page is
         generated from <a href="data.json">data.json</a>.</p></div>
 
       <div class="summary"><p><b>Abstract.</b> Skill packs for Claude Code promise better code review, but they are rarely measured on their users&#x27; own code. I ran 13 review bundles (bare Claude Code twice, the built-in review command, five public skill packs, my own dual-review skill with and without code-graph tools, and three exploratory hybrids) on 14 review tasks built from real commits in four of my repositories, three times each: 546 reviews. Two blind Claude Opus 5.5 judges adjudicated the findings that matched no planted defect, except 26 next to dropped plant candidates (Cohen&#x27;s κ 0.884 on the larger round); the planted and accepted defects were then listed per task, and each review was credited once for each listed defect it hit by location or identified in a claim. Dual review found 53.0 real defects per rep against 35.3 for bare Claude Code, a difference of +17.7 (95% interval +10.3 to +26.0), including +6.7 serious (S1–S2) defects per rep (+2.0 to +13.0). Its estimated token cost per review was about 3.3 times that of bare Claude Code and its elapsed time 4.7 times, and the two dual-review bundles had the lowest precision of those tested. Of the public packs and the built-in command, Superpowers scored above bare Claude Code, while Caveman, Ponytail, Built-in /code-review and ECC scored below it, all with 95% intervals that exclude zero; two identical bare arms also differed by −4.7 (−8.7 to −0.7), so differences of that size arise between reruns. These are comparisons of whole bundles, which differ in models, instructions and compute as well as in skill.</p></div>
@@ -95,7 +95,7 @@
       <p>This paper contributes: (1) a review benchmark built from real commits in the repositories I work in, with
         planted defects, clean controls and equivalent-mutant traps; (2) a three-rep comparison of 13 bundles, with
         bare Claude Code run as two independent arms; (3) blind two-judge adjudication of findings, followed by a
-        defect-level attribution step that credits a reviewer only for what it actually said; (4) two-family severity
+        defect-level attribution step that credits a reviewer only for what it said; (4) two-family severity
         grading of the real defects; and (5) the estimated cost and runtime of each bundle.</p>
 
       <h2 id="related">2 Related work <a class="anchor" href="#related" aria-label="Link to this section">#</a></h2>
@@ -151,12 +151,13 @@
       <p><b>Adjudication.</b> Findings that match no planted defect are clustered with nearby findings from other arms by
         file and line, stripped of wording that reveals the arm, and judged blind by two independent Claude Opus 5.5 judges
         in separate copies of the repository (<a href="protocol/adjudication.md">protocol</a>). Each judge gives one of six
-        verdicts (real and new, real and pre-existing, not a defect, false, not a claim, unverifiable; no judge used the
-        last), cites the deciding
-        line, and gives a failing input for a real verdict, running code where it can. A cluster is real only when both
-        judges call it real (real and new if either judge says new, otherwise pre-existing). When one judge calls it
-        real and the other does not, it is assigned CONTESTED and counted as not real; when both call it not real for
-        different reasons, the first judge's verdict is recorded. 26 findings that fell next
+        verdicts (<code>REAL_NEW</code>, <code>REAL_OLD</code> for pre-existing, <code>NOT_DEFECT</code>,
+        <code>FALSE</code>, <code>NOT_A_CLAIM</code>, <code>UNVERIFIABLE</code>; no judge used the last), cites the
+        deciding line, and gives a failing input for a <code>REAL_*</code> verdict, running code where it can. A cluster
+        counts as a real defect only when both judges give a <code>REAL_*</code> verdict (<code>REAL_NEW</code> if
+        either says new, otherwise <code>REAL_OLD</code>). When one judge gives a <code>REAL_*</code> verdict and the
+        other does not, the cluster is assigned <code>CONTESTED</code> and not counted as a defect; when neither does and
+        their reasons differ, the first judge's verdict is recorded. 26 findings that fell next
         to a dropped plant candidate were neither scored as hits nor adjudicated (Table A1).</p>
       <p><b>Defect attribution.</b> A cluster can hold several different claims, and two clusters can describe one
         defect. So, per task, a further blind Opus judge built a catalogue of defects: every planted defect
@@ -194,7 +195,7 @@
         original arms ran in round 1 under a different adjudication batch, so Table A1 also gives each difference from
         reps 1–2 alone. The paper reports 29 primary intervals for differences and 24 sensitivity
         intervals (Tables 5 and A1); at the 95% level about one in twenty
-        would exclude zero by chance even with no real difference, so single borderline results should be read as
+        would exclude zero by chance even with no true difference, so single borderline results should be read as
         exploratory.</p>
 
       <h2 id="results">4 Results <a class="anchor" href="#results" aria-label="Link to this section">#</a></h2>
@@ -270,8 +271,9 @@
         are included at that grade. The last three columns grade each defect only from clusters both judges
         flagged as reproduced (Section 3.4).</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th class="num">S1+S2 / rep</th><th class="num">95% interval</th><th class="num">Minus Bare A</th><th class="num">95% interval</th><th class="num">Clusters flagged reproduced / rep</th><th class="num">Minus Bare A</th><th class="num">95% interval</th></tr><tr><td>Dual review</td><td class="num">15.3</td><td class="num">7.0 to 26.3</td><td class="num">+6.7</td><td class="num">+2.0 to +13.0</td><td class="num">12.7</td><td class="num">+5.7</td><td class="num">+1.3 to +11.3</td></tr><tr><td>Dual review + code graph</td><td class="num">14.3</td><td class="num">7.0 to 23.7</td><td class="num">+5.7</td><td class="num">+2.0 to +10.7</td><td class="num">11.3</td><td class="num">+4.3</td><td class="num">+1.0 to +9.0</td></tr><tr><td>Hybrid: pair + verifier</td><td class="num">13.7</td><td class="num">3.3 to 29.3</td><td class="num">+5.0</td><td class="num">−2.7 to +16.7</td><td class="num">12.0</td><td class="num">+5.0</td><td class="num">−1.7 to +15.3</td></tr><tr><td>Superpowers</td><td class="num">13.3</td><td class="num">6.3 to 22.0</td><td class="num">+4.7</td><td class="num">+0.7 to +9.3</td><td class="num">11.3</td><td class="num">+4.3</td><td class="num">+0.7 to +8.7</td></tr><tr><td>Hybrid: parallel dual + verifier</td><td class="num">12.3</td><td class="num">3.7 to 24.3</td><td class="num">+3.7</td><td class="num">−2.0 to +11.7</td><td class="num">10.7</td><td class="num">+3.7</td><td class="num">−1.0 to +11.0</td></tr><tr><td>Bare (A)</td><td class="num">8.7</td><td class="num">4.0 to 14.0</td><td class="num"></td><td class="num"></td><td class="num">7.0</td><td class="num"></td><td class="num"></td></tr><tr><td>Trail of Bits</td><td class="num">8.0</td><td class="num">3.3 to 13.7</td><td class="num">−0.7</td><td class="num">−3.7 to +1.7</td><td class="num">6.7</td><td class="num">−0.3</td><td class="num">−2.7 to +1.3</td></tr><tr><td>Bare (B)</td><td class="num">7.7</td><td class="num">2.7 to 14.0</td><td class="num">−1.0</td><td class="num">−2.7 to +1.0</td><td class="num">6.7</td><td class="num">−0.3</td><td class="num">−1.7 to +1.0</td></tr><tr><td>Hybrid: single loop</td><td class="num">7.7</td><td class="num">3.3 to 12.7</td><td class="num">−1.0</td><td class="num">−2.0 to 0.0</td><td class="num">6.0</td><td class="num">−1.0</td><td class="num">−2.0 to 0.0</td></tr><tr><td>Caveman</td><td class="num">7.0</td><td class="num">3.0 to 12.3</td><td class="num">−1.7</td><td class="num">−4.3 to +0.3</td><td class="num">6.0</td><td class="num">−1.0</td><td class="num">−4.0 to +1.7</td></tr><tr><td>Ponytail</td><td class="num">7.0</td><td class="num">2.7 to 12.7</td><td class="num">−1.7</td><td class="num">−3.7 to +0.3</td><td class="num">6.3</td><td class="num">−0.7</td><td class="num">−2.3 to +0.7</td></tr><tr><td>Built-in /code-review</td><td class="num">4.7</td><td class="num">1.3 to 9.0</td><td class="num">−4.0</td><td class="num">−8.7 to −0.7</td><td class="num">4.0</td><td class="num">−3.0</td><td class="num">−8.0 to 0.0</td></tr><tr><td>ECC</td><td class="num">4.0</td><td class="num">0.3 to 9.3</td><td class="num">−4.7</td><td class="num">−9.3 to −1.0</td><td class="num">3.3</td><td class="num">−3.7</td><td class="num">−8.3 to −0.3</td></tr></table></div></figure>
       <figure><figcaption>Table 6. Agreement between judges and graders. In round 2 the individual judges gave
-        279 real, 227 not-a-defect, 18
-        false, 20 not-a-claim and 0 unverifiable verdicts.</figcaption><div class="table-scroll"><table><tr><th>Measure</th><th class="num">Round 1</th><th class="num">Round 2</th></tr><tr><td>Reviews</td><td class="num">140</td><td class="num">406</td></tr><tr><td>Adjudicated clusters</td><td class="num">130</td><td class="num">272</td></tr><tr><td>Same verdict from both judges</td><td class="num">125</td><td class="num">253</td></tr><tr><td>Cohen's κ between the two judges' verdicts</td><td class="num">0.935</td><td class="num">0.884</td></tr><tr><td>Cohen's κ, real vs not real</td><td class="num">0.953</td><td class="num">0.89</td></tr><tr><td>Clusters assigned CONTESTED (one judge real, one not; counted not real)</td><td class="num">3</td><td class="num">15</td></tr><tr><td>Real clusters / reproduced by both judges</td><td class="num">74 / 69</td><td class="num">132 / 98</td></tr><tr><td>Catalogue: planted defects / other defects both judges accepted</td><td class="num">18 / 47</td><td class="num">18 / 56</td></tr><tr><td>Other defects: accepted by one judge only (dropped) / pre-existing</td><td class="num">3 / 5</td><td class="num">6 / 9</td></tr><tr><td>Distinct claims mapped to a defect / to two or more / to none</td><td class="num">230 / 7 / 120</td><td class="num">698 / 24 / 584</td></tr><tr><td>Severity: real clusters / graded by both families</td><td class="num">74 / 48</td><td class="num">132 / 131</td></tr><tr><td>Severity: exact / one apart / two or more apart</td><td class="num">26 / 20 / 2</td><td class="num">80 / 45 / 6</td></tr><tr><td>Severity: linear-weighted κ</td><td class="num">0.331</td><td class="num">0.424</td></tr><tr><td>Second severity grader</td><td class="num">gpt-6-astra</td><td class="num">gpt-6.1-sol</td></tr></table></div></figure>
+        279 <code>REAL_*</code>, 227 <code>NOT_DEFECT</code>,
+        18 <code>FALSE</code>, 20 <code>NOT_A_CLAIM</code> and
+        0 <code>UNVERIFIABLE</code> verdicts.</figcaption><div class="table-scroll"><table><tr><th>Measure</th><th class="num">Round 1</th><th class="num">Round 2</th></tr><tr><td>Reviews</td><td class="num">140</td><td class="num">406</td></tr><tr><td>Adjudicated clusters</td><td class="num">130</td><td class="num">272</td></tr><tr><td>Same verdict from both judges</td><td class="num">125</td><td class="num">253</td></tr><tr><td>Cohen's κ between the two judges' verdicts</td><td class="num">0.935</td><td class="num">0.884</td></tr><tr><td>Cohen's κ, <code>REAL_*</code> verdict or not</td><td class="num">0.953</td><td class="num">0.89</td></tr><tr><td>Clusters assigned <code>CONTESTED</code> (one judge <code>REAL_*</code>, the other not; not counted as a defect)</td><td class="num">3</td><td class="num">15</td></tr><tr><td>Real clusters / reproduced by both judges</td><td class="num">74 / 69</td><td class="num">132 / 98</td></tr><tr><td>Catalogue: planted defects / other defects both judges accepted</td><td class="num">18 / 47</td><td class="num">18 / 56</td></tr><tr><td>Other defects: accepted by one judge only (dropped) / pre-existing</td><td class="num">3 / 5</td><td class="num">6 / 9</td></tr><tr><td>Distinct claims mapped to a defect / to two or more / to none</td><td class="num">230 / 7 / 120</td><td class="num">698 / 24 / 584</td></tr><tr><td>Severity: real clusters / graded by both families</td><td class="num">74 / 48</td><td class="num">132 / 131</td></tr><tr><td>Severity: exact / one apart / two or more apart</td><td class="num">26 / 20 / 2</td><td class="num">80 / 45 / 6</td></tr><tr><td>Severity: linear-weighted κ</td><td class="num">0.331</td><td class="num">0.424</td></tr><tr><td>Second severity grader</td><td class="num">gpt-6-astra</td><td class="num">gpt-6.1-sol</td></tr></table></div></figure>
 
       <h2 id="analysis">5 Analysis <a class="anchor" href="#analysis" aria-label="Link to this section">#</a></h2>
       <h3>5.1 The two bare arms</h3>
@@ -315,7 +317,7 @@
           output, and attribution used one judge per task. No finding was labelled by a person or by a judge from another
           family.</li>
         <li><b>Labels move between rounds.</b> Of 116 round-2 clusters at a spot judged in
-          round 1, 16 got a different real/not-real call. Wording and clustering differ, so this is not a pure
+          round 1, 16 got a different call on whether they were a defect. Wording and clustering differ, so this is not a pure
           test-retest measure, but it is measurement noise the intervals do not include.</li>
         <li><b>Severity is soft.</b> The two severity families agree only moderately (linear-weighted κ
           0.424 in round 2), and round 1 used a different Codex model, with 26
@@ -323,7 +325,7 @@
           206 clusters, that both judges had reproduced each one (Section 3.4).</li>
         <li><b>Coverage.</b> Planted hits are matched by location, not meaning (a mapped claim can also credit a plant),
           and 26 findings near dropped plant candidates were not adjudicated.</li>
-        <li><b>Bundles, not skills.</b> Arms differ in models, subagents, instructions, compute and credential mix;
+        <li><b>Bundles are compared whole.</b> Arms differ in models, subagents, instructions, compute and credential mix;
           these effects cannot be separated from the bundle comparisons.</li>
         <li><b>A small, personal task set.</b> 14 tasks from four repositories I wrote, in Python and Go.</li>
         <li><b>I built one arm and the hybrids.</b> I wrote dual review, and designed the hybrids after seeing
@@ -343,7 +345,7 @@
         identical bare arms, while Caveman, Ponytail, Built-in /code-review and ECC scored below it. Code-graph tools did not change yield detectably. The
         hybrids did not show a yield gain over dual review; the parallel dual's Confirmed list was more precise
         (0.89 against 0.61) at a lower scored yield, a trade-off these bundle comparisons
-        cannot attribute to the verifier alone. Next steps are a replay on real past pull requests, a cross-family or human
+        cannot attribute to the verifier alone. Next steps are a replay on past pull requests, a cross-family or human
         check of the adjudication, a matched-compute baseline, and held-out tasks for the hybrids.</p>
 
       <h2 id="appendix">Appendix <a class="anchor" href="#appendix" aria-label="Link to this section">#</a></h2>
@@ -402,11 +404,11 @@
       <h2 id="cite">How to cite <a class="anchor" href="#cite" aria-label="Link to this section">#</a></h2>
       <pre><code>@misc{minish2026reviewskills,
   author = {Eric Minish},
-  title  = {Review skills on real code: a three-rep benchmark of Claude Code review setups},
+  title  = {Review skills on my own code: a three-rep benchmark of Claude Code review setups},
   year   = {2026},
   month  = {nov},
   url    = {https://www.ericminish.com/writing/review-skills-benchmark/},
-  note   = {Draft, version 5}
+  note   = {Version 5}
 }</code></pre>
     </article>
 

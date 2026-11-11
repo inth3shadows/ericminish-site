@@ -13,7 +13,7 @@ import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SLUG = "review-skills-benchmark"
-TITLE = "Review skills on real code: a three-rep benchmark of Claude Code review setups"
+TITLE = "Review skills on my own code: a three-rep benchmark of Claude Code review setups"
 DATE = "2026-11-11"
 D = json.load(open(os.path.join(HERE, "data.json")))
 A, C = D["arms"], D["comparisons"]
@@ -173,8 +173,8 @@ def main():
         ["Adjudicated clusters", ag0["items"], ag12["items"]],
         ["Same verdict from both judges", ag0["same_verdict"], ag12["same_verdict"]],
         ["Cohen's κ between the two judges' verdicts", ag0["kappa_6way"], ag12["kappa_6way"]],
-        ["Cohen's κ, real vs not real", ag0["kappa_real_vs_not"], ag12["kappa_real_vs_not"]],
-        ["Clusters assigned CONTESTED (one judge real, one not; counted not real)", ag0["contested"], ag12["contested"]],
+        ["Cohen's κ, <code>REAL_*</code> verdict or not", ag0["kappa_real_vs_not"], ag12["kappa_real_vs_not"]],
+        ["Clusters assigned <code>CONTESTED</code> (one judge <code>REAL_*</code>, the other not; not counted as a defect)", ag0["contested"], ag12["contested"]],
         ["Real clusters / reproduced by both judges", f'{at0["real_items"]} / {at0["real_items_both_reproduced"]}',
          f'{at12["real_items"]} / {at12["real_items_both_reproduced"]}'],
         ["Catalogue: planted defects / other defects both judges accepted", f'{at0["plants"]} / {at0["defects_both_judges"]}',
@@ -223,14 +223,14 @@ def main():
         <h1>{html.escape(TITLE)}</h1>
         <p class="post-meta">
           <span>By <a href="/about/">Eric Minish</a></span>
-          <span>Draft <time datetime="{DATE}">11 November 2026</time></span>
+          <span>Version 5, <time datetime="{DATE}">11 November 2026</time></span>
           <!-- auto:start readtime --><span>18 min read</span><!-- auto:end readtime -->
         </p>
       </header>
 
-      <div class="note"><p><b>Status.</b> Draft, version 5. Before publication, each version is checked independently against the data file by two
-        models from other families for factual and statistical errors. Versions 1 to 4 were reviewed
-        this way and changed substantially; see <a href="#corrections">Corrections</a>. Every number on this page is
+      <div class="note"><p><b>Status.</b> Version 5. Before publication, each version was checked independently against the data file
+        by two models from other families for factual and statistical errors. Versions 1 to 4 were reviewed this way
+        and changed substantially; see <a href="#corrections">Corrections</a>. Every number on this page is
         generated from <a href="data.json">data.json</a>.</p></div>
 
       <div class="summary"><p><b>Abstract.</b> {html.escape(abstract)}</p></div>
@@ -258,7 +258,7 @@ def main():
       <p>This paper contributes: (1) a review benchmark built from real commits in the repositories I work in, with
         planted defects, clean controls and equivalent-mutant traps; (2) a three-rep comparison of {narms} bundles, with
         bare Claude Code run as two independent arms; (3) blind two-judge adjudication of findings, followed by a
-        defect-level attribution step that credits a reviewer only for what it actually said; (4) two-family severity
+        defect-level attribution step that credits a reviewer only for what it said; (4) two-family severity
         grading of the real defects; and (5) the estimated cost and runtime of each bundle.</p>
 
       <h2 id="related">2 Related work <a class="anchor" href="#related" aria-label="Link to this section">#</a></h2>
@@ -314,12 +314,13 @@ def main():
       <p><b>Adjudication.</b> Findings that match no planted defect are clustered with nearby findings from other arms by
         file and line, stripped of wording that reveals the arm, and judged blind by two independent Claude Opus 5.5 judges
         in separate copies of the repository (<a href="protocol/adjudication.md">protocol</a>). Each judge gives one of six
-        verdicts (real and new, real and pre-existing, not a defect, false, not a claim, unverifiable; no judge used the
-        last), cites the deciding
-        line, and gives a failing input for a real verdict, running code where it can. A cluster is real only when both
-        judges call it real (real and new if either judge says new, otherwise pre-existing). When one judge calls it
-        real and the other does not, it is assigned CONTESTED and counted as not real; when both call it not real for
-        different reasons, the first judge's verdict is recorded. {tot['excluded_findings']} findings that fell next
+        verdicts (<code>REAL_NEW</code>, <code>REAL_OLD</code> for pre-existing, <code>NOT_DEFECT</code>,
+        <code>FALSE</code>, <code>NOT_A_CLAIM</code>, <code>UNVERIFIABLE</code>; no judge used the last), cites the
+        deciding line, and gives a failing input for a <code>REAL_*</code> verdict, running code where it can. A cluster
+        counts as a real defect only when both judges give a <code>REAL_*</code> verdict (<code>REAL_NEW</code> if
+        either says new, otherwise <code>REAL_OLD</code>). When one judge gives a <code>REAL_*</code> verdict and the
+        other does not, the cluster is assigned <code>CONTESTED</code> and not counted as a defect; when neither does and
+        their reasons differ, the first judge's verdict is recorded. {tot['excluded_findings']} findings that fell next
         to a dropped plant candidate were neither scored as hits nor adjudicated (Table A1).</p>
       <p><b>Defect attribution.</b> A cluster can hold several different claims, and two clusters can describe one
         defect. So, per task, a further blind Opus judge built a catalogue of defects: every planted defect
@@ -357,7 +358,7 @@ def main():
         original arms ran in round 1 under a different adjudication batch, so Table A1 also gives each difference from
         reps 1–2 alone. The paper reports {n_primary} primary intervals for differences and {n_sens} sensitivity
         intervals (Tables 5 and A1); at the 95% level about one in twenty
-        would exclude zero by chance even with no real difference, so single borderline results should be read as
+        would exclude zero by chance even with no true difference, so single borderline results should be read as
         exploratory.</p>
 
       <h2 id="results">4 Results <a class="anchor" href="#results" aria-label="Link to this section">#</a></h2>
@@ -373,8 +374,9 @@ def main():
         are included at that grade. The last three columns grade each defect only from clusters both judges
         flagged as reproduced (Section 3.4).</figcaption>{t5}</figure>
       <figure><figcaption>Table 6. Agreement between judges and graders. In round 2 the individual judges gave
-        {jv.get('REAL_NEW', 0) + jv.get('REAL_OLD', 0)} real, {jv.get('NOT_DEFECT', 0)} not-a-defect, {jv.get('FALSE', 0)}
-        false, {jv.get('NOT_A_CLAIM', 0)} not-a-claim and {jv.get('UNVERIFIABLE', 0)} unverifiable verdicts.</figcaption>{t6}</figure>
+        {jv.get('REAL_NEW', 0) + jv.get('REAL_OLD', 0)} <code>REAL_*</code>, {jv.get('NOT_DEFECT', 0)} <code>NOT_DEFECT</code>,
+        {jv.get('FALSE', 0)} <code>FALSE</code>, {jv.get('NOT_A_CLAIM', 0)} <code>NOT_A_CLAIM</code> and
+        {jv.get('UNVERIFIABLE', 0)} <code>UNVERIFIABLE</code> verdicts.</figcaption>{t6}</figure>
 
       <h2 id="analysis">5 Analysis <a class="anchor" href="#analysis" aria-label="Link to this section">#</a></h2>
       <h3>5.1 The two bare arms</h3>
@@ -418,7 +420,7 @@ def main():
           output, and attribution used one judge per task. No finding was labelled by a person or by a judge from another
           family.</li>
         <li><b>Labels move between rounds.</b> Of {ag12['same_spot_as_round_before']} round-2 clusters at a spot judged in
-          round 1, {shifted} got a different real/not-real call. Wording and clustering differ, so this is not a pure
+          round 1, {shifted} got a different call on whether they were a defect. Wording and clustering differ, so this is not a pure
           test-retest measure, but it is measurement noise the intervals do not include.</li>
         <li><b>Severity is soft.</b> The two severity families agree only moderately (linear-weighted κ
           {s12['kappa_linear']} in round 2), and round 1 used a different Codex model, with {s0['real_items'] - s0['both']}
@@ -426,7 +428,7 @@ def main():
           {n_items} clusters, that both judges had reproduced each one (Section 3.4).</li>
         <li><b>Coverage.</b> Planted hits are matched by location, not meaning (a mapped claim can also credit a plant),
           and {tot['excluded_findings']} findings near dropped plant candidates were not adjudicated.</li>
-        <li><b>Bundles, not skills.</b> Arms differ in models, subagents, instructions, compute and credential mix;
+        <li><b>Bundles are compared whole.</b> Arms differ in models, subagents, instructions, compute and credential mix;
           these effects cannot be separated from the bundle comparisons.</li>
         <li><b>A small, personal task set.</b> {ntask} tasks from four repositories I wrote, in Python and Go.</li>
         <li><b>I built one arm and the hybrids.</b> I wrote dual review, and designed the hybrids after seeing
@@ -446,7 +448,7 @@ def main():
         identical bare arms, while {names_of(worse_public)} scored below it. Code-graph tools did not change yield detectably. The
         hybrids did not show a yield gain over dual review; the parallel dual's Confirmed list was more precise
         ({prec('dual_fast')} against {prec('dual_nocg')}) at a lower scored yield, a trade-off these bundle comparisons
-        cannot attribute to the verifier alone. Next steps are a replay on real past pull requests, a cross-family or human
+        cannot attribute to the verifier alone. Next steps are a replay on past pull requests, a cross-family or human
         check of the adjudication, a matched-compute baseline, and held-out tasks for the hybrids.</p>
 
       <h2 id="appendix">Appendix <a class="anchor" href="#appendix" aria-label="Link to this section">#</a></h2>
@@ -509,7 +511,7 @@ def main():
   year   = {{2026}},
   month  = {{nov}},
   url    = {{https://www.ericminish.com/writing/{SLUG}/}},
-  note   = {{Draft, version 5}}
+  note   = {{Version 5}}
 }}</code></pre>
 """
     tpl = open(os.path.join(HERE, "..", "measuring-coding-agents", "index.html"), encoding="utf-8").read()
