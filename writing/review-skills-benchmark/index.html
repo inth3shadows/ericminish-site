@@ -61,12 +61,12 @@
         <p class="post-meta">
           <span>By <a href="/about/">Eric Minish</a></span>
           <span><time datetime="2026-11-11">11 November 2026</time></span>
-          <!-- auto:start readtime --><span>19 min read</span><!-- auto:end readtime -->
+          <!-- auto:start readtime --><span>23 min read</span><!-- auto:end readtime -->
         </p>
       </header>
 
       <div class="note"><p><b>Review.</b> Checked independently against the data by two models from other families
-        over five review rounds; the headline difference moved from +22.0 to +17.7 as
+        over five review rounds (Section 5.6, on economics, was added after them); the headline difference moved from +22.0 to +17.7 as
         attribution was tightened (<a href="protocol/changelog.md">changelog</a>). Every number on this page is
         generated from <a href="data.json">data.json</a>.</p></div>
 
@@ -128,7 +128,7 @@
         the arm's skill (<a href="protocol/reviewer-prompt.md">protocol</a>). A guard checked every transcript for the
         skill or subagent call: every skill arm fired in every review.</p>
       <figure><figcaption>Table 1. The 13 arms, with the models that appeared in their transcripts (all
-        42 reviews of each arm).</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th>What it is</th><th>Models used</th></tr><tr><td>Dual review + code graph</td><td>the same bundle, with code-graph and symbol-index MCP tools available</td><td>Opus 5.5 + Sonnet 5.5</td></tr><tr><td>Dual review</td><td>my dual-review skill: Claude Code&#x27;s built-in /code-review and a briefed code-reviewer subagent, run in parallel and merged</td><td>Opus 5.5 + Sonnet 5.5</td></tr><tr><td>Superpowers</td><td>obra/superpowers, requesting-code-review</td><td>Opus 5.5</td></tr><tr><td>Hybrid: pair + verifier</td><td>a Superpowers-style reviewer and a terse reviewer, then a verifier that splits findings into Confirmed and Unconfirmed</td><td>Opus 5.5 + Sonnet 5.5</td></tr><tr><td>Hybrid: parallel dual + verifier</td><td>both halves of dual review launched in parallel, then the same verifier</td><td>Opus 5.5 + Sonnet 5.5</td></tr><tr><td>Bare (A)</td><td>Claude Code with no review skill</td><td>Opus 5.5</td></tr><tr><td>Trail of Bits</td><td>trailofbits/skills, differential-review</td><td>Opus 5.5</td></tr><tr><td>Caveman</td><td>caveman-review</td><td>Opus 5.5</td></tr><tr><td>Ponytail</td><td>ponytail-review</td><td>Opus 5.5</td></tr><tr><td>Bare (B)</td><td>the same setup, as a second independent arm</td><td>Opus 5.5</td></tr><tr><td>Hybrid: single loop</td><td>the pair&#x27;s instructions in one loop with no subagents, ending in Confirmed and Unconfirmed lists</td><td>Opus 5.5</td></tr><tr><td>Built-in /code-review</td><td>Claude Code&#x27;s own review command</td><td>Opus 5.5</td></tr><tr><td>ECC</td><td>everything-claude-code, code-reviewer agent</td><td>Opus 5.5 + Sonnet 5.5</td></tr></table></div></figure>
+        42 reviews of each arm).</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th>What it is</th><th>Source as run</th><th>Models used</th></tr><tr><td>Dual review + code graph</td><td>the same bundle, with code-graph and symbol-index MCP tools available</td><td><a href="https://gist.github.com/inth3shadows/0d27a0c578e7e3db61f629f51cb105bc/7b7991ef572d4b759759907f9b0726c951422dcc">gist, revision of 2026-11-11, plus code-graph tools</a></td><td>Opus 5.5 + Sonnet 5.5</td></tr><tr><td>Dual review</td><td>my dual-review skill: Claude Code&#x27;s built-in /code-review and a briefed code-reviewer subagent, run in parallel and merged</td><td><a href="https://gist.github.com/inth3shadows/0d27a0c578e7e3db61f629f51cb105bc/7b7991ef572d4b759759907f9b0726c951422dcc">gist, revision of 2026-11-11</a></td><td>Opus 5.5 + Sonnet 5.5</td></tr><tr><td>Superpowers</td><td>obra/superpowers, requesting-code-review</td><td><a href="https://github.com/obra/superpowers/tree/8ca22dba9a94f28898bbce59f2537ff4d87c747d/skills/requesting-code-review">obra/superpowers @ 8ca22db (2026-09-25)</a></td><td>Opus 5.5</td></tr><tr><td>Hybrid: pair + verifier</td><td>a Superpowers-style reviewer and a terse reviewer, then a verifier that splits findings into Confirmed and Unconfirmed</td><td><a href="protocol/treatment/hybrid-sp-pair-SKILL.md">protocol/treatment</a></td><td>Opus 5.5 + Sonnet 5.5</td></tr><tr><td>Hybrid: parallel dual + verifier</td><td>both halves of dual review launched in parallel, then the same verifier</td><td><a href="protocol/treatment/hybrid-dual-fast-SKILL.md">protocol/treatment</a></td><td>Opus 5.5 + Sonnet 5.5</td></tr><tr><td>Bare (A)</td><td>Claude Code with no review skill</td><td>none</td><td>Opus 5.5</td></tr><tr><td>Trail of Bits</td><td>trailofbits/skills, differential-review</td><td><a href="https://github.com/trailofbits/skills/tree/e1f86a390d4caf28bf1c377a7d86707b2898669c/plugins/differential-review">trailofbits/skills @ e1f86a3 (2026-10-14)</a></td><td>Opus 5.5</td></tr><tr><td>Caveman</td><td>caveman-review</td><td><a href="https://github.com/JuliusBrussee/caveman/tree/2e08b9177c07bb7249a8a2d1a6758e5db281d002/skills/caveman-review">JuliusBrussee/caveman @ 2e08b91 (2026-10-08)</a></td><td>Opus 5.5</td></tr><tr><td>Ponytail</td><td>ponytail-review</td><td><a href="https://github.com/DietrichGebert/ponytail/tree/552acd5efd0aeae2583a12efe39373d2f076f25e/skills/ponytail-review">DietrichGebert/ponytail @ 552acd5 (2026-10-05)</a></td><td>Opus 5.5</td></tr><tr><td>Bare (B)</td><td>the same setup, as a second independent arm</td><td>none</td><td>Opus 5.5</td></tr><tr><td>Hybrid: single loop</td><td>the pair&#x27;s instructions in one loop with no subagents, ending in Confirmed and Unconfirmed lists</td><td><a href="protocol/treatment/hybrid-sp-inline-SKILL.md">protocol/treatment</a></td><td>Opus 5.5</td></tr><tr><td>Built-in /code-review</td><td>Claude Code&#x27;s own review command</td><td>built into Claude Code 2.1.318</td><td>Opus 5.5</td></tr><tr><td>ECC</td><td>everything-claude-code, code-reviewer agent</td><td><a href="https://github.com/affaan-m/ECC/blob/ef648e01899ba3e8dc6371642deaaf64b4477775/agents/code-reviewer.md">affaan-m/ECC @ ef648e0 (2026-10-02)</a></td><td>Opus 5.5 + Sonnet 5.5</td></tr></table></div></figure>
       <h3>3.3 Runs</h3>
       <p>Round 1 ran rep 0 for the ten arms that existed then (140 reviews). The hybrids were
         designed after round 1, using round-1 transcripts, so they are exploratory. Round 2 ran reps 1 and 2 for all
@@ -192,7 +192,7 @@
         task and computed once. Treating the
         tasks as exchangeable is an assumption: they were chosen by hand and several share a repository. Rep 0 of the ten
         original arms ran in round 1 under a different adjudication batch, so Table A1 also gives each difference from
-        reps 1–2 alone. The paper reports 29 primary intervals for differences and 24 sensitivity
+        reps 1–2 alone. The paper reports 31 primary intervals for differences and 24 sensitivity
         intervals (Tables 5 and A1); at the 95% level about one in twenty
         would exclude zero by chance even with no true difference, so single borderline results should be read as
         exploratory.</p>
@@ -309,6 +309,90 @@
         0.89 against dual review's 0.61, and it moves real defects
         into the Unconfirmed list. Because the hybrids also change instructions and orchestration, these comparisons do not
         isolate the verifier.</p>
+      <h3>5.6 Is it worth it?</h3>
+      <p>A review bundle costs its reader in three ways: the estimated token cost, the time spent reading its findings
+        (true and false), and, for a reader who waits for it, its run time. It repays them in defects caught before they
+        ship. Since there is no reliable figure for what an escaped defect costs (the widely cited phase-escalation
+        multipliers rest on weak evidence; see <a href="https://leanpub.com/leprechauns">Bossavit</a>), I do not assume
+        one. Instead, for each step from one bundle to another I compute the break-even: how many minutes of the reader's
+        time a caught defect must be worth, after weighting by the chance it would otherwise have shipped, for the step
+        to pay. This applies the quality-economics framing of
+        <a href="https://arxiv.org/abs/1612.03785">Wagner (ISSTA 2006)</a> to measured per-review differences:
+        break-even = (Δ token cost ÷ hourly value + Δ findings × triage minutes per finding [+ Δ run time]) ÷ Δ defects
+        caught. The token cost term uses $100 an hour and barely matters: at $20 an hour it would add
+        1.1 minutes to dual review's break-even. Triage minutes per finding is the reader's to choose; an
+        industrial study of static-analysis alarms puts manual triage at 10 to 20 minutes each
+        (<a href="https://arxiv.org/abs/2601.18844">arXiv:2601.18844</a>), and a review finding with a failing input is
+        usually quicker to check.</p>
+      <figure><figcaption>Table 7. Break-even per step, per review. "More than <i>x</i>": the step pays when a caught
+        defect is worth more than <i>x</i> minutes of the reader's time. "Less than <i>x</i>": the cheaper bundle finds
+        fewer defects, and switching to it pays only when a caught defect is worth less than <i>x</i> minutes. "No bound":
+        the difference in defects has an interval that includes zero, so no threshold is supported. Run time is not
+        counted; estimated token cost at $100/h.</figcaption><div class="table-scroll"><table><tr><th>Step</th><th class="num">Δ real defects / review (95%)</th><th class="num">Δ serious / review</th><th class="num">Δ findings to read / review</th><th class="num">Δ est. $ / review</th><th class="num">Δ wait, s</th><th class="num">Pays if a caught defect is worth (min), triage 1 min</th><th class="num">3 min</th><th class="num">10 min</th><th class="num">Serious only, 3 min</th></tr><tr><td>Superpowers vs Bare (A)</td><td class="num">+0.62 (+0.17 to +1.12)</td><td class="num">+0.33</td><td class="num">+0.8</td><td class="num">+0.34</td><td class="num">+86</td><td class="num">more than 2</td><td class="num">more than 4</td><td class="num">more than 14</td><td class="num">more than 8</td></tr><tr><td>Dual review vs Bare (A)</td><td class="num">+1.26 (+0.74 to +1.86)</td><td class="num">+0.48</td><td class="num">+4.3</td><td class="num">+0.56</td><td class="num">+165</td><td class="num">more than 4</td><td class="num">more than 10</td><td class="num">more than 34</td><td class="num">more than 28</td></tr><tr><td>Dual review vs Superpowers</td><td class="num">+0.64 (+0.31 to +0.98)</td><td class="num">+0.14</td><td class="num">+3.5</td><td class="num">+0.22</td><td class="num">+79</td><td class="num">more than 6</td><td class="num">more than 16</td><td class="num">more than 54</td><td class="num">no bound</td></tr><tr><td>Caveman vs Bare (A)</td><td class="num">−0.26 (−0.52 to −0.02)</td><td class="num">−0.12</td><td class="num">−0.2</td><td class="num">0.00</td><td class="num">−4</td><td class="num">less than 1</td><td class="num">less than 3</td><td class="num">less than 9</td><td class="num">no bound</td></tr><tr><td>Ponytail vs Bare (A)</td><td class="num">−0.26 (−0.50 to −0.05)</td><td class="num">−0.12</td><td class="num">−0.0</td><td class="num">0.00</td><td class="num">−2</td><td class="num">never</td><td class="num">never</td><td class="num">less than 1</td><td class="num">no bound</td></tr><tr><td>Hybrid: single loop vs Bare (A)</td><td class="num">−0.43 (−0.81 to −0.14)</td><td class="num">−0.07</td><td class="num">−0.7</td><td class="num">+0.05</td><td class="num">+41</td><td class="num">less than 2</td><td class="num">less than 5</td><td class="num">less than 17</td><td class="num">no bound</td></tr><tr><td>Built-in /code-review vs Bare (A)</td><td class="num">−0.62 (−1.14 to −0.12)</td><td class="num">−0.29</td><td class="num">−0.6</td><td class="num">−0.04</td><td class="num">−14</td><td class="num">less than 1</td><td class="num">less than 3</td><td class="num">less than 10</td><td class="num">less than 7</td></tr><tr><td>ECC vs Bare (A)</td><td class="num">−0.93 (−1.45 to −0.45)</td><td class="num">−0.33</td><td class="num">−1.0</td><td class="num">−0.08</td><td class="num">−8</td><td class="num">less than 1</td><td class="num">less than 3</td><td class="num">less than 11</td><td class="num">less than 9</td></tr></table></div></figure>
+      <figure><figcaption>Figure 2. Break-even against triage minutes per finding. Above a line, the step pays. The band
+        is the break-even of dual review over bare at the ends of the 95% interval of its extra defects.</figcaption>
+<svg viewBox="0 0 680 300" role="img" aria-labelledby="t-econ" class="chart">
+<title id="t-econ">Break-even value of a caught defect against triage minutes per finding</title>
+<polygon points="60.0,249.3 520.0,159.8 520.0,22.9 60.0,248.2" style="fill: var(--accent); opacity: 0.15"/>
+<line class="c-tick" x1="60" x2="520" y1="250" y2="250"/>
+<line class="c-tick" x1="60" x2="60" y1="20" y2="250"/>
+<line class="c-clear" x1="60.0" y1="249.0" x2="520.0" y2="117.2"/>
+<text class="c-label" x="528.0" y="121.2">Dual review vs bare</text>
+<line class="c-unclear" x1="60.0" y1="248.7" x2="520.0" y2="196.5"/>
+<text class="c-label" x="528.0" y="200.5">Superpowers vs bare</text>
+<line class="c-unclear" x1="60.0" y1="249.2" x2="520.0" y2="40.9" stroke-dasharray="6 4"/>
+<text class="c-label" x="528.0" y="44.9">Dual review vs Superpowers</text>
+<line class="c-tick" x1="60.0" x2="60.0" y1="250" y2="255"/>
+<text class="c-axis" x="60.0" y="268" text-anchor="middle">0</text>
+<line class="c-tick" x1="152.0" x2="152.0" y1="250" y2="255"/>
+<text class="c-axis" x="152.0" y="268" text-anchor="middle">2</text>
+<line class="c-tick" x1="244.0" x2="244.0" y1="250" y2="255"/>
+<text class="c-axis" x="244.0" y="268" text-anchor="middle">4</text>
+<line class="c-tick" x1="336.0" x2="336.0" y1="250" y2="255"/>
+<text class="c-axis" x="336.0" y="268" text-anchor="middle">6</text>
+<line class="c-tick" x1="428.0" x2="428.0" y1="250" y2="255"/>
+<text class="c-axis" x="428.0" y="268" text-anchor="middle">8</text>
+<line class="c-tick" x1="520.0" x2="520.0" y1="250" y2="255"/>
+<text class="c-axis" x="520.0" y="268" text-anchor="middle">10</text>
+<line class="c-tick" x1="55" x2="60" y1="250.0" y2="250.0"/>
+<text class="c-axis" x="51" y="254.0" text-anchor="end">0</text>
+<line class="c-tick" x1="55" x2="60" y1="211.2" y2="211.2"/>
+<text class="c-axis" x="51" y="215.2" text-anchor="end">10</text>
+<line class="c-tick" x1="55" x2="60" y1="172.4" y2="172.4"/>
+<text class="c-axis" x="51" y="176.4" text-anchor="end">20</text>
+<line class="c-tick" x1="55" x2="60" y1="133.6" y2="133.6"/>
+<text class="c-axis" x="51" y="137.6" text-anchor="end">30</text>
+<line class="c-tick" x1="55" x2="60" y1="94.8" y2="94.8"/>
+<text class="c-axis" x="51" y="98.8" text-anchor="end">40</text>
+<line class="c-tick" x1="55" x2="60" y1="56.0" y2="56.0"/>
+<text class="c-axis" x="51" y="60.0" text-anchor="end">50</text>
+<text class="c-axis" x="290" y="288" text-anchor="middle">Minutes to triage one finding</text>
+<text class="c-axis" x="16" y="135" text-anchor="middle" transform="rotate(-90 16 135)">Break-even, minutes per caught defect</text>
+</svg>
+      </figure>
+      <p><b>When dual review is worth it.</b> Over bare Claude Code it pays whenever a caught defect is worth more than
+        about 10 minutes of the reader's time at 3 minutes of triage per finding (7 to
+        18 across the interval), or 4 minutes at 1 minute per finding. Counting only serious
+        (S1–S2) defects, the bar is about 28 minutes. If the reader waits for each review, add about
+        2 minutes. For code where a shipped defect costs an hour or more of someone's time, that bar is low.</p>
+      <p><b>When it is not.</b> The break-even grows with triage time: at 10 minutes per finding it is about
+        34 minutes per caught defect, so slow-to-verify findings on low-stakes code (prototypes, throwaway
+        scripts) do not repay it. Most of dual review's cost is its extra findings to read
+        (+4.3 per review, +2.6 of them
+        identifying no defect), not its tokens.</p>
+      <p><b>Dual review or Superpowers.</b> Superpowers pays over bare above about 4 minutes per caught defect
+        at 3 minutes of triage, because it adds only +0.8 findings per review. Going
+        on to dual review adds +0.64 defects per review
+        (95% interval +0.31 to +0.98) for
+        3.5 more findings to read, a break-even
+        of about 16 minutes. Its extra serious defects, +0.14 per review, have an interval that includes zero, so a reader who counts only serious defects and whose triage time is dear has no evidence here that the step from Superpowers to dual review pays.</p>
+      <p><b>Bundles below bare.</b> Caveman, Ponytail, Hybrid: single loop, Built-in /code-review and ECC find fewer defects than bare and save
+        a little reading. Switching to one pays only if a caught defect is worth less than about 5 minutes at
+        3 minutes of triage, so as replacements for bare Claude Code they are not worth it for any code where defects
+        matter.</p>
+      <p>These are point estimates of a linear model for one reader and one task set. A fuller treatment would put a
+        distribution on the value of a caught defect and report the probability that each step pays. That is left for
+        the replay on past pull requests.</p>
 
       <h2 id="limits">6 Limitations <a class="anchor" href="#limits" aria-label="Link to this section">#</a></h2>
       <ul>
@@ -344,7 +428,9 @@
         identical bare arms, while Caveman, Ponytail, Built-in /code-review and ECC scored below it. Code-graph tools did not change yield detectably. The
         hybrids did not show a yield gain over dual review; the parallel dual's Confirmed list was more precise
         (0.89 against 0.61) at a lower scored yield, a trade-off these bundle comparisons
-        cannot attribute to the verifier alone. Next steps are a replay on past pull requests, a cross-family or human
+        cannot attribute to the verifier alone. On the break-even analysis (Section 5.6), dual review pays over bare
+        when a caught defect is worth more than about 10 minutes of the reader's time at 3 minutes of triage
+        per finding, and most of its cost is the time spent reading its findings. Next steps are a replay on past pull requests, a cross-family or human
         check of the adjudication, a matched-compute baseline, and held-out tasks for the hybrids.</p>
 
       <h2 id="appendix">Appendix <a class="anchor" href="#appendix" aria-label="Link to this section">#</a></h2>

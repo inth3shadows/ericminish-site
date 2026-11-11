@@ -34,6 +34,28 @@ NAMES = {
     "ecc": ("ECC", "everything-claude-code, code-reviewer agent"),
 }
 HYB = ("sp_pair", "dual_fast", "sp_inline")
+GH = "https://github.com"
+GIST = "https://gist.github.com/inth3shadows/0d27a0c578e7e3db61f629f51cb105bc/7b7991ef572d4b759759907f9b0726c951422dcc"
+# Pinned commits; every file that ran matches the file at that commit by SHA-256 (protocol/seeds/).
+SOURCE = {
+    "superpowers": (f"{GH}/obra/superpowers/tree/8ca22dba9a94f28898bbce59f2537ff4d87c747d/skills/requesting-code-review", "obra/superpowers @ 8ca22db (2026-09-25)"),
+    "ponytail_review": (f"{GH}/DietrichGebert/ponytail/tree/552acd5efd0aeae2583a12efe39373d2f076f25e/skills/ponytail-review", "DietrichGebert/ponytail @ 552acd5 (2026-10-05)"),
+    "caveman": (f"{GH}/JuliusBrussee/caveman/tree/2e08b9177c07bb7249a8a2d1a6758e5db281d002/skills/caveman-review", "JuliusBrussee/caveman @ 2e08b91 (2026-10-08)"),
+    "ecc": (f"{GH}/affaan-m/ECC/blob/ef648e01899ba3e8dc6371642deaaf64b4477775/agents/code-reviewer.md", "affaan-m/ECC @ ef648e0 (2026-10-02)"),
+    "tob_diffreview": (f"{GH}/trailofbits/skills/tree/e1f86a390d4caf28bf1c377a7d86707b2898669c/plugins/differential-review", "trailofbits/skills @ e1f86a3 (2026-10-14)"),
+    "dual_nocg": (GIST, "gist, revision of 2026-11-11"),
+    "dual_cg": (GIST, "gist, revision of 2026-11-11, plus code-graph tools"),
+    "sp_pair": ("protocol/treatment/hybrid-sp-pair-SKILL.md", "protocol/treatment"),
+    "dual_fast": ("protocol/treatment/hybrid-dual-fast-SKILL.md", "protocol/treatment"),
+    "sp_inline": ("protocol/treatment/hybrid-sp-inline-SKILL.md", "protocol/treatment"),
+}
+
+
+def source(a):
+    if a in SOURCE:
+        url, label = SOURCE[a]
+        return f'<a href="{html.escape(url, quote=True)}">{html.escape(label)}</a>'
+    return "built into Claude Code 2.1.318" if a == "builtin" else "none"
 ORDER = sorted(A, key=lambda a: -A[a]["real_scored_per_rep"]["value"])
 LABEL = {"dual_nocg": "Dual review", "dual_cg": "Dual review + code graph", "none_b": "Bare (B)", "none": "Bare (A)",
          "superpowers": "Superpowers", "sp_pair": "Hybrid: pair", "dual_fast": "Hybrid: parallel dual",
@@ -78,6 +100,60 @@ def contrast_label(k):
     for key in sorted(LABEL, key=len, reverse=True):
         k = re.sub(rf"\b{key}\b", LABEL[key], k)
     return html.escape(k)
+
+
+E = D["economics"]["steps"]
+PER = D["economics"]["reviews_per_rep"]
+VT = 100.0  # $/h assumed for the AI-cost term only; it moves break-evens by well under a minute
+
+
+def breakeven(step, m, metric="real_per_rep", bound="value", wait=False, vt=VT):
+    """Minutes of reader time a caught defect must be worth for the step to pay (Δ > 0), or the most it may be worth
+    for a cheaper step that finds fewer to pay (Δ < 0). None: no finite threshold (Δ's bound at or past zero)."""
+    e = E[step]
+    d = (e[metric]["value"] if bound == "value" else e[metric]["ci95"][0 if bound == "lo" else 1]) / PER
+    cost = e["d_cost"] / vt * 60 + e["d_findings"] * m + (e["d_secs"] / 60 if wait else 0)
+    if d == 0 or (d < 0) != (e[metric]["value"] < 0):
+        return None
+    return cost / d
+
+
+def fm(x):
+    return "no bound" if x is None else ("never" if x < 0 else f"{x:.0f}")
+
+
+def econ_fig():
+    steps = [("dual_nocg - none", "c-clear", None, "Dual review vs bare"),
+             ("superpowers - none", "c-unclear", None, "Superpowers vs bare"),
+             ("dual_nocg - superpowers", "c-unclear", "6 4", "Dual review vs Superpowers")]
+    mmax = 10
+    ymax = max(breakeven(k, mmax) for k, *_ in steps) * 1.1
+    x0, x1, y0, y1 = 60, 520, 20, 250
+    X = lambda m: x0 + m / mmax * (x1 - x0)  # noqa: E731
+    Y = lambda v: y1 - min(v, ymax) / ymax * (y1 - y0)  # noqa: E731
+    lo, hi = (lambda m: breakeven("dual_nocg - none", m, bound="hi")), (lambda m: breakeven("dual_nocg - none", m, bound="lo"))
+    out = ['<svg viewBox="0 0 680 300" role="img" aria-labelledby="t-econ" class="chart">',
+           '<title id="t-econ">Break-even value of a caught defect against triage minutes per finding</title>',
+           f'<polygon points="{X(0):.1f},{Y(lo(0)):.1f} {X(mmax):.1f},{Y(lo(mmax)):.1f} {X(mmax):.1f},{Y(hi(mmax)):.1f} '
+           f'{X(0):.1f},{Y(hi(0)):.1f}" style="fill: var(--accent); opacity: 0.15"/>',
+           f'<line class="c-tick" x1="{x0}" x2="{x1}" y1="{y1}" y2="{y1}"/>',
+           f'<line class="c-tick" x1="{x0}" x2="{x0}" y1="{y0}" y2="{y1}"/>']
+    for k, cls, dash, lab in steps:
+        a, b = breakeven(k, 0), breakeven(k, mmax)
+        out += [f'<line class="{cls}" x1="{X(0):.1f}" y1="{Y(a):.1f}" x2="{X(mmax):.1f}" y2="{Y(b):.1f}"'
+                + (f' stroke-dasharray="{dash}"' if dash else "") + "/>",
+                f'<text class="c-label" x="{X(mmax) + 8:.1f}" y="{Y(b) + 4:.1f}">{html.escape(lab)}</text>']
+    for t in range(0, mmax + 1, 2):
+        out += [f'<line class="c-tick" x1="{X(t):.1f}" x2="{X(t):.1f}" y1="{y1}" y2="{y1 + 5}"/>',
+                f'<text class="c-axis" x="{X(t):.1f}" y="{y1 + 18}" text-anchor="middle">{t}</text>']
+    step = 10 if ymax <= 80 else 20
+    for v in range(0, int(ymax) + 1, step):
+        out += [f'<line class="c-tick" x1="{x0 - 5}" x2="{x0}" y1="{Y(v):.1f}" y2="{Y(v):.1f}"/>',
+                f'<text class="c-axis" x="{x0 - 9}" y="{Y(v) + 4:.1f}" text-anchor="end">{v}</text>']
+    out += [f'<text class="c-axis" x="{(x0 + x1) / 2:.0f}" y="{y1 + 38}" text-anchor="middle">Minutes to triage one finding</text>',
+            f'<text class="c-axis" x="16" y="{(y0 + y1) / 2:.0f}" text-anchor="middle" transform="rotate(-90 16 {(y0 + y1) / 2:.0f})">'
+            'Break-even, minutes per caught defect</text>', '</svg>']
+    return "\n".join(out)
 
 
 def forest():
@@ -128,7 +204,8 @@ def main():
     public = ("superpowers", "ponytail_review", "caveman", "tob_diffreview", "ecc", "builtin")
     better_public = [a for a in better if a in public]
     worse_public = [a for a in worse if a in public]
-    n_primary = 2 * (narms - 1) + len([k for k in C if not k.endswith(" - none")])
+    n_primary = 2 * (narms - 1) + len([k for k in C if not k.endswith(" - none")]) + \
+        2 * len([k for k in E if not k.endswith(" - none")])
     n_sens = sum(1 for a in A if a != "none" for k in ("minus_bare_reps12_only", "s1s2_reproduced_minus_bare") if k in A[a])
     n_plants = at0["plants"] + at12["plants"]
     n_multi = at0["claims_mapped_two_plus"] + at12["claims_mapped_two_plus"]
@@ -144,7 +221,8 @@ def main():
         xs = [NAMES[a][0] for a in xs]
         return ", ".join(xs[:-1]) + (" and " if len(xs) > 1 else "") + xs[-1] if xs else "none"
 
-    t1 = table(["Arm", "What it is", "Models used"], [[name(a), html.escape(NAMES[a][1]), models(a)] for a in ORDER], num_from=9)
+    t1 = table(["Arm", "What it is", "Source as run", "Models used"],
+               [[name(a), html.escape(NAMES[a][1]), source(a), models(a)] for a in ORDER], num_from=9)
     t2 = table(["Arm", "Real / rep", "95% interval", "Minus Bare A", "95% interval", "Planted", "Other real",
                 "of which pre-existing", "Precision", "Est. $ / review", "s / review"],
                [[name(a), f1(A[a]["real_scored_per_rep"]["value"]), ci(A[a]["real_scored_per_rep"]),
@@ -190,6 +268,43 @@ def main():
         ["Severity: linear-weighted κ", s0["kappa_linear"], s12["kappa_linear"]],
         ["Second severity grader", ", ".join(s0["codex_models"]), ", ".join(s12["codex_models"])],
     ])
+    econ_rows = ["superpowers - none", "dual_nocg - none", "dual_nocg - superpowers"] + \
+        [f"{a} - none" for a in ORDER if a not in ("none", "none_b") and clear(A[a]["minus_bare"]) and A[a]["minus_bare"]["value"] < 0]
+
+    def step_label(k):
+        a, b = k.split(" - ")
+        return f"{name(a)} vs {name(b)}"
+
+    def s2(x):
+        return ("+" if x > 0.005 else "−" if x < -0.005 else "") + f"{abs(x):.2f}"
+
+    def per_review_ci(c):
+        return f'{s2(c["value"] / PER)} ({s2(c["ci95"][0] / PER)} to {s2(c["ci95"][1] / PER)})'
+
+    def be_cell(k, m, metric="real_per_rep"):
+        if not clear(E[k][metric]):
+            return "no bound"
+        v = breakeven(k, m, metric)
+        if v is None or v < 0.5:
+            return "never" if E[k][metric]["value"] < 0 else "always"
+        return ("more than " if E[k][metric]["value"] > 0 else "less than ") + f"{v:.0f}"
+
+    t8 = table(["Step", "Δ real defects / review (95%)", "Δ serious / review", "Δ findings to read / review",
+                "Δ est. $ / review", "Δ wait, s", "Pays if a caught defect is worth (min), triage 1 min",
+                "3 min", "10 min", "Serious only, 3 min"],
+               [[step_label(k), per_review_ci(E[k]["real_per_rep"]), s2(E[k]["s1s2_per_rep"]["value"] / PER),
+                 sg(E[k]["d_findings"]), s2(E[k]["d_cost"]), f'{E[k]["d_secs"]:+.0f}'.replace("-", "−"),
+                 be_cell(k, 1), be_cell(k, 3), be_cell(k, 10), be_cell(k, 3, "s1s2_per_rep")] for k in econ_rows])
+    dn_be = {m: breakeven("dual_nocg - none", m) for m in (1, 3, 10)}
+    dn_band = (breakeven("dual_nocg - none", 3, bound="hi"), breakeven("dual_nocg - none", 3, bound="lo"))
+    dn_ser = breakeven("dual_nocg - none", 3, "s1s2_per_rep")
+    dn_wait = breakeven("dual_nocg - none", 3, wait=True) - dn_be[3]
+    ds = E["dual_nocg - superpowers"]
+    ds_be, ds_ser_clear = breakeven("dual_nocg - superpowers", 3), clear(ds["s1s2_per_rep"])
+    sp_be = breakeven("superpowers - none", 3)
+    below = econ_rows[3:]
+    below_max = max(breakeven(k, 3) or 0 for k in below) if below else None
+    vt_low = breakeven("dual_nocg - none", 3, vt=20) - dn_be[3]
     t7 = table(["Arm", "Rep 0", "Rep 1", "Rep 2", "SD across reps", "Minus Bare A, reps 1–2 only", "Equivalent-mutant flags",
                 "Findings not adjudicated", "Reviews on API key / subscription"],
                [[name(a)] + [A[a]["real_by_rep"].get(str(r), "") for r in (0, 1, 2)] +
@@ -229,7 +344,7 @@ def main():
       </header>
 
       <div class="note"><p><b>Review.</b> Checked independently against the data by two models from other families
-        over five review rounds; the headline difference moved from +22.0 to {sg(dn['minus_bare']['value'])} as
+        over five review rounds (Section 5.6, on economics, was added after them); the headline difference moved from +22.0 to {sg(dn['minus_bare']['value'])} as
         attribution was tightened (<a href="protocol/changelog.md">changelog</a>). Every number on this page is
         generated from <a href="data.json">data.json</a>.</p></div>
 
@@ -412,6 +527,53 @@ def main():
         {prec('dual_fast')} against dual review's {prec('dual_nocg')}, and it moves real defects
         into the Unconfirmed list. Because the hybrids also change instructions and orchestration, these comparisons do not
         isolate the verifier.</p>
+      <h3>5.6 Is it worth it?</h3>
+      <p>A review bundle costs its reader in three ways: the estimated token cost, the time spent reading its findings
+        (true and false), and, for a reader who waits for it, its run time. It repays them in defects caught before they
+        ship. Since there is no reliable figure for what an escaped defect costs (the widely cited phase-escalation
+        multipliers rest on weak evidence; see <a href="https://leanpub.com/leprechauns">Bossavit</a>), I do not assume
+        one. Instead, for each step from one bundle to another I compute the break-even: how many minutes of the reader's
+        time a caught defect must be worth, after weighting by the chance it would otherwise have shipped, for the step
+        to pay. This applies the quality-economics framing of
+        <a href="https://arxiv.org/abs/1612.03785">Wagner (ISSTA 2006)</a> to measured per-review differences:
+        break-even = (Δ token cost ÷ hourly value + Δ findings × triage minutes per finding [+ Δ run time]) ÷ Δ defects
+        caught. The token cost term uses ${VT:.0f} an hour and barely matters: at $20 an hour it would add
+        {vt_low:.1f} minutes to dual review's break-even. Triage minutes per finding is the reader's to choose; an
+        industrial study of static-analysis alarms puts manual triage at 10 to 20 minutes each
+        (<a href="https://arxiv.org/abs/2601.18844">arXiv:2601.18844</a>), and a review finding with a failing input is
+        usually quicker to check.</p>
+      <figure><figcaption>Table 7. Break-even per step, per review. "More than <i>x</i>": the step pays when a caught
+        defect is worth more than <i>x</i> minutes of the reader's time. "Less than <i>x</i>": the cheaper bundle finds
+        fewer defects, and switching to it pays only when a caught defect is worth less than <i>x</i> minutes. "No bound":
+        the difference in defects has an interval that includes zero, so no threshold is supported. Run time is not
+        counted; estimated token cost at ${VT:.0f}/h.</figcaption>{t8}</figure>
+      <figure><figcaption>Figure 2. Break-even against triage minutes per finding. Above a line, the step pays. The band
+        is the break-even of dual review over bare at the ends of the 95% interval of its extra defects.</figcaption>
+{econ_fig()}
+      </figure>
+      <p><b>When dual review is worth it.</b> Over bare Claude Code it pays whenever a caught defect is worth more than
+        about {dn_be[3]:.0f} minutes of the reader's time at 3 minutes of triage per finding ({dn_band[0]:.0f} to
+        {dn_band[1]:.0f} across the interval), or {dn_be[1]:.0f} minutes at 1 minute per finding. Counting only serious
+        (S1–S2) defects, the bar is about {dn_ser:.0f} minutes. If the reader waits for each review, add about
+        {dn_wait:.0f} minutes. For code where a shipped defect costs an hour or more of someone's time, that bar is low.</p>
+      <p><b>When it is not.</b> The break-even grows with triage time: at 10 minutes per finding it is about
+        {dn_be[10]:.0f} minutes per caught defect, so slow-to-verify findings on low-stakes code (prototypes, throwaway
+        scripts) do not repay it. Most of dual review's cost is its extra findings to read
+        ({sg(E['dual_nocg - none']['d_findings'])} per review, {sg(E['dual_nocg - none']['d_false_findings'])} of them
+        identifying no defect), not its tokens.</p>
+      <p><b>Dual review or Superpowers.</b> Superpowers pays over bare above about {sp_be:.0f} minutes per caught defect
+        at 3 minutes of triage, because it adds only {sg(E['superpowers - none']['d_findings'])} findings per review. Going
+        on to dual review adds {s2(ds['real_per_rep']['value'] / PER)} defects per review
+        (95% interval {s2(ds['real_per_rep']['ci95'][0] / PER)} to {s2(ds['real_per_rep']['ci95'][1] / PER)}) for
+        {ds['d_findings']:.1f} more findings to read, a break-even
+        of about {ds_be:.0f} minutes. {"Its extra serious defects, " + s2(ds['s1s2_per_rep']['value'] / PER) + " per review, have an interval that includes zero, so a reader who counts only serious defects and whose triage time is dear has no evidence here that the step from Superpowers to dual review pays." if not ds_ser_clear else ""}</p>
+      <p><b>Bundles below bare.</b> {names_of([k.split(" - ")[0] for k in below])} find fewer defects than bare and save
+        a little reading. Switching to one pays only if a caught defect is worth less than about {below_max:.0f} minutes at
+        3 minutes of triage, so as replacements for bare Claude Code they are not worth it for any code where defects
+        matter.</p>
+      <p>These are point estimates of a linear model for one reader and one task set. A fuller treatment would put a
+        distribution on the value of a caught defect and report the probability that each step pays. That is left for
+        the replay on past pull requests.</p>
 
       <h2 id="limits">6 Limitations <a class="anchor" href="#limits" aria-label="Link to this section">#</a></h2>
       <ul>
@@ -447,7 +609,9 @@ def main():
         identical bare arms, while {names_of(worse_public)} scored below it. Code-graph tools did not change yield detectably. The
         hybrids did not show a yield gain over dual review; the parallel dual's Confirmed list was more precise
         ({prec('dual_fast')} against {prec('dual_nocg')}) at a lower scored yield, a trade-off these bundle comparisons
-        cannot attribute to the verifier alone. Next steps are a replay on past pull requests, a cross-family or human
+        cannot attribute to the verifier alone. On the break-even analysis (Section 5.6), dual review pays over bare
+        when a caught defect is worth more than about {dn_be[3]:.0f} minutes of the reader's time at 3 minutes of triage
+        per finding, and most of its cost is the time spent reading its findings. Next steps are a replay on past pull requests, a cross-family or human
         check of the adjudication, a matched-compute baseline, and held-out tasks for the hybrids.</p>
 
       <h2 id="appendix">Appendix <a class="anchor" href="#appendix" aria-label="Link to this section">#</a></h2>
