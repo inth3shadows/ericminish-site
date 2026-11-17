@@ -14,8 +14,8 @@ repo (git)
 ```
 
 Every page is a complete HTML document that repeats the same header, nav, and
-footer markup inline. The site has 22 HTML pages. A nav change requires an
-edit across every page. Python helpers generate the writing index, Atom feed,
+footer markup inline. The site has 27 HTML pages. A nav change requires an
+edit across every page; `tools/check-pages.py` fails if one page's nav differs. Python helpers generate the writing index, Atom feed,
 sitemap entries, reading times, charts and contribution strip before deployment;
 visitors receive static HTML and CSS.
 
@@ -52,7 +52,10 @@ rather than writing new CSS.
 | `tools/gen-gitstrip.py` | Rewrites the home page's commit strip between its `auto:` markers from `gh api graphql`. Bars count public repos; private work shows only as one total. Refuses to write if a private repo name would appear. |
 | `tools/gen-now.py` | `--write` fills each Now-page card's `auto:start now-KEY` block: last change date, my pull requests merged in the last 30 days (codegraph counts upstream only), and a link to them for public repos. Run by the deploy; on an API error the committed facts ship. `--check`: staleness check for the Now page. Each card has `data-card` and `data-as-of`; `CARDS` in the script maps cards to GitHub repos. Warns on age (45 days, day job 90), more than 10 PRs merged since a card's date, 60 days without activity, or a repo with 8+ merged PRs in 30 days and no card. `--issue` keeps one issue, "Now page needs an update", in step; it never shows private repo names without a card or private PR titles. Warn-only; API errors skip. Tests: `python3 -m unittest tools/test_gen_now.py`. |
 | `tools/draft-now.py` | Monthly (timer in `tools/systemd/`): for each card `gen-now.py --check` flags as old or busy, gathers my merged PRs since the card's date and the README Status section, asks a model for a new "recent changes" paragraph that cites a source per sentence, then checks it without trusting the model (sources exist, every number is in a cited source, length, copy lint, no host/credential-like text, a second model call confirms each sentence). Passing drafts go into one PR from a fresh worktree; failures are listed as needing a hand edit. Never merges. Private repos' PR titles never appear in the PR body. `--dry-run` prints only. Tests: `python3 -m unittest tools/test_draft_now.py`. |
-| `tools/regen-deploy.sh` | Daily job (systemd user timer on the workstation, where `gh` is logged in): exports `origin/main`, runs the generator, copies the site into the live root, checks `/` is 200 and dated today. Host details come from a private environment file. `DRY_RUN=1` shows the diff only. |
+| `tools/check-pages.py` | Tag balance on every page, and the nav identical everywhere (ignoring `aria-current` and whitespace). Exit 1 on any finding. Run by CI. |
+| `tools/check-live.py` | Reads `/build.txt` from the public site (three tries, 30 s apart) and reports when it is missing, malformed, or older than 26 hours. The deploy writes `build.txt` only after its own post-copy check passes, so a deploy that failed that check is reported too. `--send CMD` mails one alert a day through CMD (the workstation's Brevo sender); a failed send records nothing so the next check retries. Skips while the deploy runs and for 30 minutes after boot. Timer: `tools/systemd/ericminish-live-check.*` (10:00 and 14:00). Tests: `python3 -m unittest tools/test_check_live.py`. |
+| `.github/workflows/check.yml` | CI on every pull request and push to main: `gen-writing.py --check`, `lint-copy.py`, `check-pages.py`, unit tests. No secrets; the GitHub-API checks stay in the deploy. |
+| `tools/regen-deploy.sh` | Daily job (systemd user timer on the workstation, where `gh` is logged in): exports `origin/main`, runs the generator, copies the site into the live root, checks `/` is 200 and dated today, and only then writes `build.txt` naming the deployed commit and time. Host details come from a private environment file. `DRY_RUN=1` shows the diff only. |
 | `assets/site.css` | The entire stylesheet, including the two `@font-face` declarations. |
 | `assets/fonts/newsreader.woff2` | Newsreader, variable. Used for prose — anything argued. |
 | `assets/fonts/azeret-mono.woff2` | Azeret Mono, variable. Used for data and labels — anything measured. |
@@ -107,33 +110,14 @@ python3 -m unittest tools/test_gen_now.py
 python3 -m unittest tools/test_draft_now.py
 ```
 
-Also check tag balance across every page:
+Also check tag balance and nav consistency across every page:
 
 ```bash
-# tag balance across every page
-python -c "$(cat <<'EOF'
-from html.parser import HTMLParser
-import glob
-VOID={'meta','link','br','img','hr','input','polygon','polyline','line','rect','circle','path','source'}
-class P(HTMLParser):
-    def __init__(s): super().__init__(); s.st=[]; s.err=[]
-    def handle_starttag(s,t,a):
-        if t not in VOID: s.st.append(t)
-    def handle_startendtag(s,t,a): pass  # <rect/> etc. open and close in one tag
-    def handle_endtag(s,t):
-        if s.st and s.st[-1]==t: s.st.pop()
-        else: s.err.append(t)
-for f in sorted(glob.glob('**/*.html',recursive=True)):
-    p=P(); p.feed(open(f).read())
-    print(f, "OK" if not (p.err or p.st) else "BAD")
-EOF
-)"
-
-# internal links that resolve to nothing
-grep -rhoE 'href="/[a-z-]*/?[a-z-]*/"' --include=*.html . | sort -u \
-  | tr -d '"' | sed 's/href=//' \
-  | while read u; do [ -f ".${u}index.html" ] || echo "MISSING $u"; done
+python3 tools/check-pages.py
 ```
+
+CI (`.github/workflows/check.yml`) runs all of these except `gen-now.py --check`,
+which needs the GitHub API, on every pull request.
 
 ## Known Limitations
 
@@ -146,8 +130,9 @@ grep -rhoE 'href="/[a-z-]*/?[a-z-]*/"' --include=*.html . | sort -u \
   before a deploy — nothing runs it automatically, and shipping a stylesheet
   change behind a stale query served three rounds of CSS work to nobody.
 - **Header, nav, and footer are duplicated in every file.** A nav change is a
-  mechanical edit across all pages, and nothing enforces that they stay in
-  sync.
+  mechanical edit across all pages. `tools/check-pages.py` (CI) fails when
+  one page's nav differs from the rest; footers vary by page on purpose and
+  are not checked.
 - **Dated pages rot silently.** `homelab/` and `status/` both state a
   last-updated month in their own copy. Nothing checks whether that date is
   still honest — it went three months stale before anyone noticed.
@@ -159,6 +144,9 @@ grep -rhoE 'href="/[a-z-]*/?[a-z-]*/"' --include=*.html . | sort -u \
   into the existing live root. If the workstation or job is unavailable,
   updates wait. The job checks the public home page's status and capture date;
   it does not verify every deployed file. Host settings remain private.
+  `tools/check-live.py` emails once a day when `/build.txt` is more than 26
+  hours old. It runs on the same workstation, so if the workstation is off
+  nothing alerts.
 
 ## Related Documentation
 
