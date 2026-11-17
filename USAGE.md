@@ -112,8 +112,9 @@ structure, not by inventing new styling.
 as a sales page is trusted as neither. The separation is intentional and is
 recorded in the README.
 
-**Where does the homelab status grid get its numbers?** It doesn't — it is a
-drawing, not live data, and the page says so.
+**Where does the homelab status grid get its numbers?** It doesn't — it is
+written by hand, not live data. The page says so and shows the date the states
+were last checked; change that date whenever you re-check them.
 
 ## Related Documentation
 

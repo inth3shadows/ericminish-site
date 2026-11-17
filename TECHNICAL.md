@@ -142,7 +142,9 @@ which needs the GitHub API, on every pull request.
   last-updated month in their own copy. Nothing checks whether that date is
   still honest — it went three months stale before anyone noticed.
 - **The homelab node table is hand-maintained**, not live data. It says so on
-  the page. Uptime Kuma holds the real state; nothing pipes it here yet.
+  the page and shows the date the states were last checked, which has to be
+  changed by hand with them. Uptime Kuma holds the real state; nothing pipes it
+  here yet (it has no status page and its metrics need a login; see #35).
 - **Contribution updates depend on the workstation.** A daily systemd user
   timer runs `tools/regen-deploy.sh` there. It fetches `origin/main`, regenerates
   the strip, checks writing freshness and internal links, and copies the site
