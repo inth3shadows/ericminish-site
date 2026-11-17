@@ -21,7 +21,9 @@ work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 
 git -C "$REPO" fetch -q origin
-git -C "$REPO" archive "$REF" | tar -x -C "$work"
+# Resolve once: a later fetch in the same checkout must not change what build.txt names.
+sha=$(git -C "$REPO" rev-parse "$REF^{commit}")
+git -C "$REPO" archive "$sha" | tar -x -C "$work"
 python3 -I "$work/tools/gen-gitstrip.py" --root "$work"
 # Fill each Now-page card's generated facts; on an API error the committed facts ship unchanged.
 python3 -I "$work/tools/gen-now.py" --write --root "$work" || true
@@ -33,9 +35,6 @@ python3 -I "$work/tools/gen-now.py" --check --issue --root "$work" || true
 
 # Ship only the site: no docs, tooling or dotfiles.
 rm -rf "$work/tools" "$work"/.[!.]* "$work"/*.md
-# What is live and when it went live; tools/check-live.py reads it from the public site.
-sha=$(git -C "$REPO" rev-parse "$REF")
-printf 'commit %s\ndeployed %s\n' "$sha" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$work/build.txt"
 find "$work" -type d -exec chmod 755 {} + && find "$work" -type f -exec chmod 644 {} +
 mapfile -t entries < <(cd "$work" && ls -A)
 
@@ -61,4 +60,8 @@ if [[ "$code" != 200 ]] || ! grep -q "API on" "$work/live.html" || ! tr -s ' \n'
   echo "rollback: copy '$SITE_ROOT.bak-auto-$stamp' back into '$SITE_ROOT' on the host" >&2
   exit 1
 fi
+# Only a deploy that passed the check above refreshes build.txt, so a failed check
+# leaves it to age and tools/check-live.py alerts on it.
+printf 'commit %s\ndeployed %s\n' "$sha" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  | ssh "$SITE_SSH" "cat > '$SITE_ROOT/build.txt' && chmod 644 '$SITE_ROOT/build.txt'"
 echo "deployed ${sha:0:7} + regenerated blocks; / is 200 and dated $today"

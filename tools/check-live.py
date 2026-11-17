@@ -17,6 +17,9 @@ fire. A check hours later sends once, after the cause has usually cleared.
                                 counts only if CMD's output starts with "SENT"
                                 (what `terminal-health alert --send-only` prints)
 
+The deploy writes build.txt only after its own post-copy check passes, so a deploy
+that copied files but failed that check also ages it and is reported here.
+
 Skips (exit 0) while the deploy is running and in the first 30 minutes after boot,
 when the deploy timer's Persistent catch-up may be about to succeed.
 """
@@ -62,14 +65,19 @@ def problems(text, error, now, max_age_h=MAX_AGE_H):
     return []
 
 
-def fetch():
-    try:
-        # Cloudflare answers 403 to urllib's default User-Agent.
-        req = urllib.request.Request(f"{URL}?cb={int(time.time())}", headers={"User-Agent": "check-live/1"})
-        with urllib.request.urlopen(req, timeout=20) as r:
-            return r.read(4096).decode("utf-8", "replace"), None
-    except Exception as e:  # noqa: BLE001 -- any failure to read it is the finding
-        return None, f"{type(e).__name__}: {e}"
+def fetch(tries=3, wait_s=30):
+    """(body, None) or (None, error). Retries so a passing network blip does not spend the day's alert."""
+    for i in range(tries):
+        try:
+            # Cloudflare answers 403 to urllib's default User-Agent.
+            req = urllib.request.Request(f"{URL}?cb={int(time.time())}", headers={"User-Agent": "check-live/1"})
+            with urllib.request.urlopen(req, timeout=20) as r:
+                return r.read(4096).decode("utf-8", "replace"), None
+        except Exception as e:  # noqa: BLE001 -- any failure to read it is the finding
+            error = f"{type(e).__name__}: {e}"
+        if i + 1 < tries:
+            time.sleep(wait_s)
+    return None, error
 
 
 def run(cmd):
@@ -126,7 +134,11 @@ def main(argv=None):
     if sent_today(today):
         print("check-live: alert already sent today")
         return 0
-    out = subprocess.run(shlex.split(a.send) + [subject], input=body, capture_output=True, text=True).stdout
+    try:
+        out = subprocess.run(shlex.split(a.send) + [subject], input=body, capture_output=True, text=True,
+                             timeout=90).stdout
+    except (OSError, subprocess.SubprocessError) as e:
+        out = f"send command failed: {type(e).__name__}: {e}"
     print(out.strip())
     if not out.startswith("SENT"):
         return 1  # nothing recorded: the next check tries again

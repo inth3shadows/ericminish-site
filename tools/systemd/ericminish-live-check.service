@@ -1,9 +1,9 @@
 # Emails once a day when ericminish.com is not serving a recent deploy (tools/check-live.py).
-# Install: cp tools/systemd/ericminish-live-check.* ~/.config/systemd/user/ && systemctl --user daemon-reload
-#          && systemctl --user enable --now ericminish-live-check.timer
+# Install only after a deploy has shipped /build.txt (before that the check reports its 404):
+#   cp tools/systemd/ericminish-live-check.* ~/.config/systemd/user/ && systemctl --user daemon-reload
+#   && systemctl --user enable --now ericminish-live-check.timer
 # Mail goes through the workstation's existing Brevo relay sender (terminal-health), with the relay
-# credentials injected per process by sb-run. If 1Password Connect is down the send fails, nothing is
-# recorded, and the next check tries again.
+# credentials injected into the send alone by sb-run.
 [Unit]
 Description=Email if ericminish.com is not serving a recent deploy
 After=network-online.target
@@ -12,8 +12,7 @@ After=network-online.target
 Type=oneshot
 EnvironmentFile=%h/.config/ericminish-site/deploy.env
 Environment=PATH=/home/ericm/.local/bin:/usr/local/bin:/usr/bin:/bin
-ExecStart=%h/personal_projects/secret-broker/main/.venv/bin/sb-run \
-    --cred brevo_smtp_user=BREVO_SMTP_USER \
-    --cred brevo_smtp_password=BREVO_SMTP_PASSWORD \
-    -- /bin/bash -c 'exec /usr/bin/python3 -I "$REPO/tools/check-live.py" --send "%h/.local/bin/terminal-health alert --send-only --subject"'
-TimeoutStartSec=120
+# sb-run wraps only the mail command: the check itself needs no credentials, so it still runs
+# (and logs) when 1Password Connect is down; only the send fails, and the next check retries it.
+ExecStart=/bin/bash -c 'exec /usr/bin/python3 -I "$REPO/tools/check-live.py" --send "%h/personal_projects/secret-broker/main/.venv/bin/sb-run --cred brevo_smtp_user=BREVO_SMTP_USER --cred brevo_smtp_password=BREVO_SMTP_PASSWORD -- %h/.local/bin/terminal-health alert --send-only --subject"'
+TimeoutStartSec=300
