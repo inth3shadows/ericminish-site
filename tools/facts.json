@@ -1,0 +1,275 @@
+[
+ {
+  "id": "codegraph-issues-filed",
+  "value": 131,
+  "note": "Issues I filed upstream on colbymchenry/codegraph; source of truth is the case study stat block.",
+  "occurrences": [
+   {
+    "file": "index.html",
+    "pattern": "Of ([\\d,]+) issues\\s+filed"
+   },
+   {
+    "file": "portfolio/index.html",
+    "pattern": "([\\d,]+) issues filed, \\d+ PRs merged"
+   },
+   {
+    "file": "portfolio/codegraph/index.html",
+    "pattern": "issues filed upstream</span><span class=\"fv\">([\\d,]+)<"
+   },
+   {
+    "file": "portfolio/codegraph/index.html",
+    "pattern": "Of the ([\\d,]+) issues, \\d+ are closed"
+   },
+   {
+    "file": "resume/index.html",
+    "pattern": "Filed <strong>([\\d,]+) issues</strong>"
+   },
+   {
+    "file": "tools/make-resume-pdf.py",
+    "pattern": "Filed ([\\d,]+) issues against codegraph"
+   }
+  ]
+ },
+ {
+  "id": "codegraph-issues-closed-completed",
+  "value": 81,
+  "note": "Issues the maintainer closed as completed.",
+  "occurrences": [
+   {
+    "file": "index.html",
+    "pattern": "the maintainer closed ([\\d,]+) as completed"
+   },
+   {
+    "file": "portfolio/index.html",
+    "pattern": "\\d+ issues filed, ([\\d,]+) closed as completed"
+   },
+   {
+    "file": "portfolio/codegraph/index.html",
+    "pattern": "closed as completed by the maintainer</span><span class=\"fv good\">([\\d,]+)<"
+   },
+   {
+    "file": "portfolio/codegraph/index.html",
+    "pattern": "The maintainer closed ([\\d,]+) as completed"
+   }
+  ]
+ },
+ {
+  "id": "codegraph-issues-closed",
+  "value": 89,
+  "note": "All closed issues (completed, duplicates, closed by me).",
+  "occurrences": [
+   {
+    "file": "portfolio/codegraph/index.html",
+    "pattern": "Of the \\d+ issues, ([\\d,]+) are closed"
+   },
+   {
+    "file": "resume/index.html",
+    "pattern": "([\\d,]+) have since been closed"
+   },
+   {
+    "file": "tools/make-resume-pdf.py",
+    "pattern": "\\(([\\d,]+) since closed"
+   }
+  ]
+ },
+ {
+  "id": "codegraph-prs-merged",
+  "value": 17,
+  "note": "My pull requests merged upstream (not the Now card's 30-day count).",
+  "occurrences": [
+   {
+    "file": "index.html",
+    "pattern": "and ([\\d,]+) of my pull requests were merged"
+   },
+   {
+    "file": "portfolio/index.html",
+    "pattern": "and ([\\d,]+) of my pull requests merged"
+   },
+   {
+    "file": "portfolio/codegraph/index.html",
+    "pattern": "my pull requests merged</span><span class=\"fv good\">([\\d,]+)<"
+   },
+   {
+    "file": "portfolio/codegraph/index.html",
+    "pattern": "Of my \\d+ pull requests, ([\\d,]+) were merged"
+   },
+   {
+    "file": "resume/index.html",
+    "pattern": "and ([\\d,]+) of my pull requests were merged"
+   },
+   {
+    "file": "tools/make-resume-pdf.py",
+    "pattern": "; ([\\d,]+) of my pull requests merged"
+   }
+  ]
+ },
+ {
+  "id": "terse-fewer-tokens-pct",
+  "value": 59,
+  "note": "terse best case, nine GitHub API payloads.",
+  "occurrences": [
+   {
+    "file": "index.html",
+    "pattern": "is ([\\d,]+)% fewer\\s+tokens"
+   },
+   {
+    "file": "portfolio/index.html",
+    "pattern": "uses ([\\d,]+)% fewer tokens"
+   },
+   {
+    "file": "portfolio/terse/index.html",
+    "pattern": "it uses ([\\d,]+)% fewer tokens"
+   },
+   {
+    "file": "resume/index.html",
+    "pattern": "([\\d,]+)% fewer tokens on GitHub API payloads"
+   },
+   {
+    "file": "tools/make-resume-pdf.py",
+    "pattern": "([\\d,]+)% fewer tokens on GitHub API payloads"
+   }
+  ]
+ },
+ {
+  "id": "terse-mcp-cost-pct",
+  "value": 23,
+  "note": "terse replay of my own sessions: share of MCP result cost removed or remaining; every page states 23.",
+  "occurrences": [
+   {
+    "file": "index.html",
+    "pattern": "put it at ([\\d,]+)% of what"
+   },
+   {
+    "file": "portfolio/index.html",
+    "pattern": ">([\\d,]+)% of MCP cost"
+   },
+   {
+    "file": "resume/index.html",
+    "pattern": "put it at ([\\d,]+)% of MCP result cost"
+   },
+   {
+    "file": "tools/make-resume-pdf.py",
+    "pattern": "put it at ([\\d,]+)% of MCP result cost"
+   }
+  ]
+ },
+ {
+  "id": "flight-recorder-sessions-scored",
+  "value": 11179,
+  "note": "Coding-agent sessions scored.",
+  "occurrences": [
+   {
+    "file": "index.html",
+    "pattern": "It has scored ([\\d,]+) sessions"
+   },
+   {
+    "file": "portfolio/index.html",
+    "pattern": "([\\d,]+) sessions scored"
+   },
+   {
+    "file": "portfolio/flight-recorder/index.html",
+    "pattern": "sessions scored</span><span class=\"fv\">([\\d,]+)<"
+   }
+  ]
+ },
+ {
+  "id": "secret-broker-receipts",
+  "value": 2568,
+  "note": "Hash-chained receipts written, 18 May to 3 November 2026.",
+  "occurrences": [
+   {
+    "file": "index.html",
+    "pattern": "([\\d,]+) receipts over six months"
+   },
+   {
+    "file": "portfolio/index.html",
+    "pattern": "([\\d,]+) receipts over six months"
+   },
+   {
+    "file": "portfolio/secret-broker/index.html",
+    "pattern": "receipts written</span><span class=\"fv\">([\\d,]+)<"
+   }
+  ]
+ },
+ {
+  "id": "runecho-caught",
+  "value": 4,
+  "note": "RunEcho caught this many of the confirmed invented names (see runecho-confirmed).",
+  "occurrences": [
+   {
+    "file": "index.html",
+    "pattern": "nine confirmed invented names it caught (\\w+)"
+   },
+   {
+    "file": "portfolio/index.html",
+    "pattern": "nine confirmed invented names it caught (\\w+)"
+   },
+   {
+    "file": "portfolio/runecho/index.html",
+    "pattern": "nine confirmed hallucinated names, it caught (\\w+)"
+   },
+   {
+    "file": "resume/index.html",
+    "pattern": "nine confirmed invented names it caught (\\w+)"
+   },
+   {
+    "file": "tools/make-resume-pdf.py",
+    "pattern": "it caught (\\d+) of 9 confirmed"
+   }
+  ]
+ },
+ {
+  "id": "runecho-confirmed-names",
+  "value": 9,
+  "note": "Size of the confirmed invented-name set RunEcho was tried on.",
+  "occurrences": [
+   {
+    "file": "index.html",
+    "pattern": "On (\\w+) confirmed invented names"
+   },
+   {
+    "file": "portfolio/index.html",
+    "pattern": "on (\\w+) confirmed invented names"
+   },
+   {
+    "file": "portfolio/runecho/index.html",
+    "pattern": "on a set of (\\w+) confirmed hallucinated names"
+   },
+   {
+    "file": "resume/index.html",
+    "pattern": "On (\\w+) confirmed invented names"
+   },
+   {
+    "file": "tools/make-resume-pdf.py",
+    "pattern": "it caught \\d+ of (\\d+) confirmed"
+   }
+  ]
+ },
+ {
+  "id": "frostline-well-records",
+  "value": 50083,
+  "note": "Michigan well records in the Frostline models.",
+  "occurrences": [
+   {
+    "file": "portfolio/index.html",
+    "pattern": "([\\d,]+) well records"
+   },
+   {
+    "file": "portfolio/frostline/index.html",
+    "pattern": "well records</span><span class=\"fv\">([\\d,]+)<"
+   },
+   {
+    "file": "resume/index.html",
+    "pattern": "built on ([\\d,]+) well records"
+   },
+   {
+    "file": "tools/make-resume-pdf.py",
+    "pattern": "models on ([\\d,]+) well records"
+   },
+   {
+    "file": "assets/og.svg",
+    "pattern": ">([\\d,]+)</text><text[^>]*>well records"
+   }
+  ]
+ }
+]

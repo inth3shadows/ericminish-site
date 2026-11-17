@@ -63,6 +63,14 @@ are generated from those tags.
 The daily deploy runs `gen-writing.py --check` and refuses to ship a stale feed or a
 broken link.
 
+### Changing a figure that appears on more than one page
+
+Numbers such as the codegraph issue count are repeated on the home page, the
+portfolio, the resume and the case study. They are listed in `tools/facts.json`
+with the pages that state them. When one changes, edit `facts.json` and every
+page it lists in the same commit; `python3 tools/check-facts.py` names any page
+you missed, and the deploy refuses to ship while one disagrees.
+
 ### Standard for evaluation posts
 
 - State the question and the answer in the first screen.
