@@ -29,6 +29,8 @@ python3 -I "$work/tools/gen-gitstrip.py" --root "$work"
 python3 -I "$work/tools/gen-now.py" --write --root "$work" || true
 # Refuse to ship a stale writing index/feed or a broken internal link; report copy-rule findings.
 python3 -I "$work/tools/gen-writing.py" --check
+# Refuse to ship a figure that disagrees between pages (tools/facts.json lists them).
+python3 -I "$work/tools/check-facts.py" --root "$work"
 python3 -I "$work/tools/lint-copy.py" --warn | tail -1
 # Date each sitemap entry from the last commit that changed its page (shipped tree only).
 python3 -I "$work/tools/gen-lastmod.py" --root "$work" --repo "$REPO" --ref "$sha"
