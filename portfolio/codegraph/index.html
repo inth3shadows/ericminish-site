@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>codegraph — case study | Eric Minish</title>
-  <meta name="description" content="Case study: checking codegraph, an open-source code-intelligence tool, against compiler type checkers and against fresh indexes. 111 issues filed upstream, 81 closed as completed by the maintainer, 17 pull requests merged.">
+  <meta name="description" content="Case study: checking codegraph, an open-source code-intelligence tool, against compiler type checkers and against fresh indexes. 131 issues filed upstream, 81 closed as completed by the maintainer, 17 pull requests merged; the test tooling is public as graph-assay.">
   <link rel="stylesheet" href="/assets/site.css?v=4434258a">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/codegraph/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="codegraph — Eric Minish">
-  <meta property="og:description" content="Checking a code-intelligence tool's call graph against compilers and fresh indexes: 111 issues filed upstream, 17 pull requests merged.">
+  <meta property="og:description" content="Checking a code-intelligence tool's call graph against compilers and fresh indexes: 131 issues filed upstream, 17 pull requests merged.">
   <meta property="og:url" content="https://www.ericminish.com/portfolio/codegraph/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="codegraph — Eric Minish">
-  <meta name="twitter:description" content="Checking a code-intelligence tool's call graph against compilers and fresh indexes: 111 issues filed upstream, 17 pull requests merged.">
+  <meta name="twitter:description" content="Checking a code-intelligence tool's call graph against compilers and fresh indexes: 131 issues filed upstream, 17 pull requests merged.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -51,18 +51,18 @@
         <div class="entry-stamp"><b>Entry 14</b><span>Verification · open source</span><span>2026</span></div>
         <h1>Checking codegraph&rsquo;s call graph against compilers and fresh indexes</h1>
         <p class="lede">
-          codegraph is an open-source tool (MIT licensed, about 76,000 GitHub stars) that indexes a codebase into a call graph, a map of which functions call which, and serves it to coding agents over MCP (Model Context Protocol, the standard way agents call tools). I use it every day and build other tools on it. I wrote test tooling that compares its graph with independent references, reduced each disagreement to a minimal repro (the smallest code that shows the bug), and filed it upstream, with a fix when I had one.
+          codegraph is an open-source tool (MIT licensed, about 78,000 GitHub stars) that indexes a codebase into a call graph, a map of which functions call which, and serves it to coding agents over MCP (Model Context Protocol, the standard way agents call tools). I use it every day and build other tools on it. I wrote test tooling, now public as graph-assay, that compares its graph with independent references, reduced each disagreement to a minimal repro (the smallest code that shows the bug), and filed it upstream, with a fix when I had one.
         </p>
       </div>
       <aside class="note">
-        <p><strong>What it is</strong>: a public fork with fixes for wrong call edges, private test tooling, and codeshot, a public diagram tool built on the graph.</p>
-        <p><strong>Status</strong>: issues filed from 26 June to 30 October 2026. Counts from GitHub search on 3 November 2026.</p>
+        <p><strong>What it is</strong>: a public fork with fixes for wrong call edges, graph-assay (the test tooling, public since 12 November), a TypeScript grammar fork checked against the compiler, and codeshot, a diagram tool built on the graph.</p>
+        <p><strong>Status</strong>: issues filed from 26 June to 16 November 2026. Counts from GitHub search on 17 November 2026.</p>
       </aside>
     </section>
 
     <section class="section">
       <div class="facts">
-        <div><span class="fk">issues filed upstream</span><span class="fv">111</span></div>
+        <div><span class="fk">issues filed upstream</span><span class="fv">131</span></div>
         <div><span class="fk">closed as completed by the maintainer</span><span class="fv good">81</span></div>
         <div><span class="fk">my pull requests merged</span><span class="fv good">17</span></div>
         <div><span class="fk">sync replay steps / drifts found</span><span class="fv">2,979 / 12</span></div>
@@ -130,18 +130,52 @@
         <table class="data-table">
           <tr><th>Source</th><th>Issues filed</th><th>Outcome</th></tr>
           <tr><td>Type-checker audits, 15 Oct</td><td>10 (#2580&ndash;#2589)</td><td>all 10 closed as completed</td></tr>
-          <tr><td>Compiler oracle, 29&ndash;30 Oct</td><td>8 (#3033&ndash;#3040)</td><td>1 fixed, 3 closed as duplicates of my earlier issues, 4 open</td></tr>
+          <tr><td>Compiler oracle, 29&ndash;30 Oct</td><td>8 (#3033&ndash;#3040)</td><td>1 fixed, 3 closed as duplicates of my earlier issues, 1 closed by me when it stopped reproducing, 3 open</td></tr>
+          <tr><td>Compiler oracle, 4 Nov</td><td>9 (#3229&ndash;#3233, #3237&ndash;#3240)</td><td>all 9 open</td></tr>
           <tr><td>Sync replay, 29 Oct</td><td>4 (#3006, #3007, #3015, #3016)</td><td>3 fixed with my commits, 1 open</td></tr>
           <tr><td>Fault injection</td><td>2 (#1356, #1357)</td><td>both closed as completed</td></tr>
         </table>
       </div>
-      <p class="fine">The table covers 24 of the 111 issues, all on the upstream tracker, colbymchenry/codegraph.</p>
+      <p class="fine">The table covers 33 of the 131 issues, all on the upstream tracker, colbymchenry/codegraph.</p>
       <div class="prose">
         <p>
-          Of the 111 issues, 86 are closed and 25 are open. The maintainer closed 81 as completed. I closed 3 as duplicates of my own earlier reports, which got through because my pre-filing check searched by keyword only, and 2 as not planned.
+          Of the 131 issues, 89 are closed and 42 are open. The maintainer closed 81 as completed. I closed 3 as duplicates of my own earlier reports, which got through because my pre-filing check searched by keyword only, and 2 as not planned. On 4 November I closed 3 more that no longer reproduced on upstream code, each with a note naming the change that most likely fixed it.
         </p>
         <p>
-          Of my 34 pull requests, 17 were merged. Nine more were closed after the maintainer carried my commits into his own pull requests with my authorship kept, which is how the three sync fixes landed (#3061, #3062, #3072).
+          Of my 37 pull requests, 17 were merged and 4 are open. By 3 November, nine more had been closed after the maintainer carried my commits into his own pull requests with my authorship kept, which is how the three sync fixes landed (#3061, #3062, #3072).
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>graph-assay: the checks as a public tool</h2></div></div>
+      <div class="prose">
+        <p>
+          On 12 November the test tooling became public as graph-assay, MIT licensed. It can measure any code-graph tool through one adapter per tool. The adapter indexes a directory with no network access and exports the graph in a shared format, and every scorer reads only that format, so adding a tool never changes how it is scored. Two tools are measured so far, codegraph and code-graph-rag. Adapters for two more replay the bug fixtures.
+        </p>
+        <p>
+          It adds two checks to the three above. Missing-edge mode runs the compiler oracle the other way and lists calls the type checker resolves that the tool never links. Metamorphic checks change a repository in ways that must leave its graph alone, such as adding files nothing imports or shifting every line down, and compare the graphs before and after.
+        </p>
+        <p>
+          The scoring rules are a versioned spec. The benchmark corpus is eight public repositories pinned to exact commits, registered on 5 November before any of the three held-out repositories was indexed or read. The other five are used while building the scorer, and the held-out three are indexed only for a published run. Each of the 24 oracle rules has a self-test that fails when the rule is switched off. The type checker is sometimes wrong too, so a sample of call sites is labelled blind by two models from different families, with a third breaking ties, to estimate how often the reference itself errs.
+        </p>
+        <p>
+          No benchmark numbers are published yet. Each tool&rsquo;s maintainers see their results first.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>A TypeScript grammar checked against the compiler</h2></div></div>
+      <div class="prose">
+        <p>
+          codegraph builds its graph from tree-sitter parses. When a TypeScript file fails to parse, its symbols and calls drop out of the index with no error shown. The upstream TypeScript grammar has had no commit since 30 January 2025 and no release since v0.23.2 in November 2024, and 63 of its issues and pull requests are open. I keep a public fork, built on an earlier community fork with its authors&rsquo; commits kept.
+        </p>
+        <p>
+          Its CI checks it against tsc, the TypeScript compiler. About 14,500 files from four pinned projects (Effect, Zod, Excalidraw and VS Code) parse in tsc with no errors, and any of them the grammar marks as an error fails the build. A second check, added on 17 November, compares the grammar&rsquo;s syntax tree with tsc&rsquo;s node by node. It catches trees that are wrong without containing an error, such as <code>a + b!</code> read as <code>(a + b)!</code>.
+        </p>
+        <p>
+          On those files, out of 6.2 million nodes in tsc&rsquo;s trees, upstream v0.23.2 builds 17,404 nodes that disagree with tsc and misses 12,978. The fork builds 351 and misses 89. Seven bugs reported on the upstream tracker are fixed in the fork, among them #369, #373, #377 and #378. An eighth, a parser hang caused by the tree-sitter runtime, is caught by a time limit. The fork has 55 merged pull requests from 6 to 17 November. It is published on crates.io as tree-sitter-typescript-next. My codegraph fork builds from it, and upstream codegraph has not adopted it.
         </p>
       </div>
     </section>
@@ -174,10 +208,9 @@
       <div class="section-head"><div><h2>What the checks do not cover</h2></div></div>
       <article class="note">
         <ul>
-          <li>The oracle checks only edges codegraph resolved, so calls it misses entirely are not reported.</li>
+          <li>Missing-edge mode finds calls a tool never links only where the type checker itself resolves the call.</li>
           <li>scip-typescript sees only the files a tsconfig includes, and f-string and template-literal calls often fail to line up. scip-java 0.12.3 does not load under Kotlin 2.x, so there is no Kotlin data.</li>
-          <li>Five new candidate shapes found on 3 November are drafted and not filed. One is a limit already stated in an earlier pull request of mine.</li>
-          <li>The tooling is private and has paths hard-coded to my machine. The fork is built from source and is not on npm.</li>
+          <li>The codegraph fork is built from source and is not on npm.</li>
         </ul>
       </article>
       <div class="tag-row" style="margin-top:20px">
@@ -189,6 +222,8 @@
       <div class="inline-links" style="margin-top:16px">
         <a class="button" href="https://github.com/colbymchenry/codegraph/issues?q=author%3Ainth3shadows">My upstream issues</a>
         <a class="button" href="https://github.com/inth3shadows/codegraph">The fork on GitHub</a>
+        <a class="button" href="https://github.com/inth3shadows/graph-assay">graph-assay on GitHub</a>
+        <a class="button" href="https://github.com/inth3shadows/tree-sitter-typescript">The grammar fork</a>
         <a class="button" href="https://github.com/inth3shadows/codeshot">codeshot on GitHub</a>
       </div>
     </section>
