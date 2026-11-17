@@ -12,6 +12,11 @@ describes. The check warns when:
             longer "in progress")
   uncovered one of my repositories merged UNCOVERED_MIN pull requests in the
             last 30 days and has no card
+  unlisted  a public, non-fork repository of mine merged PORTFOLIO_MIN pull
+            requests in the last 30 days and no page under portfolio/ names it
+            (a case study, a row on the index, or any mention by repo name).
+            A portfolio that quietly stops tracking what I am building is the
+            same staleness as a Now card that does, so it goes in the same issue.
 
 It only reads. With --issue it also keeps ONE open issue on this repo titled
 ISSUE_TITLE in step with the warnings: created when warnings appear, its body
@@ -41,6 +46,12 @@ DORMANT_DAYS = 60
 UNCOVERED_MIN = 8
 # Active repositories that should never get a card (tooling, the site itself,
 # and anything that would advertise what I am doing privately).
+# Public repos busy enough to belong in the portfolio. Same bar as a Now card: a month with 8+
+# merged PRs is sustained work, not a drive-by fix. A case study costs more than a card, so the
+# bar should not be lower; it is a separate constant so it can move on its own.
+PORTFOLIO_MIN = 8
+# Never nagged about for the portfolio: the site itself and tooling whose public repo is not a project.
+IGNORE_PORTFOLIO = {f"{USER}/{r}" for r in ("ericminish-site", "tooling")}
 IGNORE_UNCOVERED = {f"{USER}/{r}" for r in (
     "ericminish-site", "job-scout", "tooling", "codegraph-qa", "comp-intel", "competitive-intel",
     "linkedin-writer", "shared-terminal", "litellm", "homelab-media-stack")}
@@ -97,7 +108,7 @@ class GitHub:
 
     def repo(self, full):
         d = gh("api", f"repos/{full}")
-        return {"private": d["private"], "pushed": d["pushed_at"][:10]}
+        return {"private": d["private"], "pushed": d["pushed_at"][:10], "fork": bool(d.get("fork"))}
 
     def find_issue(self):
         d = gh("api", "-X", "GET", f"repos/{SITE_REPO}/issues", "-f", "state=open", "-f", f"creator={USER}",
@@ -119,8 +130,16 @@ def days(a, b):
     return (dt.date.fromisoformat(b) - dt.date.fromisoformat(a)).days
 
 
-def check(page_html, api, today):
-    """Return (warnings, details). Each warning is a dict with the public and private text kept apart."""
+def mentions(portfolio_text, full):
+    """True if the portfolio text names the repo (bare name or owner/name, which contains it)."""
+    name = re.escape(full.split("/", 1)[1])
+    return re.search(rf"(?<![\w.-]){name}(?![\w-])", portfolio_text, re.I) is not None
+
+
+def check(page_html, api, today, portfolio_text=None):
+    """Return (warnings, details). Each warning is a dict with the public and private text kept apart.
+
+    portfolio_text is the concatenated HTML under portfolio/; None skips the portfolio check."""
     cards = dict(CARD_RE.findall(page_html))
     warnings = []
     for key in cards:
@@ -167,6 +186,15 @@ def check(page_html, api, today):
             private = api.repo(full)["private"]
             warnings.append({"card": None, "kind": "uncovered", "private": private, "repo": full, "count": n,
                              "text": f"{full}: {n} pull requests merged in the last 30 days, and no card"})
+    if portfolio_text is not None:
+        for full, n in sorted(per_repo.items(), key=lambda kv: -kv[1]):
+            if n < PORTFOLIO_MIN or full in IGNORE_PORTFOLIO or mentions(portfolio_text, full):
+                continue
+            info = api.repo(full)
+            if info["private"] or info.get("fork"):
+                continue  # public-only: a private name never reaches the issue
+            warnings.append({"card": None, "kind": "unlisted", "private": False, "repo": full, "count": n,
+                             "text": f"{full}: {n} pull requests merged in the last 30 days, and not in the portfolio"})
     return warnings
 
 
@@ -283,6 +311,7 @@ def main(argv):
     today = argv[argv.index("--today") + 1] if "--today" in argv else dt.date.today().isoformat()
     strict = "--strict" in argv
     page = root / "status" / "index.html"
+    portfolio = "\n".join(f.read_text() for f in sorted((root / "portfolio").rglob("*.html")))
     if "--write" in argv:
         # Fail closed: any error leaves the page as committed (with its older facts) and does not block a deploy.
         try:
@@ -298,7 +327,7 @@ def main(argv):
         print(__doc__.strip().splitlines()[-1]); return 2
     api = GitHub()
     try:
-        warnings = check(page.read_text(), api, today)
+        warnings = check(page.read_text(), api, today, portfolio)
         print(render(warnings, today, public=False))
         if "--issue" in argv:
             print(f"now-check issue: {sync_issue(api, warnings, today)}")

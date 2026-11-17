@@ -6,6 +6,7 @@ g = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(g)
 
 U = g.USER
+FORKS = {f"{U}/forked-thing"}
 PRIVATE = {f"{U}/modelbench", f"{U}/secret-broker", f"{U}/harness", f"{U}/kb-mcp", f"{U}/soundings", f"{U}/hidden-thing"}
 
 
@@ -32,7 +33,7 @@ class Fake:
         return len(prs), prs, []
 
     def repo(self, full):
-        return {"private": full in PRIVATE, "pushed": self.pushed}
+        return {"private": full in PRIVATE, "pushed": self.pushed, "fork": full in FORKS}
 
     def find_issue(self):
         if self.fail_find:
@@ -80,6 +81,40 @@ class CheckTest(unittest.TestCase):
         texts = " ".join(x["text"] for x in w if x["kind"] == "config")
         self.assertIn("mystery", texts)
         self.assertIn("runecho", texts)
+
+
+class PortfolioTest(unittest.TestCase):
+    TEXT = '<a href="https://github.com/inth3shadows/terse">terse</a> and flight-recorder'
+
+    def unlisted(self, merged, text=None):
+        w = g.check(page(), Fake(merged), "2026-11-04", self.TEXT if text is None else text)
+        return [x["repo"] for x in w if x["kind"] == "unlisted"]
+
+    def test_busy_public_repo_missing_from_portfolio_warns(self):
+        self.assertEqual(self.unlisted({f"{U}/new-thing": prs(9)}), [f"{U}/new-thing"])
+
+    def test_covered_repo_does_not_warn(self):
+        self.assertEqual(self.unlisted({f"{U}/terse": prs(20), f"{U}/flight-recorder": prs(20)}), [])
+
+    def test_mention_must_be_the_whole_name(self):
+        self.assertEqual(self.unlisted({f"{U}/terse": prs(9)}, "tersely worded, my-terse-ish"), [f"{U}/terse"])
+
+    def test_private_fork_and_ignored_repos_are_skipped(self):
+        merged = {f"{U}/hidden-thing": prs(20), f"{U}/forked-thing": prs(20), f"{U}/ericminish-site": prs(20),
+                  f"{U}/tooling": prs(20)}
+        self.assertEqual(self.unlisted(merged), [])
+
+    def test_below_threshold_does_not_warn(self):
+        self.assertEqual(self.unlisted({f"{U}/new-thing": prs(g.PORTFOLIO_MIN - 1)}), [])
+
+    def test_none_skips_the_check(self):
+        w = g.check(page(), Fake({f"{U}/new-thing": prs(9)}), "2026-11-04")
+        self.assertEqual([x for x in w if x["kind"] == "unlisted"], [])
+
+    def test_public_issue_names_the_repo(self):
+        w = g.check(page(), Fake({f"{U}/new-thing": prs(9)}), "2026-11-04", self.TEXT)
+        self.assertIn("new-thing: 9 pull requests merged in the last 30 days, and not in the portfolio",
+                      g.render(w, "2026-11-04", public=True))
 
 
 class PrivacyTest(unittest.TestCase):
