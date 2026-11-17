@@ -58,7 +58,7 @@ are generated from those tags.
    and checks every internal link and `#anchor` on the site.
 3. `python tools/lint-copy.py` checks the copy rule (no intensifiers, no "X, not Y"
    reversals, no "Rather than" openers, no em-dash chains). Fix every finding.
-4. Run the tag-balance check from `TECHNICAL.md`.
+4. `python tools/check-pages.py` checks tag balance and that the nav matches on every page.
 
 The daily deploy runs `gen-writing.py --check` and refuses to ship a stale feed or a
 broken link.
@@ -86,7 +86,7 @@ broken link.
   missing or misspelled. Every link that ends in a slash needs a folder with
   that name containing an `index.html`.
 - **"The layout broke after an edit."** A tag was probably left unclosed. The
-  tag-balance check in the technical reference will name the file.
+  `python tools/check-pages.py` names the file and line.
 
 For anything else, or if the live site is down rather than wrong, the problem
 is on the server rather than in this repo.
