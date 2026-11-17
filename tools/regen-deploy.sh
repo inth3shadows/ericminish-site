@@ -30,6 +30,8 @@ python3 -I "$work/tools/gen-now.py" --write --root "$work" || true
 # Refuse to ship a stale writing index/feed or a broken internal link; report copy-rule findings.
 python3 -I "$work/tools/gen-writing.py" --check
 python3 -I "$work/tools/lint-copy.py" --warn | tail -1
+# Date each sitemap entry from the last commit that changed its page (shipped tree only).
+python3 -I "$work/tools/gen-lastmod.py" --root "$work" --repo "$REPO" --ref "$sha"
 # Warn (never block) when a Now-page card is stale; keeps one GitHub issue in step with the warnings.
 python3 -I "$work/tools/gen-now.py" --check --issue --root "$work" || true
 

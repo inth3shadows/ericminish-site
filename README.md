@@ -2,7 +2,7 @@
 
 **I build the infrastructure AI agents run on, and the data work that runs on top of it.**
 This is the source of [ericminish.com](https://ericminish.com): hand-written static HTML,
-no build step, no JavaScript, served from my own homelab.
+no build step, JavaScript only for the Frostline maps, served from my own homelab.
 
 Start with the work (the same five the home page leads with):
 
