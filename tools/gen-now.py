@@ -46,7 +46,8 @@ IGNORE_UNCOVERED = {f"{USER}/{r}" for r in (
     "linkedin-writer", "shared-terminal", "litellm", "homelab-media-stack")}
 CARDS = {
     "day-job": {"sources": [], "max_age_days": 90},
-    "codegraph": {"sources": [{"repo": "colbymchenry/codegraph", "author": USER}, {"repo": f"{USER}/codegraph", "count": False}]},
+    "codegraph": {"sources": [{"repo": "colbymchenry/codegraph", "author": USER}, {"repo": f"{USER}/codegraph", "count": False},
+                             {"repo": f"{USER}/graph-assay"}, {"repo": f"{USER}/tree-sitter-typescript"}]},
     "terse": {"sources": [{"repo": f"{USER}/terse"}]},
     "runecho": {"sources": [{"repo": f"{USER}/runecho"}]},
     "modelbench": {"sources": [{"repo": f"{USER}/modelbench"}]},
