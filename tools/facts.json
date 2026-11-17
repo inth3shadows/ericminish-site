@@ -106,7 +106,7 @@
  {
   "id": "terse-fewer-tokens-pct",
   "value": 59,
-  "note": "terse best case, nine GitHub API payloads.",
+  "note": "terse best case, nine GitHub API payloads (terse BENCHMARKS.md section 1: 59.1%, re-run on main 86aff84 on 2026-11-17). assets/og.png is rendered from assets/og.svg; regenerate it when this changes.",
   "occurrences": [
    {
     "file": "index.html",
@@ -127,6 +127,10 @@
    {
     "file": "tools/make-resume-pdf.py",
     "pattern": "([\\d,]+)% fewer tokens on GitHub API payloads"
+   },
+   {
+    "file": "assets/og.svg",
+    "pattern": "fill=\"#ffd38a\">([\\d,]+)%</text>"
    }
   ]
  },
