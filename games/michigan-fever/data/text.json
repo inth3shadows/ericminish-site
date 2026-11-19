@@ -1,0 +1,179 @@
+{
+  "intro": "September 1836. All the talk in the county is of Michigan: government land in the new West at a dollar and a quarter an acre, and families leaving by every road. You mean to go too, to have land entered and paid for and a roof raised over the family before the snow.",
+  "introNote": {
+    "text": "On 11 July 1836 the Treasury's Specie Circular told the land offices to take only gold and silver after 15 August. An actual settler buying no more than 320 acres could still pay in the kind of money the office already took, but only until 15 December 1836. The research found no extension past that date.",
+    "source": "Report of the Secretary of the Treasury, 1836 (text of the circular)",
+    "url": "https://fraser.stlouisfed.org/files/docs/publications/treasar/AR_TREASURY_1836.pdf",
+    "confidence": "solid"
+  },
+  "arrivals": {
+    "albany": "Albany. Boats leave the basin for Buffalo almost every hour, and the wharf is crowded with families sitting on their trunks.",
+    "buffalo": "Buffalo, at the west end of the canal. Steamboats leave for Detroit morning and evening, and the town is full of emigrants waiting for passage.",
+    "sandusky": "Sandusky. West of here the road runs into the Black Swamp.",
+    "perrysburg": "Perrysburg, on the Maumee, at the far side of the swamp. Ahead lies the strip of country that Ohio and Michigan have been quarrelling over.",
+    "detroit": "Detroit. Every tavern is crowded, and the talk is all of land, money and the road west.",
+    "marshall": "Marshall, 115 miles out of Detroit. The land office at Bronson is a few days on.",
+    "bronson": "Bronson. The square in front of the Kalamazoo House is white with the tents of the land lookers, and the two land offices are ringed round with them.",
+    "claim": "Your own land. Nothing stands on it yet but the trees."
+  },
+  "boarding": {
+    "packet": "You go aboard the packet. The cabin is one long room, with a curtain between the men's berths and the women's.",
+    "line-meals": "You crowd aboard the line boat with the other emigrant families, your goods stowed in the freight space.",
+    "line": "You crowd aboard the line boat with your own provisions, packed in among the other emigrant families and their goods.",
+    "cabin": "You take cabin passage on a steamboat bound for Detroit.",
+    "deck": "You take deck passage and find a place among the crates and the other deck passengers."
+  },
+  "overland": "You turn the wagon west on the road toward Ohio. It is a long way round, but there is no fare to pay.",
+  "setOut": "You leave Detroit on the Territorial Road, heading west toward Ann Arbor and Marshall.",
+  "looker": "The land looker knows the township plats and which sections are still open. He will ride the lines with you.",
+  "letterSent": "You write home to {kin} and pay the postage. Setting it all down on paper does the family good.",
+  "firstSnow": "Snow in the night. It lies on the ground in the morning, and the cold has come with it.",
+  "shelterMarks": {
+    "25": "The first logs are cut and dragged to the cabin site.",
+    "50": "The walls are up to the height of a man.",
+    "75": "The roof poles are on. There is no glass to be had, so greased paper will have to do for the windows."
+  },
+  "where": {
+    "vermont": "on the road to Albany",
+    "canal": "aboard a canal boat between Albany and Buffalo",
+    "lake": "aboard a steamboat on Lake Erie",
+    "overland": "on the Ohio road west of Buffalo",
+    "road": "on the Territorial Road west of Detroit",
+    "claim": "on the family's new claim",
+    "town-albany": "at Albany",
+    "town-buffalo": "at Buffalo",
+    "town-detroit": "at Detroit",
+    "office": "in the land office camp at Bronson",
+    "default": "on the way west",
+    "claimTrack": "on the track out to the claim"
+  },
+  "burial": {
+    "vermont": "The family buried {him} in a churchyard by the road and went on {griefDays} days later.",
+    "canal": "The boat put in at the next village, and the family buried {him} there and took passage again {griefDays} days later.",
+    "lake": "The family carried {him} ashore at Detroit, buried {him} there, and waited {griefDays} days before going on.",
+    "overland": "The family buried {him} beside the road, marked the place with a cut board, and went on {griefDays} days later.",
+    "road": "The family buried {him} beside the road, marked the place with a cut board, and went on {griefDays} days later.",
+    "claim": "The family buried {him} at the edge of the trees and did no work for {griefDays} days.",
+    "town-albany": "The family buried {him} in the town burying ground and stayed {griefDays} days more.",
+    "town-buffalo": "The family buried {him} in the town burying ground and stayed {griefDays} days more.",
+    "town-detroit": "The family buried {him} in the town burying ground and stayed {griefDays} days more.",
+    "office": "The family buried {him} in the burying ground at Bronson and kept to the tents {griefDays} days before taking up their business again.",
+    "default": "The family buried {him} and waited {griefDays} days before going on.",
+    "claimTrack": "The family buried {him} beside the road, marked the place with a cut board, and went on {griefDays} days later."
+  },
+  "letterLabel": "A letter home. This letter is fiction, written for the game: the family and its letters are invented.",
+  "letters": {
+    "adult": [
+      "{kin},\n\nI take up my pen with a heavy heart, to tell you that {relation} is gone from us. The end came on {date}, {where}. We did all that could be done, and there was no more to do.\n\nWe laid {him} to rest as decently as the place allowed. I cannot yet think what the new country will be to us without {him}, but we have come too far to turn back, and the winter will not wait on our grief.\n\nPray for us all. I will write again when we are settled.\n\nYour affectionate\n{sign}",
+      "{kin},\n\nYou will have had no word from us since we left, and I am sorry that my first letter must carry such news. I must tell you that {relation} died on {date}, {where}.\n\n{He} bore the journey better than any of us until the last. I tell the others what we were told as children, that the Lord keeps those we cannot.\n\nWe go on toward the land office. Give my love to all at home, and do not let them grieve too much on our account.\n\nYour loving\n{sign}",
+      "{kin},\n\nThese lines are written in haste and in sorrow. On {date}, {where}, we lost {relation}.\n\nThere were kind people about us, strangers mostly, who helped with what had to be done. I did not know how much we leaned on {him} until now.\n\nWe will push on as soon as we are able. If any of you think of following us, come in the spring and not the fall.\n\nYour sorrowing\n{sign}"
+    ],
+    "child": [
+      "{kin},\n\nI must tell you that the Lord has taken {relation} from us. {He} died on {date}, {where}.\n\n{He} was a patient child through all the journey and never once complained of the road. We have kept {his} little cap, and it is all we have to keep.\n\nWe go on because we must. Tell Mother that {he} spoke of her often.\n\nYour affectionate\n{sign}",
+      "{kin},\n\nIt grieves me to write it. We lost {relation} on {date}, {where}.\n\nThe others are well enough, or as well as can be looked for. We sat up with {him} while there was any hope, and when there was none we sat up still.\n\nI had meant to write you of the country and the price of land. That must wait for another letter.\n\nYour loving\n{sign}",
+      "{kin},\n\nOur small company is one fewer. I must tell you that {relation} died on {date}, {where}.\n\nWe marked the place as well as we could, so that if any of you come this way you may find it. I do not know that we ever will.\n\nThe children are quieter now. We go on toward the land office, and I pray the Lord makes our way easier than it has been.\n\nYour affectionate\n{sign}"
+    ],
+    "stranger": [
+      "To the family of {fullName},\n\nYou do not know me. I travelled some days in company with your kin, and I take it on myself to write because there is no one left among them able to do it. {fullName} died on {date}, {where}.\n\n{He} was buried decently, and I have kept the family's papers safe for whoever comes to claim them.\n\nI am sorry to be the bearer of this news.\n\nYour servant,\n{sign}"
+    ],
+    "strangerSign": "A fellow traveller"
+  },
+  "causeNotes": {
+    "ague": {
+      "text": "Fever and ague was malaria, spread in the low, wet country by mosquitoes. In Michigan \"nearly every family had at least one member who was afflicted,\" and quinine stayed scarce and costly in the interior. The first recorded malaria death in Washtenaw County was Walter Oakman, in September 1824, thirteen days after he bought land near Ypsilanti.",
+      "source": "Laura Bien, \"Ague in Ann Arbor,\" Ann Arbor Observer (2009); MSU thesis quoted via a summary",
+      "url": "https://annarborobserver.com/ague-in-ann-arbor/",
+      "confidence": "likely"
+    },
+    "dysentery": {
+      "text": "The research for this game found no source on dysentery among Michigan emigrants in 1836. This illness and its odds are invented for the game.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    },
+    "cholera": {
+      "text": "Cholera spread along the Erie Canal and the Great Lakes in the epidemic years 1832 and 1834. The research found no outbreak in 1836, so the game makes it very rare.",
+      "source": "Diary of Rachel Wilmer, 1834, Consider the Source NY (NYS Archives Partnership Trust)",
+      "url": "https://considerthesourceny.org/activity/diary-rachel-wilmer-1834",
+      "confidence": "solid"
+    },
+    "injury": {
+      "text": "The research for this game has no figures for accidents on the road west in 1836. Injuries and their odds are invented for the game.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    },
+    "hunger": {
+      "text": "The rush of settlers in 1836 and 1837 brought the interior near to starvation: \"Flour rose to $20.00 a barrel and was hard to get even at that enormous price.\"",
+      "source": "History of Calhoun County (1913)",
+      "url": "https://archive.org/details/historyofcalhoun01gard",
+      "confidence": "likely"
+    },
+    "cold": {
+      "text": "The research has no figures for deaths from cold among the 1836 emigrants. What it does record is how fast families built: a temporary cabin took 50 or 60 trees. The game's winter rule is invented.",
+      "source": "Michiganology, \"Yankees Come to Michigan\" (cabin detail); winter rule invented",
+      "url": "https://michiganology.org/stories/yankees-come-to-michigan",
+      "confidence": "invented"
+    }
+  },
+  "endings": {
+    "settled": {
+      "title": "Settled",
+      "text": "The cabin is roofed. The land is entered and paid for, and {family} will winter on their own claim.",
+      "epilogue": [
+        {
+          "text": "The good years did not last. After the crash of 1837 wheat dropped from $2.50 to $1.00 a bushel, and in the barter years that followed it sold for as little as 37 cents.",
+          "source": "History of Calhoun County (1913); Pritchard, Kalamazoo County Directory (1869), p. 70",
+          "url": "https://archive.org/details/historyofcalhoun01gard"
+        }
+      ]
+    },
+    "roofless": {
+      "title": "A winter without a roof",
+      "text": "The land is paid for, but the cabin is not finished. {family} will spend the winter in a half-built shelter and finish it in the spring, if they can.",
+      "epilogue": []
+    },
+    "winter": {
+      "title": "Caught by winter",
+      "text": "The year ends with {family} still without land. They will have to find work and lodging for the winter and try again in the spring, when the land office takes only gold and silver.",
+      "epilogue": []
+    },
+    "deadline": {
+      "title": "Past the deadline",
+      "text": "15 December has come and gone. The land office now takes only gold and silver, and {family} do not have enough of it to enter even forty acres.",
+      "epilogue": []
+    },
+    "stranded": {
+      "title": "Stranded",
+      "text": "{family} have no money to go on and no one well enough to earn it.",
+      "epilogue": []
+    },
+    "lost": {
+      "title": "No one left",
+      "text": "None of {family} lived to see the claim.",
+      "epilogue": []
+    }
+  },
+  "epilogue": [
+    {
+      "text": "Michigan became a state on 26 January 1837, after the \"Frostbitten Convention\" accepted the Toledo compromise on 14 December 1836.",
+      "source": "Wikipedia, Toledo War",
+      "url": "https://en.wikipedia.org/wiki/Toledo_War"
+    },
+    {
+      "text": "In 1837 the boom broke. The Bank of Monroe was reported suspending specie payments on 29 March, and after a June act all of Michigan's chartered banks suspended. By November 1837 Michigan notes sold in Buffalo at a 12.5 percent discount, later about 25 percent.",
+      "source": "Dove, Pecquet and Thies, Essays in Economic & Business History 32 (2014)",
+      "url": "https://ebhsoc.org/journal/index.php/ebhs/article/download/240/223"
+    },
+    {
+      "text": "This was Potawatomi country: about 6,000 to 7,000 Potawatomi lived in Michigan in 1833, the year of the Treaty of Chicago, and federal policy was removal. Leopold Pokagon refused to go, and when the Army rounded up about 500 Potawatomi in 1840 the Pokagon band was exempted.",
+      "source": "Clarke Historical Library, The Potawatomi Experience of Federal Removal Policy",
+      "url": "https://cmich.edu/research/clarke-historical-library/explore-collection/explore-online/native-american-material/native-american-treaty-rights/historical-issues/the-potawatomi-experience-of-federal-removal-policy"
+    },
+    {
+      "text": "The Specie Circular stayed in force until it was repealed on 21 May 1838.",
+      "source": "Wikipedia, Specie Circular",
+      "url": "https://en.wikipedia.org/wiki/Specie_Circular"
+    }
+  ]
+}

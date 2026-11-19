@@ -1,0 +1,2469 @@
+[
+  {
+    "id": "vt-neighbours",
+    "deck": "travel",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "leg": "vermont"
+    },
+    "text": "Neighbours come out to the road to see you off. One of them has a cousin already settled in Michigan and presses a letter on you to carry.",
+    "choices": [
+      {
+        "id": "dinner",
+        "label": "Stop for the farewell dinner and take the letter",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          },
+          {
+            "morale": "#ev.morale.mid"
+          }
+        ],
+        "result": "It costs a day, but the family goes on in better heart."
+      },
+      {
+        "id": "on",
+        "label": "Take the letter, thank them, and drive on",
+        "effects": [],
+        "result": "You wave from the wagon until the farm is out of sight."
+      }
+    ],
+    "note": {
+      "text": "Michigan fever drew whole neighbourhoods. In 1836 a group of Vermonters formed the Union Colony; each member advanced $212.50 for a 160-acre farm lot and a 10-acre village lot, and the colony's agents set out on 2 April 1836.",
+      "source": "Barber, \"The Vermontville Colony,\" Michigan Pioneer and Historical Collections vol. 28 (1897)",
+      "url": "https://archive.org/details/michiganpioneerh0028unse",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "vt-hill-mud",
+    "deck": "travel",
+    "weight": "#w.common",
+    "cooldown": "#cd.long",
+    "when": {
+      "leg": "vermont"
+    },
+    "text": "Rain has turned the hill road to mud. The team strains at every rise and the wheels slide sideways on the grades.",
+    "choices": [
+      {
+        "id": "push",
+        "label": "Push on through it",
+        "effects": [
+          {
+            "wagon": "#ev.wagon.small"
+          }
+        ],
+        "result": "You make your miles, and the wagon takes a beating for it."
+      },
+      {
+        "id": "wait",
+        "label": "Wait in camp for the road to drain",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          }
+        ],
+        "result": "By the next morning the road is passable."
+      }
+    ],
+    "note": {
+      "text": "A woman travelling a Michigan road in the 1830s said she was \"jolted to a jelly\" (the exact wording is uncertain). The research has no source for the Vermont roads themselves, so this event borrows the general record.",
+      "source": "Michiganology, \"Yankees Come to Michigan\"",
+      "url": "https://michiganology.org/stories/yankees-come-to-michigan",
+      "confidence": "uncertain"
+    }
+  },
+  {
+    "id": "vt-note-shaver",
+    "deck": "travel",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "leg": "vermont"
+    },
+    "text": "At a tavern a man in a good coat offers to take your Vermont notes for silver, at ten cents off the dollar.",
+    "choices": [
+      {
+        "id": "sell",
+        "label": "Sell him the Vermont notes",
+        "requires": {
+          "notes": [
+            "ne",
+            ">",
+            0
+          ]
+        },
+        "why": "You have no Vermont notes.",
+        "effects": [
+          {
+            "exchange": {
+              "from": "ne",
+              "rate": "#ev.shaver.rate",
+              "cap": "#broker.cap"
+            }
+          }
+        ],
+        "result": "He counts out the silver without a word."
+      },
+      {
+        "id": "keep",
+        "label": "Keep the paper",
+        "effects": [],
+        "result": "He shrugs and goes back to his supper."
+      }
+    ],
+    "note": {
+      "text": "The one hard figure the research has for distance discounts: in 1836 Detroit bank notes traded at 7.5 percent below face in the New York market, up from under 2 percent. The game's rates for Vermont notes are invented from that principle.",
+      "source": "Dove, Pecquet and Thies, Essays in Economic & Business History 32 (2014)",
+      "url": "https://ebhsoc.org/journal/index.php/ebhs/article/download/240/223",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "vt-wheel",
+    "deck": "travel",
+    "weight": "#w.common",
+    "cooldown": "#cd.long",
+    "when": {
+      "all": [
+        {
+          "leg": [
+            "vermont",
+            "overland",
+            "road"
+          ]
+        },
+        {
+          "team": true
+        }
+      ]
+    },
+    "text": "A wheel works loose on a stony grade and the wagon lurches to a stop.",
+    "choices": [
+      {
+        "id": "self",
+        "label": "Reset the wheel yourself at the roadside",
+        "requires": {
+          "skill": "repair"
+        },
+        "why": "It needs a smith's tools.",
+        "effects": [],
+        "result": "Half an hour with your own tools and the wheel runs true."
+      },
+      {
+        "id": "wedge",
+        "label": "Wedge it and go on slowly",
+        "effects": [
+          {
+            "wagon": "#ev.wagon.mid"
+          }
+        ],
+        "result": "The wheel holds, more or less."
+      },
+      {
+        "id": "pay",
+        "label": "Pay a wheelwright in the next village",
+        "requires": {
+          "afford": "#ev.wheelwright.cost"
+        },
+        "why": "You cannot pay him.",
+        "effects": [
+          {
+            "pay": "#ev.wheelwright.cost"
+          },
+          {
+            "days": "#ev.delay.day"
+          }
+        ],
+        "result": "The wheelwright does a proper job of it."
+      }
+    ],
+    "note": {
+      "text": "The research has no source on wagon breakdowns on these roads. This event is invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "vt-emigrant-wagon",
+    "deck": "travel",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "leg": [
+        "vermont",
+        "overland"
+      ]
+    },
+    "text": "You fall in with another family's wagon bound for Ohio. Everything they own is in it, and the father walks beside the horse, talking to it the whole way.",
+    "choices": [
+      {
+        "id": "together",
+        "label": "Travel in company for the day",
+        "effects": [
+          {
+            "morale": "#ev.morale.small"
+          }
+        ],
+        "result": "The children run between the two wagons all afternoon."
+      },
+      {
+        "id": "ahead",
+        "label": "Go on ahead",
+        "effects": [],
+        "result": "By evening their wagon is a speck behind you."
+      }
+    ],
+    "note": {
+      "text": "Hoffman, writing at Wheeling in 1833 about the Ohio road: \"A covered one-horse wagon generally contains the whole worldly substance of a family,\" and \"The head of the family walks by the horse, cheering and encouraging him on his way.\"",
+      "source": "Charles Fenno Hoffman, A Winter in the West (1835), vol. I",
+      "url": "https://archive.org/stream/winterinwest01hoff/winterinwest01hoff_djvu.txt",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "vt-stage",
+    "deck": "travel",
+    "weight": "#w.uncommon",
+    "once": true,
+    "when": {
+      "leg": "vermont"
+    },
+    "text": "The Troy stage passes you at a trot, crowded inside and out, and leaves you in its dust.",
+    "note": {
+      "text": "When the Union Colony's agents left Vermont on 2 April 1836 they \"met by appointment at Troy\" and went on by stage. The research found no sourced distance or cost for the Vermont-to-Albany road; the game's mileage is an estimate.",
+      "source": "Barber, \"The Vermontville Colony,\" Michigan Pioneer and Historical Collections vol. 28 (1897)",
+      "url": "https://archive.org/details/michiganpioneerh0028unse",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "alb-wharf",
+    "deck": "town",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "place": "albany"
+    },
+    "text": "The wharf is noise from end to end: boatmen calling their boats, carts, and families sitting on their trunks waiting to be told where to go.",
+    "note": {
+      "text": "Blois, 1838: \"Boats leave Albany for Buffalo almost every hour.\" And: \"Between a packet and line boat, there is but little choice, except that the former moves four miles, and the latter three, per hour.\"",
+      "source": "Blois, Gazetteer of the State of Michigan (1838)",
+      "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "alb-family-rate",
+    "deck": "town",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "place": "albany"
+    },
+    "text": "A line-boat captain short of passengers walks over to your trunks and offers to take the whole family for less than the posted fare.",
+    "choices": [
+      {
+        "id": "accept",
+        "label": "Shake on it",
+        "effects": [
+          {
+            "flag": "lineBargain"
+          }
+        ],
+        "result": "He chalks your name on his slate. The line-boat fares are now lower for you."
+      },
+      {
+        "id": "decline",
+        "label": "Thank him and look around more",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "Blois gives the line-boat fare as $9.07 with meals, then adds: \"Families are frequently taken for much less than this, in proportion.\"",
+      "source": "Blois, Gazetteer of the State of Michigan (1838)",
+      "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "alb-baggage",
+    "deck": "town",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "place": "albany"
+    },
+    "text": "The agent weighs your trunks on a beam scale. A through ticket carries fifty pounds free on the canal; everything else goes as freight by the hundredweight.",
+    "note": {
+      "text": "A New York to Buffalo through ticket of about 1835 allowed 100 pounds of baggage free on the river and 50 pounds on rail and canal. Blois gives canal freight at 75 cents to $1.00 per hundredweight at most, \"greatly reduced, especially near midsummer.\"",
+      "source": "The Henry Ford, through ticket New York to Buffalo, c. 1835",
+      "url": "https://www.thehenryford.org/collections/explore/artifact/158117",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "canal-low-bridge",
+    "deck": "travel",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "leg": "canal"
+    },
+    "bind": {
+      "who": {
+        "member": "wellChild"
+      }
+    },
+    "scene": "canal",
+    "text": "\"Low bridge!\" The call comes just in time. {who} is sitting up on the cabin roof with the other children, watching the country go by.",
+    "choices": [
+      {
+        "id": "below",
+        "label": "Call {who} down and keep the children below",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "{who} sulks in the close cabin for the rest of the day."
+      },
+      {
+        "id": "duck",
+        "label": "Let {who} stay up and duck with the others",
+        "effects": [
+          {
+            "chance": "#ev.bridge.p",
+            "then": [
+              {
+                "injure": {
+                  "who": "$who",
+                  "amount": "#ev.injury.mid"
+                }
+              },
+              {
+                "narrate": "{who} is a moment slow, and the bridge timbers catch {who.him} a hard blow."
+              }
+            ],
+            "else": [
+              {
+                "narrate": "Every head goes down, and the bridge slides past a foot above them."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Canal bridges were low, and passengers riding on deck had to lie flat. A second-hand account of an 1836 journey tells of a young English woman killed when her head struck a bridge. The research found that account only in a search summary, so it is uncertain.",
+      "source": "Second-hand 1836 traveller's account, known from a search summary (research notes, section 1b)",
+      "url": null,
+      "confidence": "uncertain"
+    }
+  },
+  {
+    "id": "canal-crowding",
+    "deck": "travel",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "all": [
+        {
+          "leg": "canal"
+        },
+        {
+          "ticket": [
+            "line",
+            "line-meals"
+          ]
+        }
+      ]
+    },
+    "text": "The line boat carries far more emigrants than berths. At night families sleep among the freight, packed together in the warm, close air.",
+    "choices": [
+      {
+        "id": "deck",
+        "label": "Sleep up on deck in the night air",
+        "effects": [
+          {
+            "chance": "#ev.ague.p",
+            "then": [
+              {
+                "sicken": {
+                  "who": "random",
+                  "illness": "ague"
+                }
+              }
+            ]
+          }
+        ],
+        "result": "It is cooler on deck, and the mosquitoes find you."
+      },
+      {
+        "id": "below",
+        "label": "Stay below with the others",
+        "effects": [
+          {
+            "chance": "#ev.dys.p",
+            "then": [
+              {
+                "sicken": {
+                  "who": "random",
+                  "illness": "dysentery"
+                }
+              }
+            ]
+          }
+        ],
+        "result": "Nobody sleeps much below."
+      }
+    ],
+    "note": {
+      "text": "Line boats carried mostly emigrants and freight, \"sometimes over 100 immigrants and their luggage\" in the freight space. The source is a blog, so the figure is uncertain, though it fits other line-boat histories.",
+      "source": "\"Packet boats and line boats on the Erie Canal\" (blog, 2024)",
+      "url": "https://chrisandrle.wordpress.com/2024/05/08/packet-boats-and-line-boats-on-the-erie-canal/",
+      "confidence": "uncertain"
+    }
+  },
+  {
+    "id": "canal-packet-cabin",
+    "deck": "travel",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "all": [
+        {
+          "leg": "canal"
+        },
+        {
+          "ticket": "packet"
+        }
+      ]
+    },
+    "text": "At night the packet's single cabin becomes a dormitory: tiers of berths, a curtain drawn between the men and the women, and the late-comers sleeping on the floor.",
+    "note": {
+      "text": "A packet cabin was one multipurpose room with 60 to 70 berths and a curtain between men and women. Up to 100 people slept aboard, some on the floor.",
+      "source": "eriecanal.org, Boats on the Erie Canal",
+      "url": "https://www.eriecanal.org/boats.html",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "canal-overboard",
+    "deck": "travel",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "all": [
+        {
+          "leg": "canal"
+        },
+        {
+          "flag": "!tethered"
+        }
+      ]
+    },
+    "bind": {
+      "who": {
+        "member": "wellChild"
+      }
+    },
+    "text": "{who} leans out too far as the boat swings round a bend, and you catch {who.him} by the collar.",
+    "choices": [
+      {
+        "id": "tie",
+        "label": "Tie the youngest children to the deck rail from now on",
+        "effects": [
+          {
+            "flag": "tethered"
+          },
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "The children hate it, but you sleep easier."
+      },
+      {
+        "id": "scold",
+        "label": "Pull {who} back and give {who.him} a talking-to",
+        "effects": [
+          {
+            "chance": "#ev.overboard.p",
+            "then": [
+              {
+                "injure": {
+                  "who": "$who",
+                  "amount": "#ev.injury.mid"
+                }
+              },
+              {
+                "narrate": "Later that day {who} slips on the wet deck and falls hard."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Drowning on the canal was said to be frequent, and some parents chained their children to the deck. The research found this only in a summary of a general website, so it is uncertain.",
+      "source": "General Erie Canal history site, known from a search summary (research notes, section 1b)",
+      "url": null,
+      "confidence": "uncertain"
+    }
+  },
+  {
+    "id": "canal-team-change",
+    "deck": "travel",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "leg": "canal"
+    },
+    "text": "At a canal-side stable the towing team is changed for fresh animals, and in a few minutes the boat is moving again.",
+    "note": {
+      "text": "The towing animals were changed every 10 to 15 miles.",
+      "source": "\"Packet boats and line boats on the Erie Canal\" (blog, 2024)",
+      "url": "https://chrisandrle.wordpress.com/2024/05/08/packet-boats-and-line-boats-on-the-erie-canal/",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "canal-cholera-rumour",
+    "deck": "travel",
+    "weight": "#w.uncommon",
+    "once": true,
+    "when": {
+      "leg": [
+        "canal",
+        "lake"
+      ]
+    },
+    "text": "A man two berths down is taken ill in the night, and by morning someone is saying the word cholera.",
+    "choices": [
+      {
+        "id": "off",
+        "label": "Leave the boat at the next landing and wait a day",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          },
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "You lose a day, and hear nothing more of it."
+      },
+      {
+        "id": "stay",
+        "label": "Stay aboard",
+        "effects": [
+          {
+            "chance": "#ev.cholera.p",
+            "then": [
+              {
+                "sicken": {
+                  "who": "random",
+                  "illness": "cholera"
+                }
+              }
+            ],
+            "else": [
+              {
+                "narrate": "The man is up again by evening. It was not cholera after all."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Cholera spread along the canal and the Great Lakes in the epidemic years 1832 and 1834. The research found no outbreak in 1836, so in this game it is very rare.",
+      "source": "Diary of Rachel Wilmer, 1834, Consider the Source NY",
+      "url": "https://considerthesourceny.org/activity/diary-rachel-wilmer-1834",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "canal-mosquitoes",
+    "deck": "travel",
+    "weight": "#w.common",
+    "cooldown": "#cd.long",
+    "when": {
+      "leg": [
+        "canal",
+        "overland"
+      ]
+    },
+    "text": "The canal runs through low, wet country here. At dusk the mosquitoes come off the marsh in clouds.",
+    "choices": [
+      {
+        "id": "cover",
+        "label": "Keep everyone below and covered at dusk",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "It is stifling below, but you are bitten less."
+      },
+      {
+        "id": "bear",
+        "label": "Bear it on deck",
+        "effects": [
+          {
+            "chance": "#ev.ague.p",
+            "then": [
+              {
+                "sicken": {
+                  "who": "random",
+                  "illness": "ague"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Fever and ague was malaria, driven by standing water and mosquitoes. Quinine \"was not available\" for many years in the new settlements and stayed scarce and costly.",
+      "source": "\"Fever and ague,\" Kent County history (1926)",
+      "url": "https://kent.migenweb.org/etten1926/fever.html",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "buf-emigrants",
+    "deck": "town",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "place": "buffalo"
+    },
+    "text": "The harbour is a forest of masts and smokestacks. A clerk says nearly two hundred thousand people will have gone west over the lake before this season closes.",
+    "note": {
+      "text": "Blois, 1838, on the Lake Erie season of 1836: \"nearly 200,000 persons passed its waters, to the west,\" on more than 50 steamboats, which left Buffalo \"morning and evening.\"",
+      "source": "Blois, Gazetteer of the State of Michigan (1838)",
+      "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "buf-broker",
+    "deck": "town",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "place": "buffalo"
+    },
+    "text": "A broker on the wharf is buying eastern notes. They will be worth less every mile you carry them west, he says, and he is not wrong.",
+    "choices": [
+      {
+        "id": "sell",
+        "label": "Sell him your New England notes for silver",
+        "requires": {
+          "notes": [
+            "ne",
+            ">",
+            0
+          ]
+        },
+        "why": "You have no New England notes.",
+        "effects": [
+          {
+            "exchange": {
+              "from": "ne",
+              "rate": "#ev.wharfBroker.rate",
+              "cap": "#broker.cap"
+            }
+          }
+        ],
+        "result": "You pocket the silver."
+      },
+      {
+        "id": "keep",
+        "label": "Keep your paper",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "The Detroit Daily Advertiser, 15 October 1836: \"The banks of Detroit do not discount the best paper which is offered. This has been the case for several months past.\" The broker's rate in this event is invented.",
+      "source": "Dove, Pecquet and Thies, Essays in Economic & Business History 32 (2014)",
+      "url": "https://ebhsoc.org/journal/index.php/ebhs/article/download/240/223",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "buf-late-season",
+    "deck": "town",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "all": [
+        {
+          "place": "buffalo"
+        },
+        {
+          "month": [
+            11,
+            12
+          ]
+        }
+      ]
+    },
+    "text": "A captain on the wharf shakes his head at the sky. The lake turns ugly in November, he says, and the late boats take their chances.",
+    "note": {
+      "text": "The research found 1836 gale losses on other waters, the Colonel Crockett at St. Joseph and the Don Quixote on Lake Huron, but only in a search summary, so they are uncertain. The game's storm risk rising into November is invented.",
+      "source": "Search summary (research notes, section 1c)",
+      "url": null,
+      "confidence": "uncertain"
+    }
+  },
+  {
+    "id": "lake-gale",
+    "deck": "travel",
+    "weight": {
+      "base": "#w.uncommon",
+      "mul": [
+        [
+          {
+            "month": 11
+          },
+          "#m.lateLake"
+        ],
+        [
+          {
+            "month": 12
+          },
+          "#m.lateLake"
+        ]
+      ]
+    },
+    "cooldown": "#cd.short",
+    "when": {
+      "leg": "lake"
+    },
+    "scene": "lake-storm",
+    "text": "The wind gets up in the afternoon, and by dark the steamboat is labouring in a heavy sea. Crates shift on the deck.",
+    "choices": [
+      {
+        "id": "hold",
+        "label": "Keep everyone below and hold on",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          },
+          {
+            "chance": "#ev.gale.injuryP",
+            "then": [
+              {
+                "injure": {
+                  "who": "random",
+                  "amount": "#ev.injury.small"
+                }
+              }
+            ]
+          }
+        ],
+        "result": "The boat rides it out."
+      },
+      {
+        "id": "shelter",
+        "label": "Run in for shelter with the captain, losing a day",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          }
+        ],
+        "result": "You lie a day behind a headland until the wind drops."
+      }
+    ],
+    "note": {
+      "text": "Steamboats were lost to gales on the Great Lakes, but the research found 1836 losses only on other waters, and only in a search summary (uncertain). The game's rising risk into November is invented.",
+      "source": "Search summary (research notes, section 1c)",
+      "url": null,
+      "confidence": "uncertain"
+    }
+  },
+  {
+    "id": "lake-deck-spray",
+    "deck": "travel",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "all": [
+        {
+          "leg": "lake"
+        },
+        {
+          "ticket": "deck"
+        }
+      ]
+    },
+    "text": "Spray comes over the deck all night, and there is nowhere dry to sleep.",
+    "choices": [
+      {
+        "id": "huddle",
+        "label": "Huddle the children under the wagon cover",
+        "effects": [
+          {
+            "chance": "#ev.ague.p",
+            "then": [
+              {
+                "sicken": {
+                  "who": "random",
+                  "illness": "ague"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "pay",
+        "label": "Pay the steward to let the children sit in the cabin",
+        "requires": {
+          "afford": "#ev.steward.cost"
+        },
+        "why": "You cannot spare it.",
+        "effects": [
+          {
+            "pay": "#ev.steward.cost"
+          }
+        ],
+        "result": "The steward pockets the money and looks the other way."
+      }
+    ],
+    "note": {
+      "text": "Blois gives the 1836 fares, $3 deck and $8 cabin, but the research has nothing on conditions for deck passengers. The details here are invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "lake-wave",
+    "deck": "travel",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "leg": "lake"
+    },
+    "text": "At the rail a man counts the boats in sight, all headed west, and gives up at twenty.",
+    "note": {
+      "text": "Hoffman, 1835: \"Wave after wave of western immigration has rolled.\"",
+      "source": "Charles Fenno Hoffman, A Winter in the West (1835), vol. II",
+      "url": "https://archive.org/stream/winterinwest02hoff/winterinwest02hoff_djvu.txt",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "lake-sparks",
+    "deck": "travel",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "leg": "lake"
+    },
+    "text": "Sparks from the stacks drift back over the deck cargo, and a bale begins to smoke.",
+    "choices": [
+      {
+        "id": "help",
+        "label": "Help the crew wet down the cargo",
+        "effects": [
+          {
+            "morale": "#ev.morale.small"
+          }
+        ],
+        "result": "The deckhands nod their thanks."
+      },
+      {
+        "id": "away",
+        "label": "Keep the children well away",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "Fire was the great fear on the lake steamers. The worst Buffalo-to-Detroit disaster, the burning of the steamer Erie, came on 9 August 1841, with up to 253 dead: five years after this game's year.",
+      "source": "Great Lakes Ships, steamer Erie",
+      "url": "https://greatlakeships.org/2901660/data",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "swamp-mired",
+    "deck": "travel",
+    "weight": {
+      "base": "#w.frequent",
+      "mul": [
+        [
+          {
+            "flag": "swampGuide"
+          },
+          "#m.guideMired"
+        ]
+      ]
+    },
+    "cooldown": "#cd.short",
+    "when": {
+      "terrain": "swamp"
+    },
+    "scene": "black-swamp",
+    "text": "The wagon sinks to the axles in the swamp road and the team cannot shift it.",
+    "choices": [
+      {
+        "id": "rails",
+        "label": "Unload, cut rails, and pry it out",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          },
+          {
+            "chance": "#ev.rails.injuryP",
+            "then": [
+              {
+                "injure": {
+                  "who": "wellAdult",
+                  "amount": "#ev.injury.small"
+                }
+              }
+            ]
+          }
+        ],
+        "result": "It takes the whole day, but the wagon comes free."
+      },
+      {
+        "id": "pay",
+        "label": "Pay a settler with a team to pull you out",
+        "requires": {
+          "afford": "#ev.pull.cost"
+        },
+        "why": "You cannot pay him.",
+        "effects": [
+          {
+            "pay": "#ev.pull.cost"
+          }
+        ],
+        "result": "His oxen walk you out in an hour."
+      }
+    ],
+    "note": {
+      "text": "In the Black Swamp the mud ran knee- to belly-deep for 8 to 10 miles. On the road west of Detroit, Barber says of the Vermont colony's agents: \"Besides paying fare, they worked their passage, carrying fence rails to pry the wagon out of the mud.\"",
+      "source": "Barber, \"The Vermontville Colony,\" Michigan Pioneer and Historical Collections vol. 28 (1897)",
+      "url": "https://archive.org/details/michiganpioneerh0028unse",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "swamp-worst-road",
+    "deck": "travel",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "terrain": "swamp"
+    },
+    "text": "Travellers coming the other way call it the worst road in the country. Today you believe them.",
+    "effects": [
+      {
+        "progress": "#ev.progress.loss"
+      }
+    ],
+    "note": {
+      "text": "The Perrysburg-Fremont stretch was called \"the worst road in the country.\" In the wet season the crossing could take \"days or even weeks,\" and it was thought tolerable only from July to September (local-history sources).",
+      "source": "Historic Perrysburg, The Great Black Swamp",
+      "url": "https://www.historicperrysburg.org/copy-of-great-black-swamp",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "swamp-fever",
+    "deck": "travel",
+    "weight": "#w.common",
+    "cooldown": "#cd.short",
+    "when": {
+      "terrain": "swamp"
+    },
+    "text": "The water stands black on both sides of the road, and the fever is in every cabin you pass.",
+    "choices": [
+      {
+        "id": "rest",
+        "label": "Make camp and rest a day",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          },
+          {
+            "chance": "#ev.ague.p",
+            "then": [
+              {
+                "sicken": {
+                  "who": "random",
+                  "illness": "ague"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "push",
+        "label": "Push on to get out of the swamp sooner",
+        "effects": [
+          {
+            "chance": "#ev.ague.pHigh",
+            "then": [
+              {
+                "sicken": {
+                  "who": "random",
+                  "illness": "ague"
+                }
+              }
+            ]
+          },
+          {
+            "progress": "#ev.progress.gain"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "The Great Black Swamp ran up to 120 miles long and 39 wide. Most emigrants avoided it and came by steamboat.",
+      "source": "Great Lakes Now, on the Great Black Swamp",
+      "url": "https://www.greatlakesnow.org/?p=44345",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "ohio-lame-ox",
+    "deck": "travel",
+    "weight": "#w.uncommon",
+    "cooldown": "#cd.long",
+    "when": {
+      "all": [
+        {
+          "leg": [
+            "overland",
+            "road",
+            "vermont"
+          ]
+        },
+        {
+          "team": true
+        }
+      ]
+    },
+    "text": "One of the team goes lame on the hard road.",
+    "choices": [
+      {
+        "id": "rest",
+        "label": "Rest the animal a day",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          }
+        ]
+      },
+      {
+        "id": "push",
+        "label": "Ease the load and push on",
+        "effects": [
+          {
+            "wagon": "#ev.wagon.small"
+          },
+          {
+            "progress": "#ev.progress.loss"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "The research has no source on draught animals failing on these roads. This event is invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "strip-tavern",
+    "deck": "travel",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "terrain": "strip"
+    },
+    "scene": "toledo-strip",
+    "text": "At a tavern near the Maumee two men argue over whether this ground is Ohio or Michigan. The landlord asks which you are.",
+    "choices": [
+      {
+        "id": "quiet",
+        "label": "Say you are only passing through",
+        "effects": [],
+        "result": "That ends it, and you get your supper."
+      },
+      {
+        "id": "michigan",
+        "label": "Say you are bound for Michigan",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "The Ohio man glowers at you for the rest of the evening."
+      }
+    ],
+    "note": {
+      "text": "Ohio's governor marched about 600 militia into Perrysburg on 31 March 1835, and Michigan threatened fines up to $1,000 for Ohioans acting under Ohio authority. Nobody died. Congress set a compromise on 15 June 1836; Michigan's first convention rejected it in September 1836.",
+      "source": "Wikipedia, Toledo War",
+      "url": "https://en.wikipedia.org/wiki/Toledo_War",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "ohio-toll-road",
+    "deck": "travel",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "terrain": "swamp"
+    },
+    "text": "The swamp road is a turnpike, and the toll gates come every few miles whether the road is fit or not.",
+    "note": {
+      "text": "The Maumee and Western Reserve road through the swamp was a turnpike with toll gates about every 9 miles; it was corduroyed in 1825 and not gravelled until 1838. The game's toll is invented.",
+      "source": "Wikipedia, Maumee Road Lands; Great Lakes Now",
+      "url": "https://en.wikipedia.org/wiki/Maumee_Road_Lands",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "det-tavern-floor",
+    "deck": "town",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "place": "detroit"
+    },
+    "text": "The tavern keeper looks your family over and offers six feet by two of the bar-room floor, at fifty cents a head.",
+    "choices": [
+      {
+        "id": "floor",
+        "label": "Take the floor for the night",
+        "requires": {
+          "afford": "#price.lodging.detroit"
+        },
+        "why": "You cannot spare it.",
+        "effects": [
+          {
+            "pay": "#price.lodging.detroit"
+          },
+          {
+            "heal": {
+              "who": "all",
+              "amount": "#ev.heal.small"
+            }
+          }
+        ],
+        "result": "Every tavern is crowded to suffocation, but it is a roof."
+      },
+      {
+        "id": "camp",
+        "label": "Camp at the edge of town",
+        "effects": [
+          {
+            "chance": "#ev.dys.p",
+            "then": [
+              {
+                "sicken": {
+                  "who": "random",
+                  "illness": "dysentery"
+                }
+              }
+            ]
+          }
+        ],
+        "result": "The camp ground is crowded and foul."
+      }
+    ],
+    "note": {
+      "text": "Kirkland, of Detroit in the fever years: \"Fifty cents was the price of six feet by two of the bar-room floor,\" every tavern \"crowded to suffocation.\"",
+      "source": "Caroline Kirkland, A New Home: Who'll Follow? (1839)",
+      "url": "https://archive.org/details/anewhomewhollfo04kirkgoog",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "det-banks",
+    "deck": "town",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "place": "detroit"
+    },
+    "text": "At the counting-house the clerk will not change a note for anyone he does not know. Money, they say, has never been so tight.",
+    "note": {
+      "text": "Detroit Daily Advertiser, 15 October 1836: \"The banks of Detroit do not discount the best paper which is offered. This has been the case for several months past.\" Michigan's free-banking law did not pass until 15 March 1837, so there were no wildcat banks yet.",
+      "source": "Dove, Pecquet and Thies, Essays in Economic & Business History 32 (2014)",
+      "url": "https://ebhsoc.org/journal/index.php/ebhs/article/download/240/223",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "det-paper-city",
+    "deck": "town",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "place": "detroit"
+    },
+    "text": "A man in a fine coat is selling shares in a town that will stand, he says, where two railroads are to meet. He has a handsome plan drawn of it.",
+    "choices": [
+      {
+        "id": "buy",
+        "label": "Buy a share",
+        "requires": {
+          "afford": "#ev.paperCity.cost"
+        },
+        "why": "You cannot afford it.",
+        "effects": [
+          {
+            "pay": "#ev.paperCity.cost"
+          },
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "You never hear of the town again."
+      },
+      {
+        "id": "no",
+        "label": "Keep your money",
+        "effects": [],
+        "result": "He moves on to the next family."
+      }
+    ],
+    "note": {
+      "text": "Kirkland describes eastern buyers sold \"one hundred shares at three hundred dollars each\" in a \"Grand Junction\" site bought \"for four hundred dollars, just a week before.\" Her book is partly satire, so the literal facts are uncertain.",
+      "source": "Caroline Kirkland, A New Home: Who'll Follow? (1839)",
+      "url": "https://archive.org/details/anewhomewhollfo04kirkgoog",
+      "confidence": "uncertain"
+    }
+  },
+  {
+    "id": "det-land-office",
+    "deck": "town",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "place": "detroit"
+    },
+    "text": "You pass the Detroit land office. The crowd is so thick that the clerks have shut the door and are taking money through a window.",
+    "note": {
+      "text": "In 1836 the Detroit land office \"closed its doors\" because \"too many people were trying to squeeze into the building,\" and took payments through a window.",
+      "source": "Detroit Historical Society, Detroit Land Office",
+      "url": "https://www.detroithistorical.org/learn/encyclopedia-of-detroit/detroit-land-office",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "det-stage",
+    "deck": "town",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "place": "detroit"
+    },
+    "text": "The Marshall stage turns out to be an open wagon. The driver tells the passengers they will be expected to help when it sticks.",
+    "note": {
+      "text": "Blois gives the stage fare from Detroit to Marshall, 115 miles, as $7.50. The Vermont colony's agents waited 24 hours for it at Detroit and found it \"an open wagon, the roads were horrible.\"",
+      "source": "Barber, \"The Vermontville Colony,\" Michigan Pioneer and Historical Collections vol. 28 (1897)",
+      "url": "https://archive.org/details/michiganpioneerh0028unse",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "road-corduroy",
+    "deck": "travel",
+    "weight": "#w.frequent",
+    "cooldown": "#cd.long",
+    "when": {
+      "leg": "road"
+    },
+    "scene": "territorial-road",
+    "text": "For miles the road is corduroy: logs laid crosswise through the wet ground. The wagon jolts over every one.",
+    "choices": [
+      {
+        "id": "slow",
+        "label": "Take it slowly",
+        "effects": [
+          {
+            "progress": "#ev.progress.loss"
+          }
+        ]
+      },
+      {
+        "id": "fast",
+        "label": "Keep the pace up",
+        "effects": [
+          {
+            "wagon": "#ev.wagon.mid"
+          }
+        ],
+        "result": "Something in the wagon cracks."
+      }
+    ],
+    "note": {
+      "text": "The Territorial Road was built of corduroy from 1830. In 1836 the trip from Detroit to Jackson, 80 miles, took three days.",
+      "source": "Wikipedia, Territorial Road (Michigan)",
+      "url": "https://en.wikipedia.org/wiki/Territorial_Road_(Michigan)",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "road-mile-an-hour",
+    "deck": "travel",
+    "weight": "#w.common",
+    "cooldown": "#cd.long",
+    "when": {
+      "leg": "road"
+    },
+    "text": "A long wet stretch. By dark you have made a mile an hour, and not much more.",
+    "effects": [
+      {
+        "progress": "#ev.progress.loss"
+      }
+    ],
+    "note": {
+      "text": "Barber, of 1839: \"We made a mile an hour that last one of eight days from Detroit, and three weeks from Benson, Vermont, and reached our stumpy Canaan at last.\"",
+      "source": "Barber, \"The Vermontville Colony,\" Michigan Pioneer and Historical Collections vol. 28 (1897)",
+      "url": "https://archive.org/details/michiganpioneerh0028unse",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "road-nail-kegs",
+    "deck": "travel",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "leg": "road"
+    },
+    "text": "A heavy wagon loaded with nail kegs creaks past toward Detroit. The driver nods, but he does not stop to talk.",
+    "note": {
+      "text": "In 1836 the Bronson branch bank's cashier sent six kegs of silver, mostly half-dollars, to Detroit by wagon, hidden under nails; the trip took some twelve days. Pritchard: \"Over five millions of money ... was brought here and paid to Uncle Sam, within three years; and yet we hear of no robbery.\"",
+      "source": "Pritchard, Kalamazoo County Directory with a history (1869)",
+      "url": "https://archive.org/details/kalamazoocounty01pritgoog",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "road-wolves",
+    "deck": "travel",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "leg": [
+        "road",
+        "claim"
+      ]
+    },
+    "text": "Wolves howl in the woods near the camp, close enough that the team stamps and pulls at the tether.",
+    "choices": [
+      {
+        "id": "watch",
+        "label": "Keep a fire and a watch all night",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "Nobody sleeps much. Nothing comes near."
+      },
+      {
+        "id": "sleep",
+        "label": "Bank the fire and sleep",
+        "effects": [],
+        "result": "In the morning there are tracks at the edge of the clearing, nothing more."
+      }
+    ],
+    "note": {
+      "text": "Settlers wrote that wolves took sheep \"from the very thresholds of our homes,\" and Michigan paid a wolf bounty from 1838. The research found livestock losses but no sourced attacks on people.",
+      "source": "Michigan DNR, Wolf history and legal status",
+      "url": "https://www.michigan.gov/dnr/education/michigan-species/mammals/wolves-in-michigan/wolf-history-and-legal-status",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "road-ague-saying",
+    "deck": "travel",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "leg": [
+        "road",
+        "claim"
+      ]
+    },
+    "text": "A settler at a well sings you a verse by way of welcome: Don't go to Michigan, land of ills; the name means ague, fever, and chills.",
+    "choices": [
+      {
+        "id": "laugh",
+        "label": "Laugh it off",
+        "effects": [
+          {
+            "chance": "#ev.ague.p",
+            "then": [
+              {
+                "sicken": {
+                  "who": "random",
+                  "illness": "ague"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ask",
+        "label": "Ask him what helps",
+        "effects": [
+          {
+            "morale": "#ev.morale.small"
+          }
+        ],
+        "result": "Quinine, he says, if you can get it, and you mostly cannot."
+      }
+    ],
+    "note": {
+      "text": "A popular 19th-century saying: \"Don't go to Michigan, land of ills; / The name means ague, fever, and chills.\" Its first publication is not known.",
+      "source": "Laura Bien, \"Ague in Ann Arbor,\" Ann Arbor Observer (2009)",
+      "url": "https://annarborobserver.com/ague-in-ann-arbor/",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "road-shaking",
+    "deck": "travel",
+    "weight": "#w.common",
+    "cooldown": "#cd.long",
+    "when": {
+      "leg": [
+        "road",
+        "overland",
+        "vermont"
+      ]
+    },
+    "bind": {
+      "who": {
+        "member": "ague"
+      }
+    },
+    "text": "{who} has the ague and cannot walk beside the wagon today.",
+    "choices": [
+      {
+        "id": "ride",
+        "label": "Make room for {who} in the wagon",
+        "effects": [
+          {
+            "progress": "#ev.progress.loss"
+          }
+        ],
+        "result": "The wagon goes slower with the extra weight."
+      },
+      {
+        "id": "rest",
+        "label": "Stop and rest a day",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          },
+          {
+            "heal": {
+              "who": "$who",
+              "amount": "#ev.heal.small"
+            }
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Anson Van Buren, who settled in Calhoun County in 1836, said the ague chill \"crept over your system in streaks, faster and faster,\" and the shaking was so violent that \"the dishes rattled on the shelves against the log wall.\"",
+      "source": "Laura Bien, \"Ague in Ann Arbor,\" Ann Arbor Observer (2009)",
+      "url": "https://annarborobserver.com/ague-in-ann-arbor/",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "road-potawatomi",
+    "deck": "travel",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "leg": "road"
+    },
+    "text": "Near the road you pass a Potawatomi village. This was their country long before the land office opened.",
+    "choices": [
+      {
+        "id": "trade",
+        "label": "Stop and offer to buy corn",
+        "requires": {
+          "afford": "#ev.corn.cost"
+        },
+        "why": "You have nothing to pay with.",
+        "effects": [
+          {
+            "pay": "#ev.corn.cost"
+          },
+          {
+            "add": [
+              "food",
+              "#ev.corn.food"
+            ]
+          }
+        ],
+        "result": "A woman measures out the corn and takes your coin."
+      },
+      {
+        "id": "pass",
+        "label": "Drive on",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "About 6,000 to 7,000 Potawatomi lived in Michigan in 1833, when the Treaty of Chicago was signed; federal policy was removal. Leopold Pokagon refused to go and led his band in southwestern Michigan until 1841. The research did not confirm a village on this road in 1836, or trade with emigrants; those details are invented.",
+      "source": "Clarke Historical Library, The Potawatomi Experience of Federal Removal Policy",
+      "url": "https://cmich.edu/research/clarke-historical-library/explore-collection/explore-online/native-american-material/native-american-treaty-rights/historical-issues/the-potawatomi-experience-of-federal-removal-policy",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "road-crowded-inn",
+    "deck": "travel",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "leg": "road"
+    },
+    "text": "A log tavern near the end of the day's drive. The landlord says he can take you, if you do not mind sharing.",
+    "choices": [
+      {
+        "id": "inn",
+        "label": "Take the beds",
+        "requires": {
+          "afford": "#ev.inn.cost"
+        },
+        "why": "You cannot spare it.",
+        "effects": [
+          {
+            "pay": "#ev.inn.cost"
+          },
+          {
+            "heal": {
+              "who": "all",
+              "amount": "#ev.heal.small"
+            }
+          }
+        ],
+        "result": "Two and three to a bed, and glad of it."
+      },
+      {
+        "id": "camp",
+        "label": "Camp in the yard",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "Of the Kalamazoo inns in 1835-36: \"Always two, and very often three in a bed made the guests feel the truth of the adage that misfortune makes us acquainted with strange bed fellows.\" The price here is invented.",
+      "source": "Pritchard, Kalamazoo County Directory with a history (1869)",
+      "url": "https://archive.org/details/kalamazoocounty01pritgoog",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "road-flour-scarce",
+    "deck": "travel",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "leg": "road"
+    },
+    "text": "At a settler's cabin you ask to buy flour. He laughs. He has been two weeks hunting for a barrel himself.",
+    "note": {
+      "text": "A settler recalled spending nearly two weeks finding and buying \"a ton of flour\" in 1836; the place is uncertain. In the interior flour rose to $20 a barrel in 1836-37.",
+      "source": "Michigan Pioneer and Historical Collections vol. 18",
+      "url": "https://archive.org/details/michiganpioneerh0018unse",
+      "confidence": "uncertain"
+    }
+  },
+  {
+    "id": "off-land-mania",
+    "deck": "town",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "place": "bronson"
+    },
+    "text": "Men are buying and selling quarter sections in the street. You hear one tract change hands twice before supper.",
+    "note": {
+      "text": "Pritchard: \"Kalamazoo was one great mass convention of men almost raving with the land-mania,\" and \"a quarter section entered in the morning for $200 at the Land Office, sold for $400 before midnight.\"",
+      "source": "Pritchard, Kalamazoo County Directory with a history (1869)",
+      "url": "https://archive.org/details/kalamazoocounty01pritgoog",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "off-speculator",
+    "deck": "office",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "land": [
+        "looking",
+        "applied"
+      ]
+    },
+    "text": "A speculator offers you forty acres of oak openings, already entered, at five dollars an acre. No waiting at the window.",
+    "choices": [
+      {
+        "id": "buy",
+        "label": "Buy his forty acres",
+        "requires": {
+          "afford": "#spec.total"
+        },
+        "why": "You cannot raise it.",
+        "effects": [
+          {
+            "buyTract": {
+              "kind": "openings",
+              "price": "#spec.price.openings",
+              "acres": "#land.acres.small"
+            }
+          }
+        ]
+      },
+      {
+        "id": "no",
+        "label": "Wait for government land",
+        "effects": [],
+        "result": "He shrugs. There are plenty more like you."
+      }
+    ],
+    "note": {
+      "text": "Blois, 1838: emigrants \"have made purchases at from $2 to $5 per acre ... while perhaps lands of equal value were at the same time selling at the land office at $1.25 per acre.\" Oak openings sold by speculators for about $5 an acre in 1836.",
+      "source": "Blois, Gazetteer of the State of Michigan (1838)",
+      "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "off-specie-rumour",
+    "deck": "office",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "all": [
+        {
+          "land": [
+            "looking",
+            "applied",
+            "ready"
+          ]
+        },
+        {
+          "deadlinePassed": false
+        }
+      ]
+    },
+    "text": "Word goes round the tents that the Receiver will take nothing but gold and silver. A broker sets up a table by the door.",
+    "choices": [
+      {
+        "id": "broker",
+        "label": "Change your eastern paper for coin at his rate",
+        "requires": {
+          "paper": [
+            ">",
+            0
+          ]
+        },
+        "why": "You have no paper to sell.",
+        "effects": [
+          {
+            "exchange": {
+              "from": "eastern",
+              "rate": "#ev.rumourBroker.rate",
+              "cap": "#broker.cap"
+            }
+          }
+        ],
+        "result": "He is doing a brisk trade."
+      },
+      {
+        "id": "ask",
+        "label": "Go and ask at the window",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          }
+        ],
+        "result": "The clerk says an actual settler may still pay in the notes the office takes, until the fifteenth of December."
+      }
+    ],
+    "note": {
+      "text": "The circular let an actual settler buying up to 320 acres pay in the money \"heretofore received\" until 15 December 1836. In practice the friction was rumour and doubt, and Receivers refusing notes of distant or doubtful banks.",
+      "source": "Report of the Secretary of the Treasury, 1836",
+      "url": "https://fraser.stlouisfed.org/files/docs/publications/treasar/AR_TREASURY_1836.pdf",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "off-conflict",
+    "deck": "office",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "land": "applied"
+    },
+    "text": "A man in the next tent says he has handed in a description for the same quarter section you did.",
+    "choices": [
+      {
+        "id": "ask",
+        "label": "Go to the window and ask",
+        "effects": [
+          {
+            "queue": "#ev.queue.add"
+          }
+        ],
+        "result": "The clerk says it will take longer to sort out."
+      },
+      {
+        "id": "leave",
+        "label": "Leave it with the clerks",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "At Kalamazoo applicants handed in their descriptions at the window, \"and often weeks would elapse before the claim of the Applicant could be issued, on account of conflict of claims.\"",
+      "source": "Pritchard, Kalamazoo County Directory with a history (1869)",
+      "url": "https://archive.org/details/kalamazoocounty01pritgoog",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "off-coin-clerk",
+    "deck": "office",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "coin": [
+        ">",
+        0
+      ]
+    },
+    "text": "The innkeeper offers to keep your coin in his strongbox while you look for land.",
+    "choices": [
+      {
+        "id": "leave",
+        "label": "Leave it with him",
+        "effects": [
+          {
+            "morale": "#ev.morale.small"
+          }
+        ],
+        "result": "He takes it without writing anything down."
+      },
+      {
+        "id": "keep",
+        "label": "Keep it on you",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "Pritchard: strangers left bags of coin with the clerk or the innkeeper \"taking no voucher\" and \"yet we hear of no robbery.\"",
+      "source": "Pritchard, Kalamazoo County Directory with a history (1869)",
+      "url": "https://archive.org/details/kalamazoocounty01pritgoog",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "off-surveyor-tip",
+    "deck": "office",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "all": [
+        {
+          "land": "looking"
+        },
+        {
+          "candidates": [
+            "<",
+            "#land.maxCandidates"
+          ]
+        }
+      ]
+    },
+    "text": "A surveyor who ran township lines in the next county tells you of a quarter section that nobody has entered yet.",
+    "choices": [
+      {
+        "id": "follow",
+        "label": "Ride out and look at it",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          },
+          {
+            "candidate": "tip"
+          }
+        ]
+      },
+      {
+        "id": "no",
+        "label": "Stay with what you have",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "A Gull Prairie surveyor, Col. Barnes, who had helped survey Eaton County, tipped the Vermont colonists to unentered land; their agent got a plat \"which showed that only one parcel had been purchased in the township.\"",
+      "source": "Barber, \"The Vermontville Colony,\" Michigan Pioneer and Historical Collections vol. 28 (1897)",
+      "url": "https://archive.org/details/michiganpioneerh0028unse",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "off-hire-out",
+    "deck": "office",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "phase": "office"
+    },
+    "text": "A man putting up a frame house wants hands, and pays by the day.",
+    "choices": [
+      {
+        "id": "work",
+        "label": "Send one of the family to work for him",
+        "requires": {
+          "able": [
+            ">",
+            1
+          ]
+        },
+        "why": "No one can be spared.",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          },
+          {
+            "earn": {
+              "amount": "#wage.day",
+              "kind": "mi"
+            }
+          }
+        ],
+        "result": "A day's work, a dollar in Michigan paper."
+      },
+      {
+        "id": "no",
+        "label": "Keep everyone on the land search",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "A minister-carpenter at Gull Prairie earned $1 a day. Kirkland: \"A plane, a chisel, and two dollars a day make a carpenter in Michigan.\"",
+      "source": "Kalamazoo County history page (migenweb)",
+      "url": "https://www.migenweb.org/kalamazoo/history/history3.htm",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "off-camp-ague",
+    "deck": "office",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "phase": "office"
+    },
+    "text": "The ague is going through the tents. In the next tent a whole family lies shaking under one blanket.",
+    "choices": [
+      {
+        "id": "away",
+        "label": "Move your tent to higher ground",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          }
+        ]
+      },
+      {
+        "id": "stay",
+        "label": "Stay where you are",
+        "effects": [
+          {
+            "chance": "#ev.ague.pHigh",
+            "then": [
+              {
+                "sicken": {
+                  "who": "random",
+                  "illness": "ague"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Of the settlers at Gull Prairie, in Kalamazoo County: \"fever and ague of a kind and intensity which shook the hardiest.\" (A 20th-century essay about the 1830s.)",
+      "source": "Kalamazoo County history page (migenweb)",
+      "url": "https://www.migenweb.org/kalamazoo/history/history3.htm",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "off-flour",
+    "deck": "office",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "phase": "office"
+    },
+    "text": "The store at Bronson has no flour at any price today. A man in the tents offers to sell half a barrel.",
+    "choices": [
+      {
+        "id": "buy",
+        "label": "Buy his half barrel",
+        "requires": {
+          "afford": "#ev.flourHalf.cost"
+        },
+        "why": "You cannot pay his price.",
+        "effects": [
+          {
+            "pay": "#ev.flourHalf.cost"
+          },
+          {
+            "add": [
+              "food",
+              "#ev.flourHalf.food"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "no",
+        "label": "Make do",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "\"The great influx of settlers in 1836-37 and the consequent scarcity of breadstuffs came near bringing actual starvation to those in the interior ... Flour rose to $20.00 a barrel.\"",
+      "source": "History of Calhoun County (1913)",
+      "url": "https://archive.org/details/historyofcalhoun01gard",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "claim-raising",
+    "deck": "claim",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "shelter": [
+        ">=",
+        "#ev.raising.min"
+      ]
+    },
+    "scene": "cabin",
+    "text": "Neighbours from a few miles off ride over to help raise the walls. They will want feeding.",
+    "choices": [
+      {
+        "id": "yes",
+        "label": "Welcome them and feed them",
+        "effects": [
+          {
+            "shelter": "#ev.raising.shelter"
+          },
+          {
+            "add": [
+              "food",
+              "#ev.raising.food"
+            ]
+          },
+          {
+            "morale": "#ev.morale.mid"
+          }
+        ],
+        "result": "By evening the walls are up another four rounds."
+      },
+      {
+        "id": "no",
+        "label": "Thank them; you will manage",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "A family needed 50 to 60 trees for a temporary cabin. There was no glass to be had, so greased paper served for the windows.",
+      "source": "Michiganology, \"Yankees Come to Michigan\"",
+      "url": "https://michiganology.org/stories/yankees-come-to-michigan",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "claim-quinine",
+    "deck": "claim",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "phase": [
+        "claim",
+        "office"
+      ]
+    },
+    "bind": {
+      "who": {
+        "member": "ague"
+      }
+    },
+    "text": "A peddler comes along the trail with a pack. He has quinine, and he knows what it is worth out here.",
+    "choices": [
+      {
+        "id": "buy",
+        "label": "Buy a dose at his price",
+        "requires": {
+          "afford": "#ev.peddler.cost"
+        },
+        "why": "You cannot pay his price.",
+        "effects": [
+          {
+            "pay": "#ev.peddler.cost"
+          },
+          {
+            "add": [
+              "quinine",
+              "#ev.quinine.dose"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "no",
+        "label": "Send him on his way",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "Kirkland, 1839: quinine \"acts like a charm on intermittents, is sometimes not to be procured in the interior at any price.\" The peddler's price is invented.",
+      "source": "Caroline Kirkland, A New Home (1839), ch. 35",
+      "url": "https://crookedlakereview.com/articles/1_33/31oct1990/31kirkland.html",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "claim-axe",
+    "deck": "claim",
+    "weight": "#w.common",
+    "cooldown": "#cd.long",
+    "when": {
+      "phase": "claim"
+    },
+    "bind": {
+      "who": {
+        "member": "wellAdult"
+      }
+    },
+    "text": "{who}'s axe glances off a frozen knot.",
+    "choices": [
+      {
+        "id": "bind",
+        "label": "Bind it up and keep working",
+        "effects": [
+          {
+            "injure": {
+              "who": "$who",
+              "amount": "#ev.injury.small"
+            }
+          }
+        ]
+      },
+      {
+        "id": "rest",
+        "label": "Make {who} rest it a day",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "The research has no figures for accidents in clearing land. This event is invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "claim-wet-tract",
+    "deck": "claim",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "cmp": [
+        "land.tract.poor",
+        "==",
+        true
+      ]
+    },
+    "text": "The ground you chose turns out to hold water. The cabin site floods after a night's rain.",
+    "choices": [
+      {
+        "id": "move",
+        "label": "Move the cabin site to a rise",
+        "effects": [
+          {
+            "shelter": "#ev.wet.shelter"
+          }
+        ],
+        "result": "You lose some of the work, but the new site is dry."
+      },
+      {
+        "id": "stay",
+        "label": "Ditch it and stay",
+        "effects": [
+          {
+            "chance": "#ev.ague.pHigh",
+            "then": [
+              {
+                "sicken": {
+                  "who": "random",
+                  "illness": "ague"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Some buyers took land sight unseen and found \"swamps and quagmires, or ... musquito territory.\"",
+      "source": "Pritchard, Kalamazoo County Directory with a history (1869)",
+      "url": "https://archive.org/details/kalamazoocounty01pritgoog",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "claim-letter-postage",
+    "deck": "claim",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "phase": "claim"
+    },
+    "text": "A neighbour is riding to Bronson and offers to carry a letter home, if you can pay the postage.",
+    "choices": [
+      {
+        "id": "write",
+        "label": "Write a letter home",
+        "requires": {
+          "afford": "#price.postage"
+        },
+        "why": "You cannot spare the postage.",
+        "effects": [
+          {
+            "pay": "#price.postage"
+          },
+          {
+            "morale": "#morale.letter"
+          }
+        ],
+        "result": "The family sits up late writing it."
+      },
+      {
+        "id": "no",
+        "label": "Not now",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "A letter cost 25 cents to send in the 1830s, a remark Barber makes of the Vermont colonists.",
+      "source": "Barber, \"The Vermontville Colony,\" Michigan Pioneer and Historical Collections vol. 28 (1897)",
+      "url": "https://archive.org/details/michiganpioneerh0028unse",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "any-flux",
+    "deck": "travel",
+    "weight": "#w.rare",
+    "cooldown": "#cd.long",
+    "when": {
+      "leg": [
+        "vermont",
+        "canal",
+        "overland",
+        "road"
+      ]
+    },
+    "bind": {
+      "who": {
+        "member": "well"
+      }
+    },
+    "text": "Bad water at the last stop. By evening {who} is sick.",
+    "effects": [
+      {
+        "sicken": {
+          "who": "$who",
+          "illness": "dysentery"
+        }
+      }
+    ],
+    "note": {
+      "text": "The research found no source on dysentery among Michigan emigrants in 1836. This illness and its odds are invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "any-trunk",
+    "deck": "travel",
+    "weight": "#w.uncommon",
+    "cooldown": "#cd.long",
+    "when": {
+      "leg": [
+        "vermont",
+        "overland",
+        "road"
+      ]
+    },
+    "bind": {
+      "who": {
+        "member": "wellAdult"
+      }
+    },
+    "text": "A trunk slides off the load and comes down on {who}'s foot.",
+    "choices": [
+      {
+        "id": "bind",
+        "label": "Bind it and go on",
+        "effects": [
+          {
+            "injure": {
+              "who": "$who",
+              "amount": "#ev.injury.small"
+            }
+          }
+        ]
+      },
+      {
+        "id": "rest",
+        "label": "Stop for a day",
+        "effects": [
+          {
+            "days": "#ev.delay.day"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "The research has no figures for accidents on the road. This event is invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "any-fair-day",
+    "deck": "travel",
+    "weight": "#w.uncommon",
+    "cooldown": "#cd.long",
+    "when": {
+      "leg": [
+        "vermont",
+        "overland",
+        "road"
+      ]
+    },
+    "text": "A clear, cold day. The road is dry, the team steps out well, and for once nobody complains.",
+    "effects": [
+      {
+        "morale": "#ev.morale.small"
+      }
+    ],
+    "note": {
+      "text": "A quiet day on the road, invented for the game. Nothing in it comes from the research.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "ohio-swamp-guide",
+    "deck": "travel",
+    "weight": "#w.offer",
+    "once": true,
+    "when": {
+      "all": [
+        {
+          "leg": "overland"
+        },
+        {
+          "terrain": "road"
+        }
+      ]
+    },
+    "text": "At a tavern on the Ohio road a teamster who hauls freight through the Black Swamp offers to guide you across it. He knows where the corduroy holds and where it has sunk.",
+    "choices": [
+      {
+        "id": "hire",
+        "label": "Hire him to take you through the swamp",
+        "requires": {
+          "afford": "#price.swampGuide"
+        },
+        "why": "You cannot pay his fee.",
+        "effects": [
+          {
+            "pay": "#price.swampGuide"
+          },
+          {
+            "flag": "swampGuide"
+          }
+        ],
+        "result": "He will meet you at Sandusky and ride ahead of the wagon."
+      },
+      {
+        "id": "no",
+        "label": "Find your own way",
+        "effects": [],
+        "result": "He shrugs. Plenty of wagons go in alone, he says, and most come out."
+      }
+    ],
+    "note": {
+      "text": "Hired swamp guides are invented for the game; the research has no record of them. What is sourced: the swamp road was thought tolerable only July to September, and the Perrysburg-Fremont stretch was called \"the worst road in the country.\"",
+      "source": "Historic Perrysburg, The Great Black Swamp (local history); guide invented",
+      "url": "https://www.historicperrysburg.org/copy-of-great-black-swamp",
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "ohio-second-yoke",
+    "deck": "travel",
+    "weight": "#w.offer",
+    "once": true,
+    "when": {
+      "all": [
+        {
+          "leg": "overland"
+        },
+        {
+          "terrain": "road"
+        },
+        {
+          "cmp": [
+            "gear.team",
+            "==",
+            "oxen"
+          ]
+        },
+        {
+          "flag": "!secondYoke"
+        }
+      ]
+    },
+    "text": "A farmer by the road has a second yoke of oxen to sell. Two yokes would spell each other on the long road and pull together in the mud.",
+    "choices": [
+      {
+        "id": "buy",
+        "label": "Buy the second yoke",
+        "requires": {
+          "afford": "#price.oxen"
+        },
+        "why": "You cannot raise the price.",
+        "effects": [
+          {
+            "pay": "#price.oxen"
+          },
+          {
+            "flag": "secondYoke"
+          }
+        ],
+        "result": "You hitch the new yoke ahead of your own."
+      },
+      {
+        "id": "no",
+        "label": "Keep your money",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "Oxen sold \"from $50 to $100 a pair\" at Kalamazoo in 1833, by an 1869 recollection. The game's rule that a second yoke speeds the wagon is invented.",
+      "source": "Pritchard, Kalamazoo County Directory with a history (1869)",
+      "url": "https://archive.org/details/kalamazoocounty01pritgoog",
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "swamp-rain-tavern",
+    "deck": "travel",
+    "weight": "#w.frequent",
+    "cooldown": "#cd.short",
+    "when": {
+      "terrain": "swamp"
+    },
+    "text": "Rain sets in over the swamp. There is a log tavern at the roadside with a dry floor and a fire.",
+    "choices": [
+      {
+        "id": "wait",
+        "label": "Wait out the rain at the tavern",
+        "requires": {
+          "afford": "#ev.inn.cost"
+        },
+        "why": "You cannot pay the landlord.",
+        "effects": [
+          {
+            "pay": "#ev.inn.cost"
+          },
+          {
+            "days": "#ev.delay.day"
+          },
+          {
+            "heal": {
+              "who": "all",
+              "amount": "#ev.heal.small"
+            }
+          },
+          {
+            "flag": "swampDrained"
+          }
+        ],
+        "result": "By morning the water has run off the corduroy, and the road is better than it has been."
+      },
+      {
+        "id": "push",
+        "label": "Push on through the rain",
+        "effects": [
+          {
+            "wagon": "#ev.wagon.small"
+          },
+          {
+            "chance": "#ev.ague.p",
+            "then": [
+              {
+                "sicken": {
+                  "who": "random",
+                  "illness": "ague"
+                }
+              }
+            ]
+          }
+        ],
+        "result": "You make a few miles, soaked through."
+      }
+    ],
+    "note": {
+      "text": "In the wet season the swamp crossing could take \"days or even weeks\" (local history, likely). Waiting out the rain at a tavern is invented for the game.",
+      "source": "Historic Perrysburg, The Great Black Swamp; tavern invented",
+      "url": "https://www.historicperrysburg.org/copy-of-great-black-swamp",
+      "confidence": "invented"
+    }
+  }
+]
