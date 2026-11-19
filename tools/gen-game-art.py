@@ -48,10 +48,36 @@ def log_cost(cost_log, sid, model, n, size, cost, image, cost_unknown=False):
 
 def reply_lost(e):
     """True when the request went out but its reply was cut off, unreadable or
-    timed out: the call may be billed. A failure to connect is not."""
-    if isinstance(e, urllib.error.URLError) and not isinstance(e, urllib.error.HTTPError):
-        e = e.reason
-    return isinstance(e, (TimeoutError, http.client.IncompleteRead, http.client.RemoteDisconnected, ValueError))
+    timed out: the call may be billed. urllib wraps errors from sending the
+    request (connect, send timeout) in URLError, so those were not billed; errors
+    from getresponse() and the body read arrive unwrapped."""
+    if isinstance(e, urllib.error.URLError):
+        return False
+    return isinstance(e, (OSError, http.client.HTTPException, json.JSONDecodeError, UnicodeDecodeError))
+
+
+def call_estimate(env):
+    """The per-call estimate, parsed before any call so a bad value can't crash the logging."""
+    raw = env.get("ART_CALL_ESTIMATE", CALL_ESTIMATE)
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        sys.exit(f"ART_CALL_ESTIMATE must be a number of dollars, got {raw!r}")
+
+
+def reply_cost(resp):
+    """-> (cost, known). A billed reply of an unexpected shape still gets a row."""
+    try:
+        return float((resp.get("usage") or {}).get("cost") or 0), True
+    except (AttributeError, TypeError, ValueError):
+        return None, False
+
+
+def reply_images(resp):
+    try:
+        return (resp.get("choices") or [{}])[0].get("message", {}).get("images") or []
+    except (AttributeError, IndexError, TypeError):
+        return []
 
 
 def generate(sid, raw, cfg, env, key, budget, cost_log, call=call):
@@ -60,6 +86,7 @@ def generate(sid, raw, cfg, env, key, budget, cost_log, call=call):
     with or without an image. A reply lost after the request was sent is logged at
     the estimate and stops the run. -> "ok" | "failed" | "budget" | "stopped"."""
     prompt = build_prompt(cfg, sid, env)
+    est = call_estimate(env)
     n = len(list(raw.glob(sid + "-a*.*"))) + 1
     for model in MODELS:
         for size in (["2K", None] if "pro" in model else [None]):
@@ -76,16 +103,17 @@ def generate(sid, raw, cfg, env, key, budget, cost_log, call=call):
                 continue
             except Exception as e:
                 if reply_lost(e):
-                    est = float(env.get("ART_CALL_ESTIMATE", CALL_ESTIMATE))
                     log_cost(cost_log, sid, model, n, size, est, False, cost_unknown=True)
                     print(f"{sid}: {model} size={size} reply lost after sending ({type(e).__name__}); "
                           f"counted at ${est:.4f}, total ${spent(cost_log):.4f}; stopping")
                     return "stopped"
                 print(f"{sid}: {model} error {e}")
                 continue
-            imgs = (resp.get("choices") or [{}])[0].get("message", {}).get("images") or []
-            cost = float((resp.get("usage") or {}).get("cost") or 0)
-            log_cost(cost_log, sid, model, n, size, cost, bool(imgs))
+            cost, known = reply_cost(resp)
+            imgs = reply_images(resp)
+            if not known:
+                cost = est
+            log_cost(cost_log, sid, model, n, size, cost, bool(imgs), cost_unknown=not known)
             print(f"{sid}: cost ${cost:.4f}, total ${spent(cost_log):.4f}")
             if not imgs:
                 print(f"{sid}: {model} no image")
@@ -102,14 +130,15 @@ def generate(sid, raw, cfg, env, key, budget, cost_log, call=call):
     return "failed"
 
 
-def main(argv, env):
+def main(argv, env, call=call):
     cfg = json.loads((HERE / "game-art-prompts.json").read_text())
     raw = pathlib.Path(argv[1]); raw.mkdir(parents=True, exist_ok=True)
     key = env["OPENROUTER_API_KEY"]
     cost_log = pathlib.Path(env.get("ART_COST_LOG", "art-cost.jsonl"))
     budget = float(env.get("ART_BUDGET", "3.5"))
+    call_estimate(env)
     for sid in argv[2].split(","):
-        if generate(sid, raw, cfg, env, key, budget, cost_log) in ("budget", "stopped"):
+        if generate(sid, raw, cfg, env, key, budget, cost_log, call=call) in ("budget", "stopped"):
             break
 
 

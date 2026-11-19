@@ -1,6 +1,6 @@
 """Tests for tools/gen-game-art.py (no network: the API call is replaced).
 Run: python3 -m unittest tools/test_gen_game_art.py"""
-import base64, contextlib, http.client, importlib.util, io, json, pathlib, tempfile, unittest, urllib.error
+import base64, contextlib, http.client, ssl, importlib.util, io, json, pathlib, tempfile, unittest, urllib.error
 
 spec = importlib.util.spec_from_file_location("gen_game_art", pathlib.Path(__file__).with_name("gen-game-art.py"))
 g = importlib.util.module_from_spec(spec)
@@ -100,9 +100,47 @@ class GenGameArt(unittest.TestCase):
         self.assert_lost_reply_stops(json.JSONDecodeError("Expecting value", "<html>", 0))
 
     def test_read_timeout_is_logged_and_stops(self):
+        # A timeout in getresponse() or the body read reaches us unwrapped.
         self.assert_lost_reply_stops(TimeoutError("The read operation timed out"))
-        self.log.unlink()
-        self.assert_lost_reply_stops(urllib.error.URLError(TimeoutError("timed out")))
+
+    # Review round 3 (N4'): any raw socket or HTTP error after sending is a lost reply.
+    def test_a_reset_mid_body_is_logged_and_stops(self):
+        for exc in (ConnectionResetError(104, "Connection reset by peer"), ssl.SSLEOFError(8, "EOF"),
+                    BrokenPipeError(32, "Broken pipe"), http.client.BadStatusLine("garbage")):
+            with self.subTest(exc=type(exc).__name__):
+                self.assert_lost_reply_stops(exc)
+                self.log.unlink()
+
+    # Review round 3: urllib wraps errors from sending the request (connect, send
+    # timeout) in URLError, so nothing was billed: try the next model.
+    def test_a_send_timeout_is_not_billed(self):
+        fake = FakeCall([urllib.error.URLError(TimeoutError("timed out")), image(0.1)])
+        result, _ = self.run_gen(fake)
+        self.assertEqual(result, "ok")
+        self.assertEqual([json.loads(l)["cost"] for l in self.log.read_text().splitlines()], [0.1])
+
+    # Review round 3: a ValueError raised before sending (a bad header value) is not a billed call.
+    def test_a_bad_header_is_not_billed(self):
+        fake = FakeCall([ValueError("Invalid header value"), image(0.1)])
+        result, _ = self.run_gen(fake)
+        self.assertEqual(result, "ok")
+        self.assertNotIn(True, [json.loads(l).get("cost_unknown") for l in self.log.read_text().splitlines()])
+
+    # Review round 3: a bad ART_CALL_ESTIMATE fails before any call, not inside the handler.
+    def test_a_bad_estimate_fails_before_any_call(self):
+        fake = FakeCall([image(0.1)])
+        with self.assertRaises(SystemExit):
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                g.main(["gen", str(self.dir), "02-road"], {"OPENROUTER_API_KEY": "k", "ART_COST_LOG": str(self.log),
+                                                           "ART_CALL_ESTIMATE": "$0.14"}, call=fake)
+        self.assertEqual(fake.calls, [])
+
+    # Review round 3 (pre-existing): a billed 200 with an odd shape is logged before it is read.
+    def test_an_odd_billed_reply_is_logged(self):
+        fake = FakeCall([{"choices": [{"message": None}], "usage": {"cost": 0.138}}, image(0.1)])
+        result, _ = self.run_gen(fake)
+        self.assertEqual(result, "ok")
+        self.assertAlmostEqual(g.spent(self.log), 0.238)
 
     def test_the_estimate_has_a_default(self):
         fake = FakeCall([TimeoutError("The read operation timed out")])

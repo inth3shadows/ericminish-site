@@ -589,6 +589,7 @@ function stumble(j, err) {
   busy = false;
   lapseStop = null;
   clearTimeout(lightTimer);
+  audio.duck(1);
   veilHide();
   veil.classList.remove("is-end");
   sceneEl.classList.remove("is-lapse");
@@ -609,10 +610,10 @@ function stumble(j, err) {
 // After a step has played in full on a live journey: autosave it and offer what comes next.
 function settleStep(j) {
   j.check();
+  busy = false;
+  if (!state.over) showActions(); // throws on a broken state, before anything is saved
   saveGame(state);
   saveMeta();
-  busy = false;
-  if (!state.over) showActions();
 }
 
 async function act(action) {
@@ -781,16 +782,26 @@ function leaveTitle() {
   card.replaceChildren();
 }
 
-async function begin() {
-  // Cancel the last journey first (a drive-on lapse, an action still playing,
-  // a light change on a timer): its waits reject at once, so it writes nothing
-  // more, and the new journey's Continue cannot be taken by it.
+// Start a journey token and clear everything the last one left behind: a drive-on
+// lapse, a light change on a timer, the ducked sound, and the old buttons (a number
+// key must not reach a title or action button that is no longer on screen).
+function startJourney() {
   const j = journeys.begin();
   clearTimeout(lightTimer);
   lapseStop = null;
+  busy = false;
+  buttons = [];
   sceneEl.classList.remove("is-lapse");
   ui.classList.remove("is-lapse");
   contBtn.hidden = true;
+  audio.duck(1);
+  return j;
+}
+
+async function begin() {
+  // Cancel the last journey first: its waits reject at once, so it writes nothing
+  // more, and the new journey's Continue cannot be taken by it.
+  const j = startJourney();
   busy = true;
   try {
     setImmersive(true);
@@ -873,7 +884,7 @@ function familyForm(a) {
 }
 
 async function resume(saved) {
-  const j = journeys.begin();
+  const j = startJourney();
   try {
     setImmersive(true);
     leaveTitle();
@@ -1038,7 +1049,7 @@ document.addEventListener("keydown", (e) => {
   }
   if (/^[1-9]$/.test(e.key) && veil.hidden && !journeys.waiting()) {
     const b = buttons[Number(e.key) - 1];
-    if (b) {
+    if (b && b.isConnected && !b.closest("[hidden]")) {
       e.preventDefault();
       b.focus({ preventScroll: true });
       b.click();

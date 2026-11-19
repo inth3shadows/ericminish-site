@@ -280,3 +280,9 @@ test("F13: no line opens with a lowercase 'the X family'", () => {
 test("view() of a reached state still works (sanity for the helpers above)", () => {
   assert.ok(view(route, at("vermont")).food);
 });
+
+// Review round 3 (nit): with no scene memory, the resume line opened its second sentence in lowercase ("1836. the farm.").
+test("the resume line without scene memory starts each sentence with a capital", () => {
+  const r = resumeText({ seed: "s", pending: null }, {}, { dateLabel: "Monday, 19 September 1836", placeLabel: "the farm" });
+  assert.equal(r.text, "Monday, 19 September 1836. The farm.");
+});

@@ -2,10 +2,12 @@
 // memory (store.KEYS.meta) belongs to one game, named by its seed; a different
 // game's memory must not leak into this one. DOM-free, for tests.
 
+const cap = (t) => (t ? t[0].toUpperCase() + t.slice(1) : t);
+
 // -> { text, title, kind, pendingEvent }
 export function resumeText(state, meta, v) {
   const sameGame = meta?.seed === state.seed;
-  const text = state.pending && sameGame && meta.pending ? meta.pending.text : (sameGame && meta.line) || `${v.dateLabel}. ${v.placeLabel}.`;
+  const text = state.pending && sameGame && meta.pending ? meta.pending.text : (sameGame && meta.line) || `${v.dateLabel}. ${cap(v.placeLabel)}.`;
   return {
     text,
     title: state.pending && sameGame ? meta.pending?.title ?? null : null,
