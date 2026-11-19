@@ -274,6 +274,14 @@ function walkEffects(effects, route, errs, where) {
     let k;
     try { k = effectOp(e); } catch (err) { errs.push(`${where}: ${err.message}`); continue; }
     if (!CORE_EFFECTS.has(k) && !route.effects?.[k]) errs.push(`${where}: unknown effect ${k}`);
+    // "as" is the kind of day a "days" effect spends. With an eventDay hook the
+    // route needs one it knows (route.eventDayKinds), or step() throws mid-game.
+    if (k !== "days" && "as" in e) errs.push(`${where}: "as" belongs on a days effect, not on ${k}`);
+    if (k === "days" && route.eventDay) {
+      const kinds = route.eventDayKinds ?? [];
+      if (e.as == null) errs.push(`${where}: days needs an "as" (one of ${kinds.join(", ")})`);
+      else if (!kinds.includes(e.as)) errs.push(`${where}: days with unknown "as" ${JSON.stringify(e.as)} (one of ${kinds.join(", ")})`);
+    }
     if (k === "if") walkCond(e.if, route, errs, where);
     if (k === "event" && !route.events.some((x) => x.id === e.event)) errs.push(`${where}: unknown event ${e.event}`);
     walkEffects(e.then, route, errs, where);

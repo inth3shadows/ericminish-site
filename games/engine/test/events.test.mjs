@@ -204,3 +204,41 @@ test("days with a route eventDay hook: the hook runs before each day, with the k
   f.route.events.push({ id: "spend", deck: "d", text: "t", choices: [{ id: "c", label: "C", effects: [{ days: 1, as: "rest" }] }] });
   assert.deepEqual(validateDeck(f.route), []);
 });
+
+// Review N1: with a route eventDay hook, a "days" effect needs an "as" the route
+// knows (route.eventDayKinds), and "as" anywhere else is a mistake in the data.
+test("validateDeck: days need a known 'as' when the route has an eventDay hook; 'as' elsewhere is an error", () => {
+  const f = deckFixture();
+  f.route.eventDay = () => {};
+  f.route.eventDayKinds = ["rest", "halt"];
+  const choice = (id, effects) => ({ id, label: id, effects });
+  f.route.events.push({
+    id: "kinds", deck: "d", text: "t",
+    choices: [
+      choice("none", [{ days: 1 }]),
+      choice("typo", [{ days: 1, as: "resst" }]),
+      choice("stray", [{ narrate: "hi", as: "rest" }]),
+      choice("nested", [{ chance: 0.5, then: [{ days: 2 }], else: [] }]),
+      choice("good", [{ days: 1, as: "rest" }, { chance: 0.5, then: [{ days: 1, as: "halt" }] }]),
+    ],
+  });
+  const errs = validateDeck(f.route);
+  const at = (c) => errs.filter((e) => e.startsWith(`event kinds.${c}:`));
+  assert.equal(at("none").length, 1, errs.join("\n"));
+  assert.match(at("none")[0], /days.*"as"/);
+  assert.equal(at("typo").length, 1, errs.join("\n"));
+  assert.match(at("typo")[0], /resst/);
+  assert.equal(at("stray").length, 1, errs.join("\n"));
+  assert.match(at("stray")[0], /"as".*narrate/);
+  assert.equal(at("nested").length, 1, errs.join("\n"));
+  assert.deepEqual(at("good"), []);
+  assert.equal(errs.length, 4, errs.join("\n"));
+});
+
+test("validateDeck: without an eventDay hook, 'as' on days is allowed and on other effects is an error", () => {
+  const f = deckFixture();
+  f.route.events.push({ id: "plain", deck: "d", text: "t", effects: [{ days: 1 }, { days: 1, as: "rest" }, { add: ["food", 1], as: "rest" }] });
+  const errs = validateDeck(f.route);
+  assert.equal(errs.length, 1, errs.join("\n"));
+  assert.match(errs[0], /event plain: .*"as".*add/);
+});

@@ -332,3 +332,10 @@ test("every scene key emitted by code or data is listed in SCENES", () => {
   ]);
   for (const k of keys) assert.ok(k in SCENES, `scene ${k} is not in SCENES`);
 });
+
+// Review N1: the route lists the kinds of day an event's "days" effect may spend,
+// so validateDeck can check every "as" in the deck.
+test("the route exports its event-day kinds, and every event's days use one of them", () => {
+  assert.deepEqual([...route.eventDayKinds].sort(), ["aboard", "apart", "halt", "inn", "rest"]);
+  assert.deepEqual(validateDeck(route), []);
+});

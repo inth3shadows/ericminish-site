@@ -353,6 +353,8 @@ const EVENT_DAYS = {
   inn: () => ({ kind: "inn", resting: true, lodged: true }),                                     // under a roof, paid for
 };
 
+export const EVENT_DAY_KINDS = Object.freeze(Object.keys(EVENT_DAYS));
+
 function eventDay(ctx, as) {
   const f = EVENT_DAYS[as];
   if (!f) throw new Error(`an event's days need a known "as": ${as}`);
@@ -864,7 +866,7 @@ export function createRoute({ numbers, events, backgrounds, text }) {
     data: { backgrounds, text },
     limits: { morale: [0, 100], food: [0, Number.MAX_SAFE_INTEGER], quinine: [0, Number.MAX_SAFE_INTEGER] },
     startDate: () => num("date.start"),
-    init, actions, act, onDay, eventDay, afterAction, checkEnd, ending,
+    init, actions, act, onDay, eventDay, eventDayKinds: EVENT_DAY_KINDS, afterAction, checkEnd, ending,
     conditions, effects, binders, textVar, textVars,
     view: (state) => view(route, state),
   };

@@ -16,6 +16,7 @@ import { el, icon, wait } from "./dom.js";
 import * as store from "./store.js";
 import { canDriveOn, driveOn } from "./driveon.js";
 import { resumeText } from "./resume.js";
+import { Cancelled, createJourneys, quiet } from "./journey.js";
 
 const root = document.getElementById("game");
 const reducedMq = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -85,10 +86,12 @@ let groupStack = [];
 let topItems = [];
 let lightTimer = 0;
 let shownAt = 0; // when the current buttons appeared: a Space meant for the narration must not pick one
-// Which journey is on screen. begin() moves it on, so a drive-on lapse or an
-// action still playing from the journey before can tell it has been replaced
-// and stops without writing state or the autosave.
-let journey = 0;
+// Which journey is on screen (ui/journey.js). Every awaited step of the
+// playback chain (scene changes, pauses, the player's Continue, the veil) goes
+// through the journey that started it. begin() cancels the one before, so a
+// play(), a drive-on lapse or a light change still running from it stops at
+// its next await, writing nothing: no state, no notes, no autosave.
+const journeys = createJourneys();
 
 // ---------------------------------------------------------------- scene + sound
 
@@ -96,16 +99,18 @@ function storm() {
   return sceneKey === "lake-storm";
 }
 
-async function applyScene() {
+async function applyScene(j) {
+  j.check();
   const art = artFor(sceneKey, tod) ?? scene.current() ?? "02-road-to-albany";
-  await scene.show(art, sceneKey);
+  await j.settle(scene.show(art, sceneKey));
   atmos.setLight(tod, scene.mood());
   atmos.setWeather(weather.weather, { terrain: weather.terrain, storm: storm() });
   const v = state && state.phase !== "start" ? view(route, state) : null;
   audio.mix(mixFor(sceneKey, { tod, weather: weather.weather, storm: storm(), snow: v?.snow, artId: scene.current() }));
 }
 
-function setLight(next) {
+function setLight(j, next) {
+  j.check();
   clearTimeout(lightTimer);
   const prev = tod;
   tod = next;
@@ -113,11 +118,12 @@ function setLight(next) {
   if (prev === "night" && next === "day") {
     tod = "dawn";
     lightTimer = setTimeout(() => {
+      if (!j.live) return;
       tod = "day";
-      applyScene();
+      quiet(applyScene(j));
     }, reduced() ? 0 : 4200);
   }
-  return applyScene();
+  return applyScene(j);
 }
 
 // The engine has days, not hours, so the light is the UI's own reading of
@@ -141,7 +147,6 @@ function guessScene(v) {
 
 // ---------------------------------------------------------------- subtitles
 
-let waiter = null;
 let revealTimer = 0;
 
 function setLine(text, { title = null, kind = "narrate", cue = null, animate = true } = {}) {
@@ -181,12 +186,12 @@ function finishReveal() {
   line.classList.add("is-done");
 }
 
-function advance() {
+// Waits for the player's Continue, for journey j only.
+function advance(j) {
+  j.check();
   contBtn.hidden = false;
   if (menu.hidden && drawer.hidden && !(document.activeElement instanceof HTMLInputElement)) contBtn.focus({ preventScroll: true });
-  return new Promise((resolve) => {
-    waiter = resolve;
-  });
+  return j.wait();
 }
 
 function onAdvance() {
@@ -204,19 +209,18 @@ function onAdvance() {
     veil.classList.add("is-done");
     return true;
   }
-  if (!waiter) return false;
-  const w = waiter;
-  waiter = null;
+  if (!journeys.waiting()) return false; // only the current journey's Continue is ever resolved
   contBtn.hidden = true;
-  w();
+  journeys.advance();
   return true;
 }
 
-async function say(text, opts = {}) {
+async function say(j, text, opts = {}) {
+  j.check();
   said = true;
   lastLine = text;
   setLine(text, opts);
-  await advance();
+  await advance(j);
 }
 
 contBtn.addEventListener("click", () => onAdvance());
@@ -230,7 +234,8 @@ ui.addEventListener("click", (e) => {
 
 // ---------------------------------------------------------------- history notes
 
-function addNote(n) {
+function addNote(j, n) {
+  j.check(); // an old journey's notes never reach the new one
   const entry = { text: n.text, source: n.source, url: n.url ?? null, confidence: n.confidence ?? null, date: state?.date ?? null };
   if (notes.length && notes[notes.length - 1].text === entry.text) return;
   notes.push(entry);
@@ -290,7 +295,8 @@ function veilShow(label) {
 
 let veilTimer = 0;
 
-async function veilStep(nodes) {
+async function veilStep(j, nodes) {
+  j.check();
   clearTimeout(veilTimer); // a skipped panel's timer must not end this panel's reveal early
   const panel = el("div", { class: "mf-veil-inner" }, ...nodes);
   const go = el("button", { class: "mf-continue", type: "button" }, el("span", {}, "Continue"), el("span", { class: "mf-key", "aria-hidden": "true" }, "Space"));
@@ -306,9 +312,7 @@ async function veilStep(nodes) {
   } else veil.classList.add("is-done");
   veil.scrollTop = 0;
   go.focus({ preventScroll: true });
-  await new Promise((resolve) => {
-    waiter = resolve;
-  });
+  await j.wait();
 }
 
 function veilHide() {
@@ -323,13 +327,14 @@ function veilHide() {
 // The death register (user decision): the plain factual line, then the letter
 // home (labelled fiction, label from the data), then the history note.
 // No sound sting, no score, nothing for the player to type.
-async function deathRegister(d, letter, note) {
+async function deathRegister(j, d, letter, note) {
+  j.check();
   audio.duck(0.4);
   veilShow("A death in the family");
-  await veilStep([el("p", { class: "mf-death-line" }, d.text)]);
+  await veilStep(j, [el("p", { class: "mf-death-line" }, d.text)]);
   if (letter) {
     const paras = String(letter.text).split(/\n\s*\n/).map((t) => el("p", {}, t.trim()));
-    await veilStep([
+    await veilStep(j, [
       el("p", { class: "mf-fiction-label" }, letter.label),
       el(
         "div",
@@ -341,8 +346,8 @@ async function deathRegister(d, letter, note) {
     ]);
   }
   if (note) {
-    addNote(note);
-    await veilStep([noteBlock(note, { heading: true })]);
+    addNote(j, note);
+    await veilStep(j, [noteBlock(note, { heading: true })]);
   }
   veilHide();
   audio.duck(1);
@@ -354,13 +359,14 @@ function fullDate(iso) {
   return `${d} ${M[m - 1]} ${y}`;
 }
 
-async function arrival(b) {
+async function arrival(j, b) {
+  j.check();
   card.replaceChildren(
     el("p", { class: `mf-place-card${b.passing ? " is-passing" : ""}` }, b.label),
     el("p", { class: "mf-card-date" }, b.date ? fullDate(b.date) : ""),
   );
   card.classList.add("is-on");
-  if (b.text) await say(b.text);
+  if (b.text) await say(j, b.text);
   card.classList.remove("is-on");
 }
 
@@ -374,8 +380,9 @@ function ledger(s, deaths) {
   return lines;
 }
 
-async function ending(b) {
-  setLight("dusk");
+function ending(j, b) {
+  j.check();
+  quiet(setLight(j, "dusk"));
   audio.duck(0.7);
   hud.toggleSheet(false);
   const box = el("div", { class: "mf-end-inner" });
@@ -422,21 +429,24 @@ async function ending(b) {
 
 // ---------------------------------------------------------------- beats
 
-async function play(beats) {
+// Plays one step's beats for journey j. Every await goes through j, so once a
+// new journey begins this throws Cancelled at its next await and plays nothing more.
+async function play(j, beats) {
   for (let i = 0; i < beats.length; i++) {
+    j.check();
     const b = beats[i];
     switch (b.type) {
       case "scene":
         sceneKey = b.scene;
-        await applyScene();
+        await applyScene(j);
         break;
       case "weather":
         weather = { weather: b.weather, terrain: b.terrain ?? null };
-        await applyScene();
+        await applyScene(j);
         break;
       case "narrate":
         if (b.chosen) break; // the player just picked it
-        await say(b.text, { cue: b.cue });
+        await say(j, b.text, { cue: b.cue });
         break;
       case "event": {
         pendingEvent = { text: b.text, title: b.title ?? null };
@@ -446,28 +456,28 @@ async function play(beats) {
           said = true;
           lastLine = b.text;
           setLine(b.text, { title: b.title, kind: "event" });
-        } else await say(b.text, { title: b.title, kind: "event" });
+        } else await say(j, b.text, { title: b.title, kind: "event" });
         break;
       }
       case "choice":
         break; // the same choices come from availableActions
       case "note":
-        addNote(b);
+        addNote(j, b);
         break;
       case "arrive":
-        await arrival(b);
+        await arrival(j, b);
         break;
       case "death": {
         const letter = beats[i + 1]?.type === "letter" ? beats[++i] : null;
         const note = beats[i + 1]?.type === "note" ? beats[++i] : null;
-        await deathRegister(b, letter, note);
+        await deathRegister(j, b, letter, note);
         break;
       }
       case "letter":
-        await deathRegister({ text: "" }, b, null);
+        await deathRegister(j, { text: "" }, b, null);
         break;
       case "end":
-        await ending(b);
+        ending(j, b);
         break;
       case "error":
         console.error("Michigan Fever: the UI offered an action the engine refused:", b.message);
@@ -501,7 +511,7 @@ function focusDefault() {
     veil.querySelector("button")?.focus({ preventScroll: true });
     return;
   }
-  if (waiter) {
+  if (journeys.waiting()) {
     contBtn.focus({ preventScroll: true });
     return;
   }
@@ -567,42 +577,75 @@ function saveMeta() {
   });
 }
 
+// The safety net (review N1/N3): when step() or a render throws, this journey
+// stops where it is. The broken state is not autosaved, so the last good day
+// stays on disk, and the player is offered a new journey.
+const BROKEN_LINE = "The trail gives out here. Something went wrong in the game, and this journey cannot go on. The last step was not saved. You can begin a new journey.";
+
+function stumble(j, err) {
+  if (err instanceof Cancelled || !j.live) return; // a new journey began: it owns the screen now
+  console.error("Michigan Fever: the journey stopped on an error:", err);
+  j.cancel(); // nothing more of this journey plays or saves
+  busy = false;
+  lapseStop = null;
+  clearTimeout(lightTimer);
+  veilHide();
+  veil.classList.remove("is-end");
+  sceneEl.classList.remove("is-lapse");
+  ui.classList.remove("is-lapse");
+  card.classList.remove("is-on");
+  contBtn.hidden = true;
+  bottom.hidden = false;
+  hud.toggleSheet(false);
+  setLine(BROKEN_LINE, { animate: false });
+  topItems = [{ id: "new", label: "Begin a new journey", forward: true, enabled: true }];
+  groupStack = [];
+  buttons = renderActions(actionsBox, topItems, { onPick: () => { audio.unlock(); begin(); }, onOpen: () => {} });
+  actionsBox.hidden = false;
+  shownAt = performance.now();
+  buttons[0]?.focus({ preventScroll: true });
+}
+
+// After a step has played in full on a live journey: autosave it and offer what comes next.
+function settleStep(j) {
+  j.check();
+  saveGame(state);
+  saveMeta();
+  busy = false;
+  if (!state.over) showActions();
+}
+
 async function act(action) {
   if (action.id === "drive-on") return driveLapse();
   if (busy || !state) return;
+  const j = journeys.current;
   busy = true;
-  audio.unlock();
-  actionsBox.hidden = true;
-  actionsBox.replaceChildren();
-  buttons = [];
-  hud.toggleSheet(false);
-  said = false;
-  noteAge += 1;
-  if (noteAge > 3) {
-    noteBtn.hidden = true;
-    latestNote = null;
-  }
-  const mine = journey;
-  const r = step(route, state, action);
-  state = r.state;
-  const nextTod = todFor(action, state);
-  if (nextTod !== tod) await setLight(nextTod);
-  if (mine !== journey) return; // a new journey began meanwhile
   try {
+    audio.unlock();
+    actionsBox.hidden = true;
+    actionsBox.replaceChildren();
+    buttons = [];
+    hud.toggleSheet(false);
+    said = false;
+    noteAge += 1;
+    if (noteAge > 3) {
+      noteBtn.hidden = true;
+      latestNote = null;
+    }
+    const r = step(route, state, action);
+    state = r.state;
+    const nextTod = todFor(action, state);
+    if (nextTod !== tod) await setLight(j, nextTod);
     hud.render(view(route, state), []);
-    await play(r.beats);
-    if (mine === journey && !said && !state.over) {
+    await play(j, r.beats);
+    if (!said && !state.over) {
       lastLine = statusLine(action);
       setLine(lastLine, { animate: true });
     }
-  } finally {
-    if (mine === journey) {
-      saveGame(state);
-      saveMeta();
-      busy = false;
-    }
+    settleStep(j);
+  } catch (err) {
+    stumble(j, err);
   }
-  if (mine === journey && !state.over) showActions();
 }
 
 // ---------------------------------------------------------------- drive on
@@ -610,94 +653,90 @@ async function act(action) {
 let lapseStop = null;
 
 // One day of the time-lapse: the light runs through evening, night and dawn.
-async function lapseDay(mood) {
-  if (reduced()) return wait(450);
+async function lapseDay(j, mood) {
+  if (reduced()) return j.settle(wait(450));
   const seq = [["dusk", 320], ["night", 260], ["dawn", 260], ["day", 300]];
   for (const [t, ms] of seq) {
+    j.check();
     atmos.setLight(t, mood);
-    await wait(ms);
+    await j.settle(wait(ms));
   }
 }
 
 async function driveLapse() {
   if (busy || !state) return;
+  const j = journeys.current;
   busy = true;
-  audio.unlock();
-  hud.toggleSheet(false);
-  said = false;
-  const mine = journey;
-  const r = driveOn(ENGINE, route, state);
-  if (!r.days.length) {
-    busy = false;
-    return showActions();
-  }
-  let stop = false;
-  clearTimeout(lightTimer);
-  tod = "day";
-  const myStop = () => (stop = true);
-  lapseStop = myStop;
-  const stopBtn = el("button", { class: "mf-choice is-forward", type: "button", "data-id": "lapse-stop" }, el("span", { class: "mf-key", "aria-hidden": "true" }, "1"), el("span", { class: "mf-choice-text" }, el("span", { class: "mf-choice-label" }, "Stop here")));
-  stopBtn.addEventListener("click", () => (stop = true));
-  actionsBox.replaceChildren(stopBtn);
-  actionsBox.hidden = false;
-  buttons = [stopBtn];
-  shownAt = performance.now();
-  stopBtn.focus({ preventScroll: true });
-  sceneEl.classList.add("is-lapse");
-  ui.classList.add("is-lapse");
-  const last = r.days.length - 1;
   try {
-    for (let k = 0; k < last && !stop; k++) {
-      const d = r.days[k];
-      state = d.state;
-      const extra = [];
-      for (const b of d.beats) {
-        if (b.type === "weather") weather = { weather: b.weather, terrain: b.terrain ?? null };
-        if (b.type === "narrate" && !b.chosen) extra.push(b.text);
+    audio.unlock();
+    hud.toggleSheet(false);
+    said = false;
+    const r = driveOn(ENGINE, route, state);
+    if (!r.days.length) {
+      busy = false;
+      return showActions();
+    }
+    let stop = false;
+    clearTimeout(lightTimer);
+    tod = "day";
+    const myStop = () => (stop = true);
+    lapseStop = myStop;
+    const stopBtn = el("button", { class: "mf-choice is-forward", type: "button", "data-id": "lapse-stop" }, el("span", { class: "mf-key", "aria-hidden": "true" }, "1"), el("span", { class: "mf-choice-text" }, el("span", { class: "mf-choice-label" }, "Stop here")));
+    stopBtn.addEventListener("click", () => (stop = true));
+    actionsBox.replaceChildren(stopBtn);
+    actionsBox.hidden = false;
+    buttons = [stopBtn];
+    shownAt = performance.now();
+    stopBtn.focus({ preventScroll: true });
+    sceneEl.classList.add("is-lapse");
+    ui.classList.add("is-lapse");
+    const last = r.days.length - 1;
+    try {
+      for (let k = 0; k < last && !stop; k++) {
+        j.check();
+        const d = r.days[k];
+        state = d.state;
+        const extra = [];
+        for (const b of d.beats) {
+          if (b.type === "weather") weather = { weather: b.weather, terrain: b.terrain ?? null };
+          if (b.type === "narrate" && !b.chosen) extra.push(b.text);
+        }
+        atmos.setWeather(weather.weather, { terrain: weather.terrain, storm: storm() });
+        audio.mix(mixFor(sceneKey, { tod: "day", weather: weather.weather, storm: storm(), snow: d.view.snow, artId: scene.current() }));
+        hud.render(d.view, []);
+        lastLine = [statusLine({ type: "travel" }), ...extra].join(" ");
+        setLine(`${d.view.dateLabel}. ${lastLine}`, { animate: false });
+        await lapseDay(j, scene.mood());
       }
-      atmos.setWeather(weather.weather, { terrain: weather.terrain, storm: storm() });
-      audio.mix(mixFor(sceneKey, { tod: "day", weather: weather.weather, storm: storm(), snow: d.view.snow, artId: scene.current() }));
-      hud.render(d.view, []);
-      lastLine = [statusLine({ type: "travel" }), ...extra].join(" ");
-      setLine(`${d.view.dateLabel}. ${lastLine}`, { animate: false });
-      await lapseDay(scene.mood());
-      if (mine !== journey) return; // a new journey began during the lapse: leave its state alone
+    } finally {
+      if (lapseStop === myStop) lapseStop = null;
+      if (j.live) {
+        sceneEl.classList.remove("is-lapse");
+        ui.classList.remove("is-lapse");
+      }
     }
-  } finally {
-    if (lapseStop === myStop) lapseStop = null;
-    if (mine === journey) {
-      sceneEl.classList.remove("is-lapse");
-      ui.classList.remove("is-lapse");
-    }
-  }
-  actionsBox.hidden = true;
-  actionsBox.replaceChildren();
-  buttons = [];
-  tod = "day";
-  await applyScene();
-  if (mine !== journey) return;
-  try {
+    actionsBox.hidden = true;
+    actionsBox.replaceChildren();
+    buttons = [];
+    tod = "day";
+    await applyScene(j);
     if (!stop) {
       // The day that needs the player: play it in full, like any other step.
       const d = r.days[last];
       state = d.state;
       hud.render(d.view, []);
-      await play(d.beats);
-      if (mine === journey && !said && !state.over) {
+      await play(j, d.beats);
+      if (!said && !state.over) {
         lastLine = statusLine({ type: "travel" });
         setLine(lastLine, { animate: true });
       }
     } else {
       setLine(`${view(route, state).dateLabel}. You stop here.`, { animate: false });
     }
-  } finally {
-    if (mine === journey) {
-      saveGame(state);
-      saveMeta();
-      busy = false;
-    }
+    settleStep(j);
+  } catch (err) {
+    stumble(j, err);
   }
-  if (mine === journey && !state.over) showActions();
 }
 
 // ---------------------------------------------------------------- title, family
@@ -743,36 +782,41 @@ function leaveTitle() {
 }
 
 async function begin() {
-  // End whatever the last journey was doing (a drive-on lapse, an action still
-  // playing) before the new state is set, so it cannot write over this one.
-  journey += 1;
-  lapseStop?.();
+  // Cancel the last journey first (a drive-on lapse, an action still playing,
+  // a light change on a timer): its waits reject at once, so it writes nothing
+  // more, and the new journey's Continue cannot be taken by it.
+  const j = journeys.begin();
+  clearTimeout(lightTimer);
   lapseStop = null;
   sceneEl.classList.remove("is-lapse");
   ui.classList.remove("is-lapse");
-  waiter = null;
   contBtn.hidden = true;
-  setImmersive(true);
-  leaveTitle();
-  veilHide();
-  veil.classList.remove("is-end");
-  bottom.hidden = false;
-  actionsBox.hidden = true;
-  notes = [];
-  latestNote = null;
-  lastLine = "";
-  const seed = params.get("seed") || randomSeed();
-  const g = newGame(route, { seed });
-  state = g.state;
-  tod = "dawn";
-  weather = { weather: "mist", terrain: null };
   busy = true;
   try {
-    await play(g.beats);
-  } finally {
+    setImmersive(true);
+    leaveTitle();
+    veilHide();
+    veil.classList.remove("is-end");
+    bottom.hidden = false;
+    actionsBox.hidden = true;
+    noteBtn.hidden = true;
+    notes = [];
+    latestNote = null;
+    noteAge = 0;
+    lastLine = "";
+    pendingEvent = null;
+    const seed = params.get("seed") || randomSeed();
+    const g = newGame(route, { seed });
+    state = g.state;
+    tod = "dawn";
+    weather = { weather: "mist", terrain: null };
+    await play(j, g.beats);
+    j.check();
     busy = false;
+    chooseBackground();
+  } catch (err) {
+    stumble(j, err);
   }
-  chooseBackground();
 }
 
 function randomSeed() {
@@ -829,24 +873,29 @@ function familyForm(a) {
 }
 
 async function resume(saved) {
-  setImmersive(true);
-  leaveTitle();
-  state = saved;
-  const meta = store.getJSON(store.KEYS.meta, {}) ?? {};
-  const v = view(route, state);
-  const sameGame = meta.seed === state.seed;
-  sceneKey = (sameGame && meta.sceneKey) || guessScene(v);
-  tod = (sameGame && meta.tod) || "day";
-  weather = (sameGame && meta.weather) || { weather: "fair", terrain: v.travel?.terrain ?? null };
-  notes = sameGame && Array.isArray(meta.notes) ? meta.notes : [];
-  hud.hide(false);
-  await applyScene();
-  const resumed = resumeText(state, meta, v);
-  lastLine = resumed.text;
-  pendingEvent = resumed.pendingEvent;
-  setLine(resumed.text, { kind: resumed.kind, title: resumed.title });
-  if (state.phase === "start") chooseBackground();
-  else showActions();
+  const j = journeys.begin();
+  try {
+    setImmersive(true);
+    leaveTitle();
+    state = saved;
+    const meta = store.getJSON(store.KEYS.meta, {}) ?? {};
+    const v = view(route, state);
+    const sameGame = meta.seed === state.seed;
+    sceneKey = (sameGame && meta.sceneKey) || guessScene(v);
+    tod = (sameGame && meta.tod) || "day";
+    weather = (sameGame && meta.weather) || { weather: "fair", terrain: v.travel?.terrain ?? null };
+    notes = sameGame && Array.isArray(meta.notes) ? meta.notes : [];
+    hud.hide(false);
+    await applyScene(j);
+    const resumed = resumeText(state, meta, v);
+    lastLine = resumed.text;
+    pendingEvent = resumed.pendingEvent;
+    setLine(resumed.text, { kind: resumed.kind, title: resumed.title });
+    if (state.phase === "start") chooseBackground();
+    else showActions();
+  } catch (err) {
+    stumble(j, err);
+  }
 }
 
 // ---------------------------------------------------------------- menu
@@ -971,7 +1020,7 @@ document.addEventListener("keydown", (e) => {
     }
     // Focus left on a HUD or menu button (after a click there) must not trap Space:
     // while the story waits, Space continues it.
-    if (onControl && e.key === " " && (waiter || lapseStop) && !actionsBox.contains(t) && !veil.contains(t)) {
+    if (onControl && e.key === " " && (journeys.waiting() || lapseStop) && !actionsBox.contains(t) && !veil.contains(t)) {
       e.preventDefault();
       onAdvance();
       return;
@@ -987,7 +1036,7 @@ document.addEventListener("keydown", (e) => {
     if (onAdvance()) e.preventDefault();
     return;
   }
-  if (/^[1-9]$/.test(e.key) && veil.hidden && !waiter) {
+  if (/^[1-9]$/.test(e.key) && veil.hidden && !journeys.waiting()) {
     const b = buttons[Number(e.key) - 1];
     if (b) {
       e.preventDefault();
@@ -1025,7 +1074,7 @@ async function boot() {
   sceneKey = "farm";
   tod = "dawn";
   weather = { weather: "mist", terrain: null };
-  await applyScene();
+  await applyScene(journeys.begin()); // the title screen's own journey; begin() and resume() replace it
   titleScreen();
 }
 
