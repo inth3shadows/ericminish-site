@@ -18,7 +18,7 @@ jobs:
       - run: python3 tools/lint-copy.py
       - run: python3 tools/check-pages.py
       - run: python3 tools/check-facts.py
-      - run: python3 -m unittest tools/test_gen_now.py tools/test_draft_now.py tools/test_check_live.py tools/test_gen_lastmod.py tools/test_check_facts.py
+      - run: python3 -m unittest tools/test_gen_now.py tools/test_draft_now.py tools/test_check_live.py tools/test_gen_lastmod.py tools/test_check_facts.py tools/test_gen_game_art.py
       # Game engine, route rules and the balance simulation, on the Node the ubuntu-24.04 image ships
       # (22.x). The shell expands the file list: Node 21+ no longer accepts a directory for --test.
       - run: node --version && node --test games/*/test/*.test.mjs

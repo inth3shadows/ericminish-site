@@ -22,7 +22,7 @@ import { money } from "/games/michigan-fever/mechanics/purse.js"; // cents -> "$
 | `step(route, state, action)` | `{ state, beats }` | `action` is an object from `availableActions` (or just its `id`). Returns a **new** state; the old one is untouched. |
 | `view(route, state)` | `View` | HUD data (date, place, purse, family, land, deadline). Plain JSON. |
 | `saveGame(state, { slot })` | `boolean` | `slot` is `"auto"` (default) or `"main"`. `false` if storage is missing, full or blocked (private mode). Never throws. |
-| `loadGame(route, { slot })` | `{ ok: true, state }` or `{ ok: false, reason }` | Reasons: `"no storage"`, `"empty"`, `"unreadable"`, `"unknown format"`, `"different route"`, `"old engine version"`, `"old route version"`. |
+| `loadGame(route, { slot })` | `{ ok: true, state }` or `{ ok: false, reason }` | Reasons: `"no storage"`, `"empty"`, `"unreadable"`, `"unknown format"`, `"different route"`, `"old engine version"`, `"old route version"`, `"damaged"` (the state is not shaped like a game state, or the route's view or actions throw on it). |
 | `hasSave(route.id, { slot })`, `clearSave(route.id, { slot })` | `boolean` | Storage keys are `trail:michigan-fever:auto` and `trail:michigan-fever:main`. |
 | `serialize(state)` / `deserialize(route, text)` | string / like `loadGame` | For a copy-paste or file export, if wanted. |
 
@@ -59,6 +59,8 @@ type Action = {
   cost?: number;       // cents, when the action costs money
   days?: number;       // days it will take, when it takes time
   forward?: boolean;   // true for actions that move the journey on (good default focus)
+  remedy?: boolean;    // could get a stuck family moving (sell the team, a broker, quinine); the end check
+                       // does not call a family stranded while one is enabled
   // type-specific extras below
 };
 ```
@@ -129,7 +131,7 @@ Potawatomi); show each line with its source.
   travel: null | { leg, label, mode: "wagon"|"canal"|"steamer", unit: "miles"|"days", done, of, next, nextLabel, terrain, terrainLabel },
   ticket: null | "packet" | "line-meals" | "line" | "cabin" | "deck",
   purse: { coin, valueHere, notes: [{ region: "ne"|"ny"|"mi", label, face, value, discount }] },  // cents; discount is a fraction
-  food: { rations, days },          // days = how long the food lasts at today's family size
+  food: { rations, days, meals },   // days = how long the food lasts at today's family size; meals = the boat ticket feeds the family (packet, line boat with meals, cabin)
   morale, quinine,
   party: [{ id, name, age, role, sex, status: "well"|"sick"|"dead", illness, health, child }],
   surname, background,
@@ -151,7 +153,7 @@ the notes are worth here (`value`), so the player sees paper lose value going we
 ```js
 import * as engine from "/games/engine/engine.js";
 import { canDriveOn, driveOn } from "/games/michigan-fever/ui/driveon.js";
-canDriveOn(engine, route, state);   // { ok, reason? }: refused with food at 3 days or less, money under $5, or someone sick below 35 health
+canDriveOn(engine, route, state);   // { ok, reason? }: refused with food at 3 days or less (unless the passage includes meals), money under $5, or someone sick below 35 health
 driveOn(engine, route, state);      // { state, days: [{ beats, state, view }], reason }
 ```
 

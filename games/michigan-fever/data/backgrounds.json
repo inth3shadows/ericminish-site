@@ -118,7 +118,7 @@
     },
     "food": "#bg.ct.food",
     "goods": "#bg.ct.goods",
-    "departure": "{family} close the shop door for the last time, hitch the horse, and drive north and west toward the Albany road."
+    "departure": "{Family} close the shop door for the last time, hitch the horse, and drive north and west toward the Albany road."
   },
   {
     "id": "widow",
@@ -172,6 +172,6 @@
     },
     "food": "#bg.widow.food",
     "goods": "#bg.widow.goods",
-    "departure": "{family} leave the farm to the new owner, and the boys walk beside the oxen as the wagon starts down the hill road toward Albany."
+    "departure": "{Family} leave the farm to the new owner, and the boys walk beside the oxen as the wagon starts down the hill road toward Albany."
   }
 ]

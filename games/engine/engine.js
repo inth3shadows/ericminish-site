@@ -10,6 +10,8 @@
 //   actions(ctx) -> [{id, type, label, enabled?, reason?, ...}]
 //   act(ctx, action, params)               apply one route action
 //   onDay?(ctx)                            daily tick, called by ctx.advanceDays
+//   eventDay?(ctx, as, vars)               before each day an event's "days" effect spends:
+//                                          set that day's conditions ("as" names the kind of day)
 //   afterAction?(ctx)                      after every action, before the end check
 //   checkEnd(ctx) -> null | {outcome, ...}
 //   ending(ctx, end) -> fields for the "end" beat

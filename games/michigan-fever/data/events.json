@@ -14,7 +14,8 @@
         "label": "Stop for the farewell dinner and take the letter",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "rest"
           },
           {
             "morale": "#ev.morale.mid"
@@ -61,7 +62,8 @@
         "label": "Wait in camp for the road to drain",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "rest"
           }
         ],
         "result": "By the next morning the road is passable."
@@ -173,7 +175,8 @@
             "pay": "#ev.wheelwright.cost"
           },
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "halt"
           }
         ],
         "result": "The wheelwright does a proper job of it."
@@ -547,7 +550,8 @@
         "label": "Leave the boat at the next landing and wait a day",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "halt"
           },
           {
             "morale": "#ev.morale.loss"
@@ -773,7 +777,8 @@
         "label": "Run in for shelter with the captain, losing a day",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "aboard"
           }
         ],
         "result": "You lie a day behind a headland until the wind drops."
@@ -917,7 +922,8 @@
         "label": "Unload, cut rails, and pry it out",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "halt"
           },
           {
             "chance": "#ev.rails.injuryP",
@@ -991,7 +997,8 @@
         "label": "Make camp and rest a day",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "rest"
           },
           {
             "chance": "#ev.ague.p",
@@ -1060,7 +1067,8 @@
         "label": "Rest the animal a day",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "rest"
           }
         ]
       },
@@ -1474,7 +1482,8 @@
         "label": "Stop and rest a day",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "rest"
           },
           {
             "heal": {
@@ -1701,7 +1710,8 @@
         "label": "Go and ask at the window",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "halt"
           }
         ],
         "result": "The clerk says an actual settler may still pay in the notes the office takes, until the fifteenth of December."
@@ -1808,7 +1818,8 @@
         "label": "Ride out and look at it",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "apart"
           },
           {
             "candidate": "tip"
@@ -1850,7 +1861,8 @@
         "why": "No one can be spared.",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "apart"
           },
           {
             "earn": {
@@ -1889,7 +1901,8 @@
         "label": "Move your tent to higher ground",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "apart"
           }
         ]
       },
@@ -2088,7 +2101,8 @@
         "label": "Make {who} rest it a day",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "rest"
           }
         ]
       }
@@ -2259,7 +2273,8 @@
         "label": "Stop for a day",
         "effects": [
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "rest"
           }
         ]
       }
@@ -2423,7 +2438,8 @@
             "pay": "#ev.inn.cost"
           },
           {
-            "days": "#ev.delay.day"
+            "days": "#ev.delay.day",
+            "as": "inn"
           },
           {
             "heal": {

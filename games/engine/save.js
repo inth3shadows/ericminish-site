@@ -2,7 +2,8 @@
 // localStorage can be missing or throw (private mode, blocked storage), so
 // every access is wrapped and failure is reported, never thrown.
 
-import { SCHEMA_VERSION } from "./state.js";
+import { availableActions } from "./engine.js";
+import { isPlainJSON, SCHEMA_VERSION } from "./state.js";
 
 export const SAVE_FORMAT = 1;
 export const SLOTS = ["main", "auto"];
@@ -47,7 +48,33 @@ export function deserialize(route, text) {
     }
     if (!state) return { ok: false, reason: "old route version" };
   }
+  if (!readable(route, state)) return { ok: false, reason: "damaged" };
   return { ok: true, state };
+}
+
+const isObj = (x) => x != null && typeof x === "object" && !Array.isArray(x);
+
+// The engine's own fields have the right shapes, and the route can read the
+// rest: its view and its actions run without throwing. A state that fails here
+// would break the UI the moment it was shown.
+function readable(route, s) {
+  if (!isObj(s) || !isPlainJSON(s)) return false;
+  const shaped = s.schemaVersion === SCHEMA_VERSION && s.routeId === route.id
+    && typeof s.seed === "string" && typeof s.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s.date)
+    && Number.isInteger(s.day) && Number.isInteger(s.decisions)
+    && isObj(s.rng) && Number.isInteger(s.rng.s) && Number.isInteger(s.rng.n)
+    && isObj(s.flags) && isObj(s.res) && isObj(s.vars)
+    && isObj(s.events) && isObj(s.events.seen) && isObj(s.events.last)
+    && (s.pending === null || (isObj(s.pending) && typeof s.pending.id === "string"))
+    && (s.over === null || isObj(s.over));
+  if (!shaped) return false;
+  try {
+    availableActions(route, s);
+    route.view?.(s);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function checkSlot(slot) {

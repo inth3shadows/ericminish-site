@@ -54,7 +54,8 @@ test("drive on never passes a beat that needs the player, and matches pressing g
             assert.equal(needsInput(d.beats), false, `day ${k + 1} of ${r.days.length} had a beat needing input`);
             assert.equal(d.state.pending, null);
             assert.equal(Boolean(d.state.over), false);
-            assert.ok(d.view.food.days > LOW_FOOD_DAYS);
+            // F4: low food only stops a drive when the passage doesn't feed the family.
+            assert.ok(d.view.food.days > LOW_FOOD_DAYS || d.view.food.meals);
             assert.ok(!d.view.party.some((p) => p.status === "sick" && p.health < WEAK));
           }
         });

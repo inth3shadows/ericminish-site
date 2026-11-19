@@ -130,7 +130,7 @@
     },
     "roofless": {
       "title": "A winter without a roof",
-      "text": "The land is paid for, but the cabin is not finished. {family} will spend the winter in a half-built shelter and finish it in the spring, if they can.",
+      "text": "The land is paid for, but the cabin is not finished. {Family} will spend the winter in a half-built shelter and finish it in the spring, if they can.",
       "epilogue": []
     },
     "winter": {
@@ -145,7 +145,7 @@
     },
     "stranded": {
       "title": "Stranded",
-      "text": "{family} have no money to go on and no one well enough to earn it.",
+      "text": "{Family} have no money to go on and no one well enough to earn it.",
       "epilogue": []
     },
     "lost": {

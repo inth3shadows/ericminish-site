@@ -21,8 +21,9 @@ function goAction(engine, route, state) {
 }
 
 // Conditions that need the player right now, whatever happened before.
+// Low food does not count while the passage itself feeds the family (packet, cabin).
 function hazard(v) {
-  if (v.food.days <= LOW_FOOD_DAYS) return "food";
+  if (v.food.days <= LOW_FOOD_DAYS && !v.food.meals) return "food";
   if (v.purse.valueHere < LOW_MONEY) return "money";
   if (v.party.some((p) => p.status === "sick" && p.health < WEAK)) return "weak";
   return null;

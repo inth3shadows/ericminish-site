@@ -200,23 +200,23 @@ function commonTownActions(ctx, out) {
   const s = ctx.state;
   const place = s.place;
   if (!has(ctx, "broker") && P.paperValue(s, ctx.num) > 0) {
-    out.push({ id: "broker:coin", type: "broker", label: "Sell paper to a broker for coin", detail: "Brokers pay the going discount here and keep a fee." });
+    out.push({ id: "broker:coin", type: "broker", label: "Sell paper to a broker for coin", detail: "Brokers pay the going discount here and keep a fee.", remedy: true });
   }
   if ((place === "detroit" || place === "bronson") && !has(ctx, "brokerMi") && (s.purse.notes.ne + s.purse.notes.ny) > 0) {
-    out.push({ id: "broker:mi", type: "broker", label: "Swap eastern notes for Michigan notes" });
+    out.push({ id: "broker:mi", type: "broker", label: "Swap eastern notes for Michigan notes", remedy: true });
   }
   if ((s.vars.visit.used.flour ?? 0) < ctx.num("shop.maxBarrels")) {
     out.push(priced(ctx, "buy:flour", "buy", `Buy a barrel of flour (${P.money(flourPrice(ctx))})`, flourPrice(ctx)));
   }
   if (place !== "bronson" && !has(ctx, "quinine")) {
-    out.push(priced(ctx, "buy:quinine", "buy", `Buy a dose of quinine (${P.money(usd(ctx, "price.quinine"))})`, usd(ctx, "price.quinine")));
+    out.push(priced(ctx, "buy:quinine", "buy", `Buy a dose of quinine (${P.money(usd(ctx, "price.quinine"))})`, usd(ctx, "price.quinine"), { remedy: anyAgue(s) }));
   }
   if (place !== "bronson") {
     out.push(priced(ctx, "stay", "rest", `Take lodging for a day (${P.money(lodgingCost(ctx))})`, lodgingCost(ctx), { days: 1 }));
   }
   if (H.ableAdults(s, ctx.num) > 0) out.push({ id: "work", type: "work", label: `Hire out for a day (up to ${P.money(wageFor(ctx))})`, days: 1 });
   if (!has(ctx, "letter")) out.push(priced(ctx, "letter", "letter", `Send a letter home (${P.money(usd(ctx, "price.postage"))})`, usd(ctx, "price.postage")));
-  if (anyAgue(s) && s.res.quinine > 0) out.push({ id: "dose", type: "dose", label: "Give quinine to the sick" });
+  if (anyAgue(s) && s.res.quinine > 0) out.push({ id: "dose", type: "dose", label: "Give quinine to the sick", remedy: true });
 }
 
 function townActions(ctx) {
@@ -224,7 +224,7 @@ function townActions(ctx) {
   const out = [];
   if (s.place === "albany") {
     if (s.gear.team && !s.vars.teamSold) {
-      out.push({ id: "sell-team", type: "sell", label: `Sell the wagon and team here (${P.money(teamSaleValue(ctx))} in New York notes)` });
+      out.push({ id: "sell-team", type: "sell", label: `Sell the wagon and team here (${P.money(teamSaleValue(ctx))} in New York notes)`, remedy: true });
     }
     const keep = s.gear.team ? " Your wagon and team go as freight." : "";
     out.push(priced(ctx, "board:packet", "board", `Packet boat, 4 miles an hour, meals and berth (${P.money(canalCost(ctx, "packet"))})`, canalCost(ctx, "packet"), { forward: true, detail: `Faster and less crowded.${keep}` }));
@@ -334,6 +334,31 @@ function teamPrice(ctx) {
   return P.cents(ctx.num("price.oxen") + ctx.num("price.wagon"));
 }
 
+// What a day aboard is like on the current ticket: meals and a berth on the
+// packet, the line boat with meals and the cabin; crowding on the line boats and the deck.
+function boatDay(s) {
+  const mode = s.phase === "travel" ? T.LEGS[s.leg]?.mode : null;
+  const meals = (mode === "canal" && ["packet", "line-meals"].includes(s.vars.ticket)) || (mode === "steamer" && s.vars.ticket === "cabin");
+  const crowded = (mode === "canal" && s.vars.ticket !== "packet") || (mode === "steamer" && s.vars.ticket === "deck");
+  return { meals, crowded, lodged: meals && mode !== "wagon" };
+}
+
+// The days an event choice spends (a "days" effect with "as"): each day's
+// conditions come from where the family is now, never from the action before.
+const EVENT_DAYS = {
+  rest: (s) => ({ kind: "rest", resting: true, lodged: false, crowded: s.phase === "office" }),   // a day in camp
+  halt: (s) => ({ kind: "halt", lodged: false, crowded: s.phase === "office" }),                  // stopped, not resting: waiting, labouring, ashore
+  apart: () => ({ kind: "apart", lodged: false, crowded: false }),                                // away from the crowded camp
+  aboard: (s) => ({ kind: "aboard", ...boatDay(s) }),                                           // lying to on the boat
+  inn: () => ({ kind: "inn", resting: true, lodged: true }),                                     // under a roof, paid for
+};
+
+function eventDay(ctx, as) {
+  const f = EVENT_DAYS[as];
+  if (!f) throw new Error(`an event's days need a known "as": ${as}`);
+  ctx.state.vars.today = f(ctx.state);
+}
+
 function passDay(ctx, today) {
   ctx.state.vars.today = today;
   ctx.advanceDays(1);
@@ -374,10 +399,7 @@ function travelDay(ctx) {
   const weather = T.rollWeather(ctx);
   ctx.emit({ type: "weather", weather, terrain: s.vars.terrain });
   const miles = T.dayMiles(ctx, weather);
-  const meals = (leg.mode === "canal" && ["packet", "line-meals"].includes(s.vars.ticket)) || (leg.mode === "steamer" && s.vars.ticket === "cabin");
-  const crowded = (leg.mode === "canal" && s.vars.ticket !== "packet") || (leg.mode === "steamer" && s.vars.ticket === "deck");
-  const lodged = meals && leg.mode !== "wagon";
-  passDay(ctx, { kind: "travel", meals, crowded, lodged });
+  passDay(ctx, { kind: "travel", ...boatDay(s) });
   if (s.over) return;
   if (s.vars.terrain === "swamp") tolls(ctx, miles);
   const { passed, done } = T.advance(ctx, miles);
@@ -508,7 +530,7 @@ function act(ctx, a, params) {
       if (arg === "quinine") { use(ctx, "quinine"); addRes(ctx, "quinine", 1); ctx.emit({ type: "narrate", text: "The druggist wraps a dose of quinine." }); }
       return;
     }
-    case "stay": P.pay(s, num, a.cost); passDay(ctx, { kind: "rest", resting: true, lodged: true }); if (!s.over) maybeEvent(ctx, "town", "ev.p.office"); return;
+    case "stay": P.pay(s, num, a.cost); passDay(ctx, { kind: "rest", resting: true, lodged: true }); if (!s.over) maybeEvent(ctx, "town", "ev.p.town"); return;
     case "work": work(ctx); if (s.phase === "office" && !s.over) maybeEvent(ctx, "office", "ev.p.office"); return;
     case "letter": {
       use(ctx, "letter");
@@ -594,12 +616,16 @@ function landCostSmall(ctx) {
   return L.landCost(ctx.num, ctx.num("land.acres.small"));
 }
 
-// Stranded: no way forward from here, and either only children are left or
-// every adult is sick with no way to wait it out (no money for lodging).
+// Stranded: no way forward from here and nothing in hand that could make one
+// (an action marked "remedy": selling the team, a broker, quinine for the
+// shaking), and either only children are left or every adult is sick with no
+// way to wait it out (no money for lodging). Remedies are once a visit or use
+// something up, so a family that tries them all and still cannot move ends here.
 function stranded(ctx) {
   const s = ctx.state;
   if (s.pending || !["town", "office"].includes(s.phase)) return false;
   const open = actions(ctx).filter((a) => a.enabled !== false);
+  if (open.some((a) => a.remedy)) return false;
   if (open.some((a) => a.forward && (s.phase !== "office" || a.type !== "explore" || P.valueHere(s, ctx.num) >= landCostSmall(ctx)))) return false;
   if (!H.living(s).some((p) => p.age >= ctx.num("age.adult"))) return true;
   if (H.ableAdults(s, ctx.num) > 0) return false;
@@ -778,6 +804,7 @@ function textVars(ctx) {
   const head = s.party?.find((p) => ["father", "mother"].includes(p.role) && p.status !== "dead");
   return {
     family: s.vars.surname ? `the ${s.vars.surname} family` : "the family",
+    Family: s.vars.surname ? `The ${s.vars.surname} family` : "The family", // to open a sentence
     surname: s.vars.surname ?? "",
     place: T.PLACES[s.place] ?? "",
     date: format(s.date, { weekday: false }),
@@ -801,7 +828,7 @@ function view(route, s) {
     travel: T.progressView(s, num),
     ticket: s.vars.ticket,
     purse: P.summary(s, num),
-    food: { rations: Math.floor(s.res.food), days: need ? Math.floor(s.res.food / need) : 0 },
+    food: { rations: Math.floor(s.res.food), days: need ? Math.floor(s.res.food / need) : 0, meals: boatDay(s).meals },
     morale: Math.round(s.res.morale),
     quinine: s.res.quinine,
     party: H.summary(s, num),
@@ -837,7 +864,7 @@ export function createRoute({ numbers, events, backgrounds, text }) {
     data: { backgrounds, text },
     limits: { morale: [0, 100], food: [0, Number.MAX_SAFE_INTEGER], quinine: [0, Number.MAX_SAFE_INTEGER] },
     startDate: () => num("date.start"),
-    init, actions, act, onDay, afterAction, checkEnd, ending,
+    init, actions, act, onDay, eventDay, afterAction, checkEnd, ending,
     conditions, effects, binders, textVar, textVars,
     view: (state) => view(route, state),
   };

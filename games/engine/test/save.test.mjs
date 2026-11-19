@@ -70,3 +70,19 @@ test("version checks: route, engine schema, route version and migration", () => 
   assert.equal(migrated.ok, true);
   assert.equal(migrated.state.migratedFrom, 1);
 });
+
+// Review F5: a save whose state is not a game state is refused at load, so the
+// UI never gets a state its view() cannot read.
+test("a save with a damaged state is refused", () => {
+  const route = toyRoute();
+  const { state } = newGame(route, { seed: "dmg" });
+  const wrap = (st) => JSON.stringify({ format: 1, schemaVersion: 1, routeId: route.id, routeVersion: route.version, state: st });
+  for (const bad of [{}, 5, "x", [], { phase: "travel" }, { ...state, rng: null }, { ...state, events: {} }, { ...state, date: 7 }]) {
+    const r = deserialize(route, wrap(bad));
+    assert.equal(r.ok, false, `accepted ${JSON.stringify(bad).slice(0, 60)}`);
+  }
+  // A well-formed envelope the route cannot read (view or actions throw) is refused too.
+  const throwing = { ...route, view: () => { throw new Error("boom"); } };
+  assert.equal(deserialize(throwing, wrap(state)).ok, false);
+  assert.equal(deserialize(route, wrap(state)).ok, true);
+});

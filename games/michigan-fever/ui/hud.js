@@ -15,6 +15,17 @@ export function shortDate(iso) {
   return `${d} ${MONTHS[m - 1]} ${y}`;
 }
 
+// The deadline line: how long the land office still takes paper. Pure, for tests.
+// On 15 December itself paper is still taken: that is the last day, not "0 days".
+export function deadlineText(d, { snow = false, small = false } = {}) {
+  if (d.passed) return "The land office takes only coin now";
+  const n = d.daysLeft;
+  if (snow) return `Snow has come · paper taken ${n === 0 ? "today, the last day" : n === 1 ? "1 more day" : `${n} more days`}`;
+  const left = n === 0 ? "last day" : n === 1 ? "1 day" : `${n} days`;
+  if (small) return `Paper taken for land until 15 Dec · ${left}`;
+  return `Land office takes paper until 15 Dec · ${left}`;
+}
+
 function mood(m) {
   if (m >= 70) return "in good heart";
   if (m >= 45) return "tired but steady";
@@ -207,13 +218,7 @@ export function createHud(root, handlers) {
       ),
     );
     purse.setAttribute("aria-label", `Purse: ${money(v.purse.coin)} coin, ${money(paperFace)} in paper worth ${money(paperValue)} here. Show supplies and prices.`);
-    deadline.textContent = v.deadline.passed
-      ? "The land office takes only coin now"
-      : v.winterWarning != null
-        ? `Snow has come · paper taken ${v.deadline.daysLeft} more days`
-        : small
-          ? `Paper taken for land until 15 Dec · ${v.deadline.daysLeft} days`
-          : `Land office takes paper until 15 Dec · ${v.deadline.daysLeft} days`;
+    deadline.textContent = deadlineText(v.deadline, { snow: v.winterWarning != null, small });
     if (!sheet.hidden) fillSheet(v, actions);
   }
   place_();

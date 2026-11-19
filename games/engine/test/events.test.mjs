@@ -181,3 +181,26 @@ test("validateDeck catches bad data", () => {
     assert.match(errs, new RegExp(needle));
   }
 });
+
+// Review F11: the conditions inside a weight's mul list are route vocabulary too.
+test("validateDeck checks the conditions in weight.mul", () => {
+  const f = deckFixture();
+  f.route.events.push({ id: "mulbad", deck: "d", text: "t", weight: { base: 1, mul: [[{ wat: 1 }, 2], [{ all: [{ leg: "x" }, { zork: 2 }] }, 3]] }, effects: [] });
+  const errs = validateDeck(f.route).join("\n");
+  assert.match(errs, /event mulbad: unknown condition wat/);
+  assert.match(errs, /event mulbad: unknown condition zork/);
+});
+
+// Review F2: an event that spends days lets the route set each day's conditions
+// first ("as" names the kind of day), so a stale day from the last action is not reused.
+test("days with a route eventDay hook: the hook runs before each day, with the kind", () => {
+  const seen = [];
+  const { ctx, state, days } = fixture({ eventDay: (c, as) => { seen.push([as, c.state.date]); c.state.vars.today = as; } });
+  applyEffects([{ days: 2, as: "rest" }], ctx);
+  assert.deepEqual(seen, [["rest", "1836-10-01"], ["rest", "1836-10-02"]]);
+  assert.deepEqual(days, ["1836-10-02", "1836-10-03"]);
+  assert.equal(state.vars.today, "rest");
+  const f = deckFixture();
+  f.route.events.push({ id: "spend", deck: "d", text: "t", choices: [{ id: "c", label: "C", effects: [{ days: 1, as: "rest" }] }] });
+  assert.deepEqual(validateDeck(f.route), []);
+});

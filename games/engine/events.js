@@ -84,7 +84,9 @@ export function evalCond(cond, ctx, vars = {}) {
 }
 
 export const CORE_EFFECTS = new Set(["add", "set", "flag", "days", "narrate", "chance", "if", "event", "scene"]);
-const BRANCH_KEYS = new Set(["then", "else"]);
+// Keys beside an effect's operation: the branches, and "as" (the kind of day a
+// "days" effect spends, passed to route.eventDay).
+const BRANCH_KEYS = new Set(["then", "else", "as"]);
 
 export function effectOp(e) {
   const k = Object.keys(e).filter((x) => !BRANCH_KEYS.has(x));
@@ -118,7 +120,17 @@ function applyEffect(e, ctx, vars) {
       if (neg) delete s.flags[name]; else s.flags[name] = true;
       return;
     }
-    case "days": ctx.advanceDays(resolve(arg, ctx, vars)); return;
+    case "days": {
+      // A route that keeps per-day conditions sets each day's own before it passes,
+      // so the day does not inherit the conditions of the action that came before.
+      const n = resolve(arg, ctx, vars);
+      if (!ctx.route.eventDay) { ctx.advanceDays(n); return; }
+      for (let i = 0; i < n && !s.over; i++) {
+        ctx.route.eventDay(ctx, e.as, vars);
+        ctx.advanceDays(1);
+      }
+      return;
+    }
     case "narrate": ctx.emit({ type: "narrate", text: ctx.text(arg, vars) }); return;
     case "chance":
       applyEffects(ctx.rng.chance(resolve(arg, ctx, vars)) ? e.then : e.else, ctx, vars);
@@ -287,6 +299,7 @@ export function validateDeck(route) {
     if (!ev.deck) errs.push(`${where}: no deck`);
     if (!ev.text) errs.push(`${where}: no text`);
     walkCond(ev.when, route, errs, where);
+    if (ev.weight && typeof ev.weight === "object") for (const [cond] of ev.weight.mul ?? []) walkCond(cond, route, errs, where);
     walkEffects(ev.effects, route, errs, where);
     for (const [name, spec] of Object.entries(ev.bind ?? {})) {
       const [k] = Object.keys(spec);

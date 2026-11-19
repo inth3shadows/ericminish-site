@@ -15,6 +15,7 @@ import { arrange, render as renderActions } from "./actions.js";
 import { el, icon, wait } from "./dom.js";
 import * as store from "./store.js";
 import { canDriveOn, driveOn } from "./driveon.js";
+import { resumeText } from "./resume.js";
 
 const root = document.getElementById("game");
 const reducedMq = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -84,6 +85,10 @@ let groupStack = [];
 let topItems = [];
 let lightTimer = 0;
 let shownAt = 0; // when the current buttons appeared: a Space meant for the narration must not pick one
+// Which journey is on screen. begin() moves it on, so a drive-on lapse or an
+// action still playing from the journey before can tell it has been replaced
+// and stops without writing state or the autosave.
+let journey = 0;
 
 // ---------------------------------------------------------------- scene + sound
 
@@ -194,6 +199,7 @@ function onAdvance() {
     return true;
   }
   if (veil.dataset.revealing) {
+    clearTimeout(veilTimer);
     veil.dataset.revealing = "";
     veil.classList.add("is-done");
     return true;
@@ -282,7 +288,10 @@ function veilShow(label) {
   hud.toggleSheet(false);
 }
 
+let veilTimer = 0;
+
 async function veilStep(nodes) {
+  clearTimeout(veilTimer); // a skipped panel's timer must not end this panel's reveal early
   const panel = el("div", { class: "mf-veil-inner" }, ...nodes);
   const go = el("button", { class: "mf-continue", type: "button" }, el("span", {}, "Continue"), el("span", { class: "mf-key", "aria-hidden": "true" }, "Space"));
   go.addEventListener("click", () => onAdvance());
@@ -290,7 +299,7 @@ async function veilStep(nodes) {
   veil.classList.remove("is-done");
   if (!reduced()) {
     veil.dataset.revealing = "1";
-    setTimeout(() => {
+    veilTimer = setTimeout(() => {
       veil.dataset.revealing = "";
       veil.classList.add("is-done");
     }, 1400);
@@ -303,6 +312,8 @@ async function veilStep(nodes) {
 }
 
 function veilHide() {
+  clearTimeout(veilTimer);
+  veil.dataset.revealing = "";
   ui.classList.remove("is-veiled");
   veil.classList.remove("is-open");
   veil.hidden = true;
@@ -571,23 +582,27 @@ async function act(action) {
     noteBtn.hidden = true;
     latestNote = null;
   }
+  const mine = journey;
   const r = step(route, state, action);
   state = r.state;
   const nextTod = todFor(action, state);
   if (nextTod !== tod) await setLight(nextTod);
+  if (mine !== journey) return; // a new journey began meanwhile
   try {
     hud.render(view(route, state), []);
     await play(r.beats);
-    if (!said && !state.over) {
+    if (mine === journey && !said && !state.over) {
       lastLine = statusLine(action);
       setLine(lastLine, { animate: true });
     }
   } finally {
-    saveGame(state);
-    saveMeta();
-    busy = false;
+    if (mine === journey) {
+      saveGame(state);
+      saveMeta();
+      busy = false;
+    }
   }
-  if (!state.over) showActions();
+  if (mine === journey && !state.over) showActions();
 }
 
 // ---------------------------------------------------------------- drive on
@@ -610,6 +625,7 @@ async function driveLapse() {
   audio.unlock();
   hud.toggleSheet(false);
   said = false;
+  const mine = journey;
   const r = driveOn(ENGINE, route, state);
   if (!r.days.length) {
     busy = false;
@@ -618,7 +634,8 @@ async function driveLapse() {
   let stop = false;
   clearTimeout(lightTimer);
   tod = "day";
-  lapseStop = () => (stop = true);
+  const myStop = () => (stop = true);
+  lapseStop = myStop;
   const stopBtn = el("button", { class: "mf-choice is-forward", type: "button", "data-id": "lapse-stop" }, el("span", { class: "mf-key", "aria-hidden": "true" }, "1"), el("span", { class: "mf-choice-text" }, el("span", { class: "mf-choice-label" }, "Stop here")));
   stopBtn.addEventListener("click", () => (stop = true));
   actionsBox.replaceChildren(stopBtn);
@@ -644,17 +661,21 @@ async function driveLapse() {
       lastLine = [statusLine({ type: "travel" }), ...extra].join(" ");
       setLine(`${d.view.dateLabel}. ${lastLine}`, { animate: false });
       await lapseDay(scene.mood());
+      if (mine !== journey) return; // a new journey began during the lapse: leave its state alone
     }
   } finally {
-    sceneEl.classList.remove("is-lapse");
-    ui.classList.remove("is-lapse");
-    lapseStop = null;
+    if (lapseStop === myStop) lapseStop = null;
+    if (mine === journey) {
+      sceneEl.classList.remove("is-lapse");
+      ui.classList.remove("is-lapse");
+    }
   }
   actionsBox.hidden = true;
   actionsBox.replaceChildren();
   buttons = [];
   tod = "day";
   await applyScene();
+  if (mine !== journey) return;
   try {
     if (!stop) {
       // The day that needs the player: play it in full, like any other step.
@@ -662,7 +683,7 @@ async function driveLapse() {
       state = d.state;
       hud.render(d.view, []);
       await play(d.beats);
-      if (!said && !state.over) {
+      if (mine === journey && !said && !state.over) {
         lastLine = statusLine({ type: "travel" });
         setLine(lastLine, { animate: true });
       }
@@ -670,11 +691,13 @@ async function driveLapse() {
       setLine(`${view(route, state).dateLabel}. You stop here.`, { animate: false });
     }
   } finally {
-    saveGame(state);
-    saveMeta();
-    busy = false;
+    if (mine === journey) {
+      saveGame(state);
+      saveMeta();
+      busy = false;
+    }
   }
-  if (!state.over) showActions();
+  if (mine === journey && !state.over) showActions();
 }
 
 // ---------------------------------------------------------------- title, family
@@ -692,10 +715,18 @@ function titleScreen() {
   setLine("Autumn 1836. A family sells a worn-out farm in New England to buy government land in Michigan, and must have it paid for and a roof raised before the snow, and before the land office stops taking paper money.", { animate: true });
   const items = [];
   const saved = loadGame(route);
+  let unreadable = saved.reason === "damaged";
   if (saved.ok && !saved.state.over && saved.state.phase !== "start") {
-    const v = view(route, saved.state);
-    items.push({ id: "continue", label: "Continue the journey", detail: `${v.surname ? `The ${v.surname} family, ` : ""}${shortDate(v.date)}, ${v.placeLabel}`, forward: true, enabled: true, run: () => resume(saved.state) });
+    // load already refuses a damaged save; this catch keeps the title's buttons if one gets through.
+    try {
+      const v = view(route, saved.state);
+      items.push({ id: "continue", label: "Continue the journey", detail: `${v.surname ? `The ${v.surname} family, ` : ""}${shortDate(v.date)}, ${v.placeLabel}`, forward: true, enabled: true, run: () => resume(saved.state) });
+    } catch (err) {
+      console.error("Michigan Fever: the saved journey could not be read:", err);
+      unreadable = true;
+    }
   }
+  if (unreadable) line.append(el("p", { class: "mf-sub-line" }, "The saved journey could not be read. You can begin a new one."));
   items.push({ id: "new", label: "Begin a new journey", forward: !items.length, enabled: true, run: () => begin() });
   topItems = items;
   buttons = renderActions(actionsBox, items, { onPick: (it) => { audio.unlock(); it.run(); }, onOpen: () => {} });
@@ -712,6 +743,15 @@ function leaveTitle() {
 }
 
 async function begin() {
+  // End whatever the last journey was doing (a drive-on lapse, an action still
+  // playing) before the new state is set, so it cannot write over this one.
+  journey += 1;
+  lapseStop?.();
+  lapseStop = null;
+  sceneEl.classList.remove("is-lapse");
+  ui.classList.remove("is-lapse");
+  waiter = null;
+  contBtn.hidden = true;
   setImmersive(true);
   leaveTitle();
   veilHide();
@@ -801,10 +841,10 @@ async function resume(saved) {
   notes = sameGame && Array.isArray(meta.notes) ? meta.notes : [];
   hud.hide(false);
   await applyScene();
-  const text = state.pending && sameGame && meta.pending ? meta.pending.text : (sameGame && meta.line) || `${v.dateLabel}. ${v.placeLabel}.`;
-  lastLine = text;
-  pendingEvent = sameGame ? meta.pending : null;
-  setLine(text, { kind: state.pending ? "event" : "narrate", title: state.pending ? meta.pending?.title : null });
+  const resumed = resumeText(state, meta, v);
+  lastLine = resumed.text;
+  pendingEvent = resumed.pendingEvent;
+  setLine(resumed.text, { kind: resumed.kind, title: resumed.title });
   if (state.phase === "start") chooseBackground();
   else showActions();
 }

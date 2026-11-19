@@ -1433,6 +1433,13 @@
     "note": "Chance of an event after a day at the land office."
   },
   {
+    "id": "ev.p.town",
+    "value": 0.35,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of an event after a day's lodging in a town. Set to the land-office chance, which this used before it had its own number."
+  },
+  {
     "id": "ev.p.claim",
     "value": 0.3,
     "unit": "probability",
