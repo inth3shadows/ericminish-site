@@ -173,7 +173,9 @@ function atPlace(ctx) {
 }
 
 // Fire the first due scheduled event. Returns true when one started.
-export function fireDue(ctx) {
+// {atOnly: true} considers only the items waiting for a place (an arrival),
+// so a route can fire every one of them at a town in turn.
+export function fireDue(ctx, { atOnly = false } = {}) {
   const s = ctx.state;
   if (!s.queue?.length || s.pending || s.over) return false;
   const here = atPlace(ctx);
@@ -183,6 +185,7 @@ export function fireDue(ctx) {
       s.queue.splice(i--, 1);
       continue;
     }
+    if (atOnly && q.at == null) continue;
     const due = q.at != null ? here === q.at : s.day >= q.due;
     if (!due) continue;
     const ev = eventById(ctx.route, q.event);
@@ -213,11 +216,18 @@ export function eligible(ev, ctx) {
   return evalCond(ev.when, ctx);
 }
 
+// weight: a number, or {base, mul?: [[cond, mult], ...], scale?: name}. A scale
+// is a route curve (route.scales[name](ctx)) for odds that rise smoothly.
 export function weightOf(ev, ctx) {
   const w = ev.weight ?? 1;
   if (typeof w !== "object" || w === null) return resolve(w, ctx);
   let x = resolve(w.base, ctx);
   for (const [cond, mult] of w.mul ?? []) if (evalCond(cond, ctx)) x *= resolve(mult, ctx);
+  if (w.scale != null) {
+    const f = ctx.route.scales?.[w.scale];
+    if (!f) throw new Error(`unknown weight scale: ${w.scale}`);
+    x *= f(ctx);
+  }
   return x;
 }
 
@@ -300,8 +310,11 @@ export function resolveChoice(ctx, choiceId) {
   if (c.result) ctx.emit({ type: "narrate", text: ctx.text(c.result, vars) });
   emitNote(ctx, ev);
   if (c.next && !s.pending) {
+    // The next event binds its own variables fresh (a menu that comes back
+    // shows what is left now); it inherits only the others.
     const next = eventById(ctx.route, c.next);
-    const nextVars = bindVars(next, ctx, vars);
+    const own = new Set(Object.keys(next.bind ?? {}));
+    const nextVars = bindVars(next, ctx, Object.fromEntries(Object.entries(vars).filter(([k]) => !own.has(k))));
     if (nextVars) startEvent(ctx, next, nextVars);
   }
 }
@@ -369,7 +382,10 @@ export function validateDeck(route) {
     if (!ev.deck) errs.push(`${where}: no deck`);
     if (!ev.text) errs.push(`${where}: no text`);
     walkCond(ev.when, route, errs, where);
-    if (ev.weight && typeof ev.weight === "object") for (const [cond] of ev.weight.mul ?? []) walkCond(cond, route, errs, where);
+    if (ev.weight && typeof ev.weight === "object") {
+      for (const [cond] of ev.weight.mul ?? []) walkCond(cond, route, errs, where);
+      if (ev.weight.scale != null && !route.scales?.[ev.weight.scale]) errs.push(`${where}: unknown weight scale ${ev.weight.scale}`);
+    }
     walkEffects(ev.effects, route, errs, where);
     for (const [name, spec] of Object.entries(ev.bind ?? {})) {
       const [k] = Object.keys(spec);
@@ -388,6 +404,11 @@ export function validateDeck(route) {
       if (c.next && !route.events.some((x) => x.id === c.next)) errs.push(`${where}.${c.id}: unknown next ${c.next}`);
     }
     walkRefs(ev, route, errs, where);
+  }
+  // Schedules a route keeps outside the deck (route.schedules: [{where, spec}]) get the same checks.
+  for (const { where, spec } of route.schedules ?? []) {
+    walkSchedule(spec, route, errs, where);
+    walkRefs(spec, route, errs, where);
   }
   return errs;
 }

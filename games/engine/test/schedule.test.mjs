@@ -152,3 +152,70 @@ test("schedule: deterministic, and a saved queue resumes identically", () => {
   damaged.state.queue = "soon";
   assert.equal(deserialize(route, JSON.stringify(damaged)).reason, "damaged");
 });
+
+// ---- Phase A review (PA6, PA7, PA8, PA9) ----------------------------------------
+
+test("PA6: fireDue({atOnly}) fires only items waiting for this place, one per call, until none is left", () => {
+  const { ctx, state } = fixture({ atPlace: (s) => s.place });
+  applyEffects([
+    { schedule: { event: "later", in: 0 } },
+    { schedule: { event: "askMe", in: { at: "detroit" } } },
+    { schedule: { event: "onFoot", in: { at: "detroit" } } },
+  ], ctx);
+  state.flags.walking = true;
+  state.place = "detroit";
+  assert.equal(ctx.fireDue({ atOnly: true }), true);
+  assert.deepEqual(ids(ctx.beats), ["askMe"], "the day-count item is not an arrival");
+  state.pending = null;
+  assert.equal(ctx.fireDue({ atOnly: true }), true);
+  assert.deepEqual(ids(ctx.beats), ["askMe", "onFoot"]);
+  assert.equal(ctx.fireDue({ atOnly: true }), false);
+  assert.deepEqual(state.queue.map((q) => q.event), ["later"]);
+});
+
+test("PA7: drawEvent(deck, {due: false}) draws from the deck without firing the queue", () => {
+  const { ctx, state } = fixture();
+  applyEffects([{ schedule: { event: "later", in: 0 } }], ctx);
+  assert.equal(ctx.drawEvent("road", { due: false }), true);
+  assert.deepEqual(ids(ctx.beats), ["common"]);
+  assert.deepEqual(state.queue.map((q) => q.event), ["later"]);
+});
+
+test("PA8: validateDeck checks the route's own schedule specs (route.schedules) like the deck's", () => {
+  const { route } = fixture({
+    schedules: [
+      { where: "tie good", spec: { event: "later", in: { at: "detroit" }, unless: { flag: "paid" } } },
+      { where: "tie bad1", spec: { event: "ghost", in: 2 } },
+      { where: "tie bad2", spec: { event: "later", in: { at: "chicago" } } },
+      { where: "tie bad3", spec: { event: "later", in: "soon", unless: { nonsense: 1 } } },
+    ],
+  });
+  const errs = validateDeck(route).join("\n");
+  assert.doesNotMatch(errs, /tie good/);
+  assert.match(errs, /tie bad1: schedule: unknown event ghost/);
+  assert.match(errs, /tie bad2: schedule: unknown place chicago/);
+  assert.match(errs, /tie bad3: schedule: "in" must be days or \{at: place\}/);
+  assert.match(errs, /tie bad3: unknown condition nonsense/);
+});
+
+test("PA9: a saved queue item with an unknown event, or neither a due day nor a place, is refused as damaged", () => {
+  const route = chainRoute();
+  const start = newGame(route, { seed: "q9" }).state;
+  const ok = JSON.parse(serialize(start));
+  ok.state.queue = [{ event: "later", due: 4 }, { event: "askMe", at: "detroit", unless: { flag: "x" } }];
+  assert.equal(deserialize(route, JSON.stringify(ok)).ok, true);
+  for (const q of [{ event: "nope", due: 1 }, { event: "later" }, { event: "later", due: "3" }, { event: "later", at: 5 }, { event: "later", due: 1, at: "detroit" }, { event: "later", at: "chicago" }]) {
+    const bad = JSON.parse(serialize(start));
+    bad.state.queue = [q];
+    assert.equal(deserialize(route, JSON.stringify(bad)).reason, "damaged", JSON.stringify(q));
+  }
+});
+
+test("PA9: a route's own readable() check is part of loading", () => {
+  const route = { ...chainRoute(), readable: (s) => s.vars.good === true };
+  const start = newGame(route, { seed: "q9r" }).state;
+  const doc = JSON.parse(serialize(start));
+  assert.equal(deserialize(route, JSON.stringify(doc)).reason, "damaged");
+  doc.state.vars.good = true;
+  assert.equal(deserialize(route, JSON.stringify(doc)).ok, true);
+});

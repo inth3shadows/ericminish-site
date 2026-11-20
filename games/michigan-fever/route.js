@@ -3,7 +3,7 @@
 // This file wires the route-owned mechanics into the engine's route
 // interface (see games/engine/engine.js). No DOM.
 
-import { compare, diffDays, addDays, format, dayOfWeek } from "../engine/clock.js";
+import { compare, diffDays, addDays, format, dayOfWeek, fromDayNumber, toDayNumber } from "../engine/clock.js";
 import { addRes, resolve } from "../engine/events.js";
 import * as P from "./mechanics/purse.js";
 import * as H from "./mechanics/health.js";
@@ -260,7 +260,7 @@ function commonTownActions(ctx, out) {
 // while something is left to do (the "postLeft" binder on post-office).
 function postLeft(ctx) {
   const { state: s, num } = ctx;
-  return !has(ctx, "post") || !has(ctx, "letter") || s.ties.some((t) => t.status !== "settled" && M.canSendFor(s, num, t));
+  return !has(ctx, "post") || !has(ctx, "letter") || s.ties.some((t) => M.canSendFor(s, num, t));
 }
 
 function postActions(ctx, out) {
@@ -269,9 +269,12 @@ function postActions(ctx, out) {
 
 function postVars(ctx) {
   const { state: s, num } = ctx;
-  const letter = M.postage(num, M.officeMiles(num, s.place), 1);
+  const letter = M.letterCost(num, s.place);
   const vars = { letter: P.money(letter), letterUsd: letter / 100 };
-  for (const t of M.summary(ctx.route, s)) vars[`send_${t.id}`] = `Send ${P.money(t.amount)} home for ${t.purpose}`;
+  for (const t of M.summary(ctx.route, s)) {
+    vars[`send_${t.id}`] = `Send ${P.money(t.amount)} home for ${t.purpose}`;
+    vars[`why_${t.id}`] = M.sendWhy(ctx.route, s, num, M.tieOf(s, t.id)) ?? "";
+  }
   return vars;
 }
 
@@ -306,6 +309,11 @@ function townActions(ctx) {
     }
     const ready = Boolean(s.gear.team || s.gear.teamster);
     out.push({ id: "set-out", type: "travel", label: "Set out on the Territorial Road", forward: true, enabled: ready, reason: ready ? undefined : "You need a team or a teamster first." });
+  }
+  // A team gone short (an ox given out): a fresh yoke makes it up again.
+  if (s.gear.team && s.flags.teamShort) {
+    const yoke = usd(ctx, "price.oxen");
+    out.push(priced(ctx, "buy-yoke", "buy", `Buy a fresh yoke to make up the team (${P.money(yoke)})`, yoke));
   }
   commonTownActions(ctx, out);
   return out;
@@ -438,10 +446,18 @@ function maybeEvent(ctx, deck, pId) {
   // No other event on a day someone died: the family stops to grieve first.
   if (ctx.state.over || ctx.state.pending || ctx.state.vars.griefDays > 0) return;
   // A scheduled consequence that has come due fires ahead of the random draw,
-  // which still happens unless it opened a choice.
+  // which still happens unless it opened a choice. One a day: the draw does not
+  // fire the queue a second time.
   ctx.fireDue();
   if (ctx.state.over || ctx.state.pending) return;
-  if (ctx.rng.chance(ctx.num(pId))) ctx.drawEvent(deck);
+  if (ctx.rng.chance(ctx.num(pId))) ctx.drawEvent(deck, { due: false });
+}
+
+// Queued troubles that belong to the family's own outfit ("outfit": "team" or
+// "wagon" on the event) go with it when it is sold or replaced.
+function dropOutfit(ctx, kinds) {
+  const s = ctx.state;
+  s.queue = (s.queue ?? []).filter((q) => !kinds.includes(ctx.route.eventIndex.get(q.event)?.outfit));
 }
 
 function arriveTown(ctx, place) {
@@ -584,6 +600,7 @@ function act(ctx, a, params) {
       s.gear.wagonCond = 0;
       s.vars.teamSold = true;
       delete s.flags.teamShort;
+      dropOutfit(ctx, ["team", "wagon"]);
       ctx.emit({ type: "narrate", text: "A drover buys the wagon and team, paying in New York paper." });
       return;
     }
@@ -599,7 +616,14 @@ function act(ctx, a, params) {
       P.pay(s, num, a.cost);
       s.gear = { ...s.gear, team: "oxen", wagon: true, wagonCond: num("wagon.max"), teamster: false, fatigue: 0 };
       delete s.flags.teamShort;
+      dropOutfit(ctx, ["team", "wagon"]);
       ctx.emit({ type: "narrate", text: "You buy a yoke of oxen and a wagon." });
+      return;
+    }
+    case "buy-yoke": {
+      P.pay(s, num, a.cost);
+      freshTeam(ctx);
+      ctx.emit({ type: "narrate", text: "You buy a fresh yoke and leave the spent animal in part payment. The team is whole again." });
       return;
     }
     case "hire-teamster": {
@@ -733,6 +757,17 @@ function afterAction(ctx) {
     ctx.emit({ type: "narrate", text: `The family stops for ${d} days.`, cue: "grief" });
     ctx.advanceDays(d);
   }
+  // Every consequence waiting for this town fires while the family is here, one
+  // after another (each after the last one's choice), so none is left behind.
+  while (!s.over && !s.pending && ctx.fireDue({ atOnly: true }));
+}
+
+// A fresh yoke: the team is whole and rested, and the spent animal's troubles go with it.
+function freshTeam(ctx) {
+  const s = ctx.state;
+  delete s.flags.teamShort;
+  H.addFatigue(ctx, "team", ctx.num("ev.team.fresh"));
+  dropOutfit(ctx, ["team"]);
 }
 
 function landCostSmall(ctx) {
@@ -827,14 +862,23 @@ const conditions = {
   tired: ([op, n], ctx, vars) => cmpN(H.maxFatigue(ctx.state), op, resolve(n, ctx, vars)),
   teamTired: ([op, n], ctx, vars) => Boolean(ctx.state.gear.team) && cmpN(ctx.state.gear.fatigue ?? 0, op, resolve(n, ctx, vars)),
   pace: (arg, ctx) => list(arg).includes(ctx.state.vars.pace),
-  // A home tie: ["mortgage", "open" | "settled" | "lost" | "has"].
+  // A home tie: ["mortgage", "open" | "sent" | "settled" | "lost" | "has" | "unsettled" | "decided" | "payable"].
+  // "unsettled": money could go for it (owed, or known lost; not while a sending is on its way).
+  // "decided": its date has come and it turned out one way or the other at home.
+  // "payable": it can still be paid in person, before its date.
   tie: ([id, st], ctx) => {
     const t = M.tieOf(ctx.state, id);
     if (st === "has") return Boolean(t);
-    if (st === "unsettled") return Boolean(t) && t.status !== "settled";
+    if (st === "unsettled") return M.sendOpen(t);
+    if (st === "decided") return t?.outcome != null;
+    if (st === "payable") return M.canPayHere(ctx.state, ctx.num, t);
     return t?.status === st;
   },
   mailWaiting: (office, ctx) => M.waitingMail(ctx.state, office).length > 0,
+  // Letters waiting there, and the purse can pay all their postage.
+  canPayMail: (office, ctx) => M.waitingMail(ctx.state, office).length > 0 && P.canPay(ctx.state, ctx.num, M.mailCost(ctx.state, ctx.num, office)),
+  // Pushing the family's own team: the pace is one of these (hard, grueling) on a wagon leg.
+  pushing: (arg, ctx) => T.ownPace(ctx.state) && list(arg).includes(ctx.state.vars.pace),
   // Done already on this visit to the town ("post", "letter").
   used: (key, ctx) => has(ctx, key),
   canSendTie: (id, ctx) => M.canSendFor(ctx.state, ctx.num, M.tieOf(ctx.state, id)),
@@ -903,8 +947,7 @@ const effects = {
   writeHome: (office, ctx) => {
     const here = office === "here";
     const where = here ? ctx.state.place : office;
-    const cost = M.postage(ctx.num, M.officeMiles(ctx.num, where), 1);
-    if (!P.pay(ctx.state, ctx.num, cost)) return;
+    if (!P.pay(ctx.state, ctx.num, M.letterCost(ctx.num, where))) return;
     if (here) use(ctx, "letter");
     addRes(ctx, "morale", ctx.num("morale.letter"));
     M.writeHome(ctx, here ? null : office);
@@ -941,6 +984,8 @@ const effects = {
     s.purse.coin -= c;
     if (c > 0) ctx.emit({ type: "narrate", text: `That costs you ${P.money(c)} in coin.` });
   },
+  // A fresh yoke bought on the road (team-ox-down).
+  freshTeam: (_, ctx) => freshTeam(ctx),
   payTie: (id, ctx) => {
     if (M.payTieHere(ctx, id)) ctx.emit({ type: "narrate", text: `You pay ${P.money(M.tieOf(ctx.state, id).amount)} and take a receipt.` });
   },
@@ -965,6 +1010,10 @@ const effects = {
 const binders = {
   // A number for an event's text: {"miles": {"value": "#mi.detroitChicago"}}.
   value: (spec, ctx) => resolve(spec, ctx),
+  // A sum of money for an event's text, in the game's format: {"amount": {"money": "#tie.mortgage.amount"}} -> "$50.00".
+  money: (spec, ctx) => P.money(P.cents(resolve(spec, ctx))),
+  // Why a tie cannot be paid in person now: too late, or not enough money.
+  tieWhy: (id, ctx) => M.payWhy(ctx.route, ctx.state, ctx.num, M.tieOf(ctx.state, id)),
   // The post office menu's own words, computed fresh each time it opens (it reopens after
   // the letters and after sending money). "postLeft" finds nothing once nothing is left to do.
   postLeft: (spec, ctx) => (postLeft(ctx) ? true : null),
@@ -1078,10 +1127,44 @@ export function createRoute({ numbers, events, backgrounds, text }) {
     // Where a scheduled {"at": place} event may wait: places the family stops at, not passes.
     places: ["albany", "buffalo", "detroit", "bronson", "claim"],
     atPlace: (st) => (st.phase === "travel" ? null : st.place),
+    // The tie schedules live in text.json; validateDeck checks them like the deck's own.
+    schedules: text.ties.flatMap((t) => (t.schedule ?? []).map((spec) => ({ where: `tie ${t.id}`, spec }))),
+    // Curves event weights scale by: the most tired person, and the team (health.js fatigueMult).
+    scales: {
+      worn: (ctx) => H.fatigueMult({ fatigue: H.maxFatigue(ctx.state) }, num),
+      teamWorn: (ctx) => (ctx.state.gear.team ? H.fatigueMult({ fatigue: ctx.state.gear.fatigue }, num) : 1),
+    },
+    readable: (state) => readable(route, state),
     conditions, effects, binders, textVar, textVars,
     view: (state) => view(route, state),
   };
   return route;
+}
+
+// ---- loading a save -------------------------------------------------------------
+// The route's own fields that its view and actions do not touch at once, but
+// later steps do: the party's fatigue, the team's, the ties and the mail.
+
+const isObj = (x) => x != null && typeof x === "object" && !Array.isArray(x);
+const isNum = (x) => typeof x === "number" && Number.isFinite(x);
+const isDate = (d) => {
+  if (typeof d !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(d)) return false;
+  try { return fromDayNumber(toDayNumber(d)) === d; } catch { return false; }
+};
+const MAIL_STATUS = ["waiting", "taken", "left"];
+
+function readable(route, s) {
+  if (!Array.isArray(s.party) || !Array.isArray(s.ties) || !Array.isArray(s.mail) || !isObj(s.gear)) return false;
+  if (!s.party.every((p) => isObj(p) && isNum(p.fatigue ?? 0))) return false;
+  if (!isNum(s.gear.fatigue ?? 0)) return false;
+  if (!T.PACES.includes(s.vars.pace ?? "steady")) return false;
+  const tieOk = (t) => isObj(t) && M.TIE_IDS.includes(t.id) && Number.isInteger(t.amount) && Number.isInteger(t.sent)
+    && M.TIE_STATUSES.includes(t.status) && (t.outcome === null || typeof t.outcome === "string");
+  if (!s.ties.every(tieOk)) return false;
+  const mailOk = (m) => isObj(m) && typeof m.id === "string" && typeof m.key === "string" && M.POST_OFFICES.includes(m.office)
+    && isDate(m.from) && (m.written === undefined || isDate(m.written)) && Number.isInteger(m.sheets) && m.sheets >= 1
+    && MAIL_STATUS.includes(m.status) && (m.tie === null || M.TIE_IDS.includes(m.tie));
+  return s.mail.every(mailOk);
 }
 
 export const DATA_FILES = { numbers: "numbers.json", events: "events.json", backgrounds: "backgrounds.json", text: "text.json" };

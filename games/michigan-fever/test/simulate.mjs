@@ -1,13 +1,15 @@
 // Play seeded games with a scripted strategy and collect outcomes.
 // Used by sim.test.mjs (which prints the distribution).
 
-import { availableActions, newGame, step } from "../../engine/engine.js";
+import { availableActions, newGame, step, view } from "../../engine/engine.js";
 import { createRng, cursor } from "../../engine/rng.js";
 import { STRATEGIES } from "./strategies.mjs";
 
 export const MAX_STEPS = 600;
 
-export function playOne(route, strategy, seedIndex, seedPrefix = "sim") {
+// `pace` (optional): (view) -> "steady" | "hard" | "grueling", set on every
+// travel action that offers a pace, as the UI's pace control does.
+export function playOne(route, strategy, seedIndex, seedPrefix = "sim", { pace = null } = {}) {
   const seed = `${seedPrefix}-${seedIndex}`;
   const rng = cursor(createRng(`player-${seed}`));
   let { state } = newGame(route, { seed });
@@ -15,7 +17,8 @@ export function playOne(route, strategy, seedIndex, seedPrefix = "sim") {
   const beatTypes = {};
   while (!state.over && steps < MAX_STEPS) {
     const acts = availableActions(route, state);
-    const a = strategy(route, state, acts, { seedIndex, rng });
+    let a = strategy(route, state, acts, { seedIndex, rng });
+    if (pace && a?.id === "go" && a.paces) a = { ...a, pace: pace(view(route, state)) };
     if (!a) throw new Error(`strategy returned no action (seed ${seed}, phase ${state.phase}, place ${state.place})`);
     const r = step(route, state, a);
     for (const b of r.beats) beatTypes[b.type] = (beatTypes[b.type] ?? 0) + 1;
@@ -39,12 +42,23 @@ export function playOne(route, strategy, seedIndex, seedPrefix = "sim") {
   };
 }
 
-export function simulate(route, name, games, seedPrefix = "sim") {
+export function simulate(route, name, games, seedPrefix = "sim", opts = {}) {
   const strategy = STRATEGIES[name];
   const results = [];
-  for (let i = 0; i < games; i++) results.push(playOne(route, strategy, i, `${seedPrefix}-${name}`));
+  for (let i = 0; i < games; i++) results.push(playOne(route, strategy, i, `${seedPrefix}-${name}`, opts));
   return results;
 }
+
+// Pace policies for the pace trade-off test (N-A2), from the reviewer's p2b
+// script: push grueling on good road while the most tired of the family and
+// the team would still be under `limit` after the day; otherwise steady.
+const BAD_ROAD = new Set(["swamp", "track"]);
+const mostTired = (v) => Math.max(...v.party.filter((p) => p.status !== "dead").map((p) => p.fatigue), v.gear.fatigue ?? 0);
+export const PACE_POLICIES = {
+  steady: () => "steady",
+  gruelingUnder40: (v) => (!BAD_ROAD.has(v.travel?.terrain) && mostTired(v) + 12 < 40 ? "grueling" : "steady"),
+  gruelingUnder45: (v) => (!BAD_ROAD.has(v.travel?.terrain) && mostTired(v) + 12 < 45 ? "grueling" : "steady"),
+};
 
 export function summarize(results) {
   const n = results.length;

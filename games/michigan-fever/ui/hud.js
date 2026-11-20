@@ -35,7 +35,8 @@ function mood(m) {
 }
 
 const TIRED = { tired: "tired", worn: "worn out" };
-const TIE_STATUS = { open: "not yet paid", settled: "money sent", lost: "money lost in the mail" };
+// "sent": on its way, as far as the family knows (a loss shows only once the letter saying so is read).
+const TIE_STATUS = { open: "not yet paid", sent: "money sent", settled: "money sent", lost: "money lost in the mail" };
 
 // Fatigue in words (the route's own thresholds, view.party[].tired), with the number.
 function fatigueWords(f, tired) {

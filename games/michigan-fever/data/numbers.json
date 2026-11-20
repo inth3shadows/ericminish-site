@@ -1949,10 +1949,10 @@
   },
   {
     "id": "fat.day.steady",
-    "value": 1,
+    "value": 0,
     "unit": "points/day",
     "tag": "invented",
-    "note": "Fatigue a steady day on the road adds; no source gives rates for human exhaustion (r3 §1b)."
+    "note": "Fatigue a steady day on good road adds: none. Steady is the pace a family can keep day after day (the pace control says so); bad road (fat.badRoad), hard and grueling days still tire them. No source gives rates for human exhaustion (r3 §1b); invented. Was 1 until fatigue began to cost from the first point (Phase A review N-A2), when a long steady haul became a slow tax on illness."
   },
   {
     "id": "fat.day.hard",
@@ -2033,10 +2033,10 @@
   },
   {
     "id": "fat.teamDay.steady",
-    "value": 1,
+    "value": 0,
     "unit": "points/day",
     "tag": "invented",
-    "note": "Team fatigue on a steady day; invented. Oxen need rest often (Overland Journal), but no rates are sourced."
+    "note": "Team fatigue on a steady day on good road: none. Steady is the pace a team can keep day after day; bad road still wears it (fat.team.badRoad), and hard and grueling days wear it at once. Oxen need rest often (Overland Journal), but no rates are sourced; invented. Was 1 before the worn team began to pull slower (fat.team.slow), which made a long steady haul a trap."
   },
   {
     "id": "fat.teamDay.hard",
@@ -2074,6 +2074,13 @@
     "note": "Team fatigue a day not pulling takes off (in town, or as freight); invented."
   },
   {
+    "id": "fat.team.slow",
+    "value": 0.01,
+    "unit": "share/point",
+    "tag": "invented",
+    "note": "Share of the day's miles a team loses on good road for each point of its fatigue (1 percent a point: a team at 40 pulls 40 percent slower), so a hard or grueling day costs miles on the days after it until the team rests. On the swamp road and the forest track the road sets the speed. Oxen need rest often and a worn team slows (Overland Journal 33(1), about the later western trails); no rate is sourced, so the figure is invented. Tuned in the sim (test/pace-*.test.mjs): pushing while under 40 or 45 fatigue loses to a steady pace, a short push at the end of a leg still pays."
+  },
+  {
     "id": "fat.tired",
     "value": 40,
     "unit": "points",
@@ -2089,17 +2096,24 @@
   },
   {
     "id": "fat.ill.from",
-    "value": 50,
+    "value": 40,
     "unit": "points",
     "tag": "invented",
-    "note": "Fatigue above which illness comes more easily; no source gives a rate (r3 §1b)."
+    "note": "The knee of the fatigue curve: below it illness and accidents grow a little likelier with each point of fatigue, above it steeply (user decision 2026-11-19: fatigue costs from the first day). No source gives a rate (r3 §1b); invented."
   },
   {
     "id": "fat.ill.mult",
-    "value": 2,
+    "value": 3,
     "unit": "x",
     "tag": "invented",
-    "note": "At full fatigue the chance of falling ill is this much higher (three times in all); invented."
+    "note": "At full fatigue the chance of falling ill, or of an accident, is this much higher (four times in all); the curve rises linearly from the knee to here. Invented (r3 §1b gives no rate)."
+  },
+  {
+    "id": "fat.ill.low",
+    "value": 0.5,
+    "unit": "x",
+    "tag": "invented",
+    "note": "At the knee (fat.ill.from) illness and accidents are this much likelier (half again as likely); from no fatigue to the knee the odds rise in a straight line, so every point of fatigue costs something. Invented."
   },
   {
     "id": "fat.morale.from",
@@ -2116,11 +2130,18 @@
     "note": "Morale lost each day someone is that tired; invented."
   },
   {
-    "id": "fat.ev.mult",
-    "value": 2,
+    "id": "fat.ev.hard",
+    "value": 1.5,
     "unit": "x",
     "tag": "invented",
-    "note": "How much more likely an injury or a lame ox is when the family or team is worn out; invented."
+    "note": "A hard pace wears the team at once: a cast shoe or a lame ox is this much likelier on a hard day, on top of the team's fatigue curve. The Overland Journal says oxen needed rest often and lameness stopped them; no rate is sourced. Invented."
+  },
+  {
+    "id": "fat.ev.grueling",
+    "value": 2.5,
+    "unit": "x",
+    "tag": "invented",
+    "note": "A grueling pace wears the team at once: a cast shoe or a lame ox is this much likelier on a grueling day, on top of the team's fatigue curve. Invented, as fat.ev.hard."
   },
   {
     "id": "ev.fatigue.ease",
@@ -2509,7 +2530,7 @@
     "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 sec. 13",
     "url": "https://archive.org/details/lawsregulationsf00unit",
     "confidence": "solid",
-    "note": "Twelve and a half cents a single sheet, 81 to 150 miles."
+    "note": "Twelve and a half cents a single sheet, 81 to 150 miles. The game keeps postage exact (12.5, 18.75 cents) and charges each call at the counter the exact sum of its letters, so two sheets at this rate are exactly 25 cents. The purse is counted in whole cents, so an odd half cent left over is dropped in the family's favour: a single sheet to Albany costs 12 cents. That rounding rule is invented; Blois's own fare table likewise prints the 9.075-dollar line-boat fare as $9 07."
   },
   {
     "id": "post.band.4.miles",
@@ -2529,7 +2550,7 @@
     "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 sec. 13",
     "url": "https://archive.org/details/lawsregulationsf00unit",
     "confidence": "solid",
-    "note": "Eighteen and three-quarter cents a single sheet, 151 to 400 miles."
+    "note": "Eighteen and three-quarter cents a single sheet, 151 to 400 miles. Kept exact; an odd fraction of a cent at the counter is dropped in the family's favour (invented rounding rule, see post.band.3.rate)."
   },
   {
     "id": "post.band.5.rate",

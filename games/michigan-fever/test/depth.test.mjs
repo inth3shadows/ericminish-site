@@ -9,7 +9,7 @@ import { validateDeck, weightOf } from "../../engine/events.js";
 import { deserialize, loadGame, saveGame, serialize } from "../../engine/save.js";
 import { clone, isPlainJSON } from "../../engine/state.js";
 import { createRng, cursor } from "../../engine/rng.js";
-import { dayOfWeek } from "../../engine/clock.js";
+import { addDays, dayOfWeek } from "../../engine/clock.js";
 import * as T from "../mechanics/travel.js";
 import * as H from "../mechanics/health.js";
 import * as M from "../mechanics/home.js";
@@ -196,7 +196,10 @@ test("A1: high fatigue multiplies the chance of illness", () => {
   };
   const base = rate(0);
   assert.ok(base > 0);
-  assert.equal(rate(num("fat.ill.from")), base);
+  // N-A2 (user decision 2026-11-19): fatigue costs below the knee too. This
+  // replaced "rate(fat.ill.from) equals base" (no cost up to the knee).
+  assert.ok(Math.abs(rate(num("fat.ill.from")) - base * (1 + num("fat.ill.low"))) < 1e-12);
+  assert.ok(rate(num("fat.ill.from")) > base);
   assert.ok(Math.abs(rate(100) - base * (1 + num("fat.ill.mult"))) < 1e-12);
   assert.ok(rate(85) > rate(60));
 });
@@ -371,7 +374,9 @@ test("A3: postage by distance band, doubled per sheet (Act of 1825)", () => {
   assert.equal(M.postage(num, 500, 2), 50);
   assert.equal(M.postage(num, 500, 3), 75);
   assert.equal(M.postage(num, 500, 6), 100, "a packet of four or more pieces pays four times");
-  assert.equal(M.postage(num, 100, 1), 13, "12.5 cents, rounded to the cent");
+  // N-A4: kept exact; the counter drops the odd half cent (was: rounded up to 13).
+  assert.equal(M.postage(num, 100, 1), 12.5, "12.5 cents, exact");
+  assert.equal(M.charge(M.postage(num, 100, 1)), 12, "paid as 12 cents: the half cent dropped in the family's favour");
   assert.equal(M.officeMiles(num, "albany"), num("mi.vermont"));
   for (const o of ["buffalo", "perrysburg", "detroit", "bronson"]) assert.ok(M.officeMiles(num, o) > 400, o);
   for (const id of ["post.band.1.rate", "post.band.5.rate", "post.band.4.miles"]) {
@@ -394,14 +399,18 @@ test("A3: post offices at Albany, Buffalo, Detroit and Bronson; a letter home co
   for (const t of albany.ties) assert.ok(choices(p).includes(`send-${t.id}`), `send for ${t.id}`);
   assert.equal(availableActions(route, p).filter((a) => a.choice.startsWith("send-")).length, albany.ties.length, "only the family's own ties");
   const write = availableActions(route, p).find((a) => a.choice === "write");
-  assert.match(write.label, /\$0\.13 postage/, "12.5 cents to Albany, rounded");
+  assert.match(write.label, /\$0\.12 postage/, "12.5 cents to Albany, the odd half cent dropped (N-A4; was $0.13)");
   const bronson = reach("cautious", (x) => x.phase === "office");
   assert.match(availableActions(route, atPost(bronson)).find((a) => a.choice === "write").label, /\$0\.25 postage/);
   const road = reach("cautious", (x) => x.phase === "travel" && x.leg === "road");
   assert.ok(!ids(road).includes("post"));
-  // Asked once a visit; written once a visit.
-  p = step(route, step(route, atPost(albany), "choose:write").state, "post").state;
+  // Asked once a visit; written once a visit. (PA1: this passed vacuously before:
+  // "post" was refused, so p had no menu at all. Now the menu is checked.)
+  p = step(route, atPost(albany), "choose:write").state;
+  assert.equal(p.pending?.id, "post-office");
+  assert.ok(choices(p).includes("leave"));
   assert.ok(!choices(p).includes("write"));
+  assert.ok(!ids(step(route, step(route, p, "choose:leave").state, "post").state).includes("post"), "one call a visit");
 });
 
 test("A3: writing home is a fiction letter beat", () => {
@@ -519,7 +528,8 @@ test("A3: tie events: a mortgage agent waits at Detroit unless the mortgage is p
   const ctx = makeCtx(route, s);
   M.scheduleTies(ctx);
   const q = s.queue.find((x) => x.event === "tie-mortgage-agent");
-  assert.deepEqual([q.at, q.unless], ["detroit", { tie: ["mortgage", "settled"] }]);
+  // PA3 (widened): and not once the note's date has come and gone at home (was: settled only).
+  assert.deepEqual([q.at, q.unless], ["detroit", { any: [{ tie: ["mortgage", "settled"] }, { tie: ["mortgage", "decided"] }] }]);
 });
 
 // ---- A4: accuracy upgrades (r3 §5) -----------------------------------------------
@@ -579,4 +589,457 @@ test("determinism and a save round trip cover fatigue, the queue, ties and lette
   assert.equal(loaded.ok, true);
   assert.deepEqual(loaded.state, q);
   assert.deepEqual(run(loaded.state, 120), run(q, 120));
+});
+
+// ---- Phase A review fixes (PA1-PA10, N-A1-N-A4, boat drive-on) --------------------
+// Each test names its finding in .review/add-michigan-fever.md.
+
+const evIds = (beats) => beats.filter((b) => b.type === "event").map((b) => b.id);
+
+// A family in a town, made by hand: the town's actions read only these fields.
+function inTown(place, s = started("vermont", `town-${place}`, calm)) {
+  s.phase = place === "bronson" ? "office" : "town";
+  s.place = place;
+  s.leg = null;
+  s.vars.terrain = null;
+  s.vars.visit = { place, used: {}, since: s.day };
+  return s;
+}
+
+// Choose the first enabled choice of whatever is open; collect the events that fire.
+function settle(r, s, fired = []) {
+  for (let i = 0; i < 20 && s.pending && !s.over; i++) {
+    const res = step(r, s, availableActions(r, s).find((a) => a.enabled));
+    fired.push(...evIds(res.beats));
+    s = res.state;
+  }
+  return s;
+}
+
+test("PA1: writing home returns to the post office menu", () => {
+  const albany = reach("cautious", (x) => x.phase === "town" && x.place === "albany");
+  const p = step(route, atPost(albany), "choose:write").state;
+  assert.equal(p.pending?.id, "post-office", "the office stays open after a letter home");
+  assert.ok(choices(p).includes("ask"), "letters can still be asked for");
+  assert.ok(!choices(p).includes("write"), "written once a visit");
+  for (const a of availableActions(route, p)) assert.doesNotMatch(a.label, /[{}]/, a.label);
+  // Once nothing is left to do there, the menu closes.
+  let q = step(route, p, "choose:ask").state;
+  q = settle(route, q);
+  assert.equal(q.pending, null);
+});
+
+test("PA2: money lost in the mail reads as sent until the letter saying so is collected, and is not offered again before", () => {
+  const atAlbany = clone(reach("cautious", (x) => x.phase === "town" && x.place === "albany"));
+  atAlbany.purse.notes.ne = 100000;
+  atAlbany.purse.coin = 1000;
+  const tie = atAlbany.ties[0];
+  const r = routeWith({ "post.lossP": 1 });
+  let s = step(r, atPost(atAlbany, r), `choose:send-${tie.id}`).state;
+  s = step(r, s, "choose:whole").state;
+  const shown = view(r, s).ties.find((t) => t.id === tie.id);
+  assert.equal(shown.status, "sent", "the HUD says money sent");
+  assert.equal(s.pending?.id, "post-office");
+  assert.ok(!choices(s, r).includes(`send-${tie.id}`), "no second sending while the first is on its way");
+  // The letter saying it never came waits at Bronson; collecting it shows the loss.
+  const lostMail = s.mail.find((m) => m.key === "lost" && m.tie === tie.id);
+  assert.ok(lostMail);
+  const b = clone(inTown("bronson", clone(s)));
+  b.pending = null;
+  b.date = lostMail.from;
+  b.purse.coin += 1000;
+  assert.equal(view(r, b).ties.find((t) => t.id === tie.id).status, "sent", "still sent before the letter is read");
+  const ctx = makeCtx(r, b);
+  assert.equal(M.collectMail(ctx, "bronson"), true);
+  assert.equal(view(r, b).ties.find((t) => t.id === tie.id).status, "lost");
+});
+
+test("PA3: money sent by letter settles a tie only if it reaches home by the due date; too late, the choice says why", () => {
+  const base = clone(reach("cautious", (x) => x.phase === "town" && x.place === "albany"));
+  base.purse.notes.ne = 100000;
+  base.purse.coin = 1000;
+  const r = routeWith({ "post.lossP": 0 });
+  const tie = base.ties[0];
+  const due = num(`tie.${tie.id}.due`);
+  const transit = num("post.transitDays");
+  const menuOn = (date) => { const s = clone(base); s.date = date; return atPost(s, r); };
+  const sendChoice = (s) => availableActions(r, s).find((a) => a.choice === `send-${tie.id}`);
+  // In time: sent on the last day that still reaches home by the due date.
+  const inTime = menuOn(addDays(due, -transit));
+  assert.equal(sendChoice(inTime).enabled, true);
+  let s = step(r, step(r, inTime, `choose:send-${tie.id}`).state, "choose:whole").state;
+  assert.equal(s.ties.find((t) => t.id === tie.id).status, "settled");
+  // A day later, and after the date: refused, with the reason.
+  for (const date of [addDays(due, -transit + 1), addDays(due, 3)]) {
+    const late = menuOn(date);
+    const c = sendChoice(late);
+    assert.equal(c.enabled, false, date);
+    assert.match(c.reason, /too late/i);
+    const ctx = makeCtx(r, clone(late));
+    const before = clone(ctx.state.purse);
+    assert.equal(M.sendMoney(ctx, tie.id, "whole", "albany"), false);
+    assert.deepEqual(ctx.state.purse, before, "no money taken");
+  }
+});
+
+test("PA3 (widened): the mortgage agent takes no money once the note has fallen due", () => {
+  const s = started("vermont", "mort-late");
+  s.ties = [{ id: "mortgage", amount: 5000, sent: 0, status: "open", outcome: null, learned: false }];
+  s.purse.coin = 10000;
+  const due = num("tie.mortgage.due");
+  s.date = addDays(due, 1);
+  const ctx = makeCtx(route, s);
+  assert.equal(M.payTieHere(ctx, "mortgage"), false);
+  assert.equal(s.purse.coin, 10000);
+  // Offered at Detroit after the due date, the pay choice is refused with the reason.
+  const d = inTown("detroit", clone(s));
+  d.ties[0].outcome = "sued";
+  makeCtx(route, d).queueEvent("tie-mortgage-agent");
+  assert.equal(d.pending?.id, "tie-mortgage-agent");
+  const pay = availableActions(route, d).find((a) => a.choice === "pay");
+  assert.equal(pay.enabled, false);
+  assert.match(pay.reason, /too late|fell due/i);
+  // And the agent does not come at all once the outcome at home is settled.
+  const q = inTown("detroit", clone(s));
+  q.queue = [];
+  M.scheduleTies(makeCtx(route, q));
+  q.ties[0].outcome = "sued";
+  assert.equal(makeCtx(route, q).fireDue(), false);
+  assert.ok(!q.queue.some((x) => x.event === "tie-mortgage-agent"));
+  // The reviewer's seed: no payment to the agent after the date.
+  const seed = "mo-cheap-15";
+  const rng = cursor(createRng(`p-${seed}`));
+  let g = newGame(route, { seed }).state;
+  while (!g.over) {
+    const acts = availableActions(route, g);
+    let a = g.pending?.id === "tie-mortgage-agent" ? acts.find((x) => x.id === "choose:pay" && x.enabled) : null;
+    if (a) {
+      const t = g.ties.find((x) => x.id === "mortgage");
+      assert.equal(t.outcome, null, `paid on ${g.date} after the outcome`);
+      assert.ok(g.date <= due);
+    }
+    a ??= STRATEGIES.cheap(route, g, acts, { seedIndex: 15, rng });
+    g = step(route, g, a).state;
+  }
+});
+
+test("PA4: a wedged wheel breaks down the road even after an earlier repair", () => {
+  let s = started("vermont", "axle2", calm);
+  s.flags.wheelMended = true; // mended once already, earlier on the road
+  s.pending = { kind: "event", id: "vt-wheel", vars: {} };
+  s = step(calm, s, "choose:wedge").state;
+  let fired = false;
+  for (let i = 0; i < 40 && !fired && !s.over; i++) {
+    const r = step(calm, s, s.pending ? availableActions(calm, s)[0] : "go");
+    fired = evIds(r.beats).includes("chain-axle");
+    s = r.state;
+  }
+  assert.ok(fired, "the wedged wheel gives out");
+});
+
+test("PA5: a second yoke, or a fresh yoke bought in town, ends the short team", () => {
+  const s = started("vermont", "yoke", calm);
+  s.flags.teamShort = true;
+  s.purse.coin = 50000;
+  s.pending = { kind: "event", id: "ohio-second-yoke", vars: {} };
+  const y = step(calm, s, "choose:buy").state;
+  assert.equal(y.flags.secondYoke, true);
+  assert.equal(y.flags.teamShort, undefined, "the second yoke makes up the team");
+  for (const place of ["albany", "buffalo", "detroit"]) {
+    const t = inTown(place);
+    t.flags.teamShort = true;
+    t.purse = { coin: 50000, notes: { ne: 0, ny: 0, mi: 0 } };
+    const buy = availableActions(calm, t).find((a) => a.id === "buy-yoke");
+    assert.ok(buy?.enabled, `${place}: a fresh yoke on offer`);
+    assert.equal(buy.cost, Math.round(num("price.oxen") * 100));
+    const after = step(calm, t, "buy-yoke").state;
+    assert.equal(after.flags.teamShort, undefined);
+    assert.equal(after.purse.coin, 50000 - buy.cost);
+    assert.ok(!availableActions(calm, after).some((a) => a.id === "buy-yoke"));
+  }
+  assert.ok(!availableActions(calm, inTown("detroit")).some((a) => a.id === "buy-yoke"), "not offered to a sound team");
+});
+
+test("PA6: two {at} consequences at one town both fire, without lodging", () => {
+  const s = started("vermont", "two-at", calm);
+  s.ties = [{ id: "mortgage", amount: 5000, sent: 0, status: "open", outcome: null, learned: false }];
+  T.startLeg(makeCtx(calm, s), "overland");
+  s.vars.seg = 2;
+  s.vars.terrain = "strip";
+  s.vars.segMi = num("mi.perrysburgDetroit") - 1;
+  s.queue = [{ event: "tie-mortgage-agent", at: "detroit" }, { event: "chain-loan-due", at: "detroit" }];
+  const r = step(calm, s, "go");
+  assert.equal(r.state.place, "detroit");
+  const fired = evIds(r.beats);
+  const end = settle(calm, r.state, fired);
+  assert.ok(fired.includes("tie-mortgage-agent") && fired.includes("chain-loan-due"), fired.join(", "));
+  assert.equal(end.place, "detroit");
+  assert.deepEqual(end.queue.filter((q) => q.at === "detroit"), []);
+});
+
+test("PA6: a Buffalo loan always comes due at Detroit", () => {
+  let games = 0;
+  for (let i = 0; i < 16; i++) {
+    const seed = `loan-${i}`;
+    const rng = cursor(createRng(`player-${seed}`));
+    let s = newGame(route, { seed }).state;
+    const play = () => { s = step(route, s, STRATEGIES.cheap(route, s, availableActions(route, s), { seedIndex: i, rng })).state; };
+    while (!s.over && !(s.phase === "town" && s.place === "buffalo" && !s.pending)) play();
+    if (s.over) continue;
+    s = clone(s);
+    s.pending = { kind: "event", id: "buf-loan", vars: {} };
+    s = step(route, s, "choose:take").state;
+    let atDetroit = false;
+    let due = false;
+    while (!s.over && !(atDetroit && s.place !== "detroit")) {
+      if (s.place === "detroit") atDetroit = true;
+      if (s.pending?.id === "chain-loan-due") due = true;
+      play();
+    }
+    if (!atDetroit) continue;
+    games++;
+    assert.ok(due, `${seed}: reached Detroit and the loan never came due`);
+  }
+  assert.ok(games >= 8, `${games} games reached Detroit`);
+});
+
+test("PA7: one scheduled consequence a day from the travel draw, however many are due", () => {
+  const r = routeWith({ ...QUIET, "ev.p.travel": 1 });
+  const s = started("vermont", "pa7", r);
+  s.queue = [{ event: "chain-team-strained", due: 0 }, { event: "chain-light-coin", due: 0 }];
+  const res = step(r, s, "go");
+  const chain = evIds(res.beats).filter((id) => r.eventIndex.get(id).deck === "chain");
+  assert.equal(chain.length, 1, evIds(res.beats).join(", "));
+  assert.equal(res.state.queue.length, 1);
+});
+
+test("PA8: the tie schedules in text.json are validated like the deck", () => {
+  assert.ok(route.schedules.length >= 3, "the tie schedules are handed to validateDeck");
+  assert.deepEqual(validateDeck(route), []);
+  const d = readData();
+  const mort = d.text.ties.find((t) => t.id === "mortgage");
+  mort.schedule = [{ event: "tie-ghost", in: { at: "chicago" }, unless: { nonsense: 1 } }];
+  const errs = validateDeck(createRoute(d)).join("\n");
+  assert.match(errs, /tie mortgage: schedule: unknown event tie-ghost/);
+  assert.match(errs, /tie mortgage: schedule: unknown place chicago/);
+  assert.match(errs, /tie mortgage: unknown condition nonsense/);
+});
+
+test("PA9: a save with a damaged queue, mail, ties or fatigue is refused", () => {
+  const s = started("vermont", "pa9");
+  const load = (mutate) => {
+    const doc = JSON.parse(serialize(s));
+    mutate(doc.state);
+    return deserialize(route, JSON.stringify(doc));
+  };
+  assert.equal(load(() => {}).ok, true);
+  const before = JSON.parse(serialize(newGame(route, { seed: "pa9" }).state));
+  assert.equal(deserialize(route, JSON.stringify(before)).ok, true, "a save from before the start screen loads");
+  const cases = {
+    "queue: unknown event": (x) => { x.queue = [{ event: "nope", due: 1 }]; },
+    "queue: no due or at": (x) => { x.queue = [{ event: "chain-light-coin" }]; },
+    "mail: not an array": (x) => { x.mail = 5; },
+    "mail: not an object": (x) => { x.mail = [5]; },
+    "mail: no date": (x) => { x.mail[0].from = null; },
+    "mail: bad date": (x) => { x.mail[0].from = "1836-13-45"; },
+    "mail: unknown office": (x) => { x.mail[0].office = "chicago"; },
+    "ties: null": (x) => { x.ties = null; },
+    "ties: unknown tie": (x) => { x.ties = [{ id: "bogus" }]; },
+    "ties: amount not a number": (x) => { x.ties[0].amount = "x"; },
+    "fatigue: not a number": (x) => { x.party[0].fatigue = "x"; },
+    "team fatigue: not a number": (x) => { x.gear.fatigue = "x"; },
+    "pace: unknown": (x) => { x.vars.pace = "zzz"; },
+  };
+  for (const [name, f] of Object.entries(cases)) assert.deepEqual(load(f), { ok: false, reason: "damaged" }, name);
+});
+
+test("PA10: every amount in an event prints in the game's money format", () => {
+  for (const e of route.events) {
+    for (const t of [e.text, ...(e.choices ?? []).flatMap((c) => [c.label, c.result, c.why])]) {
+      if (t) assert.doesNotMatch(t, /\$\{/, `${e.id}: a bare $ before a number`);
+    }
+  }
+  const s = inTown("detroit", started("vermont", "pa10"));
+  s.ties = [{ id: "mortgage", amount: 5000, sent: 0, status: "open", outcome: null, learned: false }];
+  const ctx = makeCtx(route, s);
+  ctx.queueEvent("tie-mortgage-agent");
+  const text = ctx.beats.find((b) => b.type === "event").text;
+  assert.match(text, /\$50\.00/);
+  ctx.state.pending = null;
+  ctx.queueEvent("chain-loan-due");
+  assert.match(ctx.beats.filter((b) => b.type === "event")[1].text, new RegExp(`\\${Pm.money(Pm.cents(num("ev.loan.due"))).replace(".", "\\.")}`));
+});
+
+test("N-A1: selling the team, or buying a new outfit, drops the old outfit's queued troubles", () => {
+  const OUTFIT = ["chain-axle", "chain-team-strained", "chain-ox-worse", "chain-corduroy-spring"];
+  const queued = () => [...OUTFIT, "chain-light-coin"].map((event) => ({ event, due: 99 }));
+  const albany = inTown("albany");
+  albany.queue = queued();
+  const sold = step(calm, albany, "sell-team").state;
+  assert.deepEqual(sold.queue.map((q) => q.event), ["chain-light-coin"]);
+  const detroit = inTown("detroit");
+  detroit.gear.team = null;
+  detroit.gear.wagon = false;
+  detroit.purse.coin = 50000;
+  detroit.queue = queued();
+  assert.deepEqual(step(calm, detroit, "buy-team").state.queue.map((q) => q.event), ["chain-light-coin"]);
+  // The reviewer's seeds: no trouble of the sold team turns up on the new outfit.
+  for (const seed of ["ax-16", "ax-7", "ax-12"]) {
+    const rng = cursor(createRng(`p-${seed}`));
+    let g = newGame(route, { seed }).state;
+    let sold2 = false;
+    const queuedSince = new Set(); // outfit troubles of the new outfit, queued after the sale
+    while (!g.over && g.day < 200) {
+      const acts = availableActions(route, g);
+      const a = acts.find((x) => x.enabled && ["choose:wedge", "choose:push"].includes(x.id)) ?? STRATEGIES.cautious(route, g, acts, { seedIndex: Number(seed.slice(3)), rng });
+      const r = step(route, g, a);
+      if (a.id === "sell-team") {
+        sold2 = true;
+        assert.deepEqual(r.state.queue.filter((q) => OUTFIT.includes(q.event)), [], `${seed}: the sold outfit's troubles left the queue`);
+      } else if (sold2) {
+        for (const id of evIds(r.beats)) if (OUTFIT.includes(id)) assert.ok(queuedSince.has(id), `${seed}: ${id} of the sold outfit fired on the new one (${r.state.leg})`);
+      }
+      if (sold2) for (const q of r.state.queue) if (OUTFIT.includes(q.event)) queuedSince.add(q.event);
+      g = r.state;
+    }
+    assert.ok(sold2, `${seed}: the team was sold`);
+  }
+});
+
+test("N-A2: fatigue costs from the first point: illness odds rise a little, then steeply past the knee, with no cliff", () => {
+  const s = started();
+  const p = s.party[0];
+  const rate = (f) => { p.fatigue = f; return H.onsetRate(makeCtx(route, s), "ague", false, p); };
+  const base = rate(0);
+  const knee = num("fat.ill.from");
+  assert.equal(knee, 40);
+  assert.ok(rate(1) > base, "one point of fatigue already costs");
+  assert.ok(Math.abs(rate(knee) - base * (1 + num("fat.ill.low"))) < 1e-12);
+  assert.ok(Math.abs(rate(100) - base * (1 + num("fat.ill.mult"))) < 1e-12);
+  const below = (rate(knee) - rate(0)) / knee;
+  const above = (rate(100) - rate(knee)) / (100 - knee);
+  assert.ok(above > 3 * below, "much steeper past the knee");
+  assert.ok(Math.abs(rate(knee + 1e-6) - rate(knee - 1e-6)) < 1e-6 * base, "continuous at the knee");
+  for (let f = 0; f < 100; f += 5) assert.ok(rate(f + 5) > rate(f), `rises at ${f}`);
+});
+
+test("N-A2: accident odds rise with any fatigue; hard and grueling wear the team at once", () => {
+  const ev = (id) => route.eventIndex.get(id);
+  const s = started();
+  s.phase = "travel";
+  s.leg = "vermont";
+  const wear = (f, team = 0) => { for (const p of s.party) p.fatigue = f; s.gear.fatigue = team; };
+  const w = (id) => weightOf(ev(id), makeCtx(route, s));
+  for (const id of ["any-trunk", "travel-stumble"]) {
+    wear(0);
+    const fresh = w(id);
+    wear(10);
+    assert.ok(w(id) > fresh, `${id}: dearer at fatigue 10`);
+  }
+  // The team: the first hard day already opens shoe wear and raises lameness.
+  wear(0, 7);
+  s.vars.pace = "steady";
+  const ctx = () => makeCtx(route, s);
+  assert.equal(ctx().evalCond(ev("team-cast-shoe").when), false, "steady and fresh: no cast shoe");
+  const lameSteady = w("ohio-lame-ox");
+  s.vars.pace = "hard";
+  assert.equal(ctx().evalCond(ev("team-cast-shoe").when), true, "a hard pace wears shoes from the first day");
+  assert.ok(w("ohio-lame-ox") > lameSteady, "a hard pace makes lameness likelier at once");
+  s.vars.pace = "grueling";
+  const lameHard = (() => { s.vars.pace = "hard"; return w("ohio-lame-ox"); })();
+  s.vars.pace = "grueling";
+  assert.ok(w("ohio-lame-ox") > lameHard);
+});
+
+test("N-A3: letters at Bronson come out to the claim only when the postage can be paid, and never two days running", () => {
+  const s = clone(reach("cautious", (x) => x.phase === "claim", calm));
+  s.queue = [];
+  s.mail.push({ id: "mx", key: "kin", tie: null, office: "bronson", from: s.date, written: s.date, sheets: 1, status: "waiting" });
+  s.purse = Pm.emptyPurse();
+  let g = s;
+  const fires = [];
+  for (let i = 0; i < 12 && !g.over; i++) {
+    const r = step(calm, g, g.pending ? availableActions(calm, g).find((a) => a.enabled) : "rest");
+    assert.ok(!evIds(r.beats).includes("claim-mail"), "no neighbour brings letters the family cannot pay for");
+    g = r.state;
+  }
+  if (!g.over) {
+    g = clone(g);
+    g.purse.coin = 1000;
+    for (let i = 0; i < 12 && !g.over; i++) {
+      const r = step(calm, g, g.pending ? availableActions(calm, g).find((a) => a.enabled) : "rest");
+      if (evIds(r.beats).includes("claim-mail")) fires.push(r.state.day);
+      assert.ok(!r.beats.some((b) => b.type === "narrate" && /not enough in the purse/.test(b.text)));
+      g = r.state;
+    }
+    assert.equal(fires.length, 1);
+    assert.equal(M.waitingMail(g, "bronson").length, 0);
+  }
+  // The reviewer's seed, played to the end.
+  const seed = "cm-152";
+  const rng = cursor(createRng(`p-${seed}`));
+  let h = newGame(route, { seed }).state;
+  const days = [];
+  while (!h.over) {
+    const r = step(route, h, STRATEGIES.cheap(route, h, availableActions(route, h), { seedIndex: 152, rng }));
+    if (evIds(r.beats).includes("claim-mail")) {
+      days.push(r.state.day);
+      assert.ok(!r.beats.some((b) => b.type === "narrate" && /not enough in the purse/.test(b.text)), `${seed}: unpaid claim-mail on ${r.state.date}`);
+    }
+    h = r.state;
+  }
+  for (let i = 1; i < days.length; i++) assert.ok(days[i] - days[i - 1] > 1, `${seed}: claim-mail on consecutive days ${days}`);
+});
+
+test("N-A4: postage is kept exact in fractions of a cent; the counter drops an odd half cent in the family's favour", () => {
+  assert.equal(M.postage(num, 100, 1), 12.5);
+  assert.equal(M.postage(num, 100, 2), 25);
+  assert.equal(M.postage(num, 200, 1), 18.75);
+  assert.equal(M.postage(num, 200, 2), 37.5);
+  assert.equal(M.postage(num, 200, 4), 75);
+  assert.equal(M.charge(12.5), 12);
+  assert.equal(M.charge(25), 25);
+  assert.equal(M.charge(12.5 + 25), 37);
+  assert.equal(M.charge(18.75), 18);
+  assert.match(route.numbers.get("post.band.3.rate").note, /half cent/i);
+  // At Albany: one sheet is 12 cents paid, two sheets exactly 25, and both at one counter 37.
+  const s = clone(reach("cautious", (x) => x.phase === "town" && x.place === "albany"));
+  s.mail = s.mail.filter((m) => m.office !== "albany");
+  s.mail.push({ id: "a1", key: "kin", tie: null, office: "albany", from: s.date, written: s.date, sheets: 1, status: "waiting" });
+  assert.equal(M.mailCost(s, num, "albany"), 12);
+  s.mail.push({ id: "a2", key: "kin", tie: null, office: "albany", from: s.date, written: s.date, sheets: 2, status: "waiting" });
+  assert.equal(M.mailCost(s, num, "albany"), 37);
+  assert.equal(M.sendPostage(num, "albany", "whole"), 25);
+  assert.equal(M.sendPostage(num, "albany", "halves"), 50);
+  const coinOnly = clone(s);
+  coinOnly.purse = { coin: 1000, notes: { ne: 0, ny: 0, mi: 0 } };
+  const wrote = step(route, atPost(coinOnly), "choose:write").state;
+  assert.equal(wrote.purse.coin, 1000 - 12);
+});
+
+test("boat drive-on: aboard the canal boat or the steamer a worn-out family may drive on, and it still equals pressing go", () => {
+  for (const leg of ["canal", "lake"]) {
+    const s = clone(reach("cautious", (x) => x.phase === "travel" && x.leg === leg, calm));
+    for (const p of s.party) p.fatigue = 95;
+    assert.equal(canDriveOn(engine, calm, s).ok, true, leg);
+    const r = driveOn(engine, calm, s);
+    assert.notEqual(r.reason, "tired", leg);
+    assert.ok(r.days.length >= 1);
+    let g = s;
+    for (let k = 0; k < r.days.length; k++) g = step(calm, g, "go").state;
+    assert.equal(JSON.stringify(g), JSON.stringify(r.state), leg);
+  }
+});
+
+test("N-A2: a worn team pulls slower from the first point, so a pushed day costs miles on the days after", () => {
+  const s = started("vermont", "slow", calm);
+  s.vars.terrain = "hill";
+  const miles = (f) => { s.gear.fatigue = f; return T.dayMiles(makeCtx(calm, s), "fair"); };
+  const fresh = miles(0);
+  assert.ok(miles(1) < fresh);
+  assert.ok(Math.abs(miles(40) - fresh * (1 - 40 * num("fat.team.slow"))) < 1e-9);
+  // A hired teamster's team is not the family's to wear out.
+  s.gear.teamster = true;
+  s.gear.fatigue = 60;
+  assert.equal(T.teamWearMult(makeCtx(calm, s)), 1);
 });

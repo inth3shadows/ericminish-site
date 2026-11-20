@@ -96,7 +96,17 @@ export function dayMiles(ctx, weather) {
   // An ox that gave out: the wagon crawls until a new yoke is bought.
   if (state.flags.teamShort && !state.gear.teamster) base *= num("team.short.mult");
   const t = state.vars.terrain;
-  return base * terrainMult(ctx, t) * weatherMult(ctx, weather) * moraleMult(ctx) * paceMult(ctx, t);
+  return base * terrainMult(ctx, t) * weatherMult(ctx, weather) * moraleMult(ctx) * paceMult(ctx, t) * teamWearMult(ctx, t);
+}
+
+// A worn team pulls slower on good road, from the first point of fatigue: a
+// hard or grueling day buys miles today and costs some on every day after,
+// until the team rests. On the swamp road and the forest track the road sets
+// the speed, for a fresh team or a tired one (as for the pace).
+export function teamWearMult(ctx, terrain = ctx.state.vars.terrain) {
+  const { state, num } = ctx;
+  if (!state.gear.team || state.gear.teamster || !GOOD_ROAD.has(terrain)) return 1;
+  return Math.max(0, 1 - num("fat.team.slow") * (state.gear.fatigue ?? 0));
 }
 
 // Hard and grueling multiply the miles only on good road.

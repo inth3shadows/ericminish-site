@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { makeCtx } from "../engine.js";
 import { createState } from "../state.js";
-import { applyEffects, drawEvent, evalCond, resolve, resolveChoice, startEvent, validateDeck } from "../events.js";
+import { applyEffects, drawEvent, evalCond, resolve, resolveChoice, startEvent, validateDeck, weightOf } from "../events.js";
 
 function fixture(overrides = {}) {
   const numbers = { "w.a": 1, "w.b": 3, "amt": 5, "cd": 3, "p.half": 0.5, "big": 2 };
@@ -241,4 +241,38 @@ test("validateDeck: without an eventDay hook, 'as' on days is allowed and on oth
   const errs = validateDeck(f.route);
   assert.equal(errs.length, 1, errs.join("\n"));
   assert.match(errs[0], /event plain: .*"as".*add/);
+});
+
+test("PA1: a choice's next event binds its own variables fresh and inherits the rest", () => {
+  const f = fixture();
+  let n = 0;
+  f.route.binders = { ...f.route.binders, count: () => `call ${++n}` };
+  f.route.events = [
+    { id: "menu", deck: "d", text: "Menu {label} {extra}", bind: { label: { count: true } },
+      choices: [{ id: "again", label: "Again {label}", effects: [], next: "menu" }, { id: "leave", label: "Leave" }] },
+  ];
+  startEvent(f.ctx, "menu", { extra: "kept" });
+  assert.equal(f.state.pending.vars.label, undefined, "startEvent with vars does not bind");
+  f.state.pending = null;
+  f.ctx.beats.length = 0;
+  f.ctx.queueEvent("menu", { extra: "kept" });
+  assert.equal(f.state.pending.vars.label, "call 1");
+  resolveChoice(f.ctx, "again");
+  assert.equal(f.state.pending.id, "menu");
+  assert.equal(f.state.pending.vars.label, "call 2", "the next event's own binder runs again");
+  assert.equal(f.state.pending.vars.extra, "kept");
+});
+
+test("N-A2: weight.scale multiplies by a route scale (a continuous curve); validateDeck knows the route's scales", () => {
+  const f = fixture();
+  f.route.scales = { worn: (ctx) => 1 + (ctx.state.res.food ?? 0) / 100 };
+  const ev = { id: "s", deck: "d", text: "S", weight: { base: 10, scale: "worn" } };
+  f.route.events = [ev];
+  f.state.res.food = 0;
+  assert.equal(weightOf(ev, f.ctx), 10);
+  f.state.res.food = 50;
+  assert.equal(weightOf(ev, f.ctx), 15);
+  assert.deepEqual(validateDeck(f.route).filter((e) => /scale/.test(e)), []);
+  f.route.events.push({ id: "t", deck: "d", text: "T", weight: { base: 1, scale: "nope" } });
+  assert.match(validateDeck(f.route).join("\n"), /event t: unknown weight scale nope/);
 });

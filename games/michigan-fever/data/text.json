@@ -186,7 +186,11 @@
     "sentHalves": "The postmaster takes the first letter. The other halves go by the next mail.",
     "sentWhole": "The postmaster takes the letter, notes and all.",
     "deadLetters": "{n} from home never reached the family. After the quarter's advertising they went to the dead-letter office in Washington.",
-    "sendDetail": "Notes go by mail at their value at home, where New England paper passes at face."
+    "sendDetail": "Notes go by mail at their value at home, where New England paper passes at face.",
+    "tooLate": "Too late: a letter sent now would reach home after {due}, when it falls due.",
+    "noPaper": "Not enough paper money to send: coin does not go by mail.",
+    "fellDue": "Too late: it fell due at home on {due}.",
+    "cannotPayTie": "You do not have it to pay."
   },
   "homeLetters": {
     "kin": "{to},\n\nYou will hardly be out of the county when this reaches Albany, but I promised to write, and so I do. The house looks strange from the road with no smoke from the chimney.\n\nWrite from every place you stop, if you can spare the postage. We pay for the letters that come here, so do not write small to save paper.\n\nYour affectionate\n{sender}",
@@ -272,9 +276,19 @@
             "at": "detroit"
           },
           "unless": {
-            "tie": [
-              "mortgage",
-              "settled"
+            "any": [
+              {
+                "tie": [
+                  "mortgage",
+                  "settled"
+                ]
+              },
+              {
+                "tie": [
+                  "mortgage",
+                  "decided"
+                ]
+              }
             ]
           }
         }

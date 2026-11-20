@@ -23,11 +23,13 @@ function goAction(engine, route, state) {
 // Conditions that need the player right now, whatever happened before.
 // Low food does not count while the passage itself feeds the family (packet, cabin).
 // "tired": anyone, or the team, at the route's high-fatigue mark (view.fatigue.high).
+// Not aboard a canal boat or a steamer: a day on the boat brings fatigue down.
+const RESTING_MODES = new Set(["canal", "steamer"]);
 function hazard(v) {
   if (v.food.days <= LOW_FOOD_DAYS && !v.food.meals) return "food";
   if (v.purse.valueHere < LOW_MONEY) return "money";
   if (v.party.some((p) => p.status === "sick" && p.health < WEAK)) return "weak";
-  if (worn(v)) return "tired";
+  if (worn(v) && !RESTING_MODES.has(v.travel?.mode)) return "tired";
   return null;
 }
 

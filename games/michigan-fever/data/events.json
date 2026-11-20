@@ -190,6 +190,9 @@
             "wagon": "#ev.wagon.mid"
           },
           {
+            "flag": "!wheelMended"
+          },
+          {
             "schedule": {
               "event": "chain-axle",
               "in": "#chain.axle.in",
@@ -1107,14 +1110,18 @@
       "mul": [
         [
           {
-            "teamTired": [
-              ">=",
-              "#fat.tired"
-            ]
+            "pushing": "hard"
           },
-          "#fat.ev.mult"
+          "#fat.ev.hard"
+        ],
+        [
+          {
+            "pushing": "grueling"
+          },
+          "#fat.ev.grueling"
         ]
-      ]
+      ],
+      "scale": "teamWorn"
     },
     "cooldown": "#cd.long",
     "when": {
@@ -2203,17 +2210,7 @@
     "deck": "claim",
     "weight": {
       "base": "#w.common",
-      "mul": [
-        [
-          {
-            "tired": [
-              ">=",
-              "#fat.tired"
-            ]
-          },
-          "#fat.ev.mult"
-        ]
-      ]
+      "scale": "worn"
     },
     "cooldown": "#cd.long",
     "when": {
@@ -2396,17 +2393,7 @@
     "deck": "travel",
     "weight": {
       "base": "#w.uncommon",
-      "mul": [
-        [
-          {
-            "tired": [
-              ">=",
-              "#fat.tired"
-            ]
-          },
-          "#fat.ev.mult"
-        ]
-      ]
+      "scale": "worn"
     },
     "cooldown": "#cd.long",
     "when": {
@@ -2566,6 +2553,9 @@
           },
           {
             "flag": "secondYoke"
+          },
+          {
+            "flag": "!teamShort"
           }
         ],
         "result": "You hitch the new yoke ahead of your own."
@@ -2716,7 +2706,10 @@
   {
     "id": "travel-stumble",
     "deck": "travel",
-    "weight": "#w.common",
+    "weight": {
+      "base": "#w.common",
+      "scale": "worn"
+    },
     "cooldown": "#cd.long",
     "when": {
       "all": [
@@ -2760,7 +2753,24 @@
   {
     "id": "team-cast-shoe",
     "deck": "travel",
-    "weight": "#w.common",
+    "weight": {
+      "base": "#w.common",
+      "mul": [
+        [
+          {
+            "pushing": "hard"
+          },
+          "#fat.ev.hard"
+        ],
+        [
+          {
+            "pushing": "grueling"
+          },
+          "#fat.ev.grueling"
+        ]
+      ],
+      "scale": "teamWorn"
+    },
     "cooldown": "#cd.long",
     "when": {
       "all": [
@@ -2776,9 +2786,19 @@
           "team": true
         },
         {
-          "teamTired": [
-            ">=",
-            "#fat.tired"
+          "any": [
+            {
+              "teamTired": [
+                ">=",
+                "#fat.tired"
+              ]
+            },
+            {
+              "pushing": [
+                "hard",
+                "grueling"
+              ]
+            }
           ]
         }
       ]
@@ -2875,6 +2895,9 @@
               "who": "team",
               "amount": "#ev.team.fresh"
             }
+          },
+          {
+            "freshTeam": true
           }
         ],
         "result": "The farmer drives a hard bargain, but you go on with a sound team."
@@ -3041,17 +3064,7 @@
     "deck": "travel",
     "weight": {
       "base": "#w.uncommon",
-      "mul": [
-        [
-          {
-            "tired": [
-              ">=",
-              "#fat.tired"
-            ]
-          },
-          "#fat.ev.mult"
-        ]
-      ]
+      "scale": "worn"
     },
     "once": true,
     "when": {
@@ -3115,13 +3128,13 @@
     },
     "bind": {
       "amount": {
-        "value": "#ev.loan.amount"
+        "money": "#ev.loan.amount"
       },
       "due": {
-        "value": "#ev.loan.due"
+        "money": "#ev.loan.due"
       }
     },
-    "text": "A broker on the wharf will lend on a family's note: ${amount} in coin now, ${due} to his agent at Detroit.",
+    "text": "A broker on the wharf will lend on a family's note: {amount} in coin now, {due} to his agent at Detroit.",
     "choices": [
       {
         "id": "no",
@@ -3171,10 +3184,10 @@
         "value": "#mi.detroitChicago"
       },
       "fare": {
-        "value": "#fare.stage.chicago"
+        "money": "#fare.stage.chicago"
       }
     },
-    "text": "On the tavern porch men talk of nothing but Chicago: {miles} miles by the Chicago road, ${fare} by the stage, and town lots there doubling while you sleep.",
+    "text": "On the tavern porch men talk of nothing but Chicago: {miles} miles by the Chicago road, {fare} by the stage, and town lots there doubling while you sleep.",
     "note": {
       "text": "Blois called the travel on the Chicago road \"immense, equal to, if not more, than on any other in the United States of the same length,\" and gave its whole length as 254 miles. His stage table priced Detroit to Chicago at $21.",
       "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 413",
@@ -3192,10 +3205,10 @@
     },
     "bind": {
       "price": {
-        "value": "#price.salt.barrel"
+        "money": "#price.salt.barrel"
       }
     },
-    "text": "A neighbour has a barrel of salt to sell at ${price}, winter prices. Without salt there is no putting up meat for the cold months.",
+    "text": "A neighbour has a barrel of salt to sell at {price}, winter prices. Without salt there is no putting up meat for the cold months.",
     "choices": [
       {
         "id": "no",
@@ -3266,7 +3279,7 @@
         "requires": {
           "canSendTie": "parent"
         },
-        "why": "Not enough paper money to send: coin does not go by mail.",
+        "why": "{why_parent}",
         "effects": [
           {
             "sendTie": "parent"
@@ -3285,7 +3298,7 @@
         "requires": {
           "canSendTie": "note"
         },
-        "why": "Not enough paper money to send: coin does not go by mail.",
+        "why": "{why_note}",
         "effects": [
           {
             "sendTie": "note"
@@ -3304,7 +3317,7 @@
         "requires": {
           "canSendTie": "mortgage"
         },
-        "why": "Not enough paper money to send: coin does not go by mail.",
+        "why": "{why_mortgage}",
         "effects": [
           {
             "sendTie": "mortgage"
@@ -3323,7 +3336,7 @@
         "requires": {
           "canSendTie": "sweetheart"
         },
-        "why": "Not enough paper money to send: coin does not go by mail.",
+        "why": "{why_sweetheart}",
         "effects": [
           {
             "sendTie": "sweetheart"
@@ -3342,7 +3355,7 @@
         "requires": {
           "canSendTie": "store"
         },
-        "why": "Not enough paper money to send: coin does not go by mail.",
+        "why": "{why_store}",
         "effects": [
           {
             "sendTie": "store"
@@ -3361,7 +3374,7 @@
         "requires": {
           "canSendTie": "subscription"
         },
-        "why": "Not enough paper money to send: coin does not go by mail.",
+        "why": "{why_subscription}",
         "effects": [
           {
             "sendTie": "subscription"
@@ -3384,7 +3397,8 @@
           {
             "writeHome": "here"
           }
-        ]
+        ],
+        "next": "post-office"
       },
       {
         "id": "leave",
@@ -3425,6 +3439,24 @@
       },
       "send_subscription": {
         "post": "send_subscription"
+      },
+      "why_parent": {
+        "post": "why_parent"
+      },
+      "why_note": {
+        "post": "why_note"
+      },
+      "why_mortgage": {
+        "post": "why_mortgage"
+      },
+      "why_sweetheart": {
+        "post": "why_sweetheart"
+      },
+      "why_store": {
+        "post": "why_store"
+      },
+      "why_subscription": {
+        "post": "why_subscription"
       }
     }
   },
@@ -3535,6 +3567,9 @@
         },
         {
           "mailWaiting": "bronson"
+        },
+        {
+          "canPayMail": "bronson"
         }
       ]
     },
@@ -3559,10 +3594,13 @@
     },
     "bind": {
       "amount": {
-        "value": "#tie.mortgage.amount"
+        "money": "#tie.mortgage.amount"
+      },
+      "payWhy": {
+        "tieWhy": "mortgage"
       }
     },
-    "text": "A lawyer finds you at the tavern with a letter from the bank at home. The mortgage note on the old farm is due, ${amount}, and your surety will answer for it if you do not.",
+    "text": "A lawyer finds you at the tavern with a letter from the bank at home. The mortgage note on the old farm is due, {amount}, and your surety will answer for it if you do not.",
     "choices": [
       {
         "id": "later",
@@ -3578,9 +3616,19 @@
         "id": "pay",
         "label": "Pay him here and take his receipt",
         "requires": {
-          "afford": "#tie.mortgage.amount"
+          "all": [
+            {
+              "tie": [
+                "mortgage",
+                "payable"
+              ]
+            },
+            {
+              "afford": "#tie.mortgage.amount"
+            }
+          ]
         },
-        "why": "You do not have it to pay.",
+        "why": "{payWhy}",
         "effects": [
           {
             "payTie": "mortgage"
@@ -3603,10 +3651,10 @@
     },
     "bind": {
       "amount": {
-        "value": "#tie.store.amount"
+        "money": "#tie.store.amount"
       }
     },
-    "text": "A drummer for a wholesale house knows Hammond's store at home, and your name. The old man is short this autumn, he says, and the ${amount} you owe would be welcome. He will tell Mr. Hammond he saw you.",
+    "text": "A drummer for a wholesale house knows Hammond's store at home, and your name. The old man is short this autumn, he says, and the {amount} you owe would be welcome. He will tell Mr. Hammond he saw you.",
     "note": {
       "text": "The research has no figures for what emigrants left owing at home. This account and its collector are invented.",
       "source": "Invented for the game",
@@ -3646,6 +3694,7 @@
   {
     "id": "chain-axle",
     "deck": "chain",
+    "outfit": "wagon",
     "when": {
       "all": [
         {
@@ -3714,6 +3763,7 @@
   {
     "id": "chain-team-strained",
     "deck": "chain",
+    "outfit": "team",
     "when": {
       "team": true
     },
@@ -3893,6 +3943,7 @@
   {
     "id": "chain-corduroy-spring",
     "deck": "chain",
+    "outfit": "wagon",
     "when": {
       "all": [
         {
@@ -4086,6 +4137,7 @@
   {
     "id": "chain-ox-worse",
     "deck": "chain",
+    "outfit": "team",
     "when": {
       "all": [
         {
@@ -4176,10 +4228,10 @@
     },
     "bind": {
       "due": {
-        "value": "#ev.loan.due"
+        "money": "#ev.loan.due"
       }
     },
-    "text": "The Buffalo broker's agent finds you at the tavern before you have unloaded. He has your note: ${due}, today.",
+    "text": "The Buffalo broker's agent finds you at the tavern before you have unloaded. He has your note: {due}, today.",
     "choices": [
       {
         "id": "pay",
@@ -4229,10 +4281,10 @@
     },
     "bind": {
       "late": {
-        "value": "#ev.loan.late"
+        "money": "#ev.loan.late"
       }
     },
-    "text": "The broker's man has followed you to Bronson. With costs, he says, the note is now ${late}, and he will write to your people at home if you do not pay.",
+    "text": "The broker's man has followed you to Bronson. With costs, he says, the note is now {late}, and he will write to your people at home if you do not pay.",
     "choices": [
       {
         "id": "pay",

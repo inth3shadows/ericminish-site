@@ -104,18 +104,26 @@ games/
 - **Depth systems (P2 Phase A).** The family's own wagon travels at a pace
   (steady, hard, grueling) sent as a parameter of the travel action; it pays
   only on good road. Each person and the team carry fatigue, which raises the
-  odds of illness, quarrels, injuries and a lame or lost ox, and falls with
-  rest, a roof and a kept Sabbath. The engine has a `schedule` effect: a choice
-  can queue a later consequence (after some days, or on reaching a place),
-  kept in `state.queue`. Each family draws two or three ties at home (a parent's
-  keep, a note of hand, a mortgage, a sweetheart, a store account, a
+  odds of illness, quarrels, injuries and a lame or lost ox from the first
+  point (a continuous curve, steep past 40), slows a worn team on good road,
+  and falls with rest, a roof and a kept Sabbath. The engine has a `schedule`
+  effect: a choice can queue a later consequence (after some days, or on
+  reaching a place), kept in `state.queue`; every consequence waiting for a
+  town fires while the family is there, and troubles of a sold or replaced
+  team or wagon are dropped. Each family draws two or three ties at home (a
+  parent's keep, a note of hand, a mortgage, a sweetheart, a store account, a
   subscription; every size invented). Letters from home wait at the post
-  offices at postage by the 1825 distance bands, and money goes home in notes
-  cut in halves. The route is at version 2, so P1 saves are refused cleanly.
+  offices at postage by the 1825 distance bands (kept exact; the counter drops
+  an odd half cent), and money goes home in notes cut in halves; it settles a
+  tie only if it reaches home by the tie's date. The route is at version 2, so
+  P1 saves are refused cleanly; a save with a malformed queue, ties, letters
+  or fatigue is refused as damaged.
   The interface is in `games/michigan-fever/API.md`.
 - **Tests.** `node --test games/*/test/*.test.mjs` runs the engine units, the
-  route rules, the drive-on checks, the depth systems (`test/depth.test.mjs`)
-  and a seeded balance simulation. CI runs it.
+  route rules, the drive-on checks, the depth systems (`test/depth.test.mjs`),
+  a seeded balance simulation, and the pace trade-off
+  (`test/pace-*.test.mjs`: pushing grueling while under 40 or 45 fatigue must
+  not beat a steady pace). CI runs it.
 - **Saving.** One autosave in `localStorage`, wrapped so private mode or blocked
   storage only loses the save.
 - **Pictures.** The scene paintings are AI-generated (Gemini 3 Pro Image, via

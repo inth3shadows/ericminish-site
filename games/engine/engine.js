@@ -23,6 +23,9 @@
 //   view?(state) -> HUD data
 //   places?: string[]                      places a scheduled event may wait for ({"at": place}); validateDeck checks them
 //   atPlace?(state) -> place | null        where the family is for an {"at"} schedule (default: state.place)
+//   schedules?: [{where, spec}]            schedule specs kept outside the deck; validateDeck checks them too
+//   scales?: {name: (ctx) -> number}       curves an event weight may scale by ({"weight": {"base", "scale": name}})
+//   readable?(state) -> bool               the route's own shape check on a loaded save (save.js)
 
 import { addDays } from "./clock.js";
 import { cursor } from "./rng.js";
@@ -42,14 +45,15 @@ export function makeCtx(route, state) {
     evalCond: (cond, vars) => deck.evalCond(cond, ctx, vars),
     applyEffects: (effects, vars) => deck.applyEffects(effects, ctx, vars),
     // A due scheduled event fires ahead of the random draw; the draw still
-    // happens unless the scheduled event opened a choice.
-    drawEvent(name) {
+    // happens unless the scheduled event opened a choice. {due: false} draws
+    // from the deck alone (for a route that has fired the queue already today).
+    drawEvent(name, { due: fire = true } = {}) {
       if (state.pending || state.over) return false;
-      const due = deck.fireDue(ctx);
+      const due = fire ? deck.fireDue(ctx) : false;
       if (state.pending || state.over) return due;
       return deck.drawEvent(ctx, name) || due;
     },
-    fireDue: () => (state.pending || state.over ? false : deck.fireDue(ctx)),
+    fireDue: (opts) => (state.pending || state.over ? false : deck.fireDue(ctx, opts)),
     schedule: (spec, vars = {}) => deck.schedule(ctx, spec, vars),
     startEvent: (id, vars) => deck.startEvent(ctx, id, vars),
     queueEvent(id, vars = {}) {

@@ -2,18 +2,26 @@
 // from home waiting at post offices, postage by distance band, and money sent
 // home in notes cut in halves. No DOM.
 //
-// A tie is owed at home in face value. It settles when money sent home arrives;
-// on its date (tie.<id>.due) it turns out well or badly at home, unseen. The
-// family learns of it from a letter, if they call for it and pay the postage.
+// A tie is owed at home in face value. It settles when money sent home arrives
+// by its date (tie.<id>.due); on that date it turns out well or badly at home,
+// unseen. The family learns of it from a letter, if they call for it and pay the postage.
+//
+// Status: "open" (owed), "sent" (money in the mail; as far as the family knows
+// it is on its way), "settled" (it arrived, or was paid in person), "lost"
+// (the letter saying it never came has been read). Money that goes astray stays
+// "sent", with t.astray, until that letter is collected.
 
-import { compare, addDays } from "../../engine/clock.js";
+import { compare, addDays, format } from "../../engine/clock.js";
 import { addRes, resolve } from "../../engine/events.js";
 import * as P from "./purse.js";
 import { living } from "./health.js";
 
 const PLACE_LABEL = { perrysburg: "Perrysburg" };
+// "5 November"
+const formatDay = (iso) => format(iso, { weekday: false }).replace(/ \d{4}$/, "");
 export const TIE_IDS = ["parent", "note", "mortgage", "sweetheart", "store", "subscription"];
 export const POST_OFFICES = ["albany", "buffalo", "perrysburg", "detroit", "bronson"];
+export const TIE_STATUSES = ["open", "sent", "settled", "lost"];
 // Outcomes that are bad news when they reach the family.
 export const BAD = new Set(["died", "managing", "pressed", "sued", "married", "posted", "named"]);
 
@@ -36,11 +44,18 @@ export function bandRate(num, miles) {
   return num("post.band.5.rate");
 }
 
-// Cents for a letter of `sheets` pieces of paper: double for two, triple for
-// three, quadruple for a packet of four or more.
+// Cents for a letter of `sheets` pieces of paper, exact: double for two, triple
+// for three, quadruple for a packet of four or more. 12.5 and 18.75 stay exact
+// here (the rates are multiples of a quarter cent, exact in binary too).
 export function postage(num, miles, sheets = 1) {
-  return Math.round(bandRate(num, miles) * Math.min(sheets, num("post.sheetsMax")) * 100);
+  return bandRate(num, miles) * Math.min(sheets, num("post.sheetsMax")) * 100;
 }
+
+// What the counter takes for postage of `exact` cents (one call: every letter
+// paid for together). The purse holds whole cents, so an odd half or quarter
+// cent is dropped in the family's favour: two sheets at 12.5 are exactly 25,
+// one sheet is 12. See the note on post.band.3.rate.
+export const charge = (exact) => Math.floor(exact + 1e-9);
 
 export const tieDef = (route, id) => route.data.text.ties.find((t) => t.id === id);
 export const tieOf = (state, id) => state.ties?.find((t) => t.id === id) ?? null;
@@ -103,7 +118,12 @@ export function waitingMail(state, office) {
 }
 
 export function mailCost(state, num, office) {
-  return waitingMail(state, office).reduce((a, m) => a + postage(num, officeMiles(num, office), m.sheets), 0);
+  return charge(waitingMail(state, office).reduce((a, m) => a + postage(num, officeMiles(num, office), m.sheets), 0));
+}
+
+// A letter home from this office, one sheet.
+export function letterCost(num, office) {
+  return charge(postage(num, officeMiles(num, office), 1));
 }
 
 function tieVars(ctx, t) {
@@ -153,7 +173,11 @@ export function collectMail(ctx, office) {
     if (t && m.key === "outcome") {
       t.learned = true;
       mood = BAD.has(t.outcome) ? -num("tie.morale.bad") : num("tie.morale.good");
-    } else if (m.key === "lost") mood = -num("tie.morale.bad");
+    } else if (m.key === "lost") {
+      mood = -num("tie.morale.bad");
+      // Only now does the family know the money never came.
+      if (t?.status === "sent") t.status = "lost";
+    }
     addRes(ctx, "morale", mood);
   }
   return true;
@@ -203,11 +227,41 @@ export function homeValue(state, num) {
   return P.REGIONS.reduce((a, r) => a + P.noteValue(state, num, r, num("zone.home")), 0);
 }
 
-export const canSendFor = (state, num, t) => t && t.status !== "settled" && homeValue(state, num) >= t.amount;
+// Money can go for a tie that is owed, or whose money is known to be lost;
+// not while a sending is (as far as the family knows) on its way.
+export const sendOpen = (t) => Boolean(t) && (t.status === "open" || t.status === "lost");
+
+// Money settles a tie only if it is in hand at home by the tie's date, before
+// the outcome there is decided. Letters take post.transitDays; paid to an
+// agent in person, it counts the day it is paid.
+export function inTime(num, t, arrives) {
+  return t.outcome == null && compare(arrives, num(`tie.${t.id}.due`)) <= 0;
+}
+
+export const lettersArrive = (state, num) => addDays(state.date, num("post.transitDays"));
+
+export const canSendFor = (state, num, t) => sendOpen(t) && inTime(num, t, lettersArrive(state, num)) && homeValue(state, num) >= t.amount;
+
+// Why a tie's money cannot go by this mail (null when it can).
+export function sendWhy(route, state, num, t) {
+  if (canSendFor(state, num, t)) return null;
+  const P0 = route.data.text.post;
+  if (sendOpen(t) && !inTime(num, t, lettersArrive(state, num))) return P0.tooLate.replace("{due}", formatDay(num(`tie.${t.id}.due`)));
+  return P0.noPaper;
+}
+
+// Paid in person (an agent who found you): possible while it is owed and before its date.
+export const canPayHere = (state, num, t) => Boolean(t) && t.status !== "settled" && inTime(num, t, state.date);
+
+export function payWhy(route, state, num, t) {
+  const P0 = route.data.text.post;
+  if (t && t.status !== "settled" && !inTime(num, t, state.date)) return P0.fellDue.replace("{due}", formatDay(num(`tie.${t.id}.due`)));
+  return P0.cannotPayTie;
+}
 
 // Postage for sending: each letter is the letter and the enclosed notes, two pieces of paper.
 export function sendPostage(num, office, how) {
-  return (how === "halves" ? 2 : 1) * postage(num, officeMiles(num, office), 2);
+  return charge((how === "halves" ? 2 : 1) * postage(num, officeMiles(num, office), 2));
 }
 
 function takeNotesAtHome(state, num, amount) {
@@ -250,8 +304,10 @@ export function sendMoney(ctx, tieId, how, office) {
   outgoing(ctx, H.money[how], tieVars(ctx, t));
   state.vars.lettersHome = (state.vars.lettersHome ?? 0) + 1;
   if (lost) {
-    t.status = "lost";
-    // Word that it never came reaches Bronson in time.
+    // As far as the family knows it is on its way. Word that it never came
+    // reaches Bronson in time; until that letter is read it shows as sent.
+    t.status = "sent";
+    t.astray = true;
     state.mail.push({ id: nextMail(state), key: "lost", tie: t.id, office: "bronson", from: addDays(state.date, 2 * num("post.transitDays")), written: addDays(state.date, num("post.transitDays")), sheets: 1, status: "waiting" });
   } else {
     t.sent = t.amount;
@@ -265,7 +321,7 @@ export function sendMoney(ctx, tieId, how, office) {
 export function payTieHere(ctx, tieId) {
   const { state, num } = ctx;
   const t = tieOf(state, tieId);
-  if (!t || t.status === "settled" || !P.pay(state, num, t.amount)) return false;
+  if (!canPayHere(state, num, t) || !P.pay(state, num, t.amount)) return false;
   t.sent = t.amount;
   t.status = "settled";
   return true;

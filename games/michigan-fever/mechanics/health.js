@@ -70,16 +70,19 @@ export function cure(ctx, id) {
 // ---- fatigue ------------------------------------------------------------------
 // Each person and the team carry fatigue 0-100. Pace and bad road raise it;
 // rest, the Sabbath and a roof bring it down (the day's numbers come from the
-// route). Above fat.ill.from it makes illness likelier, up to 1 + fat.ill.mult
-// times at full fatigue.
+// route). It costs from the first point: illness (and, through the route's
+// "worn" and "teamWorn" scales, accidents and lameness) grows likelier a little
+// up to the knee at fat.ill.from (1 + fat.ill.low times there), then steeply,
+// to 1 + fat.ill.mult times at full fatigue. One continuous curve, no cliff.
 
 const clamp = (x, num) => Math.min(num("fat.max"), Math.max(0, x));
 
 export function fatigueMult(p, num) {
-  const from = num("fat.ill.from");
-  const f = p?.fatigue ?? 0;
-  if (f <= from) return 1;
-  return 1 + num("fat.ill.mult") * ((f - from) / (num("fat.max") - from));
+  const knee = num("fat.ill.from");
+  const low = num("fat.ill.low");
+  const f = Math.max(0, p?.fatigue ?? 0);
+  if (f <= knee) return 1 + low * (f / knee);
+  return 1 + low + (num("fat.ill.mult") - low) * ((f - knee) / (num("fat.max") - knee));
 }
 
 // "worn" at fat.high, "tired" at fat.tired, else null.

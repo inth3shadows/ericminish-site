@@ -66,16 +66,26 @@ function readable(route, s) {
     && isObj(s.flags) && isObj(s.res) && isObj(s.vars)
     && isObj(s.events) && isObj(s.events.seen) && isObj(s.events.last)
     && (s.pending === null || (isObj(s.pending) && typeof s.pending.id === "string"))
-    && (s.queue === undefined || (Array.isArray(s.queue) && s.queue.every((q) => isObj(q) && typeof q.event === "string")))
+    && (s.queue === undefined || (Array.isArray(s.queue) && s.queue.every((q) => queueItemOk(route, q))))
     && (s.over === null || isObj(s.over));
   if (!shaped) return false;
   try {
+    if (route.readable && !route.readable(s)) return false;
     availableActions(route, s);
     route.view?.(s);
     return true;
   } catch {
     return false;
   }
+}
+
+// A queued event the route knows, waiting either for a day (due) or for a place (at).
+function queueItemOk(route, q) {
+  if (!isObj(q) || typeof q.event !== "string") return false;
+  if (!(route.eventIndex?.has(q.event) ?? route.events?.some((e) => e.id === q.event))) return false;
+  const byDay = Number.isInteger(q.due);
+  const byPlace = typeof q.at === "string" && (!route.places || route.places.includes(q.at));
+  return byDay !== byPlace && (byDay ? q.at === undefined : q.due === undefined);
 }
 
 function checkSlot(slot) {
