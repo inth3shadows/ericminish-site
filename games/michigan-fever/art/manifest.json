@@ -1,0 +1,344 @@
+{
+ "scenes": [
+  {
+   "id": "01-vermont-departure",
+   "files": {
+    "1920": "01-vermont-departure.webp",
+    "960": "01-vermont-departure-960.webp"
+   },
+   "width": 1920,
+   "height": 1072,
+   "model": "google/gemini-3-pro-image-preview",
+   "image_size": "2K",
+   "attempts": 1,
+   "prompt": "A full-bleed 16:9 oil painting in the manner of the 1830s Hudson River School (Thomas Cole, Asher Durand): luminous natural light, real atmospheric depth, natural unsaturated colour, visible but soft painterly brushwork. Painted as if the viewer is standing inside the scene at eye level, NOT a picture of a picture: no paper, no border, no frame, no mat, no margins, no engraving or line-art look, no vignette edges. Not cinematic or glossy, no fantasy, no modern elements. Historically accurate to 1836 America (homespun and wool clothing, bonnets, hats, no railroads, no wire fences). Absolutely no text, lettering, signs, signatures or watermarks. Compose with a little empty sky headroom at the top and keep the bottom quarter calm and simple (soft ground, water or shadow, no faces or key details there). Scene: Dawn on a stony hill farm in Vermont, autumn 1836. A heavily loaded farm wagon with a canvas cover, trunks, a spinning wheel and a plough, drawn by a yoke of oxen, is just leaving the dooryard; a family in homespun walks beside it, the mother glancing back at a small weathered farmhouse and stone walls. Cold pink and gold light, mist in the valley, maples in colour.",
+   "qa": {
+    "visual_check": "manual look by generating agent",
+    "second_opinion_model": "gemini-3.7-flash-or",
+    "verdict": "PASS",
+    "notes": "No defects found.",
+    "second_opinion": "* **Text, lettering, signs or signatures:** None detected.\n* **Anachronisms:** None detected (wagon, oxen, spinning wheel, plow, wooden cabin, stone fences, and 1830s attire are period-accurate).\n* **Distorted hands or faces, extra limbs, merged bodies:** None detected; human figures (seen from the back/profile) and oxen are anatomically coherent.\n* **Book/paper/frame/border/engraving look:** None (clean full-bleed canvas painting appearance).\n\nVERDICT: PASS"
+   },
+   "focal_point": {
+    "x": 50,
+    "y": 55
+   },
+   "mood": "dawn",
+   "label": "AI-generated illustration"
+  },
+  {
+   "id": "02-road-to-albany",
+   "files": {
+    "1920": "02-road-to-albany.webp",
+    "960": "02-road-to-albany-960.webp"
+   },
+   "width": 1920,
+   "height": 1072,
+   "model": "google/gemini-3-pro-image-preview",
+   "image_size": "2K",
+   "attempts": 1,
+   "prompt": "A full-bleed 16:9 oil painting in the manner of the 1830s Hudson River School (Thomas Cole, Asher Durand): luminous natural light, real atmospheric depth, natural unsaturated colour, visible but soft painterly brushwork. Painted as if the viewer is standing inside the scene at eye level, NOT a picture of a picture: no paper, no border, no frame, no mat, no margins, no engraving or line-art look, no vignette edges. Not cinematic or glossy, no fantasy, no modern elements. Historically accurate to 1836 America (homespun and wool clothing, bonnets, hats, no railroads, no wire fences). Absolutely no text, lettering, signs, signatures or watermarks. Compose with a little empty sky headroom at the top and keep the bottom quarter calm and simple (soft ground, water or shadow, no faces or key details there). Scene: A dirt road winding through rolling autumn hills in eastern New York, seen from the height of a wagon seat: the rump of an ox team and the curved canvas edge of the wagon at left, the road curving ahead past rail-split fences, farms and maples in red and gold, a distant church steeple, big cloudy sky.",
+   "qa": {
+    "visual_check": "manual look by generating agent",
+    "second_opinion_model": "gemini-3.7-flash-or",
+    "verdict": "PASS",
+    "notes": "No defects found.",
+    "second_opinion": "* **Text, lettering, signs, or signatures:** None visible.\n* **Anachronisms:** None detected (features authentic period details like split-rail fencing, a covered wagon with an ox team, unpaved road, log/wood cabins, and distant village church).\n* **Distortions / extra limbs:** None detected; the oxen and wagon structure are cleanly rendered.\n* **Book/paper/frame/border/engraving look:** None; clean edge-to-edge oil painting presentation.\n\nVERDICT: PASS"
+   },
+   "focal_point": {
+    "x": 60,
+    "y": 50
+   },
+   "mood": "day",
+   "label": "AI-generated illustration"
+  },
+  {
+   "id": "03-albany-basin",
+   "files": {
+    "1920": "03-albany-basin.webp",
+    "960": "03-albany-basin-960.webp"
+   },
+   "width": 1920,
+   "height": 1072,
+   "model": "google/gemini-3-pro-image-preview",
+   "image_size": "2K",
+   "attempts": 1,
+   "prompt": "A full-bleed 16:9 oil painting in the manner of the 1830s Hudson River School (Thomas Cole, Asher Durand): luminous natural light, real atmospheric depth, natural unsaturated colour, visible but soft painterly brushwork. Painted as if the viewer is standing inside the scene at eye level, NOT a picture of a picture: no paper, no border, no frame, no mat, no margins, no engraving or line-art look, no vignette edges. Not cinematic or glossy, no fantasy, no modern elements. Historically accurate to 1836 America (homespun and wool clothing, bonnets, hats, no railroads, no wire fences). Absolutely no text, lettering, signs, signatures or watermarks. Compose with a little empty sky headroom at the top and keep the bottom quarter calm and simple (soft ground, water or shadow, no faces or key details there). Scene: The crowded Erie Canal basin at Albany in 1836, seen from the quay among the crowd: canal packet and line boats moored side by side, masts of Hudson sloops beyond, emigrant families with bundles and chests, porters, and canal-boat runners in coats gesturing to recruit passengers, rows of brick warehouses, smoky hazy daylight.",
+   "qa": {
+    "visual_check": "manual look by generating agent",
+    "second_opinion_model": "gemini-3.7-flash-or",
+    "verdict": "PASS",
+    "notes": "No defects found.",
+    "second_opinion": "* **Text, lettering, signs, or signatures:** None detected.\n* **Anachronisms:** None detected; period-appropriate 1830s attire (frock coats, top hats, bonnets), canal barges, sailing vessels, and harbor architecture.\n* **Distorted anatomy/limbs/faces:** None; figures and crowds are rendered consistently in a traditional oil painting style without merged anatomy or extra limbs.\n* **Book/paper/frame/border/engraving look:** None; standard unobstructed painting view.\n\nVERDICT: PASS"
+   },
+   "focal_point": {
+    "x": 45,
+    "y": 55
+   },
+   "mood": "day",
+   "label": "AI-generated illustration"
+  },
+  {
+   "id": "04-canal-deck",
+   "files": {
+    "1920": "04-canal-deck.webp",
+    "960": "04-canal-deck-960.webp"
+   },
+   "width": 1920,
+   "height": 1072,
+   "model": "google/gemini-3-pro-image-preview",
+   "image_size": "2K",
+   "attempts": 1,
+   "prompt": "A full-bleed 16:9 oil painting in the manner of the 1830s Hudson River School (Thomas Cole, Asher Durand): luminous natural light, real atmospheric depth, natural unsaturated colour, visible but soft painterly brushwork. Painted as if the viewer is standing inside the scene at eye level, NOT a picture of a picture: no paper, no border, no frame, no mat, no margins, no engraving or line-art look, no vignette edges. Not cinematic or glossy, no fantasy, no modern elements. Historically accurate to 1836 America (homespun and wool clothing, bonnets, hats, no railroads, no wire fences). Absolutely no text, lettering, signs, signatures or watermarks. Compose with a little empty sky headroom at the top and keep the bottom quarter calm and simple (soft ground, water or shadow, no faces or key details there). Scene: First-person view from the flat roof of an Erie Canal line boat in 1836: trunks and a few seated passengers' backs in the lower left foreground, the long tow rope stretching ahead to two horses walking on the towpath led by a boy, and ahead a low stone bridge that people on the roof must duck beneath. Calm canal water, autumn farmland and willows, late afternoon light.",
+   "qa": {
+    "visual_check": "manual look by generating agent",
+    "second_opinion_model": "gemini-3.7-flash-or",
+    "verdict": "PASS",
+    "notes": "No defects found.",
+    "second_opinion": "* **Text, lettering, signs or signatures:** None detected.\n* **Anachronisms:** None; clothing, luggage trunks, canal boat, towpath, stone bridge, and draft horses are consistent with 1830s canal travel.\n* **Distorted anatomy/limbs:** None; figures and horses are anatomically coherent.\n* **Book/paper/frame/border/engraving look:** None.\n\nVERDICT: PASS"
+   },
+   "focal_point": {
+    "x": 55,
+    "y": 55
+   },
+   "mood": "day",
+   "label": "AI-generated illustration"
+  },
+  {
+   "id": "05-canal-lock-night",
+   "files": {
+    "1920": "05-canal-lock-night.webp",
+    "960": "05-canal-lock-night-960.webp"
+   },
+   "width": 1920,
+   "height": 1072,
+   "model": "google/gemini-3-pro-image-preview",
+   "image_size": "2K",
+   "attempts": 1,
+   "prompt": "A full-bleed 16:9 oil painting in the manner of the 1830s Hudson River School (Thomas Cole, Asher Durand): luminous natural light, real atmospheric depth, natural unsaturated colour, visible but soft painterly brushwork. Painted as if the viewer is standing inside the scene at eye level, NOT a picture of a picture: no paper, no border, no frame, no mat, no margins, no engraving or line-art look, no vignette edges. Not cinematic or glossy, no fantasy, no modern elements. Historically accurate to 1836 America (homespun and wool clothing, bonnets, hats, no railroads, no wire fences). Absolutely no text, lettering, signs, signatures or watermarks. Compose with a little empty sky headroom at the top and keep the bottom quarter calm and simple (soft ground, water or shadow, no faces or key details there). Scene: An Erie Canal lock at night in 1836: a line boat in the stone lock chamber with water rushing in, lockkeepers leaning on long wooden balance beams, warm lantern light reflecting on dark wet water and stone, moonlit clouds, a few passengers wrapped in blankets on the boat roof, deep blue night and amber lantern glow.",
+   "qa": {
+    "visual_check": "manual look by generating agent",
+    "second_opinion_model": "gemini-3.7-flash-or",
+    "verdict": "PASS",
+    "notes": "No defects found.",
+    "second_opinion": "* **Text, lettering, signs or signatures:** None visible.\n* **Anachronisms:** None; the wooden balance-beam lock gates, stone masonry canal lock, horse-drawn packet boat style, lanterns, and emigrant clothing accurately reflect Erie Canal travel in the 1830s.\n* **Distorted hands/faces, extra limbs, merged bodies:** None; figures and anatomical proportions are coherent and rendered consistently with classical oil painting techniques.\n* **Book/paper/frame/border/engraving look:** None; standard full-bleed canvas painting appearance.\n\nVERDICT: PASS"
+   },
+   "focal_point": {
+    "x": 50,
+    "y": 50
+   },
+   "mood": "night",
+   "label": "AI-generated illustration"
+  },
+  {
+   "id": "06-buffalo-harbor",
+   "files": {
+    "1920": "06-buffalo-harbor.webp",
+    "960": "06-buffalo-harbor-960.webp"
+   },
+   "width": 1920,
+   "height": 1072,
+   "model": "google/gemini-3-pro-image-preview",
+   "image_size": "2K",
+   "attempts": 1,
+   "prompt": "A full-bleed 16:9 oil painting in the manner of the 1830s Hudson River School (Thomas Cole, Asher Durand): luminous natural light, real atmospheric depth, natural unsaturated colour, visible but soft painterly brushwork. Painted as if the viewer is standing inside the scene at eye level, NOT a picture of a picture: no paper, no border, no frame, no mat, no margins, no engraving or line-art look, no vignette edges. Not cinematic or glossy, no fantasy, no modern elements. Historically accurate to 1836 America (homespun and wool clothing, bonnets, hats, no railroads, no wire fences). Absolutely no text, lettering, signs, signatures or watermarks. Compose with a little empty sky headroom at the top and keep the bottom quarter calm and simple (soft ground, water or shadow, no faces or key details there). Scene: On the crowded deck of a side-wheel Lake Erie steamboat leaving Buffalo harbour in 1836, seen at eye level among the passengers: backs of emigrant families, trunks, crates, a few sheep and a cow, the wooden pier and the Buffalo lighthouse and town receding behind, smoke from the tall stack, grey-blue lake and wide cloudy sky, brisk afternoon light.",
+   "qa": {
+    "visual_check": "manual look by generating agent",
+    "second_opinion_model": "gemini-3.7-flash-or",
+    "verdict": "PASS",
+    "notes": "Steamer is somewhat polished/late-looking; minor.",
+    "second_opinion": "* **Text, lettering, signs or signatures:** None detected.\n* **Anachronisms:** None visible; the clothing (bonnets, top hats, shawls), early steamboat design, wooden luggage crates, and 1830s harbor/lighthouse architecture are historically appropriate for 1836.\n* **Distorted hands/faces, extra limbs, merged bodies:** None; human figures and livestock (sheep, cattle) are anatomically coherent with painterly brushwork typical of the period style.\n* **Book/paper/frame/border/engraving look:** None; full-canvas oil painting presentation with clean edges.\n\nVERDICT: PASS"
+   },
+   "focal_point": {
+    "x": 60,
+    "y": 45
+   },
+   "mood": "day",
+   "label": "AI-generated illustration"
+  },
+  {
+   "id": "07-lake-storm",
+   "files": {
+    "1920": "07-lake-storm.webp",
+    "960": "07-lake-storm-960.webp"
+   },
+   "width": 1920,
+   "height": 1072,
+   "model": "google/gemini-3-pro-image-preview",
+   "image_size": "2K",
+   "attempts": 1,
+   "prompt": "A full-bleed 16:9 oil painting in the manner of the 1830s Hudson River School (Thomas Cole, Asher Durand): luminous natural light, real atmospheric depth, natural unsaturated colour, visible but soft painterly brushwork. Painted as if the viewer is standing inside the scene at eye level, NOT a picture of a picture: no paper, no border, no frame, no mat, no margins, no engraving or line-art look, no vignette edges. Not cinematic or glossy, no fantasy, no modern elements. Historically accurate to 1836 America (homespun and wool clothing, bonnets, hats, no railroads, no wire fences). Absolutely no text, lettering, signs, signatures or watermarks. Compose with a little empty sky headroom at the top and keep the bottom quarter calm and simple (soft ground, water or shadow, no faces or key details there). Scene: The deck of a wooden side-wheel steamboat in a rising Lake Erie storm in 1836, eye level: dark roiling green-grey waves, a heaving horizon, towering black clouds with a break of weak light, spray, huddled emigrant families in shawls clinging to rope and baggage, a lantern swinging, wet planks.",
+   "qa": {
+    "visual_check": "manual look by generating agent",
+    "second_opinion_model": "gemini-3.7-flash-or",
+    "verdict": "PASS",
+    "notes": "Odd rectangular deck cutout bottom right; minor.",
+    "second_opinion": "* **Text, lettering, signs or signatures:** None detected.\n* **Anachronisms:** None visible; the paddle wheel housing, rigging, clothing (bonnets, shawls, caps), trunks, and oil lantern are all consistent with 1830s steamboat travel.\n* **Distortions / anatomical issues:** None; faces, hands, proportions, and body postures are well-rendered in a period-appropriate oil painting style without extra limbs or merged figures.\n* **Book/paper/frame/border/engraving look:** None; full oil painting canvas style without borders.\n\nVERDICT: PASS"
+   },
+   "focal_point": {
+    "x": 50,
+    "y": 45
+   },
+   "mood": "storm",
+   "label": "AI-generated illustration"
+  },
+  {
+   "id": "08-black-swamp",
+   "files": {
+    "1920": "08-black-swamp.webp",
+    "960": "08-black-swamp-960.webp"
+   },
+   "width": 1920,
+   "height": 1072,
+   "model": "google/gemini-3-pro-image-preview",
+   "image_size": "2K",
+   "attempts": 1,
+   "prompt": "A full-bleed 16:9 oil painting in the manner of the 1830s Hudson River School (Thomas Cole, Asher Durand): luminous natural light, real atmospheric depth, natural unsaturated colour, visible but soft painterly brushwork. Painted as if the viewer is standing inside the scene at eye level, NOT a picture of a picture: no paper, no border, no frame, no mat, no margins, no engraving or line-art look, no vignette edges. Not cinematic or glossy, no fantasy, no modern elements. Historically accurate to 1836 America (homespun and wool clothing, bonnets, hats, no railroads, no wire fences). Absolutely no text, lettering, signs, signatures or watermarks. Compose with a little empty sky headroom at the top and keep the bottom quarter calm and simple (soft ground, water or shadow, no faces or key details there). Scene: The Great Black Swamp of northwest Ohio, seen from the wagon seat: a corduroy road of logs sinking into black water ahead, a wagon wheel mired to the hub in the foreground side, oxen straining, a man in a wet coat levering with a pole, flooded dark tall forest on both sides, grey drizzle and green gloom, mist between trunks.",
+   "qa": {
+    "visual_check": "manual look by generating agent",
+    "second_opinion_model": "gemini-3.7-flash-or",
+    "verdict": "PASS",
+    "notes": "No defects found.",
+    "second_opinion": "* **Text, lettering, signs or signatures:** None detected.\n* **Anachronisms:** None detected; the scene accurately depicts a corduroy road through a swamp, period-appropriate yoke, oxen, wooden cart, and 1830s frontier attire.\n* **Distorted hands/faces, extra limbs, merged bodies:** None; the oxen anatomy is coherent, and the man's hands, posture, and limbs are naturally rendered.\n* **Book/paper/frame/border/engraving look:** None; full-bleed oil painting style.\n\nVERDICT: PASS"
+   },
+   "focal_point": {
+    "x": 50,
+    "y": 52
+   },
+   "mood": "storm",
+   "label": "AI-generated illustration"
+  },
+  {
+   "id": "09-detroit-waterfront",
+   "files": {
+    "1920": "09-detroit-waterfront.webp",
+    "960": "09-detroit-waterfront-960.webp"
+   },
+   "width": 1920,
+   "height": 1072,
+   "model": "google/gemini-3-pro-image-preview",
+   "image_size": "2K",
+   "attempts": 1,
+   "prompt": "A full-bleed 16:9 oil painting in the manner of the 1830s Hudson River School (Thomas Cole, Asher Durand): luminous natural light, real atmospheric depth, natural unsaturated colour, visible but soft painterly brushwork. Painted as if the viewer is standing inside the scene at eye level, NOT a picture of a picture: no paper, no border, no frame, no mat, no margins, no engraving or line-art look, no vignette edges. Not cinematic or glossy, no fantasy, no modern elements. Historically accurate to 1836 America (homespun and wool clothing, bonnets, hats, no railroads, no wire fences). Absolutely no text, lettering, signs, signatures or watermarks. Compose with a little empty sky headroom at the top and keep the bottom quarter calm and simple (soft ground, water or shadow, no faces or key details there). Scene: The Detroit riverfront in 1836: wooden wharves along the broad Detroit River, steamboats and schooners moored, stacked freight and barrels, a raw young town of frame and brick buildings and a church spire behind, crowds of arriving emigrants, drays and horses on a muddy landing, hazy bright afternoon, viewed from the wharf at eye level.",
+   "qa": {
+    "visual_check": "manual look by generating agent",
+    "second_opinion_model": "gemini-3.7-flash-or",
+    "verdict": "PASS",
+    "notes": "Ornate paddle steamers read slightly later than 1836; minor.",
+    "second_opinion": "* **Text, lettering, signs, or signatures:** None visible or legible (no modern signs, labels, or artist signatures).\n* **Anachronisms:** None detected; the early side-wheel paddle steamers, sailing vessels, wooden wagons, barrels, and period clothing are historically accurate for the 1830s.\n* **Distorted anatomy/figures:** None; figures, faces, limbs, and horses are well-rendered and anatomically consistent with the period oil painting style.\n* **Book/paper/frame/border/engraving look:** None; standard full-bleed digital oil painting style without artificial borders or page effects.\n\nVERDICT: PASS"
+   },
+   "focal_point": {
+    "x": 50,
+    "y": 55
+   },
+   "mood": "day",
+   "label": "AI-generated illustration"
+  },
+  {
+   "id": "10-oak-openings",
+   "files": {
+    "1920": "10-oak-openings.webp",
+    "960": "10-oak-openings-960.webp"
+   },
+   "width": 1920,
+   "height": 1072,
+   "model": "google/gemini-3-pro-image-preview",
+   "image_size": "2K",
+   "attempts": 1,
+   "prompt": "A full-bleed 16:9 oil painting in the manner of the 1830s Hudson River School (Thomas Cole, Asher Durand): luminous natural light, real atmospheric depth, natural unsaturated colour, visible but soft painterly brushwork. Painted as if the viewer is standing inside the scene at eye level, NOT a picture of a picture: no paper, no border, no frame, no mat, no margins, no engraving or line-art look, no vignette edges. Not cinematic or glossy, no fantasy, no modern elements. Historically accurate to 1836 America (homespun and wool clothing, bonnets, hats, no railroads, no wire fences). Absolutely no text, lettering, signs, signatures or watermarks. Compose with a little empty sky headroom at the top and keep the bottom quarter calm and simple (soft ground, water or shadow, no faces or key details there). Scene: The oak openings of southern Michigan in 1836: a wagon track running west through open park-like savanna of big spreading bur oaks over tall golden grass, seen from the wagon seat with the oxen's backs in the lower foreground, low golden late-afternoon light, long shadows, wildflowers going to seed, distant tree line, vast sky.",
+   "qa": {
+    "visual_check": "manual look by generating agent",
+    "second_opinion_model": "gemini-3.7-flash-or",
+    "verdict": "PASS",
+    "notes": "No defects found.",
+    "second_opinion": "* **Text, lettering, signs or signatures:** None detected.\n* **Anachronisms:** None; the wooden wagon box, ox team with yoke, pioneer attire (bonnet, smock, wide-brimmed hat), and unpaved prairie trail are consistent with 1836 Michigan.\n* **Distorted hands/faces, extra limbs, merged bodies:** None; the oxen and distant walking figures are anatomically sound and naturally rendered.\n* **Book/paper/frame/border/engraving look:** None; full-bleed landscape oil painting style.\n\nVERDICT: PASS"
+   },
+   "focal_point": {
+    "x": 55,
+    "y": 50
+   },
+   "mood": "day",
+   "label": "AI-generated illustration"
+  },
+  {
+   "id": "11-tavern-interior",
+   "files": {
+    "1920": "11-tavern-interior.webp",
+    "960": "11-tavern-interior-960.webp"
+   },
+   "width": 1920,
+   "height": 1072,
+   "model": "google/gemini-3-pro-image-preview",
+   "image_size": "2K",
+   "attempts": 1,
+   "prompt": "A full-bleed 16:9 oil painting in the manner of the 1830s Hudson River School (Thomas Cole, Asher Durand): luminous natural light, real atmospheric depth, natural unsaturated colour, visible but soft painterly brushwork. Painted as if the viewer is standing inside the scene at eye level, NOT a picture of a picture: no paper, no border, no frame, no mat, no margins, no engraving or line-art look, no vignette edges. Not cinematic or glossy, no fantasy, no modern elements. Historically accurate to 1836 America (homespun and wool clothing, bonnets, hats, no railroads, no wire fences). Absolutely no text, lettering, signs, signatures or watermarks. Compose with a little empty sky headroom at the top and keep the bottom quarter calm and simple (soft ground, water or shadow, no faces or key details there). Scene: Inside a crowded frontier log tavern at night in 1836, at eye level: rough hewn log walls, a big stone fireplace blazing, travellers in wool coats sitting and talking, and emigrant families sleeping on the plank floor wrapped in blankets and coats, a lantern on a beam, saddles and bundles, warm firelight and deep brown shadows.",
+   "qa": {
+    "visual_check": "manual look by generating agent",
+    "second_opinion_model": "gemini-3.7-flash-or",
+    "verdict": "PASS",
+    "notes": "Some sleeping faces fall in the bottom quarter (subtitle zone); bottom edge is darkened.",
+    "second_opinion": "* **Text, lettering, signs or signatures:** None observed.\n* **Anachronisms:** None observed; the clothing, lantern, stone hearth, wooden benches, and cabin interior are period-appropriate for 1836.\n* **Distorted hands or faces, extra limbs, merged bodies:** None observed; human figures, faces, hands, and sleeping children are well-formed and clearly defined.\n* **Book/paper/frame/border/engraving look:** None; presented as a standard wide painting with dark vignetting along the bottom edge.\n\nVERDICT: PASS"
+   },
+   "focal_point": {
+    "x": 35,
+    "y": 50
+   },
+   "mood": "night",
+   "label": "AI-generated illustration"
+  },
+  {
+   "id": "12-land-office-crowd",
+   "files": {
+    "1920": "12-land-office-crowd.webp",
+    "960": "12-land-office-crowd-960.webp"
+   },
+   "width": 1920,
+   "height": 1080,
+   "model": "google/gemini-3-pro-image-preview",
+   "image_size": "2K",
+   "attempts": 2,
+   "prompt": "A full-bleed 16:9 oil painting in the manner of the 1830s Hudson River School (Thomas Cole, Asher Durand): luminous natural light, real atmospheric depth, natural unsaturated colour, visible but soft painterly brushwork. Painted as if the viewer is standing inside the scene at eye level, NOT a picture of a picture: no paper, no border, no frame, no mat, no margins, no engraving or line-art look, no vignette edges. Not cinematic or glossy, no fantasy, no modern elements. Historically accurate to 1836 America (homespun and wool clothing, bonnets, hats, no railroads, no wire fences). Absolutely no text, lettering, signs, signatures or watermarks. Compose with a little empty sky headroom at the top and keep the bottom quarter calm and simple (soft ground, water or shadow, no faces or key details there). Scene: In the press of the crowd at the land office window at Bronson (Kalamazoo), Michigan in autumn 1836: shoulders and backs of men in frock coats, wool jackets and wide hats pressed close in the foreground, pushing toward a small open window of a plain frame building where a clerk sits, rough plank walkway, muddy street, fresh oak stumps and wagons behind, hot busy daylight.",
+   "qa": {
+    "visual_check": "manual look by generating agent",
+    "second_opinion_model": "gemini-3.5-flash",
+    "verdict": "PASS",
+    "notes": "Attempt 1 and 2 both had a painted signature in a bottom corner; the shipped file is attempt 2 cropped (top-left anchored, ~6%) to remove it, then resized to 1920x1080.",
+    "second_opinion": "* **Text, lettering, signs, or signatures:** Faint artist signature/scribble in the bottom right corner.\n* **Anachronisms:** None observed; covered wagons, wooden building, horses, tree stumps, and period attire align accurately with 1830s American frontier/land-office scenes.\n* **Distorted hands or faces, extra limbs, merged bodies:** None; anatomically coherent figures throughout foreground and background with realistic proportions.\n* **Book/paper/frame/border/engraving look:** None; full-canvas traditional oil painting aesthetic.\n\nVERDICT: PASS"
+   },
+   "focal_point": {
+    "x": 60,
+    "y": 45
+   },
+   "mood": "day",
+   "label": "AI-generated illustration"
+  },
+  {
+   "id": "13-claim-clearing",
+   "files": {
+    "1920": "13-claim-clearing.webp",
+    "960": "13-claim-clearing-960.webp"
+   },
+   "width": 1920,
+   "height": 1072,
+   "model": "google/gemini-3-pro-image-preview",
+   "image_size": "2K",
+   "attempts": 1,
+   "prompt": "A full-bleed 16:9 oil painting in the manner of the 1830s Hudson River School (Thomas Cole, Asher Durand): luminous natural light, real atmospheric depth, natural unsaturated colour, visible but soft painterly brushwork. Painted as if the viewer is standing inside the scene at eye level, NOT a picture of a picture: no paper, no border, no frame, no mat, no margins, no engraving or line-art look, no vignette edges. Not cinematic or glossy, no fantasy, no modern elements. Historically accurate to 1836 America (homespun and wool clothing, bonnets, hats, no railroads, no wire fences). Absolutely no text, lettering, signs, signatures or watermarks. Compose with a little empty sky headroom at the top and keep the bottom quarter calm and simple (soft ground, water or shadow, no faces or key details there). Scene: Dusk on a family's new claim in the Michigan oak openings, 1836: a small clearing among big spreading oaks, a freshly driven wooden survey stake in the grass, a covered wagon, a father and mother and two children gathered around the first small campfire, orange-pink sky fading to violet, smoke rising, peaceful and hopeful.",
+   "qa": {
+    "visual_check": "manual look by generating agent",
+    "second_opinion_model": "gemini-3.7-flash-or",
+    "verdict": "PASS",
+    "notes": "No defects found.",
+    "second_opinion": "* **Text, lettering, signs or signatures:** None observed.\n* **Anachronisms:** None visible; the covered wagon, campfire, attire, and landscape are historically consistent with an 1830s American pioneer setting.\n* **Distortions (hands, faces, limbs, merged bodies):** None detected; figures are naturally proportioned and well-rendered in a period-appropriate painterly style.\n* **Book/paper/frame/border/engraving look:** None; standard full-bleed oil painting appearance.\n\nVERDICT: PASS"
+   },
+   "focal_point": {
+    "x": 50,
+    "y": 55
+   },
+   "mood": "dusk",
+   "label": "AI-generated illustration"
+  }
+ ],
+ "total_generations": 14,
+ "est_cost_usd": 1.93
+}

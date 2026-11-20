@@ -1,0 +1,3123 @@
+[
+  {
+    "id": "date.start",
+    "value": "1836-09-15",
+    "unit": "date",
+    "tag": "invented",
+    "note": "Game choice: late enough that the 15 December deadline and the winter press on the trip. The research suggests most left in spring or summer."
+  },
+  {
+    "id": "date.deadline",
+    "value": "1836-12-15",
+    "unit": "date",
+    "tag": "src",
+    "source": "Report of the Secretary of the Treasury, 1836 (Specie Circular text)",
+    "url": "https://fraser.stlouisfed.org/files/docs/publications/treasar/AR_TREASURY_1836.pdf",
+    "confidence": "solid",
+    "note": "End of the actual-settler exemption; no extension found (likely, absence of evidence)."
+  },
+  {
+    "id": "date.yearEnd",
+    "value": "1836-12-31",
+    "unit": "date",
+    "tag": "invented",
+    "note": "The game ends at the turn of the year at the latest."
+  },
+  {
+    "id": "winter.graceDays",
+    "value": 15,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Deep winter closes the season this many days after the first snow; unsourced."
+  },
+  {
+    "id": "date.snowEarliest",
+    "value": "1836-11-10",
+    "unit": "date",
+    "tag": "invented",
+    "note": "No sourced first-snow date for 1836; the snow falls on a seeded day in this range. Retuned in P2 Phase B from 1836-11-18 to 1836-11-10: the tier band; still no sourced 1836 date, and Blois has the Detroit River closing only in December."
+  },
+  {
+    "id": "date.snowLatest",
+    "value": "1836-12-03",
+    "unit": "date",
+    "tag": "invented",
+    "note": "Latest seeded first-snow date. Retuned in P2 Phase B from 1836-12-08 to 1836-12-03: the tier band, with date.snowEarliest."
+  },
+  {
+    "id": "swamp.dryLastMonth",
+    "value": 9,
+    "unit": "month",
+    "tag": "src",
+    "source": "Historic Perrysburg, The Great Black Swamp",
+    "url": "https://www.historicperrysburg.org/copy-of-great-black-swamp",
+    "confidence": "likely",
+    "note": "The swamp road was thought tolerable only July to September (local history)."
+  },
+  {
+    "id": "age.adult",
+    "value": 14,
+    "unit": "years",
+    "tag": "invented",
+    "note": "Age from which the game counts a full worker and a full fare."
+  },
+  {
+    "id": "age.helper",
+    "value": 8,
+    "unit": "years",
+    "tag": "invented",
+    "note": "Age from which a child helps a little with the work."
+  },
+  {
+    "id": "mi.vermont",
+    "value": 100,
+    "unit": "miles",
+    "tag": "invented",
+    "note": "No sourced Vermont-to-Albany distance. Rutland to Troy was about 90 miles by stage (uncertain); Barber puts the whole trip to Vermontville at about three weeks."
+  },
+  {
+    "id": "mi.canal",
+    "value": 363,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "solid",
+    "note": "Albany to Buffalo."
+  },
+  {
+    "id": "mi.buffaloSandusky",
+    "value": 272,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "likely",
+    "note": "Arithmetic on Blois's stage table: 374 in all, less Sandusky-Perrysburg 32, Perrysburg-Toledo 10, Toledo-Monroe 20, Monroe-Detroit 40."
+  },
+  {
+    "id": "mi.sanduskyPerrysburg",
+    "value": 32,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "uncertain",
+    "note": "Printed in Blois's table, but looks short against the road's real length."
+  },
+  {
+    "id": "mi.perrysburgDetroit",
+    "value": 70,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "likely",
+    "note": "Sum of Blois's Perrysburg-Toledo 10, Toledo-Monroe 20 and Monroe-Detroit 40."
+  },
+  {
+    "id": "mi.detroitMarshall",
+    "value": 115,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "solid"
+  },
+  {
+    "id": "mi.marshallBronson",
+    "value": 25,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), Kalamazoo article and appendix stage table",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "likely",
+    "note": "Kalamazoo is \"140 miles west of Detroit\" and Marshall 115, so about 25 miles (an estimate from two printed numbers; Detroit-Kalamazoo 140 is solid)."
+  },
+  {
+    "id": "mi.claimMin",
+    "value": 4,
+    "unit": "miles",
+    "tag": "invented",
+    "note": "Nearest tract to the office; unsourced."
+  },
+  {
+    "id": "mi.claimMax",
+    "value": 20,
+    "unit": "miles",
+    "tag": "invented",
+    "note": "Farthest tract from the office; unsourced."
+  },
+  {
+    "id": "lake.days",
+    "value": 3,
+    "unit": "days",
+    "tag": "src",
+    "source": "Michiganology, \"Yankees Come to Michigan\"",
+    "url": "https://michiganology.org/stories/yankees-come-to-michigan",
+    "confidence": "likely",
+    "note": "\"three-day trip across Lake Erie to Detroit\"."
+  },
+  {
+    "id": "canal.packetMph",
+    "value": 4,
+    "unit": "mph",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "solid"
+  },
+  {
+    "id": "canal.lineMph",
+    "value": 3,
+    "unit": "mph",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "solid",
+    "note": "Blois's printed nominal speed: \"the former moves four miles, and the latter three, per hour\". Real families took longer: J. S. Cobb (1830) followed the canal \"for more than a week\" (Michigan Pioneer and Historical Collections vol. 18, pp. 354-355)."
+  },
+  {
+    "id": "canal.hoursPerDay",
+    "value": 20,
+    "unit": "hours",
+    "tag": "invented",
+    "note": "Boats ran day and night (uncertain); 20 hours allows for locks and team changes, giving about 5 days by packet and 6 to 7 by line boat. No sourced duration."
+  },
+  {
+    "id": "speed.oxen",
+    "value": 15,
+    "unit": "miles/day",
+    "tag": "invented",
+    "note": "Close to Barber's 8-9 days from Detroit to Battle Creek, applied as the ox pace on a fair road."
+  },
+  {
+    "id": "speed.horse",
+    "value": 20,
+    "unit": "miles/day",
+    "tag": "invented",
+    "note": "A light wagon and one horse; unsourced."
+  },
+  {
+    "id": "terrain.hill",
+    "value": 0.9,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Hill roads in Vermont; unsourced."
+  },
+  {
+    "id": "terrain.road",
+    "value": 1.35,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "The Ohio turnpike was a better road than Michigan's corduroy; unsourced rate."
+  },
+  {
+    "id": "terrain.corduroy",
+    "value": 0.85,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Corduroy Territorial Road; Detroit to Jackson took three days by stage (likely), wagons were slower."
+  },
+  {
+    "id": "terrain.strip",
+    "value": 0.9,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Perrysburg to Detroit road; unsourced."
+  },
+  {
+    "id": "terrain.track",
+    "value": 0.6,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Unmade track out to a claim; unsourced."
+  },
+  {
+    "id": "wx.rain.9",
+    "value": 0.25,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Daily chance of a wet day in September; unsourced."
+  },
+  {
+    "id": "wx.rain.10",
+    "value": 0.3,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Daily chance of a wet day in October; unsourced."
+  },
+  {
+    "id": "wx.rain.11",
+    "value": 0.35,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Daily chance of a wet day in November; unsourced."
+  },
+  {
+    "id": "wx.rain.12",
+    "value": 0.3,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Daily chance of a wet or snowy day in December; unsourced."
+  },
+  {
+    "id": "wx.rainMult",
+    "value": 0.8,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Wagon pace on a wet day."
+  },
+  {
+    "id": "wx.snowMult",
+    "value": 0.6,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Wagon pace in snow."
+  },
+  {
+    "id": "morale.floorMult",
+    "value": 0.75,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Pace and work at zero morale, as a share of full."
+  },
+  {
+    "id": "toll.gapMiles",
+    "value": 9,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Wikipedia, Maumee Road Lands",
+    "url": "https://en.wikipedia.org/wiki/Maumee_Road_Lands",
+    "confidence": "likely",
+    "note": "Toll gates about every 9 miles on the Maumee and Western Reserve road."
+  },
+  {
+    "id": "price.toll",
+    "value": 0.25,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Toll per gate; unsourced."
+  },
+  {
+    "id": "fare.packet.perMile",
+    "value": 0.04,
+    "unit": "USD/mile",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "solid",
+    "note": "With meals and berth; $14.52 for the whole canal."
+  },
+  {
+    "id": "fare.lineMeals.perMile",
+    "value": 0.025,
+    "unit": "USD/mile",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "solid",
+    "note": "Including meals; $9.07 for the whole canal."
+  },
+  {
+    "id": "fare.line.perMile",
+    "value": 0.015,
+    "unit": "USD/mile",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "solid",
+    "note": "Passage only; about $5.45 for the canal (arithmetic; OCR garbled)."
+  },
+  {
+    "id": "fare.childShare",
+    "value": 0.5,
+    "unit": "share",
+    "tag": "invented",
+    "note": "Children at half fare. Blois says only that 'families are frequently taken for much less than this, in proportion.'"
+  },
+  {
+    "id": "fare.cabin",
+    "value": 8,
+    "unit": "USD",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "solid",
+    "note": "Buffalo to Detroit, cabin, 1836 season."
+  },
+  {
+    "id": "fare.deck",
+    "value": 3,
+    "unit": "USD",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "solid",
+    "note": "Buffalo to Detroit, deck, 1836 season."
+  },
+  {
+    "id": "freight.canal.cwt",
+    "value": 1.0,
+    "unit": "USD/cwt",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "solid",
+    "note": "Maximum canal rate for heavy goods (light goods and furniture 75 cents)."
+  },
+  {
+    "id": "freight.lake.cwt",
+    "value": 0.38,
+    "unit": "USD/cwt",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "solid",
+    "note": "Steamboat, heavy goods, spring maximum (light 50 cents)."
+  },
+  {
+    "id": "freight.canal.team",
+    "value": 6,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Canal freight for the team; freight by the head is unsourced (research Unresolved #3)."
+  },
+  {
+    "id": "freight.lake.team",
+    "value": 5,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Steamboat freight for the team; unsourced."
+  },
+  {
+    "id": "wagon.cwt",
+    "value": 8,
+    "unit": "cwt",
+    "tag": "invented",
+    "note": "Freight weight of a farm wagon; unsourced."
+  },
+  {
+    "id": "ev.lineBargain.mult",
+    "value": 0.75,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "The family rate a line-boat captain offers; Blois says families were taken 'for much less', with no figure."
+  },
+  {
+    "id": "bg.vt.goods",
+    "value": 12,
+    "unit": "cwt",
+    "tag": "invented",
+    "note": "Household goods and tools; unsourced."
+  },
+  {
+    "id": "bg.ct.goods",
+    "value": 10,
+    "unit": "cwt",
+    "tag": "invented",
+    "note": "Household goods and a smith's tools; unsourced."
+  },
+  {
+    "id": "bg.widow.goods",
+    "value": 8,
+    "unit": "cwt",
+    "tag": "invented",
+    "note": "Household goods; unsourced."
+  },
+  {
+    "id": "food.perBarrel",
+    "value": 70,
+    "unit": "person-days",
+    "tag": "invented",
+    "note": "A barrel of flour and what goes with it, as days of food for one person; unsourced."
+  },
+  {
+    "id": "food.childShare",
+    "value": 0.6,
+    "unit": "share",
+    "tag": "invented",
+    "note": "A child eats less than an adult; unsourced."
+  },
+  {
+    "id": "bg.vt.food",
+    "value": 80,
+    "unit": "person-days",
+    "tag": "invented",
+    "note": "Food packed from the farm; unsourced."
+  },
+  {
+    "id": "bg.ct.food",
+    "value": 60,
+    "unit": "person-days",
+    "tag": "invented",
+    "note": "Food packed for the road; unsourced."
+  },
+  {
+    "id": "bg.widow.food",
+    "value": 60,
+    "unit": "person-days",
+    "tag": "invented",
+    "note": "Food packed from the farm; unsourced."
+  },
+  {
+    "id": "price.flour.east",
+    "value": 8.38,
+    "unit": "USD/barrel",
+    "tag": "src",
+    "source": "Massachusetts Bureau of Statistics of Labor, History of Wages and Prices in Massachusetts 1752-1883 (1885)",
+    "url": "https://archive.org/details/historyofwagespr00mass",
+    "confidence": "likely",
+    "note": "The 1836 low for a barrel of flour in Massachusetts ($8.38 to $10.75): Boston-area prices in an inflation year, read from an OCR-scrambled table."
+  },
+  {
+    "id": "price.flour.detroit",
+    "value": 14,
+    "unit": "USD/barrel",
+    "tag": "invented",
+    "note": "No sourced Detroit price for 1836; between the eastern guess and the interior's $20."
+  },
+  {
+    "id": "price.flour.bronson",
+    "value": 20,
+    "unit": "USD/barrel",
+    "tag": "src",
+    "source": "History of Calhoun County (1913)",
+    "url": "https://archive.org/details/historyofcalhoun01gard",
+    "confidence": "likely",
+    "note": "Interior scarcity price of 1836-37, no exact month."
+  },
+  {
+    "id": "shop.maxBarrels",
+    "value": 2,
+    "unit": "barrels",
+    "tag": "invented",
+    "note": "Most a store will sell one family per visit."
+  },
+  {
+    "id": "shop.restockDays",
+    "value": 7,
+    "unit": "days",
+    "tag": "invented",
+    "note": "During a long stay at Bronson the store and the broker restock weekly; unsourced."
+  },
+  {
+    "id": "food.provisions",
+    "value": 20,
+    "unit": "person-days",
+    "tag": "invented",
+    "note": "Food bought from a farm by the road; unsourced."
+  },
+  {
+    "id": "food.provisionsGap",
+    "value": 3,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days between farms that will sell food; unsourced."
+  },
+  {
+    "id": "price.provisions.east",
+    "value": 3,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Roadside provisions in New York and Ohio; unsourced."
+  },
+  {
+    "id": "bg.vt.coin",
+    "value": 40,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "No source for what a family carried. For scale, the Vermontville colony's pot was $5,792.50 from about 32 members (Barber)."
+  },
+  {
+    "id": "bg.vt.ne",
+    "value": 250,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Vermont bank notes from the farm sale; unsourced."
+  },
+  {
+    "id": "bg.vt.ny",
+    "value": 60,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "New York notes; unsourced."
+  },
+  {
+    "id": "bg.ct.coin",
+    "value": 150,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A tradesman's savings in coin; unsourced."
+  },
+  {
+    "id": "bg.ct.ne",
+    "value": 100,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Connecticut bank notes; unsourced."
+  },
+  {
+    "id": "bg.ct.ny",
+    "value": 30,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "New York notes; unsourced."
+  },
+  {
+    "id": "bg.widow.coin",
+    "value": 25,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Little hard money; unsourced."
+  },
+  {
+    "id": "bg.widow.ne",
+    "value": 110,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Vermont bank notes from the farm sale; unsourced."
+  },
+  {
+    "id": "bg.widow.ny",
+    "value": 20,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "New York notes; unsourced."
+  },
+  {
+    "id": "sell.oxen",
+    "value": 55,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A forced sale at Albany fetches the low end of Pritchard's $50-100 a pair."
+  },
+  {
+    "id": "sell.horse",
+    "value": 40,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Horse sale at Albany; unsourced."
+  },
+  {
+    "id": "sell.wagon",
+    "value": 20,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Used wagon at Albany; unsourced."
+  },
+  {
+    "id": "price.oxen",
+    "value": 80,
+    "unit": "USD",
+    "tag": "src",
+    "source": "Pritchard, Kalamazoo County Directory with a history (1869)",
+    "url": "https://archive.org/details/kalamazoocounty01pritgoog",
+    "confidence": "likely",
+    "note": "\"oxen from $50 to $100 a pair\" at Kalamazoo in spring 1833; the game takes a middle value. 1836 prices ran higher."
+  },
+  {
+    "id": "price.wagon",
+    "value": 40,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Wagon prices are unsourced (research Unresolved #11)."
+  },
+  {
+    "id": "price.teamster",
+    "value": 20,
+    "unit": "USD",
+    "tag": "src",
+    "source": "Kalamazoo County history page (migenweb)",
+    "url": "https://www.migenweb.org/kalamazoo/history/history3.htm",
+    "confidence": "uncertain",
+    "note": "A teamster took a family \"across the State to Gull Prairie for $20\"; date uncertain, search summary only."
+  },
+  {
+    "id": "price.lodging.east",
+    "value": 0.25,
+    "unit": "USD/person",
+    "tag": "invented",
+    "note": "Tavern lodging in New York State; unsourced."
+  },
+  {
+    "id": "price.lodging.detroit",
+    "value": 0.5,
+    "unit": "USD/person",
+    "tag": "src",
+    "source": "Caroline Kirkland, A New Home: Who'll Follow? (1839)",
+    "url": "https://archive.org/details/anewhomewhollfo04kirkgoog",
+    "confidence": "likely",
+    "note": "\"Fifty cents was the price of six feet by two of the bar-room floor.\""
+  },
+  {
+    "id": "price.quinine",
+    "value": 2,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Quinine was scarce and costly in the interior (Kirkland); no price is sourced."
+  },
+  {
+    "id": "price.postage",
+    "value": 0.25,
+    "unit": "USD",
+    "tag": "src",
+    "source": "Barber, \"The Vermontville Colony,\" Michigan Pioneer and Historical Collections vol. 28",
+    "url": "https://archive.org/details/michiganpioneerh0028unse",
+    "confidence": "likely",
+    "note": "Letter postage in the 1830s."
+  },
+  {
+    "id": "price.looker",
+    "value": 10,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Land-looker pay is unsourced (research Unresolved #8)."
+  },
+  {
+    "id": "price.land",
+    "value": 1.25,
+    "unit": "USD/acre",
+    "tag": "src",
+    "source": "Wikipedia, Land Act of 1820",
+    "url": "https://en.wikipedia.org/wiki/Land_Act_of_1820",
+    "confidence": "solid",
+    "note": "Land Act of 1820 minimum price, still the rate in 1836."
+  },
+  {
+    "id": "land.acres.small",
+    "value": 40,
+    "unit": "acres",
+    "tag": "src",
+    "source": "Act of 5 April 1832, 4 Stat. 503",
+    "url": "https://www.govinfo.gov/content/pkg/STATUTE-4/pdf/STATUTE-4-Pg503.pdf",
+    "confidence": "solid",
+    "note": "Quarter-quarter section allowed from 1 May 1832."
+  },
+  {
+    "id": "land.acres.mid",
+    "value": 80,
+    "unit": "acres",
+    "tag": "src",
+    "source": "Act of 5 April 1832, 4 Stat. 503",
+    "url": "https://www.govinfo.gov/content/pkg/STATUTE-4/pdf/STATUTE-4-Pg503.pdf",
+    "confidence": "solid",
+    "note": "Half-quarter section."
+  },
+  {
+    "id": "land.acres.large",
+    "value": 160,
+    "unit": "acres",
+    "tag": "src",
+    "source": "Act of 5 April 1832, 4 Stat. 503",
+    "url": "https://www.govinfo.gov/content/pkg/STATUTE-4/pdf/STATUTE-4-Pg503.pdf",
+    "confidence": "solid",
+    "note": "Quarter section."
+  },
+  {
+    "id": "land.settlerMax",
+    "value": 320,
+    "unit": "acres",
+    "tag": "src",
+    "source": "Report of the Secretary of the Treasury, 1836 (Specie Circular text)",
+    "url": "https://fraser.stlouisfed.org/files/docs/publications/treasar/AR_TREASURY_1836.pdf",
+    "confidence": "solid",
+    "note": "Most an actual settler could buy under the exemption."
+  },
+  {
+    "id": "spec.price.openings",
+    "value": 5,
+    "unit": "USD/acre",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "solid",
+    "note": "Emigrants paid speculators $2 to $5 an acre (Blois); oak openings about $5 in 1836 (Peters via Kalamazoo history, likely)."
+  },
+  {
+    "id": "spec.total",
+    "value": 200,
+    "unit": "USD",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 413-416",
+    "url": "https://archive.org/stream/gazetteerofstate01bloi/gazetteerofstate01bloi_djvu.txt",
+    "confidence": "solid",
+    "note": "40 acres at the speculator's $5 (arithmetic on two sourced figures)."
+  },
+  {
+    "id": "wage.day",
+    "value": 1,
+    "unit": "USD/day",
+    "tag": "src",
+    "source": "Kalamazoo County history page (migenweb)",
+    "url": "https://www.migenweb.org/kalamazoo/history/history3.htm",
+    "confidence": "likely",
+    "note": "A minister-carpenter at Gull Prairie earned $1 a day."
+  },
+  {
+    "id": "wage.skilled",
+    "value": 2,
+    "unit": "USD/day",
+    "tag": "src",
+    "source": "Caroline Kirkland, A New Home: Who'll Follow? (1839)",
+    "url": "https://archive.org/details/anewhomewhollfo04kirkgoog",
+    "confidence": "likely",
+    "note": "Kirkland's carpenter wage, applied to the blacksmith."
+  },
+  {
+    "id": "work.findP",
+    "value": 0.7,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of finding a day's hire; unsourced."
+  },
+  {
+    "id": "hands.count",
+    "value": 2,
+    "unit": "people",
+    "tag": "invented",
+    "note": "Hired hands at the cabin."
+  },
+  {
+    "id": "build.days",
+    "value": 2,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days of work in one cabin-building turn (pacing)."
+  },
+  {
+    "id": "zone.home",
+    "value": 0,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts."
+  },
+  {
+    "id": "zone.vermont",
+    "value": 0,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts."
+  },
+  {
+    "id": "zone.albany",
+    "value": 1,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts."
+  },
+  {
+    "id": "zone.canal",
+    "value": 1,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts."
+  },
+  {
+    "id": "zone.buffalo",
+    "value": 2,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts."
+  },
+  {
+    "id": "zone.lake",
+    "value": 3,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts."
+  },
+  {
+    "id": "zone.overland",
+    "value": 3,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts."
+  },
+  {
+    "id": "zone.detroit",
+    "value": 4,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts."
+  },
+  {
+    "id": "zone.road",
+    "value": 4,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts."
+  },
+  {
+    "id": "zone.bronson",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts."
+  },
+  {
+    "id": "zone.claim",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts."
+  },
+  {
+    "id": "zone.issuer.ne",
+    "value": 0,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Home band of New England banks."
+  },
+  {
+    "id": "zone.issuer.ny",
+    "value": 1,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Home band of New York banks."
+  },
+  {
+    "id": "zone.issuer.mi",
+    "value": 4,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Home band of Michigan banks."
+  },
+  {
+    "id": "disc.miEast",
+    "value": 0.075,
+    "unit": "share",
+    "tag": "src",
+    "source": "Dove, Pecquet and Thies, Essays in Economic & Business History 32 (2014)",
+    "url": "https://ebhsoc.org/journal/index.php/ebhs/article/download/240/223",
+    "confidence": "solid",
+    "note": "Detroit notes in the New York market in 1836: 7.5 percent, up from under 2."
+  },
+  {
+    "id": "disc.perZone",
+    "value": 0.03,
+    "unit": "share",
+    "tag": "invented",
+    "note": "Discount added per band west of the issuing bank. Only the Detroit-in-New-York figure is sourced."
+  },
+  {
+    "id": "disc.max",
+    "value": 0.25,
+    "unit": "share",
+    "tag": "invented",
+    "note": "Cap on the discount. Michigan notes reached about 25 percent in Buffalo in late 1837 (Dove), a year later."
+  },
+  {
+    "id": "broker.fee",
+    "value": 0.02,
+    "unit": "share",
+    "tag": "invented",
+    "note": "Broker's cut on top of the going discount; unsourced."
+  },
+  {
+    "id": "broker.cap",
+    "value": 80,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Coin a broker can pay out in one visit; unsourced."
+  },
+  {
+    "id": "broker.capBronson",
+    "value": 40,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Less coin at Bronson; specie was scarce in the interior."
+  },
+  {
+    "id": "receiver.nyP",
+    "value": 0.5,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance a Receiver takes New York notes. Receivers could refuse notes of distant banks; the odds are invented."
+  },
+  {
+    "id": "health.max",
+    "value": 100,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Health scale."
+  },
+  {
+    "id": "health.regen",
+    "value": 2,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Daily recovery when well."
+  },
+  {
+    "id": "health.restRegen",
+    "value": 4,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Daily recovery when resting."
+  },
+  {
+    "id": "ill.childMult",
+    "value": 2.0,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Children weaken faster from illness, hunger and cold."
+  },
+  {
+    "id": "ill.restBonus",
+    "value": 0.05,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Extra daily chance of recovery on a rest day."
+  },
+  {
+    "id": "ill.ague.loss",
+    "value": 1.5,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Ague rarely killed outright but wore people down."
+  },
+  {
+    "id": "ill.ague.minDays",
+    "value": 7,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Untreated ague ran six weeks to three months (Kirkland, likely); the game shortens it."
+  },
+  {
+    "id": "ill.ague.recover",
+    "value": 0.07,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Daily recovery chance once past the minimum."
+  },
+  {
+    "id": "ill.dysentery.loss",
+    "value": 6,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "No source on dysentery among 1836 emigrants."
+  },
+  {
+    "id": "ill.dysentery.minDays",
+    "value": 3,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Shortest bout of dysentery; no source found."
+  },
+  {
+    "id": "ill.dysentery.recover",
+    "value": 0.18,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Daily recovery chance from dysentery; no source found."
+  },
+  {
+    "id": "ill.cholera.loss",
+    "value": 30,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Cholera was fast and often fatal; rare in 1836."
+  },
+  {
+    "id": "ill.cholera.minDays",
+    "value": 1,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Shortest course of cholera; no source found."
+  },
+  {
+    "id": "ill.cholera.recover",
+    "value": 0.4,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Daily recovery chance from cholera; no source found."
+  },
+  {
+    "id": "ill.injury.loss",
+    "value": 1,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Health lost per day while an injury mends; no source found."
+  },
+  {
+    "id": "ill.injury.minDays",
+    "value": 3,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Shortest time for an injury to mend; no source found."
+  },
+  {
+    "id": "ill.injury.recover",
+    "value": 0.2,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Daily chance an injury mends; no source found."
+  },
+  {
+    "id": "ague.base.vermont",
+    "value": 0.0005,
+    "unit": "probability/person/day",
+    "tag": "invented",
+    "note": "Ague onset; set so nearly every family meets it in Michigan ('nearly every family had at least one member who was afflicted', likely)."
+  },
+  {
+    "id": "ague.base.canal",
+    "value": 0.003,
+    "unit": "probability/person/day",
+    "tag": "invented",
+    "note": "Ague onset; set so nearly every family meets it in Michigan ('nearly every family had at least one member who was afflicted', likely)."
+  },
+  {
+    "id": "ague.base.lake",
+    "value": 0.001,
+    "unit": "probability/person/day",
+    "tag": "invented",
+    "note": "Ague onset; set so nearly every family meets it in Michigan ('nearly every family had at least one member who was afflicted', likely)."
+  },
+  {
+    "id": "ague.base.overland",
+    "value": 0.004,
+    "unit": "probability/person/day",
+    "tag": "invented",
+    "note": "Ague onset; set so nearly every family meets it in Michigan ('nearly every family had at least one member who was afflicted', likely)."
+  },
+  {
+    "id": "ague.base.swamp",
+    "value": 0.012,
+    "unit": "probability/person/day",
+    "tag": "invented",
+    "note": "Ague onset; set so nearly every family meets it in Michigan ('nearly every family had at least one member who was afflicted', likely)."
+  },
+  {
+    "id": "ague.base.road",
+    "value": 0.01,
+    "unit": "probability/person/day",
+    "tag": "invented",
+    "note": "Ague onset; set so nearly every family meets it in Michigan ('nearly every family had at least one member who was afflicted', likely)."
+  },
+  {
+    "id": "ague.base.town",
+    "value": 0.002,
+    "unit": "probability/person/day",
+    "tag": "invented",
+    "note": "Ague onset; set so nearly every family meets it in Michigan ('nearly every family had at least one member who was afflicted', likely)."
+  },
+  {
+    "id": "ague.base.office",
+    "value": 0.01,
+    "unit": "probability/person/day",
+    "tag": "invented",
+    "note": "Ague onset; set so nearly every family meets it in Michigan ('nearly every family had at least one member who was afflicted', likely)."
+  },
+  {
+    "id": "ague.base.claim",
+    "value": 0.009,
+    "unit": "probability/person/day",
+    "tag": "invented",
+    "note": "Ague onset; set so nearly every family meets it in Michigan ('nearly every family had at least one member who was afflicted', likely)."
+  },
+  {
+    "id": "ague.month.9",
+    "value": 1.3,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Mosquito season falls off into winter; unsourced shape."
+  },
+  {
+    "id": "ague.month.10",
+    "value": 1.0,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Mosquito season falls off into winter; unsourced shape."
+  },
+  {
+    "id": "ague.month.11",
+    "value": 0.5,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Mosquito season falls off into winter; unsourced shape."
+  },
+  {
+    "id": "ague.month.12",
+    "value": 0.15,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Mosquito season falls off into winter; unsourced shape."
+  },
+  {
+    "id": "crowd.mult",
+    "value": 1.8,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Crowded line boats, deck passage and tent camps raise illness."
+  },
+  {
+    "id": "dys.base",
+    "value": 0.0012,
+    "unit": "probability/person/day",
+    "tag": "invented",
+    "note": "No source on dysentery."
+  },
+  {
+    "id": "cholera.base",
+    "value": 5e-05,
+    "unit": "probability/person/day",
+    "tag": "invented",
+    "note": "Tiny: the epidemic years were 1832 and 1834; none found in 1836."
+  },
+  {
+    "id": "hunger.loss",
+    "value": 4,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Health lost per day without food."
+  },
+  {
+    "id": "hunger.morale",
+    "value": 3,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Morale lost per day without food."
+  },
+  {
+    "id": "cold.loss",
+    "value": 2,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Health lost per day without a roof after the snow."
+  },
+  {
+    "id": "grief.days",
+    "value": 2,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days the family stops after a death."
+  },
+  {
+    "id": "grief.morale",
+    "value": 20,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Morale lost at a death."
+  },
+  {
+    "id": "morale.start",
+    "value": 70,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Starting morale."
+  },
+  {
+    "id": "morale.rest",
+    "value": 2,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Morale regained on a rest day."
+  },
+  {
+    "id": "morale.letter",
+    "value": 5,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Morale from writing home."
+  },
+  {
+    "id": "work.sickFactor",
+    "value": 0.3,
+    "unit": "share",
+    "tag": "invented",
+    "note": "Work a sick person can still do."
+  },
+  {
+    "id": "work.helperFactor",
+    "value": 0.4,
+    "unit": "share",
+    "tag": "invented",
+    "note": "Work a child helper does."
+  },
+  {
+    "id": "wagon.max",
+    "value": 100,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Wagon condition scale."
+  },
+  {
+    "id": "wagon.patched",
+    "value": 50,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Wagon condition after a makeshift repair."
+  },
+  {
+    "id": "wagon.repairDays",
+    "value": 2,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days for a makeshift repair without a smith."
+  },
+  {
+    "id": "land.find.alone",
+    "value": 0.45,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance a day of looking alone turns up a tract worth entering."
+  },
+  {
+    "id": "land.find.looker",
+    "value": 0.9,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Same, with a land looker who knows the plats."
+  },
+  {
+    "id": "land.maxCandidates",
+    "value": 3,
+    "unit": "tracts",
+    "tag": "invented",
+    "note": "Tracts a family keeps in mind at once."
+  },
+  {
+    "id": "land.w.openings",
+    "value": 5,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Relative chance a tract is oak openings."
+  },
+  {
+    "id": "land.w.prairie",
+    "value": 2,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Choice prairie went early: 'the choice lands were soon selected' (uncertain place)."
+  },
+  {
+    "id": "land.w.timber",
+    "value": 4,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Relative chance a tract is heavy timber."
+  },
+  {
+    "id": "land.poorP.alone",
+    "value": 0.3,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance a tract you found alone is low and wet."
+  },
+  {
+    "id": "land.poorP.looker",
+    "value": 0.1,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Same, with a land looker."
+  },
+  {
+    "id": "land.poorP.plat",
+    "value": 0.45,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Sight unseen; Pritchard tells of buyers who found 'swamps and quagmires'."
+  },
+  {
+    "id": "land.poorP.tip",
+    "value": 0.05,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "A surveyor's tip."
+  },
+  {
+    "id": "land.queue.min",
+    "value": 3,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Wait at the window, compressed from Pritchard's 'often weeks'."
+  },
+  {
+    "id": "land.queue.max",
+    "value": 12,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Longest wait at the window in the game."
+  },
+  {
+    "id": "land.conflict.p",
+    "value": 0.15,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance another claim is found on your tract; Pritchard records conflicts but no rate."
+  },
+  {
+    "id": "land.conflict.prairie",
+    "value": 0.4,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Prairie was contested more."
+  },
+  {
+    "id": "land.poor.shelterMult",
+    "value": 0.8,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Building on wet ground is slower."
+  },
+  {
+    "id": "shelter.perUnit",
+    "value": 0.63,
+    "unit": "points/worker/day",
+    "tag": "invented",
+    "note": "Cabin progress per worker per day; families cut 50-60 trees for a temporary cabin (Michiganology), time unsourced. Retuned in P2 Phase B from 0.72 to 0.63: the tier band (careful play lands a full win 35-45 percent; user decision: hard at the end)."
+  },
+  {
+    "id": "shelter.done",
+    "value": 100,
+    "unit": "points",
+    "tag": "invented",
+    "note": "A finished cabin."
+  },
+  {
+    "id": "shelter.kind.timber",
+    "value": 1.2,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Logs at hand on timbered land."
+  },
+  {
+    "id": "shelter.kind.openings",
+    "value": 1.0,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Some timber in the oak openings."
+  },
+  {
+    "id": "shelter.kind.prairie",
+    "value": 0.7,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Logs must be hauled onto prairie."
+  },
+  {
+    "id": "shelter.snowMult",
+    "value": 0.5,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Work in snow is slower."
+  },
+  {
+    "id": "skill.clearing",
+    "value": 1.2,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "The widow's grown sons clear land faster."
+  },
+  {
+    "id": "skill.tools",
+    "value": 1.6,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "A smith's own tools speed the cabin. Blois advised emigrants to carry light tools, which were dearer in the West; the rate is invented."
+  },
+  {
+    "id": "ev.p.travel",
+    "value": 0.4,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of an event after a day on the road or the water."
+  },
+  {
+    "id": "ev.p.office",
+    "value": 0.35,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of an event after a day at the land office."
+  },
+  {
+    "id": "ev.p.town",
+    "value": 0.35,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of an event after a day's lodging in a town. Set to the land-office chance, which this used before it had its own number."
+  },
+  {
+    "id": "ev.p.claim",
+    "value": 0.3,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of an event after a day on the claim."
+  },
+  {
+    "id": "w.rare",
+    "value": 1,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Event frequency class."
+  },
+  {
+    "id": "w.uncommon",
+    "value": 3,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Event frequency class."
+  },
+  {
+    "id": "w.common",
+    "value": 6,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Event frequency class."
+  },
+  {
+    "id": "w.frequent",
+    "value": 12,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Event frequency class."
+  },
+  {
+    "id": "cd.short",
+    "value": 3,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Short event cooldown."
+  },
+  {
+    "id": "cd.long",
+    "value": 8,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Long event cooldown."
+  },
+  {
+    "id": "m.lateLake",
+    "value": 3,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Lake storms grow likelier into November; the shape is invented."
+  },
+  {
+    "id": "ev.delay.day",
+    "value": 1,
+    "unit": "days",
+    "tag": "invented",
+    "note": "One day's delay."
+  },
+  {
+    "id": "ev.morale.small",
+    "value": 4,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Small morale gain."
+  },
+  {
+    "id": "ev.morale.mid",
+    "value": 8,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Larger morale gain."
+  },
+  {
+    "id": "ev.morale.loss",
+    "value": -5,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Small morale loss."
+  },
+  {
+    "id": "ev.wagon.small",
+    "value": -15,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Light wagon damage."
+  },
+  {
+    "id": "ev.wagon.mid",
+    "value": -30,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Heavier wagon damage."
+  },
+  {
+    "id": "ev.injury.small",
+    "value": 15,
+    "unit": "points",
+    "tag": "invented",
+    "note": "A light injury."
+  },
+  {
+    "id": "ev.injury.mid",
+    "value": 30,
+    "unit": "points",
+    "tag": "invented",
+    "note": "A serious injury."
+  },
+  {
+    "id": "ev.heal.small",
+    "value": 5,
+    "unit": "points",
+    "tag": "invented",
+    "note": "A night under a roof."
+  },
+  {
+    "id": "ev.shaver.rate",
+    "value": 0.9,
+    "unit": "share",
+    "tag": "invented",
+    "note": "Ten cents off the dollar, as the event says."
+  },
+  {
+    "id": "ev.wharfBroker.rate",
+    "value": 0.85,
+    "unit": "share",
+    "tag": "invented",
+    "note": "The Buffalo broker's rate."
+  },
+  {
+    "id": "ev.rumourBroker.rate",
+    "value": 0.8,
+    "unit": "share",
+    "tag": "invented",
+    "note": "A broker working a rumour."
+  },
+  {
+    "id": "ev.wheelwright.cost",
+    "value": 1.5,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Wheelwright's charge."
+  },
+  {
+    "id": "ev.bridge.p",
+    "value": 0.25,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance a child on the roof is hurt at a low bridge."
+  },
+  {
+    "id": "ev.overboard.p",
+    "value": 0.2,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of a fall on the wet deck."
+  },
+  {
+    "id": "ev.ague.p",
+    "value": 0.4,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of ague from a night's exposure."
+  },
+  {
+    "id": "ev.ague.pHigh",
+    "value": 0.6,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Same, in the worst places."
+  },
+  {
+    "id": "ev.dys.p",
+    "value": 0.25,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of dysentery from bad water or crowding."
+  },
+  {
+    "id": "ev.cholera.p",
+    "value": 0.05,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance a cholera scare is cholera."
+  },
+  {
+    "id": "ev.gale.injuryP",
+    "value": 0.3,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of an injury in a gale."
+  },
+  {
+    "id": "ev.rails.injuryP",
+    "value": 0.25,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of an injury prying a wagon out."
+  },
+  {
+    "id": "ev.steward.cost",
+    "value": 1,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Bribe to a steward."
+  },
+  {
+    "id": "ev.pull.cost",
+    "value": 2,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A settler's team to pull a wagon free."
+  },
+  {
+    "id": "ev.paperCity.cost",
+    "value": 25,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "One share in a paper town; Kirkland's shares were $300."
+  },
+  {
+    "id": "ev.corn.cost",
+    "value": 1,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Corn bought on the road."
+  },
+  {
+    "id": "ev.corn.food",
+    "value": 30,
+    "unit": "person-days",
+    "tag": "invented",
+    "note": "Food from that corn."
+  },
+  {
+    "id": "ev.inn.cost",
+    "value": 1,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A night at a log tavern for the family."
+  },
+  {
+    "id": "ev.flourHalf.cost",
+    "value": 12,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Half a barrel at a scarcity price, above the $20 barrel rate."
+  },
+  {
+    "id": "ev.flourHalf.food",
+    "value": 35,
+    "unit": "person-days",
+    "tag": "invented",
+    "note": "Half of food.perBarrel."
+  },
+  {
+    "id": "ev.peddler.cost",
+    "value": 5,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Quinine from a peddler in the interior."
+  },
+  {
+    "id": "ev.quinine.dose",
+    "value": 1,
+    "unit": "doses",
+    "tag": "invented",
+    "note": "A peddler sells one dose at a time."
+  },
+  {
+    "id": "ev.queue.add",
+    "value": 2,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Extra wait while a conflict is checked."
+  },
+  {
+    "id": "ev.raising.min",
+    "value": 25,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Cabin progress before neighbours offer to help raise it."
+  },
+  {
+    "id": "ev.raising.shelter",
+    "value": 25,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Work done at a cabin raising."
+  },
+  {
+    "id": "ev.raising.food",
+    "value": -15,
+    "unit": "person-days",
+    "tag": "invented",
+    "note": "Food the helpers eat."
+  },
+  {
+    "id": "ev.wet.shelter",
+    "value": -10,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Work lost moving a flooded cabin site."
+  },
+  {
+    "id": "ev.progress.loss",
+    "value": -10,
+    "unit": "miles",
+    "tag": "invented",
+    "note": "Miles lost on a bad day."
+  },
+  {
+    "id": "ev.progress.gain",
+    "value": 5,
+    "unit": "miles",
+    "tag": "invented",
+    "note": "Miles gained by pushing on."
+  },
+  {
+    "id": "terrain.swamp.dry",
+    "value": 0.5,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Black Swamp pace in the passable months (July-September); unsourced rate."
+  },
+  {
+    "id": "terrain.swamp.10",
+    "value": 0.3,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "October: the wet season begins and the swamp road worsens; the rate is invented."
+  },
+  {
+    "id": "terrain.swamp.11",
+    "value": 0.18,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "November: mud knee- to belly-deep, crossings of 'days or even weeks' (local history, likely); the rate is invented."
+  },
+  {
+    "id": "terrain.swamp.12",
+    "value": 0.12,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "December: the worst of the wet season; invented."
+  },
+  {
+    "id": "swamp.guide.mult",
+    "value": 1.8,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "A hired guide who knows where the corduroy holds roughly doubles swamp pace; no source for swamp guides."
+  },
+  {
+    "id": "swamp.drained.mult",
+    "value": 1.6,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "Pace on the first swamp day after waiting out rain at a tavern; invented."
+  },
+  {
+    "id": "yoke.second.mult",
+    "value": 1.3,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "A second yoke spells the first and pulls through mud; invented."
+  },
+  {
+    "id": "price.swampGuide",
+    "value": 6,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Fee for a guide across the swamp; no source."
+  },
+  {
+    "id": "w.offer",
+    "value": 200,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Makes a one-time offer event come up early on its leg."
+  },
+  {
+    "id": "m.guideMired",
+    "value": 0.3,
+    "unit": "multiplier",
+    "tag": "invented",
+    "note": "With a guide the wagon is mired far less often; invented."
+  },
+  {
+    "id": "price.pork.lb",
+    "value": 0.25,
+    "unit": "USD/lb",
+    "tag": "src",
+    "source": "Michigan Pioneer and Historical Collections vol. 18 (1891), p. 372",
+    "url": "https://archive.org/details/michiganpioneerh0018unse",
+    "confidence": "likely",
+    "note": "\"before the summer of 1837 was over pork was worth twenty-five cents per pound\" (Branch County, a recollection 54 years on)."
+  },
+  {
+    "id": "price.potatoes.bu",
+    "value": 1,
+    "unit": "USD/bushel",
+    "tag": "src",
+    "source": "Michigan Pioneer and Historical Collections vol. 18 (1891), p. 372",
+    "url": "https://archive.org/details/michiganpioneerh0018unse",
+    "confidence": "likely",
+    "note": "\"potatoes were one dollar per bushel\", same recollection, summer 1837."
+  },
+  {
+    "id": "price.salt.barrel",
+    "value": 10,
+    "unit": "USD/barrel",
+    "tag": "src",
+    "source": "Michigan Pioneer and Historical Collections vol. 18 (1891), p. 372",
+    "url": "https://archive.org/details/michiganpioneerh0018unse",
+    "confidence": "likely",
+    "note": "Salt at $10 a barrel in the winter of 1836-37 (Lawrence recollection)."
+  },
+  {
+    "id": "food.provisions.porkLb",
+    "value": 12,
+    "unit": "lb",
+    "tag": "invented",
+    "note": "How much salt pork a roadside provisions bundle in Michigan holds; the price per pound is sourced (PC18), the quantity is invented."
+  },
+  {
+    "id": "food.provisions.potatoBu",
+    "value": 2,
+    "unit": "bushels",
+    "tag": "invented",
+    "note": "How many bushels of potatoes the Michigan provisions bundle holds; the price is sourced (PC18), the quantity is invented."
+  },
+  {
+    "id": "fare.winterStage",
+    "value": 25,
+    "unit": "USD",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 414",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "solid",
+    "note": "\"Fare from Buffalo to Detroit, in the winter season, usually, $25.00.\""
+  },
+  {
+    "id": "date.lakeLate",
+    "value": "1836-11-25",
+    "unit": "date",
+    "tag": "invented",
+    "note": "From this date a family at Buffalo may take the winter stage instead of a late boat. Blois says ice stops the lakes by about 20 November at St. Mary; Lake Erie's 1836 closing date is unresolved."
+  },
+  {
+    "id": "stage.days",
+    "value": 6,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days by the winter stage from Buffalo to Detroit; the fare is sourced (Blois), the time is invented."
+  },
+  {
+    "id": "mi.detroitChicago",
+    "value": 254,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 413",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "solid",
+    "note": "The Chicago State road: \"Its whole length is 254 miles.\" Blois's stage table prints 300 for the same trip, unreconciled."
+  },
+  {
+    "id": "fare.stage.chicago",
+    "value": 21,
+    "unit": "USD",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 413",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "solid",
+    "note": "Stage fare Detroit to Chicago, \"300 [miles], $21 00\"."
+  },
+  {
+    "id": "speed.pace.steady",
+    "value": 1,
+    "unit": "x",
+    "tag": "invented",
+    "note": "The steady pace is the sourced ox speed (15 miles a day on good road, Overland Journal)."
+  },
+  {
+    "id": "speed.pace.hard",
+    "value": 1.25,
+    "unit": "x",
+    "tag": "invented",
+    "note": "A hard pace on good road. r3 suggests a grueling pace makes 20 or more miles; the multipliers are invented."
+  },
+  {
+    "id": "speed.pace.grueling",
+    "value": 1.5,
+    "unit": "x",
+    "tag": "invented",
+    "note": "A grueling pace on good road: about 22 miles a day for oxen. Invented from r3's \"20+ mi\" note."
+  },
+  {
+    "id": "fat.max",
+    "value": 100,
+    "unit": "points",
+    "tag": "invented",
+    "note": "The top of the fatigue scale."
+  },
+  {
+    "id": "fat.day.steady",
+    "value": 0,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Fatigue a steady day on good road adds: none. Steady is the pace a family can keep day after day (the pace control says so); bad road (fat.badRoad), hard and grueling days still tire them. No source gives rates for human exhaustion (r3 §1b); invented. Was 1 until fatigue began to cost from the first point (Phase A review N-A2), when a long steady haul became a slow tax on illness."
+  },
+  {
+    "id": "fat.day.hard",
+    "value": 6,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Fatigue a hard day adds; invented."
+  },
+  {
+    "id": "fat.day.grueling",
+    "value": 12,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Fatigue a grueling day adds; invented."
+  },
+  {
+    "id": "fat.badRoad",
+    "value": 2,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Extra fatigue on the Black Swamp road and the forest track, whatever the pace; invented."
+  },
+  {
+    "id": "fat.childMult",
+    "value": 0.5,
+    "unit": "x",
+    "tag": "invented",
+    "note": "Children ride in the wagon and tire at half the rate; invented (wife and children rode in the wagon box, PC28 p. 417)."
+  },
+  {
+    "id": "fat.rest",
+    "value": 12,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Fatigue a day's rest in camp takes off; invented."
+  },
+  {
+    "id": "fat.inn",
+    "value": 18,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Fatigue a day under a roof takes off; invented."
+  },
+  {
+    "id": "fat.sabbath",
+    "value": 22,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Fatigue a kept Sabbath takes off: a full day of rest by custom; invented."
+  },
+  {
+    "id": "fat.boat.berth",
+    "value": 8,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Fatigue a day on the packet or in a steamer cabin takes off; invented."
+  },
+  {
+    "id": "fat.boat.crowded",
+    "value": 3,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Fatigue a crowded day on a line boat or on deck takes off: less rest than a berth; invented."
+  },
+  {
+    "id": "fat.labour",
+    "value": -2,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Fatigue a day of work in one place (hiring out, building, repair, walking section lines) takes off: off the road the family recovers slowly. Invented."
+  },
+  {
+    "id": "fat.idle",
+    "value": 5,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Fatigue a day waiting or halted takes off; invented."
+  },
+  {
+    "id": "fat.teamDay.steady",
+    "value": 0,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Team fatigue on a steady day on good road: none. Steady is the pace a team can keep day after day; bad road still wears it (fat.team.badRoad), and hard and grueling days wear it at once. Oxen need rest often (Overland Journal), but no rates are sourced; invented. Was 1 before the worn team began to pull slower (fat.team.slow), which made a long steady haul a trap."
+  },
+  {
+    "id": "fat.teamDay.hard",
+    "value": 7,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Team fatigue on a hard day; invented."
+  },
+  {
+    "id": "fat.teamDay.grueling",
+    "value": 14,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Team fatigue on a grueling day; the team pays most for the pace (r3 §1b). Invented."
+  },
+  {
+    "id": "fat.team.badRoad",
+    "value": 2,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Extra team fatigue on the swamp road and the forest track; invented."
+  },
+  {
+    "id": "fat.team.rest",
+    "value": 12,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Team fatigue a day's rest takes off; invented."
+  },
+  {
+    "id": "fat.team.idle",
+    "value": 6,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Team fatigue a day not pulling takes off (in town, or as freight); invented."
+  },
+  {
+    "id": "fat.team.slow",
+    "value": 0.01,
+    "unit": "share/point",
+    "tag": "invented",
+    "note": "Share of the day's miles a team loses for each point of its fatigue (1 percent a point: a team at 40 pulls 40 percent slower), so a hard or grueling day costs miles on the days after it until the team rests. It applies on every road: on the swamp road and the forest track a worn team is slower than the road's own pace, and pushing there never makes it faster. Floored at fat.team.floor. Oxen need rest often and a worn team slows (Overland Journal 33(1), about the later western trails); no rate is sourced, so the figure is invented. Tuned in the sim (test/pace-*.test.mjs): pushing while under 40 or 45 fatigue loses to a steady pace, a short push at the end of a leg still pays."
+  },
+  {
+    "id": "fat.team.floor",
+    "value": 0.5,
+    "unit": "x",
+    "tag": "invented",
+    "note": "The slowest a worn team pulls, as a share of a fresh team's miles: a spent team crawls but never stops dead (V6, round 6 review). No source gives a rate; invented."
+  },
+  {
+    "id": "fat.tired",
+    "value": 40,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Fatigue at which a person or the team counts as tired; invented."
+  },
+  {
+    "id": "fat.high",
+    "value": 70,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Fatigue at which a person or the team is worn out: drive on stops here; invented."
+  },
+  {
+    "id": "fat.ill.from",
+    "value": 40,
+    "unit": "points",
+    "tag": "invented",
+    "note": "The knee of the fatigue curve: below it illness and accidents grow a little likelier with each point of fatigue, above it steeply (user decision 2026-11-19: fatigue costs from the first day). No source gives a rate (r3 §1b); invented."
+  },
+  {
+    "id": "fat.ill.mult",
+    "value": 3,
+    "unit": "x",
+    "tag": "invented",
+    "note": "At full fatigue the chance of falling ill, or of an accident, is this much higher (four times in all); the curve rises linearly from the knee to here. Invented (r3 §1b gives no rate)."
+  },
+  {
+    "id": "fat.ill.low",
+    "value": 0.5,
+    "unit": "x",
+    "tag": "invented",
+    "note": "At the knee (fat.ill.from) illness and accidents are this much likelier (half again as likely); from no fatigue to the knee the odds rise in a straight line, so every point of fatigue costs something. Invented."
+  },
+  {
+    "id": "fat.morale.from",
+    "value": 60,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Fatigue at which tempers fray each day; invented."
+  },
+  {
+    "id": "fat.morale.loss",
+    "value": 2,
+    "unit": "points/day",
+    "tag": "invented",
+    "note": "Morale lost each day someone is that tired; invented."
+  },
+  {
+    "id": "fat.ev.hard",
+    "value": 1.5,
+    "unit": "x",
+    "tag": "invented",
+    "note": "A hard pace wears the team at once: a cast shoe or a lame ox is this much likelier on a hard day, on top of the team's fatigue curve. The Overland Journal says oxen needed rest often and lameness stopped them; no rate is sourced. Invented."
+  },
+  {
+    "id": "fat.ev.grueling",
+    "value": 2.5,
+    "unit": "x",
+    "tag": "invented",
+    "note": "A grueling pace wears the team at once: a cast shoe or a lame ox is this much likelier on a grueling day, on top of the team's fatigue curve. Invented, as fat.ev.hard."
+  },
+  {
+    "id": "ev.fatigue.ease",
+    "value": -10,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Fatigue an early halt takes off (the quarrel event); invented."
+  },
+  {
+    "id": "ev.fatigue.strain",
+    "value": 10,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Team fatigue from a strained pull or a lame ox pushed on (chain events); invented."
+  },
+  {
+    "id": "morale.sabbath",
+    "value": 6,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Morale from keeping the Sabbath, on top of a day's rest; invented. The custom is sourced (PC28 p. 417)."
+  },
+  {
+    "id": "team.short.mult",
+    "value": 0.75,
+    "unit": "x",
+    "tag": "invented",
+    "note": "Speed of a wagon after an ox gives out, going on with a lighter load until a new yoke is bought; invented."
+  },
+  {
+    "id": "chain.in.short",
+    "value": 2,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days until a quick consequence comes due; invented."
+  },
+  {
+    "id": "chain.in.mid",
+    "value": 5,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days until a consequence comes due; invented."
+  },
+  {
+    "id": "chain.in.long",
+    "value": 10,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days until a slow consequence comes due (ague showing some days after the bites); invented."
+  },
+  {
+    "id": "chain.axle.in",
+    "value": 7,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days until a wedged wheel gives out: about 100 miles on at 15 a day; invented."
+  },
+  {
+    "id": "ev.coin.light",
+    "value": 1.5,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Coin lost when a merchant refuses a light piece from the note shaver; invented."
+  },
+  {
+    "id": "ev.gate.cost",
+    "value": 0.5,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "What the men at the strip gate want to let a Michigan-bound wagon by; invented (Toledo Strip danger is unresolved)."
+  },
+  {
+    "id": "ev.loan.amount",
+    "value": 20,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A Buffalo broker's loan against a note payable at Detroit; invented."
+  },
+  {
+    "id": "ev.loan.due",
+    "value": 22,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "What the loan costs at Detroit: ten per cent for the month. Invented; Hoyt gives 10 per cent a year as the 1836 floor in Chicago."
+  },
+  {
+    "id": "ev.loan.late",
+    "value": 26,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "What the broker's Detroit agent wants after a dodged debt; invented."
+  },
+  {
+    "id": "ev.fight.cost",
+    "value": 2,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Paying off the man from the line boat; invented."
+  },
+  {
+    "id": "ev.shoe.cost",
+    "value": 1,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A smith's charge to reshoe a yoke of oxen; unsourced (r3 §5 has no tool or smith prices)."
+  },
+  {
+    "id": "ev.salt.food",
+    "value": 25,
+    "unit": "rations",
+    "tag": "invented",
+    "note": "Food a barrel of salt saves by putting up meat for the winter; invented."
+  },
+  {
+    "id": "ev.share.food",
+    "value": -10,
+    "unit": "rations",
+    "tag": "invented",
+    "note": "Food shared with the Ohio family at Buffalo; invented."
+  },
+  {
+    "id": "ev.stranger.queue",
+    "value": -3,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days off the land office queue thanks to the stranger you helped; invented."
+  },
+  {
+    "id": "tie.count.min",
+    "value": 2,
+    "unit": "ties",
+    "tag": "invented",
+    "note": "Fewest home ties a family carries west; invented."
+  },
+  {
+    "id": "tie.count.max",
+    "value": 3,
+    "unit": "ties",
+    "tag": "invented",
+    "note": "Most home ties a family carries west; invented."
+  },
+  {
+    "id": "tie.w.often",
+    "value": 6,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Weight of a tie common for a background; invented."
+  },
+  {
+    "id": "tie.w.some",
+    "value": 3,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Weight of a tie that sometimes fits a background; invented."
+  },
+  {
+    "id": "tie.w.rare",
+    "value": 1,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Weight of a tie that rarely fits a background; invented."
+  },
+  {
+    "id": "age.sweetheart",
+    "value": 15,
+    "unit": "years",
+    "tag": "invented",
+    "note": "Youngest child who can have left a sweetheart behind; invented."
+  },
+  {
+    "id": "tie.parent.amount",
+    "value": 20,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A year's keep for an aging parent under a support-for-deed promise. No 1830s Vermont note or mortgage sizes were found (r3 §7 unresolved); the size is invented."
+  },
+  {
+    "id": "tie.parent.due",
+    "value": "1836-11-01",
+    "unit": "date",
+    "tag": "invented",
+    "note": "When this tie is settled one way or the other at home; invented."
+  },
+  {
+    "id": "tie.note.amount",
+    "value": 30,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A brother's note of hand. No 1830s Vermont note or mortgage sizes were found (r3 §7 unresolved); the size is invented."
+  },
+  {
+    "id": "tie.note.due",
+    "value": "1836-10-25",
+    "unit": "date",
+    "tag": "invented",
+    "note": "When this tie is settled one way or the other at home; invented."
+  },
+  {
+    "id": "tie.mortgage.amount",
+    "value": 50,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A mortgage note due after harvest, with a co-signer. No 1830s Vermont note or mortgage sizes were found (r3 §7 unresolved); the size is invented."
+  },
+  {
+    "id": "tie.mortgage.due",
+    "value": "1836-11-05",
+    "unit": "date",
+    "tag": "invented",
+    "note": "When this tie is settled one way or the other at home; invented."
+  },
+  {
+    "id": "tie.sweetheart.amount",
+    "value": 8,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "Money toward a sweetheart's passage west in the spring. No 1830s Vermont note or mortgage sizes were found (r3 §7 unresolved); the size is invented."
+  },
+  {
+    "id": "tie.sweetheart.due",
+    "value": "1836-11-15",
+    "unit": "date",
+    "tag": "invented",
+    "note": "When this tie is settled one way or the other at home; invented."
+  },
+  {
+    "id": "tie.store.amount",
+    "value": 10,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A storekeeper's account left owing. No 1830s Vermont note or mortgage sizes were found (r3 §7 unresolved); the size is invented."
+  },
+  {
+    "id": "tie.store.due",
+    "value": "1836-10-20",
+    "unit": "date",
+    "tag": "invented",
+    "note": "When this tie is settled one way or the other at home; invented."
+  },
+  {
+    "id": "tie.subscription.amount",
+    "value": 5,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A church or school subscription. No 1830s Vermont note or mortgage sizes were found (r3 §7 unresolved); the size is invented."
+  },
+  {
+    "id": "tie.subscription.due",
+    "value": "1836-11-10",
+    "unit": "date",
+    "tag": "invented",
+    "note": "When this tie is settled one way or the other at home; invented."
+  },
+  {
+    "id": "tie.parent.dieP.unpaid",
+    "value": 0.35,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance an aging parent dies while you are away when the keep was not sent; invented."
+  },
+  {
+    "id": "tie.parent.dieP.paid",
+    "value": 0.08,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance an aging parent dies while you are away even with the keep paid; invented."
+  },
+  {
+    "id": "tie.note.pressP",
+    "value": 0.8,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance an unpaid brother's note leaves him pressed by his own creditors; invented."
+  },
+  {
+    "id": "tie.mortgage.sueP",
+    "value": 0.8,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance the holder of an unpaid mortgage note sues the co-signer; invented."
+  },
+  {
+    "id": "tie.store.postP",
+    "value": 0.6,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance an unpaid store account is put in a lawyer's hands; invented."
+  },
+  {
+    "id": "tie.subscription.nameP",
+    "value": 0.5,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance an unpaid subscription is read out at meeting; invented."
+  },
+  {
+    "id": "tie.sweetheart.comeP.sent",
+    "value": 0.7,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance the sweetheart comes west in the spring when passage money was sent; invented."
+  },
+  {
+    "id": "tie.sweetheart.comeP.letters",
+    "value": 0.4,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance the sweetheart comes west when only letters were sent; invented."
+  },
+  {
+    "id": "tie.sweetheart.comeP.none",
+    "value": 0.1,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance the sweetheart comes west with no word from you; invented."
+  },
+  {
+    "id": "tie.morale.good",
+    "value": 5,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Morale from good news of a tie at home; invented."
+  },
+  {
+    "id": "tie.morale.bad",
+    "value": 12,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Morale lost to bad news of a tie at home; invented."
+  },
+  {
+    "id": "post.band.1.miles",
+    "value": 30,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 sec. 13",
+    "url": "https://archive.org/details/lawsregulationsf00unit",
+    "confidence": "solid",
+    "note": "\"not exceeding thirty miles\": the first distance band, 1816 to 1 July 1845."
+  },
+  {
+    "id": "post.band.1.rate",
+    "value": 0.06,
+    "unit": "USD/sheet",
+    "tag": "src",
+    "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 sec. 13",
+    "url": "https://archive.org/details/lawsregulationsf00unit",
+    "confidence": "solid",
+    "note": "Six cents a single sheet up to 30 miles."
+  },
+  {
+    "id": "post.band.2.miles",
+    "value": 80,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 sec. 13",
+    "url": "https://archive.org/details/lawsregulationsf00unit",
+    "confidence": "solid",
+    "note": "Second band: 31 to 80 miles."
+  },
+  {
+    "id": "post.band.2.rate",
+    "value": 0.1,
+    "unit": "USD/sheet",
+    "tag": "src",
+    "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 sec. 13",
+    "url": "https://archive.org/details/lawsregulationsf00unit",
+    "confidence": "solid",
+    "note": "Ten cents a single sheet, 31 to 80 miles."
+  },
+  {
+    "id": "post.band.3.miles",
+    "value": 150,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 sec. 13",
+    "url": "https://archive.org/details/lawsregulationsf00unit",
+    "confidence": "solid",
+    "note": "Third band: 81 to 150 miles."
+  },
+  {
+    "id": "post.band.3.rate",
+    "value": 0.125,
+    "unit": "USD/sheet",
+    "tag": "src",
+    "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 sec. 13",
+    "url": "https://archive.org/details/lawsregulationsf00unit",
+    "confidence": "solid",
+    "note": "Twelve and a half cents a single sheet, 81 to 150 miles. The game keeps postage exact (12.5, 18.75 cents) and charges each call at the counter the exact sum of its letters, so two sheets at this rate are exactly 25 cents. The purse is counted in whole cents, so an odd half cent left over is dropped in the family's favour: a single sheet to Albany costs 12 cents. That rounding rule is invented; Blois's own fare table likewise prints the 9.075-dollar line-boat fare as $9 07."
+  },
+  {
+    "id": "post.band.4.miles",
+    "value": 400,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 sec. 13",
+    "url": "https://archive.org/details/lawsregulationsf00unit",
+    "confidence": "solid",
+    "note": "Fourth band: 151 to 400 miles."
+  },
+  {
+    "id": "post.band.4.rate",
+    "value": 0.1875,
+    "unit": "USD/sheet",
+    "tag": "src",
+    "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 sec. 13",
+    "url": "https://archive.org/details/lawsregulationsf00unit",
+    "confidence": "solid",
+    "note": "Eighteen and three-quarter cents a single sheet, 151 to 400 miles. Kept exact; an odd fraction of a cent at the counter is dropped in the family's favour (invented rounding rule, see post.band.3.rate)."
+  },
+  {
+    "id": "post.band.5.rate",
+    "value": 0.25,
+    "unit": "USD/sheet",
+    "tag": "src",
+    "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 sec. 13",
+    "url": "https://archive.org/details/lawsregulationsf00unit",
+    "confidence": "solid",
+    "note": "Twenty-five cents a single sheet over 400 miles: Vermont to Buffalo, Detroit or Michigan."
+  },
+  {
+    "id": "post.sheetsMax",
+    "value": 4,
+    "unit": "sheets",
+    "tag": "src",
+    "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 sec. 13",
+    "url": "https://archive.org/details/lawsregulationsf00unit",
+    "confidence": "solid",
+    "note": "Rated by the piece of paper: double for two, triple for three, quadruple for a packet of four or more (weighing an ounce)."
+  },
+  {
+    "id": "post.lossP",
+    "value": 0.05,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance a letter carrying money goes astray. Money in the mail was \"at the risk of the owner\" (PO Laws 1843 sec. 235, solid), but no loss rate is sourced."
+  },
+  {
+    "id": "post.transitDays",
+    "value": 12,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days for a letter from home to reach Michigan; mail in the new counties ran once a week (Blois), the transit time is invented."
+  },
+  {
+    "id": "post.halves.gapDays",
+    "value": 7,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days between the first halves of cut notes and the second halves, which go by the next mail (V3, round 6 review), so halves reach home this much later than notes sent whole. Mail in the new counties ran once a week (Blois, see post.transitDays); the interval is invented."
+  },
+  {
+    "id": "post.longP",
+    "value": 0.3,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance a letter from home runs to a second sheet and so costs double; invented."
+  },
+  {
+    "id": "morale.letterHome",
+    "value": 6,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Morale from a letter from home; invented."
+  },
+  {
+    "id": "zone.stage",
+    "value": 3,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Discount zone on the winter stage between Buffalo and Detroit, the same as the lake and the Ohio road."
+  },
+  {
+    "id": "ague.base.stage",
+    "value": 0.002,
+    "unit": "probability/day",
+    "tag": "invented",
+    "note": "Daily ague onset riding the winter stage: low, the season is late and the coach is closed. Invented like every ague rate (r3 §7)."
+  },
+  {
+    "id": "ev.quinine.give",
+    "value": -1,
+    "unit": "doses",
+    "tag": "invented",
+    "note": "The dose given away on the canal; invented."
+  },
+  {
+    "id": "ev.team.fresh",
+    "value": -100,
+    "unit": "points",
+    "tag": "invented",
+    "note": "A fresh yoke bought by the road: team fatigue starts again from nothing; invented."
+  },
+  {
+    "id": "ev.return.shelter",
+    "value": 4,
+    "unit": "points",
+    "tag": "invented",
+    "note": "Cabin progress from neighbours who come back to help drag logs; invented, and kept small for balance."
+  },
+  {
+    "id": "path.end",
+    "value": "1837-06-30",
+    "unit": "date",
+    "tag": "invented",
+    "note": "The last day of a path that winters over (Detroit, Chicago): the spec's 'by June 1837' for land bought in coin. A game choice, not a sourced date."
+  },
+  {
+    "id": "date.thaw",
+    "value": "1837-04-01",
+    "unit": "date",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), physical geography (r3 §2a)",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "likely",
+    "note": "Detroit navigation opens \"from the 20th of March to the 1st of April\". The game also ends the snow on the roads on this day; that use is the game's (r3 §7: no 1836-37 snow dates)."
+  },
+  {
+    "id": "ev.p.winter",
+    "value": 0.35,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of an event after a week wintering in a town (Detroit, Chicago); invented, the same as a day in town."
+  },
+  {
+    "id": "winter.findP",
+    "value": 0.5,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of a day's hire in a winter town, below the autumn 0.7: r3 §7 has no Detroit winter wage series, only that labourers were wanted (Blois). Invented."
+  },
+  {
+    "id": "winter.room",
+    "value": 0.5,
+    "unit": "USD/day",
+    "tag": "invented",
+    "note": "A room for the whole family by the night in a winter town. Invented: r3 §7 has no winter lodging series; the 50 cents is Kirkland's peak price for six feet of bar-room floor (one person), used here for a family's room."
+  },
+  {
+    "id": "path.detroit.offerFrom",
+    "value": "1836-11-01",
+    "unit": "date",
+    "tag": "invented",
+    "note": "From this date a family at Detroit is offered the winter there: the spec's 'after about 1 Nov'. Navigation closes about mid-December (r3 §2a, the researcher's estimate)."
+  },
+  {
+    "id": "bank.suspend.detroit",
+    "value": "1837-05-17",
+    "unit": "date",
+    "tag": "src",
+    "source": "Silas Farmer, History of Detroit and Michigan (1884), the Panic of 1837 (r3 §2a)",
+    "url": "https://archive.org/details/historydetroita01farmgoog",
+    "confidence": "solid",
+    "note": "The New York banks suspended on 10 May 1837; the news reached Detroit on 16 May, and the Detroit banks suspended on 17 May."
+  },
+  {
+    "id": "disc.miSuspended",
+    "value": 0.25,
+    "unit": "fraction",
+    "tag": "invented",
+    "note": "Michigan notes once the Detroit banks have suspended. Dove, Pecquet and Thies give 12.5 percent at Buffalo in November 1837 and later about 25; the Detroit spring rate itself is unsourced."
+  },
+  {
+    "id": "disc.ilSuspended",
+    "value": 0.25,
+    "unit": "fraction",
+    "tag": "invented",
+    "note": "Illinois notes (Chicago wages and lot money on the Chicago path) once the Illinois banks have suspended (bank.suspend.illinois). Unsourced: taken at the game's Michigan figure, disc.miSuspended."
+  },
+  {
+    "id": "mi.detroitWhitePigeon",
+    "value": 144,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), article White Pigeon (r3 §2b)",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "solid",
+    "note": "White Pigeon, on the Chicago road, is \"144 [miles] from Detroit\"."
+  },
+  {
+    "id": "mi.whitePigeonChicago",
+    "value": 110,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 413 and article White Pigeon (r3 §2b)",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "likely",
+    "note": "Arithmetic on two printed figures: the Chicago road's whole length of 254 miles less White Pigeon's 144."
+  },
+  {
+    "id": "stage.chicago.days",
+    "value": 7,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days by stage from Detroit to Chicago. Blois prints the fare and 300 miles (r3 §2b) but no days; about 45 miles a day is invented."
+  },
+  {
+    "id": "fare.cabin.chicago",
+    "value": 20,
+    "unit": "USD",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 415 (r3 §2b)",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "solid",
+    "note": "Cabin passage by water from Buffalo to Chicago, $20 (\"$12 to Mackinac\")."
+  },
+  {
+    "id": "freight.chicago.cwt",
+    "value": 0.75,
+    "unit": "USD/cwt",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 415 (r3 §2b)",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "solid",
+    "note": "Freight Buffalo to Chicago, 75 cents a hundredweight for heavy goods."
+  },
+  {
+    "id": "lake.chicago.days",
+    "value": 9,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days by steamboat from Buffalo round Mackinac to Chicago; Blois gives the fare but not the time. Invented."
+  },
+  {
+    "id": "lot.price",
+    "value": 300,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "What a town lot an emigrant family could reach cost in the autumn of 1836. Hoyt's lots ran from $100 (1830) to $100,000 (the best, 1836); r3 notes a family with $200 would buy on credit. The figure is invented."
+  },
+  {
+    "id": "lot.down",
+    "value": 0.25,
+    "unit": "fraction",
+    "tag": "invented",
+    "note": "The share paid down on a lot bought on credit; the rest is a note. Invented."
+  },
+  {
+    "id": "lot.interest",
+    "value": 0.1,
+    "unit": "fraction/year",
+    "tag": "src",
+    "source": "Hoyt, One Hundred Years of Land Values in Chicago (1933) (r3 §2b)",
+    "url": "https://archive.org/details/onehundredyearso00hoytrich",
+    "confidence": "solid",
+    "note": "Interest rates in 1836 Chicago were \"not less than 10 per cent per annum\"."
+  },
+  {
+    "id": "lot.noteDue",
+    "value": "1837-05-01",
+    "unit": "date",
+    "tag": "invented",
+    "note": "When a lot note falls due: a six-month term from the autumn, invented."
+  },
+  {
+    "id": "lot.index.start",
+    "value": 0.9,
+    "unit": "fraction",
+    "tag": "invented",
+    "note": "Market value of a lot on 15 September 1836 against the July peak. Hoyt: on 5 September the bids \"fell short of the Commissioners' appraisals\"; the 0.9 is invented."
+  },
+  {
+    "id": "lot.index.weekly",
+    "value": 0.015,
+    "unit": "fraction/week",
+    "tag": "invented",
+    "note": "How far lot values slide each week through the winter \"lull\" Hoyt describes; the rate is invented."
+  },
+  {
+    "id": "lot.crash",
+    "value": 0.075,
+    "unit": "fraction",
+    "tag": "src",
+    "source": "Hoyt, One Hundred Years of Land Values in Chicago (1933), pp. 39-40, Ogden to Butler, 17 June 1839 (r3 §2b)",
+    "url": "https://archive.org/details/onehundredyearso00hoytrich",
+    "confidence": "solid",
+    "note": "\"one 10th to a 20th is about all out town property will bring\" (1839): the game takes the middle of that range from the bank suspension of 1837 on, earlier than Ogden's date."
+  },
+  {
+    "id": "bank.suspend.illinois",
+    "value": "1837-05-29",
+    "unit": "date",
+    "tag": "src",
+    "source": "Wikipedia, Chicago real estate bubble of the 1830s, summarizing Glaeser (2013) (r3 §2b)",
+    "url": "https://en.wikipedia.org/wiki/Chicago_real_estate_bubble_of_the_1830s",
+    "confidence": "uncertain",
+    "note": "Illinois banks suspended on 29 May 1837 (summary only)."
+  },
+  {
+    "id": "lot.buyerP",
+    "value": 0.35,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance in a week that a buyer makes an offer for the family's lot through the autumn and winter. Invented."
+  },
+  {
+    "id": "lot.buyerP.spring",
+    "value": 0.1,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of a buyer in a week from the spring of 1837: few were buying. Ogden still sold at full prices that May (Hoyt), but he held the best property; invented."
+  },
+  {
+    "id": "lot.offer.low",
+    "value": 0.8,
+    "unit": "fraction",
+    "tag": "invented",
+    "note": "The lowest offer, as a share of the lot's market value that week. Invented."
+  },
+  {
+    "id": "lot.offer.high",
+    "value": 1.3,
+    "unit": "fraction",
+    "tag": "invented",
+    "note": "The highest offer, as a share of market value: in the mania some buyers still overpaid (Martineau via Hoyt). Invented."
+  },
+  {
+    "id": "farm.chicago.miles",
+    "value": 9,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Hoyt, One Hundred Years of Land Values in Chicago (1933) (r3 §2b)",
+    "url": "https://archive.org/details/onehundredyearso00hoytrich",
+    "confidence": "solid",
+    "note": "Some lots 8 to 10 miles out were \"valued at but little more than the original government minimum price of $1.25\": the middle of that range."
+  },
+  {
+    "id": "mi.perrysburgLima",
+    "value": 70,
+    "unit": "miles",
+    "tag": "invented",
+    "note": "Perrysburg to the Lima land office by the track south through the swamp country. UNRESOLVED (r3 §7 Ohio): no sourced distance or road; invented."
+  },
+  {
+    "id": "fare.homeRoad",
+    "value": 3,
+    "unit": "USD/person",
+    "tag": "invented",
+    "note": "Albany back to the hill farm by stage and carrier for a family without its own team. UNRESOLVED (r3 §7: no Vermont-Albany days or cost); invented."
+  },
+  {
+    "id": "kin.callP",
+    "value": 0.5,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance a relative already settled west writes inviting the family. Chain migration was common (r3 §2e, Lawrence and Flow of History), but no rate is sourced; invented."
+  },
+  {
+    "id": "kin.w.allens",
+    "value": 3,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Relative weight of kin settled at Allen's Prairie, Michigan (the Lawrence pattern, r3 §2e). Invented."
+  },
+  {
+    "id": "kin.w.ohio",
+    "value": 2,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Relative weight of kin settled in northern Ohio. Invented."
+  },
+  {
+    "id": "kin.w.illinois",
+    "value": 2,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Relative weight of kin settled in Illinois (the Torode letters, r3 §2b, summary only). Invented."
+  },
+  {
+    "id": "kin.workP",
+    "value": 0.3,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance the kin's letter says they have work for the family through the winter. Invented. Retuned in P2 Phase B from 0.5 to 0.3: the tier band for the kin path (15-50 percent full wins): most settled kin had no winter work to spare."
+  },
+  {
+    "id": "mi.detroitAllens",
+    "value": 90,
+    "unit": "miles",
+    "tag": "invented",
+    "note": "Detroit to Allen's Prairie by Saline and the Chicago turnpike (Lawrence, PC18 pp. 355-360). The distance is UNRESOLVED in the research; invented."
+  },
+  {
+    "id": "lake.maumee.days",
+    "value": 2,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days by steamboat from Buffalo to the Maumee; the Lawrences went Buffalo to Toledo with the wagon on deck in 1837 (PC18), but the time is unsourced. Invented."
+  },
+  {
+    "id": "fare.maumee",
+    "value": 3,
+    "unit": "USD/person",
+    "tag": "invented",
+    "note": "Deck passage Buffalo to the Maumee: unsourced, taken at the Detroit deck fare. Invented."
+  },
+  {
+    "id": "mi.chicagoBrushHill",
+    "value": 18,
+    "unit": "miles",
+    "tag": "invented",
+    "note": "Chicago to Brush Hill, Illinois, where the Torode letters were written (r3 §2b, summary only). Unsourced; invented."
+  },
+  {
+    "id": "zone.chicagoRoad",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.chicagoStage",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.chicagoLakes",
+    "value": 4,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.toLima",
+    "value": 3,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.backRoad",
+    "value": 4,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.homePassage",
+    "value": 2,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.toAllens",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.toMaumee",
+    "value": 3,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.toMaumeeRoad",
+    "value": 3,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place): the Ohio road to the Maumee, taken as the main route's Ohio road (zone.overland)."
+  },
+  {
+    "id": "zone.toBrushHill",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.chicago",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.lima",
+    "value": 3,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.allens",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.maumee",
+    "value": 3,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.brushhill",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.whitepigeon",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "winter.weekDays",
+    "value": 7,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days in one winter-town turn: a week, so a winter is some twenty turns rather than a hundred and fifty (pacing)."
+  },
+  {
+    "id": "ev.suspension.rate",
+    "value": 0.9,
+    "unit": "fraction",
+    "tag": "invented",
+    "note": "What brokers paid in silver for Michigan notes on the day the suspension news came; invented."
+  },
+  {
+    "id": "ev.wood.cost",
+    "value": 2,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A load of firewood in a Detroit winter; unsourced, invented."
+  },
+  {
+    "id": "ev.works.pay",
+    "value": 5,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A week's pay for one man clearing the state railroad line, at about the day wage; invented."
+  },
+  {
+    "id": "ev.chiRent.cost",
+    "value": 2,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "What a Chicago landlord added to the week's room; invented."
+  },
+  {
+    "id": "land.queue.lima.min",
+    "value": 1,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Shortest wait at the Lima window (the Ohio path). UNRESOLVED (r3 §7: no Lima sales records survive the 1855 fire); a small office in the woods is assumed less crowded than Bronson's. Invented."
+  },
+  {
+    "id": "land.queue.lima.max",
+    "value": 5,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Longest wait at the Lima window; invented, as land.queue.lima.min."
+  },
+  {
+    "id": "price.flour.winter",
+    "value": 20,
+    "unit": "USD/barrel",
+    "tag": "invented",
+    "note": "A barrel of flour in a winter town (Detroit, Chicago) once the lakes close and nothing comes in by water. Invented: no Detroit winter price is sourced (r3 §7); $20 is the 1836-37 interior scarcity price (History of Calhoun County, round 2)."
+  }
+]

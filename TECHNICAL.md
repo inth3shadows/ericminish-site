@@ -2,7 +2,9 @@
 
 ## Architecture
 
-A hand-written static site with no framework or browser JavaScript. Python
+A hand-written static site with no framework. Browser JavaScript is limited to
+two places, the Frostline map and the game under `games/`, both as plain
+same-origin files with no build step. Python
 helpers generate the writing files and charts; the deploy job refreshes the
 contribution strip before copying the static files to the server.
 
@@ -14,7 +16,7 @@ repo (git)
 ```
 
 Every page is a complete HTML document that repeats the same header, nav, and
-footer markup inline. The site has 27 HTML pages. A nav change requires an
+footer markup inline. The site has 30 HTML pages, three of them the game's. A nav change requires an
 edit across every page; `tools/check-pages.py` fails if one page's nav differs. Python helpers generate the writing index, Atom feed,
 sitemap entries, reading times, charts and contribution strip before deployment;
 visitors receive static HTML and CSS.
@@ -55,18 +57,122 @@ rather than writing new CSS.
 | `tools/check-facts.py` | Consistency check for figures repeated across pages. `tools/facts.json` lists each fact (`id`, `value`, `note`) and the pages that state it, each with a regex with one capture group around the number as written there. Every pattern must match exactly once and equal `value` (commas and `%` ignored, "four" read as 4); otherwise `file: fact-id says X, facts.json says Y`, exit 1. Values are maintained by hand: it catches a page left behind, not a wrong figure. `--list` prints the facts. Run by CI and by the deploy right after `gen-writing.py --check`, so a mismatch blocks the deploy. Tests: `python3 -m unittest tools/test_check_facts.py`. |
 | `tools/check-pages.py` | Tag balance on every page, the nav identical everywhere (ignoring `aria-current` and whitespace), and no inline JavaScript: an inline `<script>` other than a JSON data block, or an `on*=` attribute, is a finding because the Content-Security-Policy would block it. Exit 1 on any finding. Run by CI. |
 | `tools/gen-lastmod.py` | Run by the deploy on the exported tree: adds `<lastmod>` to each sitemap entry from the last commit that changed its page. The committed `sitemap.xml` stays undated, so CI's shallow checkout needs no history. Tests: `python3 -m unittest tools/test_gen_lastmod.py`. |
-| `portfolio/frostline/map.js` | The site's only JavaScript: draws the Frostline depth and yield maps from the page's `#grid` JSON block. Kept in a file so the CSP can refuse inline scripts. |
+| `portfolio/frostline/map.js` | The site's JavaScript outside the game: draws the Frostline depth and yield maps from the page's `#grid` JSON block. Kept in a file so the CSP can refuse inline scripts. |
 | `tools/check-live.py` | Reads `/build.txt` from the public site (three tries, 30 s apart) and reports when it is missing, malformed, or older than 26 hours. The deploy writes `build.txt` only after its own post-copy check passes, so a deploy that failed that check is reported too. `--send CMD` mails one alert a day through CMD (the workstation's Brevo sender); a failed send records nothing so the next check retries. Skips while the deploy runs and for 30 minutes after boot. Timer: `tools/systemd/ericminish-live-check.*` (10:00 and 14:00). Tests: `python3 -m unittest tools/test_check_live.py`. |
-| `.github/workflows/check.yml` | CI on every pull request and push to main: `gen-writing.py --check`, `lint-copy.py`, `check-pages.py`, `check-facts.py`, unit tests. No secrets; the GitHub-API checks stay in the deploy. |
+| `.github/workflows/check.yml` | CI on every pull request and push to main: `gen-writing.py --check`, `lint-copy.py`, `check-pages.py`, `check-facts.py`, the Python unit tests, and the game's tests (`node --test games/*/test/*.test.mjs`, on the Node the runner image ships). No secrets; the GitHub-API checks stay in the deploy. |
+| `games/` | Browser games; see [The game](#the-game-games). |
+| `tools/gen-game-art.py`, `tools/game-art-prompts.json` | Generates the game's scene paintings through OpenRouter (`OPENROUTER_API_KEY` from the environment), with a spending cap (`ART_BUDGET`, default $3.50, checked before every call) and a cost log of every billed response, with or without an image. A reply lost after the request went out (cut off, unreadable or timed out) is logged at `ART_CALL_ESTIMATE` (default $0.14), marked `cost_unknown`, and stops the run. `EXTRA_<nn>` adds a note to scene `nn`'s prompt for a retry. Run by hand; the deploy never calls it. Tests: `python3 -m unittest tools/test_gen_game_art.py`. |
 | `tools/regen-deploy.sh` | Daily job (systemd user timer on the workstation, where `gh` is logged in): exports `origin/main`, runs the generator, copies the site into the live root, checks `/` is 200 and dated today, and only then writes `build.txt` naming the deployed commit and time. Host details come from a private environment file. `DRY_RUN=1` shows the diff only. |
 | `assets/site.css` | The entire stylesheet, including the two `@font-face` declarations. |
 | `assets/fonts/newsreader.woff2` | Newsreader, variable. Used for prose — anything argued. |
 | `assets/fonts/azeret-mono.woff2` | Azeret Mono, variable. Used for data and labels — anything measured. |
 | `assets/mark.svg`, `assets/favicon.svg` | Brand mark and favicon. |
 
+## The game (`games/`)
+
+*Michigan Fever, 1836* is a trail game at `/games/michigan-fever/`. It is
+not linked from the site nav (the nav is unchanged) and the page carries
+`noindex`. The pages are `index.html` (the game), `sources/` and `credits/`.
+
+```
+games/
+  package.json            marks the .js files as ES modules for Node; no dependencies
+  engine/                 route-agnostic rules: rng, clock, state, event deck, save, step()
+  engine/test/            node --test unit tests
+  michigan-fever/
+    route.js mechanics/   this route's rules (purse, travel and pace, health and fatigue, land office, letters, home ties and the post, the paths)
+    data/                 numbers.json (every number, tagged src or invented), events.json, text.json, backgrounds.json
+    art/                  13 webp scene paintings at 1920 and 960 wide, and manifest.json
+    ui/                   the browser side: scene, light and weather, synthesised sound, HUD, actions, drive on
+    ui/fonts/             IM FELL English (SIL Open Font License 1.1, licence file beside it)
+    game.css              the game's stylesheet; assets/site.css is not touched
+    test/                 route tests, drive-on tests, the path tests and the tier simulation
+    API.md                the engine interface the UI is built on
+```
+
+- **No build step, CSP-safe.** Every page loads one `<script type="module">`
+  from the site's own files; modules import each other by relative path. There
+  is no inline script, no `on*=` attribute, no `eval`, and no request to
+  another host. Fonts are self-hosted. The game page passes the site's
+  Content-Security-Policy as served.
+- **Engine and UI are split.** The engine has no DOM and never reads the clock,
+  so the same seed and choices give the same game in Node and in the browser.
+  The UI only renders the engine's beats and sends back the player's choice.
+  "Drive on" (`ui/driveon.js`) repeats the one-day travel action and stops at
+  the first thing that needs the player; its tests check it against pressing
+  the action day by day.
+- **Depth systems (P2 Phase A).** The family's own wagon travels at a pace
+  (steady, hard, grueling) sent as a parameter of the travel action; it pays
+  only on good road. Each person and the team carry fatigue, which raises the
+  odds of illness, quarrels, injuries and a lame or lost ox from the first
+  point (a continuous curve, steep past 40), slows a worn team on every road
+  (never below half its fresh pace, and never past the swamp road's or the
+  forest track's own pace), and falls with rest, a roof and a kept Sabbath. A
+  team that goes short an ox can buy a fresh yoke at the end of every leg it
+  drives that has road after it (not at the claim). A day that crosses into a
+  new segment runs the rest of the day at that segment's own pace, and pays
+  the swamp road's tolls on the miles it spends there; the split never runs a
+  negative piece or more than one day's travel. Miles an event gains stop at
+  the next place, and miles it loses go back no further than the last place
+  passed, so the leg's and the segment's miles move together. The engine has a `schedule` effect: a choice can queue a later
+  consequence (after some days, or on reaching a place), kept in
+  `state.queue`. At most one queued consequence fires in a step and one random
+  event a day; every consequence waiting for a town fires while the family is
+  there, one a step (leaving meets the next one first), and troubles of a sold
+  or replaced team or wagon are dropped. Each family draws two or three ties at home (a
+  parent's keep, a note of hand, a mortgage, a sweetheart, a store account, a
+  subscription; every size invented). Letters from home wait at the post
+  offices at postage by the 1825 distance bands (kept exact; the counter drops
+  an odd half cent), and money goes home in notes cut in halves; it settles a
+  tie only if it reaches home by the tie's date (halves a mail later than whole
+  notes). Money sent by mail shows as sent until a letter says whether it came.
+  A save with a malformed queue (including an `unless` that fails the deck's
+  condition check), ties, letters or fatigue is refused as damaged.
+- **Paths and tiers (P2 Phase B).** Halfway the family can change course,
+  one way, each through a confirm: winter in Detroit for wages (land in coin
+  in the spring of 1837), the Chicago lot boom, settling in Ohio at the Lima
+  land office, turning back for home, or joining kin settled west (by a letter
+  at a post office). Each path is one to three compact legs on the shared
+  mechanics (`mechanics/paths.js`), with its own ending and a sourced
+  epilogue; new places reuse the paintings through `SCENE_FALLBACK` in
+  `route.js`. Every ending reports a tier (0 failed, 1 arrived, 2 full win),
+  shown on the ending screen in words; each path has its own "lost" and
+  "stranded" endings. Dated news (the Detroit suspension, 16 May 1837) stops
+  any multi-day advance on its day (a winter week, grief days, a wagon
+  repair). Chicago money is Illinois paper, which falls with the Illinois
+  banks (29 May 1837), not Detroit's. The route is at version 3, so P1 and
+  Phase A saves are refused cleanly ("old route version"); a version 3 save
+  from before Illinois paper loads with none.
+  The interface is in `games/michigan-fever/API.md`.
+- **Tests.** `node --test games/*/test/*.test.mjs` runs the engine units, the
+  route rules, the drive-on checks, the depth systems (`test/depth.test.mjs`),
+  the paths (`test/paths.test.mjs`), the review regressions
+  (`test/regressions.test.mjs`, `test/review-pb.test.mjs`,
+  `test/review-pc.test.mjs`), the pace trade-off
+  (`test/pace-*.test.mjs`: pushing grueling while under 40 or 45 fatigue must
+  not beat a steady pace, and grueling everywhere must lose clearly), and the
+  tier simulation (`test/tiers-main.test.mjs`, `test/tiers-paths.test.mjs`),
+  which prints the tier table per strategy and holds the bands: careful play
+  on the main route a full win in 35-45 percent of 1,500 games and arriving in
+  at least 90; careless play a full win in at most 5 and arriving in at most
+  75; random play about 0; each path's careful player a full win in 15-50
+  percent of the games that took the path, and the Chicago lot held into 1837
+  never. It also prints two careless variants (the deck passage, a steady
+  pace), not asserted: careless play fails to arrive mainly through the swamp
+  crawl, so its "at most 75 percent" band is fragile. CI runs it.
+- **Saving.** One autosave in `localStorage`, wrapped so private mode or blocked
+  storage only loses the save.
+- **Pictures.** The scene paintings are AI-generated (Gemini 3 Pro Image, via
+  `tools/gen-game-art.py`) in the style of 1830s American landscape painting.
+  Each scene carries a small "AI-generated illustration" label and the Credits
+  page says so. `art/manifest.json` records each image's prompt, the number of
+  attempts and a review note.
+- **History.** Each event has a note with its source. The Sources page is built
+  in the browser from the data files, so it lists what the game uses now.
+
 ## API Integrations
 
-None. The site makes no outbound requests at runtime and has no backend, no
+None. The site makes no outbound requests at runtime (the game included) and has no backend, no
 forms, and no analytics. The web server sends a Content-Security-Policy that allows scripts, styles, fonts and images only from the site itself (inline `style=` attributes are allowed), plus HSTS, `nosniff`, a referrer policy and a permissions policy; the Caddyfile is on the host, not in this repo. Contact happens through a `mailto:` link.
 
 ## Configuration

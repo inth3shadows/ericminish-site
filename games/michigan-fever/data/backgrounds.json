@@ -1,0 +1,201 @@
+[
+  {
+    "id": "vermont",
+    "label": "Hill farmer from Vermont",
+    "blurb": "You sold the worn-out hill farm, and most of the price came in Vermont bank notes. You have a yoke of oxen, a wagon, and six in the family.",
+    "surname": "Hale",
+    "kin": {
+      "name": "Brother Joel",
+      "salutation": "Dear Brother"
+    },
+    "team": "oxen",
+    "skills": [],
+    "party": [
+      {
+        "id": "p1",
+        "name": "Asa",
+        "age": 41,
+        "role": "father",
+        "sex": "m"
+      },
+      {
+        "id": "p2",
+        "name": "Lydia",
+        "age": 38,
+        "role": "mother",
+        "sex": "f"
+      },
+      {
+        "id": "p3",
+        "name": "Eli",
+        "age": 16,
+        "role": "son",
+        "sex": "m"
+      },
+      {
+        "id": "p4",
+        "name": "Sarah",
+        "age": 12,
+        "role": "daughter",
+        "sex": "f"
+      },
+      {
+        "id": "p5",
+        "name": "Thomas",
+        "age": 8,
+        "role": "son",
+        "sex": "m"
+      },
+      {
+        "id": "p6",
+        "name": "Ruth",
+        "age": 4,
+        "role": "daughter",
+        "sex": "f"
+      }
+    ],
+    "purse": {
+      "coin": "#bg.vt.coin",
+      "notes": {
+        "ne": "#bg.vt.ne",
+        "ny": "#bg.vt.ny"
+      }
+    },
+    "food": "#bg.vt.food",
+    "goods": "#bg.vt.goods",
+    "departure": "Before light {family} load the last of the household goods, yoke the oxen, and turn the wagon west for Albany.",
+    "ties": {
+      "parent": "#tie.w.often",
+      "note": "#tie.w.often",
+      "mortgage": "#tie.w.some",
+      "sweetheart": "#tie.w.some",
+      "store": "#tie.w.often",
+      "subscription": "#tie.w.some"
+    }
+  },
+  {
+    "id": "connecticut",
+    "label": "Blacksmith from Connecticut",
+    "blurb": "You sold the shop and the house. You carry more coin than most, a horse and a light wagon, your tools, and a family of four. You can mend a wagon yourself, good tools make the cabin go up faster, and a smith can earn good wages in the West.",
+    "surname": "Porter",
+    "kin": {
+      "name": "Sister Esther",
+      "salutation": "Dear Sister"
+    },
+    "team": "horse",
+    "skills": [
+      "repair",
+      "tools"
+    ],
+    "party": [
+      {
+        "id": "p1",
+        "name": "Josiah",
+        "age": 34,
+        "role": "father",
+        "sex": "m"
+      },
+      {
+        "id": "p2",
+        "name": "Hannah",
+        "age": 31,
+        "role": "mother",
+        "sex": "f"
+      },
+      {
+        "id": "p3",
+        "name": "Daniel",
+        "age": 10,
+        "role": "son",
+        "sex": "m"
+      },
+      {
+        "id": "p4",
+        "name": "Abigail",
+        "age": 6,
+        "role": "daughter",
+        "sex": "f"
+      }
+    ],
+    "purse": {
+      "coin": "#bg.ct.coin",
+      "notes": {
+        "ne": "#bg.ct.ne",
+        "ny": "#bg.ct.ny"
+      }
+    },
+    "food": "#bg.ct.food",
+    "goods": "#bg.ct.goods",
+    "departure": "{Family} close the shop door for the last time, hitch the horse, and drive north and west toward the Albany road.",
+    "ties": {
+      "parent": "#tie.w.some",
+      "note": "#tie.w.rare",
+      "mortgage": "#tie.w.some",
+      "sweetheart": "#tie.w.some",
+      "store": "#tie.w.some",
+      "subscription": "#tie.w.often"
+    }
+  },
+  {
+    "id": "widow",
+    "label": "Widow with grown sons",
+    "blurb": "Since your husband died the farm has not paid. There is little money, but your two grown sons can clear land faster than any hired man, and your daughter is nearly grown.",
+    "surname": "Wheeler",
+    "kin": {
+      "name": "Brother Silas",
+      "salutation": "Dear Brother"
+    },
+    "team": "oxen",
+    "skills": [
+      "clearing"
+    ],
+    "party": [
+      {
+        "id": "p1",
+        "name": "Martha",
+        "age": 48,
+        "role": "mother",
+        "sex": "f"
+      },
+      {
+        "id": "p2",
+        "name": "Caleb",
+        "age": 23,
+        "role": "son",
+        "sex": "m"
+      },
+      {
+        "id": "p3",
+        "name": "Amos",
+        "age": 20,
+        "role": "son",
+        "sex": "m"
+      },
+      {
+        "id": "p4",
+        "name": "Polly",
+        "age": 15,
+        "role": "daughter",
+        "sex": "f"
+      }
+    ],
+    "purse": {
+      "coin": "#bg.widow.coin",
+      "notes": {
+        "ne": "#bg.widow.ne",
+        "ny": "#bg.widow.ny"
+      }
+    },
+    "food": "#bg.widow.food",
+    "goods": "#bg.widow.goods",
+    "departure": "{Family} leave the farm to the new owner, and the boys walk beside the oxen as the wagon starts down the hill road toward Albany.",
+    "ties": {
+      "parent": "#tie.w.rare",
+      "note": "#tie.w.some",
+      "mortgage": "#tie.w.often",
+      "sweetheart": "#tie.w.often",
+      "store": "#tie.w.often",
+      "subscription": "#tie.w.rare"
+    }
+  }
+]
