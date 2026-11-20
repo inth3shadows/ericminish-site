@@ -111,7 +111,10 @@ games/
   team that goes short an ox can buy a fresh yoke at the end of every leg it
   drives that has road after it (not at the claim). A day that crosses into a
   new segment runs the rest of the day at that segment's own pace, and pays
-  the swamp road's tolls on the miles it spends there. The engine has a `schedule` effect: a choice can queue a later
+  the swamp road's tolls on the miles it spends there; the split never runs a
+  negative piece or more than one day's travel. Miles an event gains stop at
+  the next place, and miles it loses go back no further than the last place
+  passed, so the leg's and the segment's miles move together. The engine has a `schedule` effect: a choice can queue a later
   consequence (after some days, or on reaching a place), kept in
   `state.queue`. At most one queued consequence fires in a step and one random
   event a day; every consequence waiting for a town fires while the family is
@@ -147,7 +150,9 @@ games/
   at least 90; careless play a full win in at most 5 and arriving in at most
   75; random play about 0; each path's careful player a full win in 15-50
   percent of the games that took the path, and the Chicago lot held into 1837
-  never. CI runs it.
+  never. It also prints two careless variants (the deck passage, a steady
+  pace), not asserted: careless play fails to arrive mainly through the swamp
+  crawl, so its "at most 75 percent" band is fragile. CI runs it.
 - **Saving.** One autosave in `localStorage`, wrapped so private mode or blocked
   storage only loses the save.
 - **Pictures.** The scene paintings are AI-generated (Gemini 3 Pro Image, via

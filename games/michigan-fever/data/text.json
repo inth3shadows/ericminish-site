@@ -624,6 +624,7 @@
       "label": "Turning back",
       "fromBronson": "First the Territorial Road back to Detroit, then passage east from there.",
       "early": "Deck passage to Buffalo, the line boat to Albany and the hill road home: about {days} days.",
+      "fromBuffalo": "The line boat to Albany and the hill road home: about {days} days.",
       "late": "The lakes are closing: the winter stage to Buffalo, then the canal and the hill road, about {days} days.",
       "passage": "You pay the fares east. It is about {days} days home by boat, canal and road.",
       "startBronson": "You turn the wagon round and take the Territorial Road back toward Detroit.",

@@ -244,7 +244,8 @@ function travelActions(ctx) {
     else out.push({ id: "repair:slow", type: "repair", label: `Mend the wagon as best you can (${ctx.num("wagon.repairDays")} days)`, days: ctx.num("wagon.repairDays"), forward: true });
   } else {
     const paced = T.ownPace(s) && s.vars.pace !== "steady" ? ` (${PACE_LABEL[s.vars.pace]} pace)` : "";
-    const label = { wagon: `Drive on for the day${paced}`, canal: "Another day on the canal", steamer: "Another day on the lake", stage: "Another day on the stage" }[leg.mode];
+    const label = { wagon: `Drive on for the day${paced}`, canal: "Another day on the canal", steamer: "Another day on the lake", stage: "Another day on the stage",
+      passage: "Another day on the way home" }[leg.mode] ?? "Travel on for the day";
     const paces = paceOptions(ctx);
     out.push({ id: "go", type: "travel", label, days: 1, forward: true, ...(paces ? { pace: s.vars.pace, paces } : {}) });
   }
@@ -397,8 +398,11 @@ function pivotVars(ctx, which) {
       const fare = cost ? `A teamster back to Detroit costs ${P.money(cost)}.` : s.gear.team ? "Your own wagon takes you back to Detroit." : "Your teamster will take you back to Detroit.";
       return { cost: P.money(cost), costUsd: cost / 100, fare, way: ctx.route.data.text.paths.home.fromBronson };
     }
+    // From Buffalo the way home is the canal and the road only (PB4); from Detroit the lake
+    // (or, once the lakes close, the winter stage) comes first.
     const way = Pa.passage(s, num, s.place, units);
-    return { cost: P.money(way.cost), costUsd: way.cost / 100, fare: `The fares come to ${P.money(way.cost)}.`, way: ctx.text(ctx.route.data.text.paths.home[way.lateLake ? "late" : "early"], { days: way.days }) };
+    const words = s.place === "buffalo" ? "fromBuffalo" : way.lateLake ? "late" : "early";
+    return { cost: P.money(way.cost), costUsd: way.cost / 100, fare: `The fares come to ${P.money(way.cost)}.`, way: ctx.text(ctx.route.data.text.paths.home[words], { days: way.days }) };
   }
   return {};
 }
@@ -426,8 +430,10 @@ function startPath(ctx, spec) {
       s.vars.visit = { place: s.place, used: {}, since: s.day };
       ctx.emit({ type: "scene", scene: "winter-detroit" });
       ctx.emit({ type: "narrate", text: ctx.text(W.detroit.start) });
-      // The news of the New York suspension comes by the morning boat the day before Detroit's banks stop.
-      ctx.schedule({ event: "win-suspension-news", in: Math.max(1, diffDays(s.date, addDays(num("bank.suspend.detroit"), -1))) });
+      // The news of the New York suspension comes by the morning boat the day before Detroit's banks stop
+      // (16 May). A winter week that reaches that day ends there (winterWeek, PB1); news held up past
+      // the suspension itself is dropped rather than told late.
+      ctx.schedule({ event: SUSPENSION_NEWS, in: Math.max(1, diffDays(s.date, addDays(num("bank.suspend.detroit"), -1))), unless: { onOrAfter: "#bank.suspend.detroit" } });
       return;
     case "chicago":
       if (via === "stage") {
@@ -482,9 +488,16 @@ function startPassage(ctx) {
   ctx.emit({ type: "narrate", text: ctx.text(ctx.route.data.text.paths.home.passage, { days: way.days }) });
 }
 
+// The Detroit winter's one dated piece of news (PB1): it must reach the family on its
+// own day, the eve of the suspension, though the winter goes by the week.
+const SUSPENSION_NEWS = "win-suspension-news";
+const newsDue = (s, num) => compare(s.date, num("bank.suspend.detroit")) < 0
+  && (s.queue ?? []).some((q) => q.event === SUSPENSION_NEWS && q.due != null && s.day >= q.due);
+
 // A week in a winter town (Detroit, or Chicago through the lull): a room by
 // the night if it can be paid for, the food, and work by the day if wanted
-// and found. Sundays are rest days.
+// and found. Sundays are rest days. The week ends early on the day the
+// suspension news comes due, so it is told that day and not a week late.
 function winterWeek(ctx, working) {
   const { state: s, num } = ctx;
   const kind = s.place === "chicago" ? "mi" : NOTE_KIND[s.place] ?? "mi";
@@ -502,6 +515,7 @@ function winterWeek(ctx, working) {
     passDay(ctx, labour ? { kind: "work", lodged, crowded: true } : { kind: "rest", resting: true, lodged, crowded: true });
     if (s.over) return;
     if (wage > 0) { P.receive(s, kind, wage); earned += wage; }
+    if (newsDue(s, num)) break;
   }
   const W = ctx.route.data.text.paths.winter;
   if (working) ctx.emit({ type: "narrate", text: earned > 0 ? ctx.text(W.earned, { amount: P.money(earned), paper: s.place === "chicago" ? W.westernPaper : P.REGION_LABEL[kind] }) : ctx.text(W.noWork) });
@@ -986,8 +1000,9 @@ function act(ctx, a, params) {
     case "farm": {
       const acres = Number(arg);
       const cost = L.landCost(num, acres);
+      const face = P.noteFace(s);
       if (!P.payLand(s, num, cost, { useNotes: true, tender: P.landTender(s, num, acres, false, L.beforeDeadline(s, num)) })) return;
-      L.settle(ctx, { id: "chi", kind: "prairie", poor: false, known: true, miles: num("farm.chicago.miles"), via: "chicago" }, acres);
+      L.settle(ctx, { id: "chi", kind: "prairie", poor: false, known: true, miles: num("farm.chicago.miles"), via: "chicago" }, acres, P.noteFace(s) === face);
       ctx.emit({ type: "narrate", text: `The Receiver counts out ${P.money(cost)} and writes your receipt for ${acres} acres of prairie.`, cue: "receipt" });
       T.startLeg(ctx, "claim");
       if (!s.gear.team && !s.gear.teamster) s.gear.teamster = true;
@@ -1340,11 +1355,8 @@ const effects = {
     g.wagonCond = Math.max(0, Math.min(ctx.num("wagon.max"), g.wagonCond + resolve(amount, ctx, vars)));
     if (g.wagonCond <= 0) ctx.emit({ type: "narrate", text: "The wagon is broken down and will not roll.", cue: "broken" });
   },
-  progress: (miles, ctx, vars) => {
-    const v = ctx.state.vars;
-    v.segMi = Math.max(0, v.segMi + resolve(miles, ctx, vars));
-    v.legMi = Math.max(0, v.legMi + resolve(miles, ctx, vars));
-  },
+  // Miles gained or lost on the road: segMi and legMi move together (PB5, PB7; travel.js shift).
+  progress: (miles, ctx, vars) => { T.shift(ctx.state, ctx.num, resolve(miles, ctx, vars)); },
   candidate: (via, ctx) => { L.addCandidate(ctx, via); },
   queue: (days, ctx, vars) => { const l = ctx.state.land; if (l.applied && !l.ready) l.queue = Math.max(1, l.queue + resolve(days, ctx, vars)); },
   shelter: (amount, ctx, vars) => { if (ctx.state.land.paid) L.addShelter(ctx, resolve(amount, ctx, vars)); },
@@ -1352,9 +1364,11 @@ const effects = {
   buyTract: ({ kind, price, acres }, ctx, vars) => {
     const a = resolve(acres, ctx, vars);
     const cost = P.cents(resolve(price, ctx, vars) * a);
+    const face = P.noteFace(ctx.state);
     if (!P.pay(ctx.state, ctx.num, cost)) return;
     L.withdraw(ctx);
-    L.settle(ctx, { id: "spec", kind, poor: false, known: true, miles: ctx.num("mi.claimMin"), via: "speculator" }, a);
+    // The speculator takes paper first (P.pay); whether any went is recorded (PB6).
+    L.settle(ctx, { id: "spec", kind, poor: false, known: true, miles: ctx.num("mi.claimMin"), via: "speculator" }, a, P.noteFace(ctx.state) === face);
     ctx.emit({ type: "narrate", text: `You pay ${P.money(cost)} and take the speculator's deed for ${a} acres.` });
   },
   morale: (amount, ctx, vars) => addRes(ctx, "morale", resolve(amount, ctx, vars)),
@@ -1419,8 +1433,10 @@ const effects = {
   kinSettle: (how, ctx) => {
     const s = ctx.state;
     if (how === "land") {
+      const face = P.noteFace(s);
       if (!P.pay(s, ctx.num, Pa.kinLandCost(ctx.num))) return;
       s.land.paid = true;
+      s.land.coin = P.noteFace(s) === face;
       s.land.acres = ctx.num("land.acres.small");
       s.flags.kinLand = true;
     }
@@ -1448,12 +1464,16 @@ const effects = {
     if (M.payTieHere(ctx, id)) ctx.emit({ type: "narrate", text: `You pay ${P.money(M.tieOf(ctx.state, id).amount)} and take a receipt.` });
   },
   // Sell notes for coin at a flat rate of face value: from "ne", "ny", "mi" or "eastern" (ne + ny).
+  // Never above what the notes pass for here today (PB1): a flat rate set for one day
+  // cannot pay more than the going value once the notes have fallen.
   exchange: ({ from, rate, cap }, ctx, vars) => {
     const s = ctx.state;
-    const r = resolve(rate, ctx, vars);
+    const zone = P.zoneOf(s, ctx.num);
     let room = P.cents(resolve(cap, ctx, vars));
     let coin = 0;
     for (const region of from === "eastern" ? ["ne", "ny"] : [from]) {
+      const r = Math.min(resolve(rate, ctx, vars), 1 - P.discount(region, zone, ctx.num, s));
+      if (r <= 0) continue;
       const get = Math.min(room, Math.floor(s.purse.notes[region] * r));
       const face = Math.min(s.purse.notes[region], Math.ceil(get / r));
       s.purse.notes[region] -= face;
@@ -1641,7 +1661,8 @@ function readable(route, s) {
   if (!isNum(s.gear.fatigue ?? 0)) return false;
   if (!T.PACES.includes(s.vars.pace ?? "steady")) return false;
   const tieOk = (t) => isObj(t) && M.TIE_IDS.includes(t.id) && Number.isInteger(t.amount) && Number.isInteger(t.sent)
-    && M.TIE_STATUSES.includes(t.status) && (t.outcome === null || typeof t.outcome === "string");
+    && M.TIE_STATUSES.includes(t.status) && (t.outcome === null || typeof t.outcome === "string")
+    && (t.inTime === undefined || typeof t.inTime === "boolean");
   if (!s.ties.every(tieOk)) return false;
   const mailOk = (m) => isObj(m) && typeof m.id === "string" && typeof m.key === "string" && M.POST_OFFICES.includes(m.office)
     && isDate(m.from) && (m.written === undefined || isDate(m.written)) && Number.isInteger(m.sheets) && m.sheets >= 1

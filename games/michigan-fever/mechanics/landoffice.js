@@ -111,16 +111,19 @@ export function pay(ctx, useNotes) {
   const land = state.land;
   const { acres, cand } = land.applied;
   const cost = landCost(num, acres);
+  const face = P.noteFace(state);
   const ok = P.payLand(state, num, cost, { useNotes, tender: tenderFor(state, num, acres) });
   if (!ok) return false;
-  settle(ctx, land.candidates.find((c) => c.id === cand), acres);
+  settle(ctx, land.candidates.find((c) => c.id === cand), acres, P.noteFace(state) === face);
   ctx.emit({ type: "narrate", text: `The Receiver counts out ${P.money(cost)} and writes your receipt for ${acres} acres.`, cue: "receipt" });
   return true;
 }
 
-export function settle(ctx, tract, acres) {
+// `coin`: the land was paid for wholly in coin, no paper (the Detroit path's tier 2, PB6).
+export function settle(ctx, tract, acres, coin) {
   const land = ctx.state.land;
   land.paid = true;
+  land.coin = coin === true;
   land.acres = acres;
   land.tract = tract;
   land.claimMiles = tract.miles;

@@ -101,6 +101,12 @@ export function arrange(actions, { pace = null } = {}) {
   return out;
 }
 
+// A button's words: the action's label, or a plain fallback, never "undefined" (PB3).
+export function choiceLabel(it) {
+  const label = typeof it?.label === "string" && it.label.trim() ? it.label : it?.group ? "More" : "Go on";
+  return label + (it?.group ? "\u00a0…" : "");
+}
+
 // Render a list (top level or an opened group) into `box`. Returns the
 // buttons in key order (1..9), plus the Back button if this is a group.
 export function render(box, items, { onPick, onOpen, onBack, title }) {
@@ -119,7 +125,7 @@ export function render(box, items, { onPick, onOpen, onBack, title }) {
       "aria-pressed": it.setPace ? String(Boolean(it.selected)) : null,
     });
     const keyHint = n <= 9 ? el("span", { class: "mf-key", "aria-hidden": "true" }, String(n)) : null;
-    const text = el("span", { class: "mf-choice-text" }, el("span", { class: "mf-choice-label" }, it.label + (it.group ? "\u00a0…" : "")));
+    const text = el("span", { class: "mf-choice-text" }, el("span", { class: "mf-choice-label" }, choiceLabel(it)));
     const sub = it.enabled === false ? it.reason : it.detail;
     if (sub) text.append(el("span", { class: "mf-choice-sub" }, sub));
     b.append(...[keyHint, text].filter(Boolean));

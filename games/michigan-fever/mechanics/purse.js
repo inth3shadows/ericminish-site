@@ -75,6 +75,9 @@ export function pay(state, num, amount, { coinOnly = false } = {}) {
   return true;
 }
 
+// The face value of all the paper in the purse (to tell whether a payment took any).
+export const noteFace = (state) => REGIONS.reduce((a, r) => a + state.purse.notes[r], 0);
+
 export function canPay(state, num, amount, opts = {}) {
   return (opts.coinOnly ? state.purse.coin : valueHere(state, num)) >= amount;
 }

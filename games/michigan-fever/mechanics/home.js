@@ -24,8 +24,10 @@ const formatDay = (iso) => format(iso, { weekday: false }).replace(/ \d{4}$/, ""
 export const TIE_IDS = ["parent", "note", "mortgage", "sweetheart", "store", "subscription"];
 export const POST_OFFICES = ["albany", "buffalo", "perrysburg", "detroit", "bronson"];
 export const TIE_STATUSES = ["open", "sent", "settled", "lost"];
-// Outcomes that are bad news when they reach the family.
-export const BAD = new Set(["died", "managing", "pressed", "sued", "married", "posted", "named"]);
+// Outcomes that are bad news when they reach the family (a parent who died cared
+// for, "passed", is still hard news). Morale only: the home path's tier 2 rests on
+// what the family did, not on how it fell out at home (PB2; paths.js tierOf).
+export const BAD = new Set(["died", "passed", "managing", "pressed", "sued", "married", "posted", "named"]);
 
 // Miles from home to each office as the mail ran, from the route's own distances.
 const PATH = {
@@ -372,7 +374,8 @@ function roll(ctx, t) {
   const { state, num, rng } = ctx;
   const paid = t.status === "settled";
   switch (t.id) {
-    case "parent": return rng.chance(num(paid ? "tie.parent.dieP.paid" : "tie.parent.dieP.unpaid")) ? "died" : paid ? "cared" : "managing";
+    // Paid: "passed" (died, cared for to the end) or "cared"; unpaid: "died" (the keep not paid) or "managing".
+    case "parent": return rng.chance(num(paid ? "tie.parent.dieP.paid" : "tie.parent.dieP.unpaid")) ? (paid ? "passed" : "died") : paid ? "cared" : "managing";
     case "note": return paid ? "repaid" : rng.chance(num("tie.note.pressP")) ? "pressed" : "waiting";
     case "mortgage": return paid ? "cleared" : rng.chance(num("tie.mortgage.sueP")) ? "sued" : "extended";
     case "store": return paid ? "cleared" : rng.chance(num("tie.store.postP")) ? "posted" : "patient";
@@ -386,11 +389,20 @@ function roll(ctx, t) {
 }
 
 // The daily tick: a tie whose date has come turns out one way or the other.
+// t.inTime records whether the money was home by then (PB2): what the family did,
+// which a payment made after the date (on coming home) does not change.
 export function resolveTies(ctx) {
   for (const t of ctx.state.ties ?? []) {
-    if (t.outcome == null && compare(ctx.state.date, ctx.num(`tie.${t.id}.due`)) >= 0) t.outcome = roll(ctx, t);
+    if (t.outcome == null && compare(ctx.state.date, ctx.num(`tie.${t.id}.due`)) >= 0) {
+      t.inTime = t.status === "settled";
+      t.outcome = roll(ctx, t);
+    }
   }
 }
+
+// Seen to in time (PB2): settled, and settled before its date came (or its date
+// has not come yet). The outcome's luck at home does not enter into it.
+export const seenToInTime = (t) => t.status === "settled" && (t.outcome == null || t.inTime === true);
 
 // ---- the HUD and the ending ----------------------------------------------
 

@@ -11,6 +11,11 @@ import { decisionSpread, tierRow } from "./tiers.mjs";
 const rows = {};
 console.log("\nTier table, main route (tier >=1 is arrived or better; tier 2 is the full win)");
 for (const [name, n] of [["careful", 1500], ["careless", 500], ["randomMain", 500], ["sendsHome", 500]]) rows[name] = tierRow(name, n);
+// For information only, not asserted (round 8): the careless tier-1 band (at most 75 percent)
+// holds only through the swamp crawl. Careless with the deck passage, or at a steady pace,
+// arrives far more often; the next reader should see how fragile that band is.
+console.log("careless variants (printed, not asserted):");
+for (const name of ["carelessDeck", "carelessSteady"]) tierRow(name, 200);
 
 test("main route, careful: tier 2 (land, a roof before winter, no deaths) in 35-45 percent of 1,500 games", () => {
   const { t } = rows.careful;

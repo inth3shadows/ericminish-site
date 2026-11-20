@@ -425,4 +425,16 @@ export function sendsHome(route, state, acts, ctx) {
   return sendHomePick(route, state, acts, ctx, 15000) ?? cautious(route, state, acts, ctx);
 }
 
-Object.assign(STRATEGIES, { careful, careless, randomMain, holdLot, carefulDetroit, carefulChicago, carefulOhio, carefulHome, carefulKin, sendsHome });
+// Careless variants, printed (not asserted) beside the careless row, to show how fragile its
+// tier-1 band is (round 8 note): careless's failures come from the swamp crawl, so taking the
+// deck passage at Buffalo instead, or keeping a steady pace, arrives most of the time.
+export function carelessDeck(route, state, acts, ctx) {
+  if (state.phase === "town" && state.place === "buffalo" && !state.pending && find(acts, "book:deck")) return find(acts, "book:deck");
+  return careless(route, state, acts, ctx);
+}
+export function carelessSteady(route, state, acts, ctx) {
+  const a = careless(route, state, acts, ctx);
+  return a?.id === "go" && a.paces ? { ...a, pace: "steady" } : a;
+}
+
+Object.assign(STRATEGIES, { careful, careless, carelessDeck, carelessSteady, randomMain, holdLot, carefulDetroit, carefulChicago, carefulOhio, carefulHome, carefulKin, sendsHome });

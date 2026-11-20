@@ -11,7 +11,7 @@ import { compare, diffDays } from "../../engine/clock.js";
 import * as P from "./purse.js";
 import { living } from "./health.js";
 import { legMiles } from "./travel.js";
-import { BAD } from "./home.js";
+import { seenToInTime } from "./home.js";
 
 export const PATHS = ["detroit", "chicago", "ohio", "home", "kin"];
 export const KIN_PLACES = { allens: "allens", ohio: "maumee", illinois: "brushhill" };
@@ -41,9 +41,11 @@ export function tierOf(s, num, outcome) {
       return outcome === "settled" && whole ? 2 : 1;
     case "detroit": {
       // Through the winter alive; 40 acres or more bought in coin by June 1837, the family whole.
+      // In coin: the payment took no paper (land.coin, PB6). The Receiver takes only coin
+      // after 15 December, but a speculator takes paper first.
       const through = compare(s.date, num("date.thaw")) >= 0;
       if (!through) return 0;
-      return s.land.paid && s.land.acres >= num("land.acres.small") && whole ? 2 : 1;
+      return s.land.paid && s.land.coin === true && s.land.acres >= num("land.acres.small") && whole ? 2 : 1;
     }
     case "chicago": {
       // Reach Chicago; sell out of the boom before spring (a lot bought, and sold before the
@@ -52,12 +54,14 @@ export function tierOf(s, num, outcome) {
       return soldOut(s, num) && roofed && whole ? 2 : 1;
     }
     case "home": {
-      // Home alive; home before winter, the family whole, and every tie settled in time:
-      // paid (by mail that arrived, in person, or on coming home) before it went wrong at
-      // home. A parent who died unkept, or a co-signer sued, is not put right by paying late.
+      // Home alive; home before winter, the family whole, and every tie seen to in time:
+      // paid (by mail that arrived, in person, or on coming home) by its date. Tier 2 rests
+      // on what the family did (PB2, user ruling 2026-11-20): a tie paid in time counts
+      // whatever came of it at home (a parent who died anyway, a sweetheart who married);
+      // a tie left unpaid, or paid after its date, does not.
       if (!s.vars.homeOn) return 0;
       const beforeWinter = compare(s.vars.homeOn, s.vars.winterDate) < 0;
-      const ties = s.ties.every((t) => t.status === "settled" && !BAD.has(t.outcome));
+      const ties = s.ties.every(seenToInTime);
       return beforeWinter && whole && ties ? 2 : 1;
     }
     case "kin": {

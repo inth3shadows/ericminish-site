@@ -156,6 +156,9 @@ export function dayMiles(ctx, weather, terrain = ctx.state.vars.terrain) {
 // terrain, and the pace only where the road is good). Returns the pieces,
 // [{terrain, miles}], in order; their sum is the day's miles. Only the wagon
 // changes terrain within a day; a boat or the stage is one piece.
+// Robust to a position at or past a segment's end (PB5): miles beyond it count
+// as already into the next segment, so no piece is negative and the pieces'
+// shares of the day never add up to more than one day.
 export function dayRun(ctx, weather) {
   const { state, num } = ctx;
   const leg = LEGS[state.leg];
@@ -163,11 +166,16 @@ export function dayRun(ctx, weather) {
   const out = [];
   let frac = 1;
   let seg = state.vars.seg;
-  let into = state.vars.segMi;
+  let into = Math.max(0, state.vars.segMi);
+  const last = leg.segments.length - 1;
+  while (seg < last && into >= segMiles(state, num, state.leg, seg)) {
+    into -= segMiles(state, num, state.leg, seg);
+    seg += 1;
+  }
   while (frac > 1e-12 && seg < leg.segments.length) {
     const terrain = leg.segments[seg].terrain;
     const full = dayMiles(ctx, weather, terrain);
-    const left = segMiles(state, num, state.leg, seg) - into;
+    const left = Math.max(0, segMiles(state, num, state.leg, seg) - into);
     if (full <= 0 || full * frac <= left || seg === leg.segments.length - 1) {
       out.push({ terrain, miles: full * frac });
       break;
@@ -222,6 +230,19 @@ function weatherMult(ctx, weather) {
 function moraleMult(ctx) {
   const floor = ctx.num("morale.floorMult");
   return floor + (1 - floor) * ((ctx.state.res.morale ?? 0) / 100);
+}
+
+// Miles gained or lost on the leg by an event (the `progress` effect). segMi and
+// legMi move together (PB5, PB7): a gain stops at the next place (an event does
+// not carry the family past a town; the next day's travel arrives there), and a
+// loss goes back no further than the last place passed. Returns the miles moved.
+export function shift(state, num, miles) {
+  if (state.phase !== "travel" || !LEGS[state.leg]) return 0;
+  const len = segMiles(state, num, state.leg, Math.min(state.vars.seg, LEGS[state.leg].segments.length - 1));
+  const d = miles >= 0 ? Math.min(miles, Math.max(0, len - state.vars.segMi)) : Math.max(miles, -state.vars.segMi);
+  state.vars.segMi += d;
+  state.vars.legMi += d;
+  return d;
 }
 
 // Move along the leg. Returns {passed: [place...], done: bool}.
