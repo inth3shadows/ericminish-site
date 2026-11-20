@@ -10,6 +10,7 @@ import * as H from "./mechanics/health.js";
 import * as T from "./mechanics/travel.js";
 import * as L from "./mechanics/landoffice.js";
 import * as M from "./mechanics/home.js";
+import * as Pa from "./mechanics/paths.js";
 
 // Every scene key a "scene" beat can carry, for the UI and art to map to images.
 export const SCENES = {
@@ -29,10 +30,32 @@ export const SCENES = {
   "claim-track": "A wagon track through oak openings out to the claim",
   claim: "The family's own land, untouched trees",
   cabin: "A log cabin going up, neighbours helping",
+  // The alternative paths (P2 Phase B). No new art: each falls back to a scene above (SCENE_FALLBACK).
+  "winter-detroit": "Detroit in winter: a rented room, the river frozen, work by the day",
+  "chicago-road": "The Chicago road west through Michigan: oak openings and prairie",
+  "town-chicago": "Chicago in 1836: land auctions, speculators and emigrants in the street",
+  "lima-road": "A forest track south through the Ohio swamp country to Lima",
+  "lima-office": "The land office at Lima, Ohio",
+  "road-home": "The long way home: the lake, the canal and the hill road east",
+  home: "The hill farm again, the family come back",
+  "kin-farm": "Kin already settled: a cabin and a cleared field",
+};
+
+// New places reuse the paintings: each new scene key stands for one of the
+// scenes above (the UI's art map reads it; no new art, user decision).
+export const SCENE_FALLBACK = {
+  "winter-detroit": "town-detroit",
+  "chicago-road": "territorial-road",
+  "town-chicago": "town-detroit",
+  "lima-road": "claim-track",
+  "lima-office": "land-office",
+  "road-home": "road-vermont",
+  home: "farm",
+  "kin-farm": "claim",
 };
 
 export const ROUTE_ID = "michigan-fever";
-export const ROUTE_VERSION = 2; // 2: P2 Phase A (pace and fatigue, the schedule queue, home ties, letters)
+export const ROUTE_VERSION = 3; // 2: P2 Phase A (pace and fatigue, the schedule queue, home ties, letters); 3: Phase B (the paths, tiers)
 const list = (x) => (Array.isArray(x) ? x : [x]);
 const usd = (ctx, id) => P.cents(ctx.num(id));
 const TOWNS = new Set(["albany", "buffalo", "detroit"]);
@@ -61,6 +84,9 @@ function init(ctx) {
     seg: 0, segMi: 0, legMi: 0, terrain: null, tollMi: 0,
     visit: { place: "home", used: {} }, griefDays: 0, today: null,
     pace: "steady", lettersHome: 0, sendTie: null,
+    // The paths (Phase B): which one (null = the main route), the kin out west,
+    // the Chicago lot, the day home or among kin, and the passage home's days.
+    path: null, west: null, lot: null, homeOn: null, arrivedOn: null, passageDays: 0,
     snowDate: addDays(num("date.snowEarliest"), rng.int(0, spread)),
   });
   // Deep winter closes the season a few days after the first snow, and never later than the year's end.
@@ -95,6 +121,7 @@ function startGame(ctx, bgId, params) {
   s.gear = { team: bg.team, wagon: true, wagonCond: ctx.num("wagon.max"), goods: resolve(bg.goods, ctx), teamster: false, fatigue: 0 };
   // What they leave behind: two or three ties at home, the letters home will write, and the tie events.
   M.drawTies(ctx, bg);
+  Pa.drawWest(ctx, bg);
   M.makeMail(ctx);
   M.scheduleTies(ctx);
   ctx.emit({ type: "narrate", text: ctx.text(bg.departure) });
@@ -138,6 +165,8 @@ function lodgingCost(ctx) {
 }
 
 function flourPrice(ctx) {
+  // A winter town (Detroit or Chicago on a path) after the lakes close: the scarcity price.
+  if (["winter", "lots"].includes(ctx.state.phase) && compare(ctx.state.date, ctx.num("date.lakeLate")) >= 0) return usd(ctx, "price.flour.winter");
   return usd(ctx, `price.flour.${ctx.state.place === "bronson" ? "bronson" : ctx.state.place === "detroit" ? "detroit" : "east"}`);
 }
 
@@ -302,22 +331,255 @@ function townActions(ctx) {
         out.push(priced(ctx, "stage:winter", "board", `Take the winter stage to Detroit (${P.money(fare)})`, fare, { forward: true, detail: `About ${ctx.num("stage.days")} days by road, with the late boats taking their chances on the lake.` }));
       }
     }
+  } else if (s.place === "detroit" && s.vars.path === "home") {
+    // Turning back: the passage east from here (the lake or the winter stage, the canal, the hill road).
+    const way = Pa.passage(s, ctx.num, "detroit", fareUnits(ctx));
+    out.push(priced(ctx, "passage", "board", `Take passage home (${P.money(way.cost)}, about ${way.days} days)`, way.cost, { forward: true, detail: way.lateLake ? "The lakes are closing: the winter stage to Buffalo, then the canal and the road." : "Deck passage to Buffalo, the line boat to Albany, then the road." }));
   } else if (s.place === "detroit") {
     if (!s.gear.team && !s.gear.teamster) {
       out.push(priced(ctx, "buy-team", "buy", `Buy a yoke of oxen and a wagon (${P.money(teamPrice(ctx))})`, teamPrice(ctx), { forward: true }));
       out.push(priced(ctx, "hire-teamster", "buy", `Hire a teamster to carry you and your goods west (${P.money(usd(ctx, "price.teamster"))})`, usd(ctx, "price.teamster"), { forward: true }));
     }
     const ready = Boolean(s.gear.team || s.gear.teamster);
-    out.push({ id: "set-out", type: "travel", label: "Set out on the Territorial Road", forward: true, enabled: ready, reason: ready ? undefined : "You need a team or a teamster first." });
+    out.push({ id: "set-out", type: "travel", label: setOutLabel(s), forward: true, enabled: ready, reason: ready ? undefined : "You need a team or a teamster first." });
   }
   yokeAction(ctx, out);
+  pivotActions(ctx, out);
   commonTownActions(ctx, out);
   return out;
 }
 
+// Where "set out" from Detroit goes: the Territorial Road, or a path's own road.
+function setOutLeg(s) {
+  if (s.vars.path === "chicago") return "chicagoRoad";
+  if (s.vars.path === "kin") return Pa.KIN_LEG[s.vars.west.where];
+  return "road";
+}
+
+function setOutLabel(s) {
+  const leg = setOutLeg(s);
+  if (leg === "road") return "Set out on the Territorial Road";
+  if (leg === "chicagoRoad") return "Set out on the Chicago road";
+  return `Set out for ${T.PLACES[Pa.kinPlace(s)]}`;
+}
+
+// ---- the paths (P2 Phase B) ---------------------------------------------------
+
+// The pivots on offer here. Each opens its own confirm (an event, decline
+// first); a pivot is one-way, so none is offered once the family is on a path.
+function pivotActions(ctx, out) {
+  const { state: s, num } = ctx;
+  if (s.vars.path) return;
+  const town = s.phase === "town";
+  if (town && s.place === "detroit" && (compare(s.date, num("path.detroit.offerFrom")) >= 0 || Pa.bronsonUnlikely(s, num))) {
+    out.push({ id: "pivot:detroit", type: "pivot", label: "Stay the winter in Detroit and work for wages", detail: "Land in the spring, in coin. There is no going back from it." });
+  }
+  if (town && (s.place === "detroit" || (s.place === "buffalo" && compare(s.date, num("date.lakeLate")) < 0))) {
+    out.push({ id: "pivot:chicago", type: "pivot", label: "Go on to Chicago, where town lots are selling", detail: s.place === "buffalo" ? "Round the lakes by steamboat." : "By the Chicago road, or the stage." });
+  }
+  if ((town && (s.place === "buffalo" || s.place === "detroit")) || (s.phase === "office" && s.place === "bronson" && !s.land.paid)) {
+    out.push({ id: "pivot:home", type: "pivot", label: "Turn back for home", detail: "Back the way you came, at a cost." });
+  }
+}
+
+// What a pivot's confirm needs to say: the fares and the way.
+function pivotVars(ctx, which) {
+  const { state: s, num } = ctx;
+  const units = fareUnits(ctx);
+  if (which === "chicago") {
+    const stage = Math.round(units * num("fare.stage.chicago") * 100);
+    const lakes = chicagoLakesCost(ctx);
+    return { stage: P.money(stage), stageUsd: stage / 100, lakes: P.money(lakes), lakesUsd: lakes / 100, miles: num("mi.detroitChicago") };
+  }
+  if (which === "home") {
+    if (s.place === "bronson") {
+      const cost = s.gear.team || s.gear.teamster ? 0 : usd(ctx, "price.teamster");
+      const fare = cost ? `A teamster back to Detroit costs ${P.money(cost)}.` : s.gear.team ? "Your own wagon takes you back to Detroit." : "Your teamster will take you back to Detroit.";
+      return { cost: P.money(cost), costUsd: cost / 100, fare, way: ctx.route.data.text.paths.home.fromBronson };
+    }
+    const way = Pa.passage(s, num, s.place, units);
+    return { cost: P.money(way.cost), costUsd: way.cost / 100, fare: `The fares come to ${P.money(way.cost)}.`, way: ctx.text(ctx.route.data.text.paths.home[way.lateLake ? "late" : "early"], { days: way.days }) };
+  }
+  return {};
+}
+
+function chicagoLakesCost(ctx) {
+  const { state: s, num } = ctx;
+  return Math.round(fareUnits(ctx) * num("fare.cabin.chicago") * 100) + P.cents(s.gear.goods * num("freight.chicago.cwt"))
+    + (s.gear.team ? P.cents(num("freight.lake.team") + num("wagon.cwt") * num("freight.chicago.cwt")) : 0);
+}
+
+function maumeeCost(ctx) {
+  const { state: s, num } = ctx;
+  return Math.round(fareUnits(ctx) * num("fare.maumee") * 100) + P.cents(s.gear.goods * num("freight.lake.cwt")) + teamFreight(ctx, "lake");
+}
+
+// The pivot itself (the confirm's "yes"): set the path, then its first leg or phase.
+function startPath(ctx, spec) {
+  const { state: s, num } = ctx;
+  const [id, via] = String(spec).split(":");
+  const W = ctx.route.data.text.paths;
+  s.vars.path = id;
+  switch (id) {
+    case "detroit":
+      s.phase = "winter";
+      s.vars.visit = { place: s.place, used: {}, since: s.day };
+      ctx.emit({ type: "scene", scene: "winter-detroit" });
+      ctx.emit({ type: "narrate", text: ctx.text(W.detroit.start) });
+      // The news of the New York suspension comes by the morning boat the day before Detroit's banks stop.
+      ctx.schedule({ event: "win-suspension-news", in: Math.max(1, diffDays(s.date, addDays(num("bank.suspend.detroit"), -1))) });
+      return;
+    case "chicago":
+      if (via === "stage") {
+        P.pay(s, num, Math.round(fareUnits(ctx) * num("fare.stage.chicago") * 100));
+        s.vars.ticket = null;
+        T.startLeg(ctx, "chicagoStage");
+      } else if (via === "lakes") {
+        P.pay(s, num, chicagoLakesCost(ctx));
+        s.vars.ticket = "cabin";
+        T.startLeg(ctx, "chicagoLakes");
+      }
+      ctx.emit({ type: "narrate", text: ctx.text(W.chicago.start[via]) });
+      return;
+    case "ohio":
+      s.vars.ticket = null;
+      T.startLeg(ctx, "toLima");
+      ctx.emit({ type: "narrate", text: ctx.text(W.ohio.start) });
+      return;
+    case "home":
+      if (s.place === "bronson") {
+        if (!s.gear.team && !s.gear.teamster) {
+          P.pay(s, num, usd(ctx, "price.teamster"));
+          s.gear.teamster = true;
+        }
+        L.withdraw(ctx);
+        T.startLeg(ctx, "backRoad");
+        ctx.emit({ type: "narrate", text: ctx.text(W.home.startBronson) });
+      } else startPassage(ctx);
+      return;
+    case "kin":
+      if (s.vars.west.where === "ohio") {
+        P.pay(s, num, maumeeCost(ctx));
+        s.vars.ticket = "deck";
+        T.startLeg(ctx, "toMaumee");
+      }
+      ctx.emit({ type: "narrate", text: ctx.text(W.kin.start[s.vars.west.where], { name: s.vars.west.name }) });
+      return;
+    default:
+      throw new Error(`unknown path ${spec}`);
+  }
+}
+
+// Turning back from Buffalo or Detroit: one passage home, paid here.
+function startPassage(ctx) {
+  const { state: s, num } = ctx;
+  const way = Pa.passage(s, num, s.place, fareUnits(ctx));
+  P.pay(s, num, way.cost);
+  s.vars.passageDays = way.days;
+  s.vars.ticket = "deck";
+  s.gear.teamster = false;
+  T.startLeg(ctx, "homePassage");
+  ctx.emit({ type: "narrate", text: ctx.text(ctx.route.data.text.paths.home.passage, { days: way.days }) });
+}
+
+// A week in a winter town (Detroit, or Chicago through the lull): a room by
+// the night if it can be paid for, the food, and work by the day if wanted
+// and found. Sundays are rest days.
+function winterWeek(ctx, working) {
+  const { state: s, num } = ctx;
+  const kind = s.place === "chicago" ? "mi" : NOTE_KIND[s.place] ?? "mi";
+  let earned = 0;
+  let cold = 0;
+  for (let d = 0; d < num("winter.weekDays") && !s.over; d++) {
+    const sunday = dayOfWeek(addDays(s.date, 1)) === 0;
+    const lodged = P.pay(s, num, P.cents(num("winter.room")));
+    if (!lodged) cold += 1;
+    const labour = working && !sunday && H.ableAdults(s, num) > 0;
+    const found = labour && ctx.rng.chance(num("winter.findP"));
+    const wage = found ? wageFor(ctx) : 0;
+    // One room for the whole family in a crowded boom town: crowded, for sickness (the
+    // bar-room floors Kirkland describes), whether or not the rent was paid.
+    passDay(ctx, labour ? { kind: "work", lodged, crowded: true } : { kind: "rest", resting: true, lodged, crowded: true });
+    if (s.over) return;
+    if (wage > 0) { P.receive(s, kind, wage); earned += wage; }
+  }
+  const W = ctx.route.data.text.paths.winter;
+  if (working) ctx.emit({ type: "narrate", text: earned > 0 ? ctx.text(W.earned, { amount: P.money(earned), paper: s.place === "chicago" ? W.westernPaper : P.REGION_LABEL[kind] }) : ctx.text(W.noWork) });
+  if (cold) ctx.emit({ type: "narrate", text: ctx.text(W.noRoom, { n: cold === 1 ? "one night" : `${cold} nights` }) });
+  // A new week: the store, the broker and the post office open again.
+  s.vars.visit = { place: s.place, used: {}, since: s.day };
+  if (Pa.lotHeld(s)) s.vars.lot.offer = Pa.rollOffer(ctx);
+  maybeEvent(ctx, "winter", "ev.p.winter");
+}
+
+// The actions of a winter town, a week at a time.
+function winterActions(ctx) {
+  const { state: s, num } = ctx;
+  const out = [];
+  const est = P.cents(num("wage.day")) * H.ableAdults(s, num);
+  if (H.ableAdults(s, num) > 0) out.push({ id: "week:work", type: "work", label: `Work the week by the day (up to ${P.money(wageFor(ctx))} a day)`, days: num("winter.weekDays"), forward: true, detail: `Work is scarcer in winter. The room is ${P.money(P.cents(num("winter.room")))} a night.` });
+  out.push({ id: "week:rest", type: "rest", label: "Keep to the room for the week", days: num("winter.weekDays"), forward: est === 0 });
+  if (s.phase === "winter") {
+    const thawed = compare(s.date, num("date.thaw")) >= 0;
+    const ready = Boolean(s.gear.team || s.gear.teamster);
+    if (!ready && thawed) {
+      out.push(priced(ctx, "buy-team", "buy", `Buy a yoke of oxen and a wagon (${P.money(teamPrice(ctx))})`, teamPrice(ctx), { forward: true }));
+      out.push(priced(ctx, "hire-teamster", "buy", `Hire a teamster to carry you and your goods west (${P.money(usd(ctx, "price.teamster"))})`, usd(ctx, "price.teamster"), { forward: true }));
+    }
+    out.push({ id: "spring", type: "travel", label: "Go west to the land office on the Territorial Road", forward: true, enabled: thawed && ready,
+      reason: !thawed ? "Not before the thaw: the roads open about the first of April." : ready ? undefined : "You need a team or a teamster first." });
+  } else lotActions(ctx, out);
+  winterTownActions(ctx, out);
+  return out;
+}
+
+// Chicago: the lot, its buyers, and government land nine miles out.
+function lotActions(ctx, out) {
+  const { state: s, num } = ctx;
+  const lot = s.vars.lot;
+  if (!lot) {
+    const price = Pa.lotMarket(s, num);
+    const down = Math.round(price * num("lot.down"));
+    out.push(priced(ctx, "lot:cash", "lot", `Buy a town lot for ${P.money(price)}, cash`, price, { detail: "Sell it again before the spring, if a buyer comes." }));
+    out.push(priced(ctx, "lot:credit", "lot", `Buy a town lot on credit: ${P.money(down)} down, a note for the rest at ten per cent`, down, { detail: `The note falls due on 1 May 1837.` }));
+  } else if (Pa.lotHeld(s) && lot.offer) {
+    const owed = Pa.lotOwed(s, num);
+    const short = Math.max(0, owed - lot.offer);
+    const ok = P.canPay(s, num, short);
+    out.push({ id: "lot:sell", type: "lot", label: `Sell the lot to this week's buyer for ${P.money(lot.offer)}`, forward: false, enabled: ok,
+      reason: ok ? undefined : `The note stands at ${P.money(owed)}: you cannot make up the difference.`, detail: owed ? `The note, ${P.money(owed)}, is paid out of the price.` : undefined });
+  }
+  if (!s.land.paid) {
+    for (const sizeId of ["land.acres.small", "land.acres.mid"]) {
+      const acres = num(sizeId);
+      const cost = L.landCost(num, acres);
+      const tender = P.landTender(s, num, acres, false, L.beforeDeadline(s, num));
+      const ok = P.tenderTotal(tender) >= cost;
+      out.push({ id: `farm:${acres}`, type: "apply", label: `Enter ${acres} acres of prairie ${num("farm.chicago.miles")} miles out (${P.money(cost)})`, cost, forward: !Pa.lotHeld(s),
+        enabled: ok, reason: ok ? undefined : L.beforeDeadline(s, num) ? "The Receiver would not take enough of what is in your purse." : "Since 15 December the land office takes only coin." });
+    }
+  }
+}
+
+// The town errands of a winter week: flour, the broker, quinine, the post office.
+function winterTownActions(ctx, out) {
+  const s = ctx.state;
+  if (!has(ctx, "broker") && P.paperValue(s, ctx.num) > 0) {
+    out.push({ id: "broker:coin", type: "broker", label: "Sell paper to a broker for coin", detail: "Brokers pay the going discount here and keep a fee." });
+  }
+  if ((s.vars.visit.used.flour ?? 0) < ctx.num("shop.maxBarrels")) {
+    out.push(priced(ctx, "buy:flour", "buy", `Buy a barrel of flour (${P.money(flourPrice(ctx))})`, flourPrice(ctx)));
+  }
+  if (!has(ctx, "quinine")) out.push(priced(ctx, "buy:quinine", "buy", `Buy a dose of quinine (${P.money(usd(ctx, "price.quinine"))})`, usd(ctx, "price.quinine")));
+  if (POST_TOWNS.has(s.place)) postActions(ctx, out);
+  if (anyAgue(s) && s.res.quinine > 0) out.push({ id: "dose", type: "dose", label: "Give quinine to the sick" });
+}
+
+
 // A team gone short (an ox given out): a fresh yoke makes it up again. Offered
-// wherever a leg the family drives ends (Albany, Buffalo, Detroit, Bronson, the
-// claim), so a team that goes short on any leg can be made whole at its end.
+// wherever a leg the family drives ends and another can start (Albany, Buffalo,
+// Detroit, Bronson), so a team that goes short can be made whole before it pulls
+// again. Not at the claim (L1): no leg starts there.
 function yokeAction(ctx, out, from = "") {
   const s = ctx.state;
   if (!s.gear.team || !s.flags.teamShort) return;
@@ -370,6 +632,7 @@ function officeActions(ctx) {
     out.push({ id: "withdraw", type: "apply", label: "Withdraw your application" });
   }
   out.push({ id: "rest", type: "rest", label: "Rest a day in the tents", days: 1 });
+  pivotActions(ctx, out);
   commonTownActions(ctx, out);
   return out;
 }
@@ -386,7 +649,7 @@ function claimActions(ctx) {
     const cost = provisionsCost(ctx);
     out.push(priced(ctx, "buy:provisions", "buy", `Buy provisions from a neighbour (${P.money(cost)})`, cost));
   }
-  yokeAction(ctx, out, " from a neighbour");
+  // No fresh yoke here (L1): no leg starts at the claim, so a yoke would pull nothing.
   if (anyAgue(s) && s.res.quinine > 0) out.push({ id: "dose", type: "dose", label: "Give quinine to the sick" });
   return out;
 }
@@ -398,6 +661,8 @@ function actions(ctx) {
     case "town": return townActions(ctx);
     case "office": return officeActions(ctx);
     case "claim": return claimActions(ctx);
+    case "winter":
+    case "lots": return winterActions(ctx);
     default: return [];
   }
 }
@@ -468,7 +733,7 @@ function fireQueued(ctx, opts) {
 }
 
 // Actions that leave a town or the land office.
-const LEAVING = new Set(["board", "book", "overland", "stage", "set-out", "go-claim"]);
+const LEAVING = new Set(["board", "book", "overland", "stage", "set-out", "go-claim", "spring", "passage", "farm"]);
 
 function maybeEvent(ctx, deck, pId) {
   // No other event on a day someone died: the family stops to grieve first.
@@ -495,21 +760,37 @@ function arriveTown(ctx, place) {
   s.vars.visit = { place, used: {}, since: s.day };
   s.vars.terrain = null;
   const T0 = ctx.route.data.text;
-  if (place === "bronson") {
-    s.phase = "office";
-    ctx.emit({ type: "scene", scene: "land-office" });
-  } else if (place === "claim") {
-    s.phase = "claim";
-    ctx.emit({ type: "scene", scene: "claim" });
-  } else {
-    s.phase = "town";
-    ctx.emit({ type: "scene", scene: `town-${place}` });
-  }
+  const kin = Object.values(Pa.KIN_PLACES).includes(place);
+  let phase = "town";
+  let scene = `town-${place}`;
+  if (place === "bronson") { phase = "office"; scene = "land-office"; s.flags.reachedBronson = true; }
+  else if (place === "claim") { phase = "claim"; scene = "claim"; }
+  else if (place === "lima") { phase = "office"; scene = "lima-office"; s.flags.reachedLima = true; }
+  else if (place === "chicago") { phase = "lots"; scene = "town-chicago"; s.flags.reachedChicago = true; }
+  else if (kin) { phase = "kin"; scene = "kin-farm"; s.vars.arrivedOn = s.date; }
+  else if (place === "home") { phase = "home"; scene = "home"; s.vars.homeOn = s.date; }
+  s.phase = phase;
+  ctx.emit({ type: "scene", scene });
   ctx.emit({ type: "arrive", place, label: T.PLACES[place], date: s.date, text: T0.arrivals[place] });
   s.vars.ticket = null;
-  s.gear.teamster = place === "bronson" || place === "claim" ? s.gear.teamster : false;
+  s.gear.teamster = ["bronson", "claim", "lima"].includes(place) ? s.gear.teamster : false;
+  // The end of a path's road: the kin's welcome, home again, the Chicago land sales.
+  if (kin) { ctx.startEvent("kin-welcome", kinVars(ctx)); return; }
+  if (place === "home") { ctx.startEvent("home-again", homeVars(ctx)); return; }
   fireQueued(ctx);
+  if (place === "chicago") { ctx.queueEvent("chi-arrive"); return; }
+  if (place === "lima") return;
   ctx.drawEvent("town", { due: false });
+}
+
+function kinVars(ctx) {
+  const s = ctx.state;
+  return { name: s.vars.west.name, kinPlace: T.PLACES[s.place], land: P.money(Pa.kinLandCost(ctx.num)), landUsd: Pa.kinLandCost(ctx.num) / 100 };
+}
+
+function homeVars(ctx) {
+  const owed = Pa.owedAtHome(ctx.state);
+  return { owed: P.money(owed), owedUsd: owed / 100 };
 }
 
 function travelDay(ctx) {
@@ -517,10 +798,14 @@ function travelDay(ctx) {
   const leg = T.LEGS[s.leg];
   const weather = T.rollWeather(ctx);
   ctx.emit({ type: "weather", weather, terrain: s.vars.terrain });
-  const miles = T.dayMiles(ctx, weather);
+  // The day's miles, split where it crosses into a new segment (L2): the rest
+  // of the day runs at the new terrain's own pace, and tolls fall on its swamp miles.
+  const run = T.dayRun(ctx, weather);
+  const miles = run.reduce((a, r) => a + r.miles, 0);
   passDay(ctx, { kind: "travel", ...boatDay(s) });
   if (s.over) return;
-  if (s.vars.terrain === "swamp") tolls(ctx, miles);
+  const swampMiles = run.filter((r) => r.terrain === "swamp").reduce((a, r) => a + r.miles, 0);
+  if (swampMiles > 0) tolls(ctx, swampMiles);
   const { passed, done } = T.advance(ctx, miles);
   for (const place of passed.slice(0, done ? -1 : undefined)) {
     ctx.emit({ type: "arrive", place, label: T.PLACES[place], date: s.date, passing: true, text: ctx.route.data.text.arrivals[place] });
@@ -529,6 +814,8 @@ function travelDay(ctx) {
     if (place === "perrysburg" && !s.events.seen["post-perrysburg"]) {
       ctx.queueEvent("post-perrysburg");
     }
+    // The Ohio path: turn south here for the Lima land office (Phase B).
+    if (place === "perrysburg" && !s.vars.path && s.leg === "overland" && !s.events.seen["ohio-offer"]) ctx.queueEvent("ohio-offer");
   }
   if (done) {
     const dest = leg.segments[leg.segments.length - 1].to;
@@ -664,7 +951,48 @@ function act(ctx, a, params) {
       ctx.emit({ type: "narrate", text: "A teamster agrees to carry the family and the goods west." });
       return;
     }
-    case "set-out": T.startLeg(ctx, "road"); ctx.emit({ type: "narrate", text: ctx.route.data.text.setOut }); return;
+    case "set-out": {
+      const leg = setOutLeg(s);
+      T.startLeg(ctx, leg);
+      ctx.emit({ type: "narrate", text: leg === "road" ? ctx.route.data.text.setOut : ctx.text(ctx.route.data.text.paths.setOut[leg], { name: s.vars.west?.name ?? "" }) });
+      return;
+    }
+    // ---- the paths ----
+    case "pivot": ctx.startEvent(`pivot-${arg}`, pivotVars(ctx, arg)); return;
+    case "week": winterWeek(ctx, arg === "work"); return;
+    case "spring": T.startLeg(ctx, "road"); ctx.emit({ type: "narrate", text: ctx.text(ctx.route.data.text.paths.detroit.spring) }); return;
+    case "passage": startPassage(ctx); return;
+    case "lot": {
+      if (arg === "sell") {
+        const lot = s.vars.lot;
+        const owed = Pa.lotOwed(s, num);
+        if (owed > lot.offer) P.pay(s, num, owed - lot.offer);
+        else P.receive(s, "mi", lot.offer - owed);
+        lot.sold = s.date;
+        lot.soldFor = lot.offer;
+        lot.note = 0;
+        lot.offer = null;
+        ctx.emit({ type: "narrate", text: ctx.text(ctx.route.data.text.paths.chicago.sold, { amount: P.money(lot.soldFor) }) });
+        return;
+      }
+      const price = Pa.lotMarket(s, num);
+      const paid = arg === "cash" ? price : a.cost;
+      P.pay(s, num, paid);
+      s.vars.lot = { price, paid, note: price - paid, bought: s.date, sold: null, forfeit: null, offer: null, soldFor: null };
+      if (arg === "credit") ctx.schedule({ event: "lot-note-due", in: Math.max(1, diffDays(s.date, num("lot.noteDue"))), unless: { not: { lot: "owing" } } });
+      ctx.emit({ type: "narrate", text: ctx.text(ctx.route.data.text.paths.chicago[arg === "cash" ? "boughtCash" : "boughtCredit"], { price: P.money(price) }) });
+      return;
+    }
+    case "farm": {
+      const acres = Number(arg);
+      const cost = L.landCost(num, acres);
+      if (!P.payLand(s, num, cost, { useNotes: true, tender: P.landTender(s, num, acres, false, L.beforeDeadline(s, num)) })) return;
+      L.settle(ctx, { id: "chi", kind: "prairie", poor: false, known: true, miles: num("farm.chicago.miles"), via: "chicago" }, acres);
+      ctx.emit({ type: "narrate", text: `The Receiver counts out ${P.money(cost)} and writes your receipt for ${acres} acres of prairie.`, cue: "receipt" });
+      T.startLeg(ctx, "claim");
+      if (!s.gear.team && !s.gear.teamster) s.gear.teamster = true;
+      return;
+    }
     case "broker": {
       if (arg === "coin") {
         use(ctx, "broker");
@@ -755,14 +1083,14 @@ function onDay(ctx) {
   if (H.maxFatigue(s) >= num("fat.morale.from")) addRes(ctx, "morale", -num("fat.morale.loss"));
   M.resolveTies(ctx);
   // Letters that reached Bronson after the family left: a neighbour brings them out to the claim.
-  if (s.phase === "claim" && M.waitingMail(s, "bronson").length) ctx.schedule({ event: "claim-mail", in: "#chain.in.mid" });
+  if (s.phase === "claim" && !s.vars.path && M.waitingMail(s, "bronson").length) ctx.schedule({ event: "claim-mail", in: "#chain.in.mid" });
   let hungry = false;
   if (!t.meals) {
     const need = needPerDay(ctx);
     if (s.res.food >= need) s.res.food -= need;
     else { s.res.food = 0; hungry = true; }
   }
-  const snowy = compare(s.date, s.vars.snowDate) >= 0;
+  const snowy = T.isSnowy(s, num);
   if (snowy && !s.flags.snowSeen) {
     s.flags.snowSeen = true;
     ctx.emit({ type: "weather", weather: "snow", first: true });
@@ -823,8 +1151,18 @@ function stranded(ctx) {
 }
 
 function checkEnd(ctx) {
+  const end = endOf(ctx);
+  if (!end) return null;
+  const tier = Pa.tierOf(ctx.state, ctx.num, end.outcome);
+  // On a path the full win is tier 2; the main route keeps its own "won" (land and a roof).
+  return { ...end, won: ctx.state.vars.path ? tier === 2 : end.won, tier };
+}
+
+function endOf(ctx) {
   const { state: s, num } = ctx;
   if (!H.living(s).length) return { outcome: "lost", won: false };
+  const path = s.vars.path;
+  if (path && path !== "ohio") return pathEnd(ctx, path);
   if (s.land.paid && s.land.shelter >= num("shelter.done")) return { outcome: "settled", won: true };
   if (compare(s.date, s.vars.winterDate) >= 0) return { outcome: s.land.paid ? "roofless" : "winter", won: false };
   if (!s.land.paid && compare(s.date, num("date.deadline")) > 0) {
@@ -835,17 +1173,58 @@ function checkEnd(ctx) {
   return null;
 }
 
+// Among kin: land beside them, else work with them, else a place on their floor.
+const KIN_OUTCOME = [["kinLand", "kin-land"], ["kinWork", "kin-work"], [null, "kin-floor"]];
+
+// The ends of the paths that leave the main route's rules (Ohio keeps them).
+function pathEnd(ctx, path) {
+  const { state: s, num } = ctx;
+  const late = compare(s.date, num("path.end")) >= 0;
+  const roofed = s.land.paid && s.land.shelter >= num("shelter.done");
+  switch (path) {
+    case "detroit":
+      if (s.land.paid) return { outcome: "spring-land", won: true };
+      if (late) return { outcome: "spring-noland", won: false };
+      break;
+    case "chicago":
+      if (roofed) return { outcome: "prairie-farm", won: true };
+      if (late && s.land.paid) return { outcome: "prairie-roofless", won: false };
+      if (late && Pa.lotHeld(s)) return { outcome: "lot-held", won: false };
+      if (late) return { outcome: "no-farm", won: false };
+      break;
+    case "home":
+      if (s.flags.homeDone) return { outcome: "home", won: true };
+      if (late) return { outcome: "stranded", won: false };
+      break;
+    case "kin":
+      if (s.flags.kinDone) return { outcome: KIN_OUTCOME.find(([flag]) => !flag || s.flags[flag])[1], won: true };
+      if (late) return { outcome: "stranded", won: false };
+      break;
+    default:
+      break;
+  }
+  if (stranded(ctx)) return { outcome: "stranded", won: false };
+  return null;
+}
+
 function ending(ctx, end) {
   const { state: s, num } = ctx;
   const T0 = ctx.route.data.text;
-  const E = T0.endings[end.outcome];
+  const path = s.vars.path;
+  const W = path ? T0.paths[path] : null;
+  const E = W?.endings?.[end.outcome] ?? T0.endings[end.outcome];
   const alive = H.living(s);
+  // A path with no cabin to raise (the winter in Detroit, turning back, the kin) has no roof line.
+  const builds = !path || ["ohio", "chicago"].includes(path);
   return {
     title: E.title,
-    text: ctx.text(E.text),
+    text: ctx.text(E.text, path === "kin" ? { name: s.vars.west.name, kinPlace: T.PLACES[s.place] ?? "" } : {}),
+    tier: end.tier,
+    tierText: T0.tiers[path ?? "main"][String(end.tier)],
+    path,
     score: {
       acres: s.land.paid ? s.land.acres : 0,
-      shelter: s.land.shelter >= num("shelter.done"),
+      shelter: builds ? s.land.shelter >= num("shelter.done") : null,
       alive: alive.length,
       family: s.party.length,
       money: P.valueHere(s, num),
@@ -853,7 +1232,7 @@ function ending(ctx, end) {
       days: s.day,
     },
     deaths: s.party.filter((p) => p.status === "dead").map((p) => ({ name: `${p.name} ${s.vars.surname}`, age: p.age, date: p.died.date, cause: p.died.cause })),
-    epilogue: [...(E.epilogue ?? []), ...T0.epilogue, ...M.epilogue(ctx)],
+    epilogue: [...(E.epilogue ?? []), ...(W?.epilogue ?? []), ...T0.epilogue, ...M.epilogue(ctx)],
   };
 }
 
@@ -889,7 +1268,7 @@ const conditions = {
   looker: (arg, ctx) => ctx.state.land.looker === arg,
   candidates: ([op, n], ctx, vars) => cmpN(ctx.state.land.candidates.length, op, resolve(n, ctx, vars)),
   shelter: ([op, n], ctx, vars) => cmpN(ctx.state.land.shelter, op, resolve(n, ctx, vars)),
-  snow: (arg, ctx) => (compare(ctx.state.date, ctx.state.vars.snowDate) >= 0) === arg,
+  snow: (arg, ctx) => T.isSnowy(ctx.state, ctx.num) === arg,
   // Fatigue: the most tired living person, and the team.
   tired: ([op, n], ctx, vars) => cmpN(H.maxFatigue(ctx.state), op, resolve(n, ctx, vars)),
   teamTired: ([op, n], ctx, vars) => Boolean(ctx.state.gear.team) && cmpN(ctx.state.gear.fatigue ?? 0, op, resolve(n, ctx, vars)),
@@ -917,6 +1296,19 @@ const conditions = {
   // Can the tie picked for sending go "halves" or "whole" with the postage paid?
   sendable: (how, ctx) => M.canSendHow(ctx.state, ctx.num, ctx.state.vars.sendTie, how, ctx.state.place),
   deadlinePassed: (arg, ctx) => (compare(ctx.state.date, ctx.num("date.deadline")) > 0) === arg,
+  // The paths: which one the family is on ("main" for none).
+  path: (arg, ctx) => list(arg).includes(ctx.state.vars.path ?? "main"),
+  // The Chicago lot: "none" (never bought), "held", "owing" (held, with a note).
+  lot: (arg, ctx) => {
+    const s = ctx.state;
+    const st = !s.vars.lot ? "none" : Pa.lotHeld(s) ? (s.vars.lot.note > 0 ? "owing" : "held") : "gone";
+    return list(arg).includes(st) || (st === "owing" && list(arg).includes("held"));
+  },
+  // The kin out west: where they are, and whether their letter offered work.
+  west: (arg, ctx) => list(arg).includes(ctx.state.vars.west?.where),
+  westWork: (arg, ctx) => Boolean(ctx.state.vars.west?.work) === arg,
+  // Home again: something is still owed in the county.
+  owedHome: (arg, ctx) => (Pa.owedAtHome(ctx.state) > 0) === arg,
 };
 
 function target(ctx, who, vars) {
@@ -1020,6 +1412,38 @@ const effects = {
   },
   // A fresh yoke bought on the road (team-ox-down).
   freshTeam: (_, ctx) => freshTeam(ctx),
+  // ---- the paths ----
+  // The confirm's "yes": one-way onto a path ("detroit", "chicago:road", "home", ...).
+  pivot: (spec, ctx, vars) => startPath(ctx, resolve(spec, ctx, vars)),
+  // Among kin: land bought beside them, work with them, or a place on their floor. The path ends.
+  kinSettle: (how, ctx) => {
+    const s = ctx.state;
+    if (how === "land") {
+      if (!P.pay(s, ctx.num, Pa.kinLandCost(ctx.num))) return;
+      s.land.paid = true;
+      s.land.acres = ctx.num("land.acres.small");
+      s.flags.kinLand = true;
+    }
+    if (how === "work") s.flags.kinWork = true;
+    s.flags.kinDone = true;
+  },
+  // Home again: pay what is owed in the county, or keep the money. The path ends.
+  homeSettle: (how, ctx) => {
+    const s = ctx.state;
+    if (how === "pay" && P.pay(s, ctx.num, Pa.owedAtHome(s))) {
+      for (const t of s.ties) if (t.status !== "settled") { t.sent = t.amount; t.status = "settled"; t.learned = true; delete t.mailed; delete t.astray; }
+    }
+    s.flags.homeDone = true;
+  },
+  // The note on a Chicago lot falls due: pay it, or let the lot go and the money down with it.
+  lotNote: (how, ctx) => {
+    const s = ctx.state;
+    const lot = s.vars.lot;
+    if (!Pa.lotHeld(s)) return;
+    if (how === "pay" && P.pay(s, ctx.num, Pa.lotOwed(s, ctx.num))) { lot.paid += Pa.lotOwed(s, ctx.num); lot.note = 0; return; }
+    lot.forfeit = s.date;
+    lot.offer = null;
+  },
   payTie: (id, ctx) => {
     if (M.payTieHere(ctx, id)) ctx.emit({ type: "narrate", text: `You pay ${P.money(M.tieOf(ctx.state, id).amount)} and take a receipt.` });
   },
@@ -1057,6 +1481,23 @@ const binders = {
     const id = M.tieOf(ctx.state, spec)?.who;
     return H.living(ctx.state).some((p) => p.id === id) ? id : null;
   },
+  // The kin out west, for their offer: "name", "place" (their settlement), "offer" (work or land).
+  west(spec, ctx) {
+    const w = ctx.state.vars.west;
+    if (!w) return null;
+    if (spec === "name") return w.name;
+    if (spec === "place") return T.PLACES[Pa.KIN_PLACES[w.where]];
+    return ctx.text(ctx.route.data.text.westOffer[w.work ? "work" : "land"], { land: P.money(Pa.kinLandCost(ctx.num)) });
+  },
+  // The passage to the kin out west, if it is by water (the Maumee); nothing by road.
+  kinFare: (spec, ctx) => {
+    if (!ctx.state.vars.west) return null;
+    const c = ctx.state.vars.west.where === "ohio" ? maumeeCost(ctx) : 0;
+    if (spec === "usd") return c / 100;
+    return c ? `Deck passage to the Maumee comes to ${P.money(c)}.` : "The road there is the family's own.";
+  },
+  // What the family's lot note stands at today, for the event that calls it in.
+  lotOwed: (spec, ctx) => (Pa.lotHeld(ctx.state) ? (spec === "usd" ? Pa.lotOwed(ctx.state, ctx.num) / 100 : P.money(Pa.lotOwed(ctx.state, ctx.num))) : null),
   member(spec, ctx) {
     const { state: s, num, rng } = ctx;
     const alive = H.living(s);
@@ -1125,12 +1566,17 @@ function view(route, s) {
     gear: { team: s.gear.team, wagon: s.gear.wagon, wagonCond: s.gear.wagonCond, teamster: s.gear.teamster, fatigue: Math.round(s.gear.fatigue ?? 0), tired: s.gear.team ? H.tiredness(s.gear.fatigue, num) : null, short: Boolean(s.flags.teamShort) },
     pace: s.vars.pace ?? "steady",
     paceApplies: T.ownPace(s),
+    // The path (Phase B): null on the main route.
+    path: s.vars.path ? { id: s.vars.path, label: route.data.text.paths[s.vars.path].label } : null,
+    lot: s.vars.lot ? { price: s.vars.lot.price, paid: s.vars.lot.paid, owed: Pa.lotOwed(s, num), market: Pa.lotMarket(s, num), offer: s.vars.lot.offer ?? null,
+      held: Pa.lotHeld(s), sold: s.vars.lot.sold, soldFor: s.vars.lot.soldFor ?? null, forfeit: s.vars.lot.forfeit } : null,
     fatigue: { tired: num("fat.tired"), high: num("fat.high") },
     ties: M.summary(route, s),
     postOffice: ["town", "office"].includes(s.phase) && POST_TOWNS.has(s.place),
     deadline: { date: num("date.deadline"), daysLeft: diffDays(s.date, num("date.deadline")), passed: compare(s.date, num("date.deadline")) > 0 },
-    snow: compare(s.date, s.vars.snowDate) >= 0,
-    winterWarning: compare(s.date, s.vars.snowDate) >= 0 ? diffDays(s.date, s.vars.winterDate) : null,
+    snow: T.isSnowy(s, num),
+    // The days left before deep winter ends the season: on the main route and the Ohio path only.
+    winterWarning: T.isSnowy(s, num) && (!s.vars.path || s.vars.path === "ohio") && compare(s.date, s.vars.winterDate) < 0 ? diffDays(s.date, s.vars.winterDate) : null,
     land: L.summary(s, num),
     decisions: s.decisions,
     over: s.over,
@@ -1159,7 +1605,7 @@ export function createRoute({ numbers, events, backgrounds, text }) {
     startDate: () => num("date.start"),
     init, actions, act, onDay, eventDay, eventDayKinds: EVENT_DAY_KINDS, afterAction, checkEnd, ending,
     // Where a scheduled {"at": place} event may wait: places the family stops at, not passes.
-    places: ["albany", "buffalo", "detroit", "bronson", "claim"],
+    places: ["albany", "buffalo", "detroit", "bronson", "claim", "chicago", "lima", "allens", "maumee", "brushhill", "home"],
     atPlace: (st) => (st.phase === "travel" ? null : st.place),
     // The tie schedules live in text.json; validateDeck checks them like the deck's own.
     schedules: text.ties.flatMap((t) => (t.schedule ?? []).map((spec) => ({ where: `tie ${t.id}`, spec }))),
@@ -1187,7 +1633,7 @@ const isDate = (d) => {
 };
 const MAIL_STATUS = ["waiting", "taken", "left"];
 // Letters from home: kin's own (no tie), and a tie's news, outcome, or word that money never came.
-const MAIL_KEYS = ["kin", "news", "outcome", "lost"];
+const MAIL_KEYS = ["kin", "news", "outcome", "lost", "call"];
 
 function readable(route, s) {
   if (!Array.isArray(s.party) || !Array.isArray(s.ties) || !Array.isArray(s.mail) || !isObj(s.gear)) return false;
@@ -1200,8 +1646,25 @@ function readable(route, s) {
   const mailOk = (m) => isObj(m) && typeof m.id === "string" && typeof m.key === "string" && M.POST_OFFICES.includes(m.office)
     && isDate(m.from) && (m.written === undefined || isDate(m.written)) && Number.isInteger(m.sheets) && m.sheets >= 1
     && MAIL_STATUS.includes(m.status) && MAIL_KEYS.includes(m.key)
-    && (m.key === "kin" ? m.tie === null : s.ties.some((t) => t.id === m.tie));
-  return s.mail.every(mailOk);
+    && (m.key === "kin" || m.key === "call" ? m.tie === null : s.ties.some((t) => t.id === m.tie));
+  if (!s.mail.every(mailOk)) return false;
+  return pathReadable(s);
+}
+
+// The Phase B fields: the path, the kin out west, the Chicago lot, the dates home and among kin.
+function pathReadable(s) {
+  const v = s.vars;
+  if (!(v.path == null || Pa.PATHS.includes(v.path))) return false;
+  if (!(v.homeOn == null || isDate(v.homeOn)) || !(v.arrivedOn == null || isDate(v.arrivedOn))) return false;
+  if (!(v.passageDays == null || (Number.isInteger(v.passageDays) && v.passageDays >= 0))) return false;
+  const w = v.west;
+  if (w != null && !(isObj(w) && Pa.KIN_WHERE.includes(w.where) && typeof w.name === "string" && typeof w.work === "boolean")) return false;
+  if (v.path === "kin" && !w) return false;
+  const lot = v.lot;
+  const dateOrNull = (d) => d === null || isDate(d);
+  if (lot != null && !(isObj(lot) && [lot.price, lot.paid, lot.note].every(Number.isInteger) && isDate(lot.bought)
+    && dateOrNull(lot.sold) && dateOrNull(lot.forfeit) && (lot.offer === null || Number.isInteger(lot.offer)))) return false;
+  return true;
 }
 
 export const DATA_FILES = { numbers: "numbers.json", events: "events.json", backgrounds: "backgrounds.json", text: "text.json" };

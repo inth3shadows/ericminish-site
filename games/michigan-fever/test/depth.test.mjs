@@ -65,8 +65,11 @@ const P1_EVENTS = ["vt-neighbours", "vt-hill-mud", "vt-note-shaver", "vt-wheel",
 // ---- the route version ------------------------------------------------------------
 
 test("the route version is bumped, so a P1 save is refused cleanly", () => {
-  assert.equal(ROUTE_VERSION, 2);
-  assert.equal(route.version, 2);
+  // Assertion changed by the approved Phase B schema bump (P2 spec "Bump the route's
+  // schemaVersion"): version 3 now. A P1 save is still refused, as before; the Phase A
+  // (version 2) refusal is pinned in paths.test.mjs "schema".
+  assert.equal(ROUTE_VERSION, 3);
+  assert.equal(route.version, 3);
   const s = started();
   const old = JSON.parse(serialize(s));
   old.routeVersion = 1;
@@ -818,10 +821,12 @@ test("PA8: the tie schedules in text.json are validated like the deck", () => {
   assert.deepEqual(validateDeck(route), []);
   const d = readData();
   const mort = d.text.ties.find((t) => t.id === "mortgage");
-  mort.schedule = [{ event: "tie-ghost", in: { at: "chicago" }, unless: { nonsense: 1 } }];
+  // Input changed by an approved Phase B change: Chicago is now a place on the Chicago path,
+  // so the unknown place is one the game never goes to. The assertion is the same.
+  mort.schedule = [{ event: "tie-ghost", in: { at: "oregon" }, unless: { nonsense: 1 } }];
   const errs = validateDeck(createRoute(d)).join("\n");
   assert.match(errs, /tie mortgage: schedule: unknown event tie-ghost/);
-  assert.match(errs, /tie mortgage: schedule: unknown place chicago/);
+  assert.match(errs, /tie mortgage: schedule: unknown place oregon/);
   assert.match(errs, /tie mortgage: unknown condition nonsense/);
 });
 
@@ -1062,7 +1067,12 @@ function stoppedAt(place, s = started("vermont", `stop-${place}`, calm)) {
 test("V1: a short team can be made whole at the end of every leg where an ox can give out", () => {
   const legs = route.eventIndex.get("team-ox-down").when.all.find((c) => c.leg).leg;
   assert.ok(legs.includes("road") && legs.includes("claim"));
-  for (const leg of legs) {
+  // Assertion changed by the approved L1 fix (Phase A round 7, P2 Phase B step 0): only the
+  // legs that have road left after the remedy. The claim leg ends at the claim, where no leg
+  // starts, so a yoke there pulls nothing and is no longer sold (step0.test.mjs "L1").
+  const roadLeft = legs.filter((l) => T.LEGS[l].segments.at(-1).to !== "claim");
+  assert.ok(roadLeft.includes("road"));
+  for (const leg of roadLeft) {
     const dest = T.LEGS[leg].segments.at(-1).to;
     for (const paid of [false, true]) {
       const s = stoppedAt(dest);
@@ -1132,7 +1142,9 @@ test("V2: a save from any point of a real game loads back unchanged", () => {
     }
   }
   assert.ok(saves > 1000, `${saves} saves`);
-  assert.deepEqual([...keys].sort(), ["kin", "lost", "news", "outcome"], "every kind of letter was in a save");
+  // Assertion changed by an approved Phase B change: the kin out west's letter ("call", spec B2.5)
+  // is a fifth kind, and saves now carry it too.
+  assert.deepEqual([...keys].sort(), ["call", "kin", "lost", "news", "outcome"], "every kind of letter was in a save");
 });
 
 test("V2: a save whose letters have an unknown kind, or name a tie the family does not have, is damaged", () => {

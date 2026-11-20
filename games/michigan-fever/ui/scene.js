@@ -6,6 +6,8 @@
 // where one fits (a lock at night on the canal, a tavern when the family takes
 // lodging in town), and anything unknown keeps the current painting.
 
+import { SCENE_FALLBACK } from "../route.js";
+
 const BASE = "/games/michigan-fever/art/";
 
 export const ART = {
@@ -59,9 +61,12 @@ export const PORTRAIT = {
 // Fallback focal points and moods if the manifest cannot be read.
 const DEFAULT_META = { focal_point: { x: 50, y: 50 }, mood: "day" };
 
+// A path's new places reuse the paintings (no new art): SCENE_FALLBACK in
+// route.js names the scene each new key stands for, night variant included.
 export function artFor(sceneKey, tod) {
-  if (tod === "night" && NIGHT[sceneKey]) return NIGHT[sceneKey];
-  return ART[sceneKey] ?? null;
+  const key = ART[sceneKey] || NIGHT[sceneKey] ? sceneKey : SCENE_FALLBACK[sceneKey] ?? sceneKey;
+  if (tod === "night" && NIGHT[key]) return NIGHT[key];
+  return ART[key] ?? null;
 }
 
 export function createScene(root, { reduced, describe }) {

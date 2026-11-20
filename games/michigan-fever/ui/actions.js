@@ -15,7 +15,7 @@ const PRIMARY_TYPES = new Set(["start", "choose", "travel", "board", "build", "e
 const PRIMARY_IDS = new Set(["buy-team", "hire-teamster", "hire-looker", "sabbath"]);
 const TRADE = new Set(["buy", "sell", "broker"]);
 const STAY = new Set(["rest", "work", "letter"]);
-const GROUP_LABEL = { land: "Enter land", trade: "Buy and trade", stay: "Lodging and work", post: "Post office", more: "More" };
+const GROUP_LABEL = { land: "Enter land", trade: "Buy and trade", stay: "Lodging and work", post: "Post office", lot: "The town lot", pivot: "Change course", more: "More" };
 const PACE_WORD = { steady: "steady", hard: "hard", grueling: "grueling" };
 
 // The pace group: one item per pace, the chosen one marked. Picking one sets
@@ -64,9 +64,12 @@ export function arrange(actions, { pace = null } = {}) {
   const room = MAX_TOP - (paces ? 1 : 0);
   if (actions.length <= room && !actions.some(isLandApply)) return withPace(forwardFirst(actions));
   const top = [];
-  const groups = { land: [], trade: [], stay: [], post: [], more: [] };
+  const groups = { land: [], trade: [], stay: [], post: [], lot: [], pivot: [], more: [] };
   for (const a of actions) {
     if (isLandApply(a)) groups.land.push(a);
+    // The pivots (one-way, each with a confirm) sit together under "Change course".
+    else if (a.type === "pivot") groups.pivot.push(a);
+    else if (a.type === "lot") groups.lot.push(a);
     else if (a.forward || PRIMARY_TYPES.has(a.type) || PRIMARY_IDS.has(a.id)) top.push(a);
     else if (TRADE.has(a.type)) groups.trade.push(a);
     else if (STAY.has(a.type)) groups.stay.push(a);
@@ -82,13 +85,13 @@ export function arrange(actions, { pace = null } = {}) {
     groups.more.unshift(...ordered.splice(i, 1));
   }
   // A group of one is just a button, if there is room for it.
-  for (const k of ["post", "trade", "stay", "more"]) {
+  for (const k of ["pivot", "lot", "post", "trade", "stay", "more"]) {
     if (groups[k].length === 1 && ordered.length + used() <= room) {
       ordered.push(groups[k].pop());
     }
   }
   const out = withPace([...ordered]);
-  for (const k of ["land", "trade", "stay", "post", "more"]) {
+  for (const k of ["land", "lot", "pivot", "trade", "stay", "post", "more"]) {
     const list = groups[k];
     if (!list.length) continue;
     const items = k === "land" ? landItems(list) : list;

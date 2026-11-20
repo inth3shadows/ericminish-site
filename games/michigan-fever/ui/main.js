@@ -23,7 +23,9 @@ const reducedMq = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)");
 const reduced = () => Boolean(reducedMq?.matches);
 const params = new URLSearchParams(location.search);
 
-const LEG_SCENE = { vermont: "road-vermont", canal: "canal", lake: "lake", overland: "ohio-road", road: "territorial-road", claim: "claim-track", stage: "ohio-road" };
+const LEG_SCENE = { vermont: "road-vermont", canal: "canal", lake: "lake", overland: "ohio-road", road: "territorial-road", claim: "claim-track", stage: "ohio-road",
+  chicagoRoad: "chicago-road", chicagoStage: "chicago-road", chicagoLakes: "lake", toLima: "lima-road", backRoad: "territorial-road", homePassage: "road-home",
+  toAllens: "chicago-road", toMaumee: "lake", toBrushHill: "chicago-road" };
 const PACE_WORD = { steady: "steady", hard: "hard", grueling: "grueling" };
 const TERRAIN_SCENE = { swamp: "black-swamp", strip: "toledo-strip" };
 const CONFIDENCE = { solid: "Well sourced", likely: "Likely", uncertain: "Uncertain", invented: "Invented for the game" };
@@ -142,8 +144,13 @@ function todFor(action, s) {
 }
 
 function guessScene(v) {
-  if (v.phase === "office") return "land-office";
+  if (v.phase === "office") return v.place === "lima" ? "lima-office" : "land-office";
   if (v.phase === "claim") return v.land.shelter > 0 ? "cabin" : "claim";
+  // The paths' own places (scene keys that fall back to the paintings: SCENE_FALLBACK).
+  if (v.phase === "winter") return "winter-detroit";
+  if (v.phase === "lots") return "town-chicago";
+  if (v.phase === "kin") return "kin-farm";
+  if (v.phase === "home") return "home";
   if (v.phase === "town") return `town-${v.place}`;
   if (v.travel) return TERRAIN_SCENE[v.travel.terrain] ?? LEG_SCENE[v.travel.leg] ?? "road-vermont";
   return "farm";
@@ -358,11 +365,12 @@ async function deathRegister(j, d, letter, note) {
 }
 
 // A letter on its own (not after a death): one written home, or one from home
-// collected at a post office (from: "home"). Always shown with its fiction label.
+// collected at a post office (from: "home"), or from kin settled west (from: "west").
+// Always shown with its fiction label.
 async function letterBeat(j, b) {
   j.check();
-  const incoming = b.from === "home";
-  veilShow(incoming ? "A letter from home" : "A letter home");
+  const incoming = b.from === "home" || b.from === "west";
+  veilShow(b.from === "west" ? "A letter from kin in the West" : incoming ? "A letter from home" : "A letter home");
   const paras = String(b.text).split(/\n\s*\n/).map((t) => el("p", {}, t.trim()));
   const who = incoming ? `From ${b.sender}${b.to ? ` to ${b.to}` : ""}` : `From ${b.from}${b.to ? ` to ${b.to}` : ""}`;
   await veilStep(j, [
@@ -392,10 +400,12 @@ async function arrival(j, b) {
   card.classList.remove("is-on");
 }
 
-function ledger(s, deaths) {
+function ledger(s, deaths, path = null) {
   const lines = [];
   lines.push(s.acres ? `${s.acres} acres entered and paid for` : "No land entered");
-  lines.push(s.shelter ? "A roof over the family before winter" : "No finished cabin before winter");
+  // A path with no cabin to raise has no roof line (shelter is null).
+  // On the Chicago path the cabin goes up on the prairie, often in the spring of 1837.
+  if (s.shelter != null) lines.push(path === "chicago" ? (s.shelter ? "A roof on the prairie farm" : "No finished cabin on the prairie") : s.shelter ? "A roof over the family before winter" : "No finished cabin before winter");
   lines.push(`${s.alive} of ${s.family} in the family alive`);
   lines.push(`${money(s.money)} left, ${s.coin >= s.money ? "all of it coin" : `${money(s.coin)} of it coin`}`);
   lines.push(`${s.days} days since leaving home`);
@@ -409,7 +419,9 @@ function ending(j, b) {
   hud.toggleSheet(false);
   const box = el("div", { class: "mf-end-inner" });
   box.append(el("p", { class: "mf-end-kicker" }, b.won ? "The journey's end" : "The end of the journey"), el("h2", { class: "mf-end-title" }, b.title), el("p", { class: "mf-end-text" }, b.text));
-  if (b.score) box.append(el("ul", { class: "mf-ledger" }, ...ledger(b.score, b.deaths).map((t) => el("li", {}, t))));
+  // How it went, in words (the tier, never shown as a number).
+  if (b.tierText) box.append(el("p", { class: `mf-end-tier tier-${b.tier}` }, b.tierText));
+  if (b.score) box.append(el("ul", { class: "mf-ledger" }, ...ledger(b.score, b.deaths, b.path).map((t) => el("li", {}, t))));
   if (b.deaths?.length) {
     box.append(el("h3", {}, "Buried on the way"));
     box.append(el("ul", { class: "mf-dead" }, ...b.deaths.map((d) => el("li", {}, `${d.name}${d.age != null ? `, aged ${d.age}` : ""}${d.date ? `, ${fullDate(d.date)}` : ""}`))));

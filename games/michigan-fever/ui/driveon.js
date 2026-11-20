@@ -24,7 +24,7 @@ function goAction(engine, route, state) {
 // Low food does not count while the passage itself feeds the family (packet, cabin).
 // "tired": anyone, or the team, at the route's high-fatigue mark (view.fatigue.high).
 // Not aboard a canal boat or a steamer: a day on the boat brings fatigue down.
-const RESTING_MODES = new Set(["canal", "steamer"]);
+const RESTING_MODES = new Set(["canal", "steamer", "passage"]);
 function hazard(v) {
   if (v.food.days <= LOW_FOOD_DAYS && !v.food.meals) return "food";
   if (v.purse.valueHere < LOW_MONEY) return "money";

@@ -6,6 +6,7 @@
 import { compare } from "../../engine/clock.js";
 import * as P from "./purse.js";
 import { workUnits } from "./health.js";
+import { isSnowy } from "./travel.js";
 
 export const KIND_LABEL = { openings: "oak openings", prairie: "prairie", timber: "heavy timber" };
 
@@ -57,15 +58,19 @@ export function beforeDeadline(state, num) {
   return compare(state.date, num("date.deadline")) <= 0;
 }
 
+// The Receiver at Lima (the Ohio path) takes no Michigan paper: distant notes,
+// like New England's at Bronson (invented; r3 §7 has no Lima office rules).
 export function tenderFor(state, num, acres) {
-  return P.landTender(state, num, acres, state.land.receiverNY === true, beforeDeadline(state, num));
+  return P.landTender(state, num, acres, state.land.receiverNY === true, beforeDeadline(state, num), state.place !== "lima");
 }
 
 export function apply(ctx, candId, acres) {
   const { state, num, rng } = ctx;
   const land = state.land;
   land.applied = { cand: candId, acres };
-  land.queue = rng.int(num("land.queue.min"), num("land.queue.max"));
+  // Lima (the Ohio path) is a small office in the woods with its own, shorter wait.
+  const lima = state.place === "lima";
+  land.queue = rng.int(num(lima ? "land.queue.lima.min" : "land.queue.min"), num(lima ? "land.queue.lima.max" : "land.queue.max"));
   if (land.receiverNY == null) land.receiverNY = rng.chance(num("receiver.nyP"));
   ctx.emit({ type: "narrate", text: `You hand in the description of ${acres} acres at the window. The clerk says to come back.` });
   if (state.purse.notes.ny > 0) {
@@ -137,7 +142,7 @@ export function buildRate(ctx) {
   if (tract.poor) rate *= num("land.poor.shelterMult");
   if (state.vars.skills.includes("clearing")) rate *= num("skill.clearing");
   if (state.vars.skills.includes("tools")) rate *= num("skill.tools");
-  if (compare(state.date, state.vars.snowDate) >= 0) rate *= num("shelter.snowMult");
+  if (isSnowy(state, num)) rate *= num("shelter.snowMult");
   const floor = num("morale.floorMult");
   rate *= floor + (1 - floor) * ((state.res.morale ?? 0) / 100);
   return rate;

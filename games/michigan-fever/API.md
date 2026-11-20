@@ -22,7 +22,7 @@ import { money } from "/games/michigan-fever/mechanics/purse.js"; // cents -> "$
 | `step(route, state, action)` | `{ state, beats }` | `action` is an object from `availableActions` (or just its `id`). Returns a **new** state; the old one is untouched. |
 | `view(route, state)` | `View` | HUD data (date, place, purse, family, land, deadline). Plain JSON. |
 | `saveGame(state, { slot })` | `boolean` | `slot` is `"auto"` (default) or `"main"`. `false` if storage is missing, full or blocked (private mode). Never throws. |
-| `loadGame(route, { slot })` | `{ ok: true, state }` or `{ ok: false, reason }` | Reasons: `"no storage"`, `"empty"`, `"unreadable"`, `"unknown format"`, `"different route"`, `"old engine version"`, `"old route version"`, `"damaged"` (the state is not shaped like a game state, a queued consequence names an unknown event, has neither a due day nor a place, or has a malformed `unless`, the route's own fields are malformed (ties, letters, fatigue, the pace), or the route's view or actions throw on it). The route is at version 2 (P2 Phase A), so a P1 save is refused as `"old route version"`. |
+| `loadGame(route, { slot })` | `{ ok: true, state }` or `{ ok: false, reason }` | Reasons: `"no storage"`, `"empty"`, `"unreadable"`, `"unknown format"`, `"different route"`, `"old engine version"`, `"old route version"`, `"damaged"` (the state is not shaped like a game state, a queued consequence names an unknown event, has neither a due day nor a place, or has a malformed `unless`, the route's own fields are malformed (ties, letters, fatigue, the pace), or the route's view or actions throw on it). The route is at version 3 (P2 Phase B: the paths and the tiers), so a P1 or Phase A save is refused as `"old route version"`. A save naming an unknown path, or with a malformed kin, lot or date home, is `"damaged"`. |
 | `hasSave(route.id, { slot })`, `clearSave(route.id, { slot })` | `boolean` | Storage keys are `trail:michigan-fever:auto` and `trail:michigan-fever:main`. |
 | `serialize(state)` / `deserialize(route, text)` | string / like `loadGame` | For a copy-paste or file export, if wanted. |
 
@@ -69,12 +69,14 @@ type Action = {
 |---|---|---|
 | `start` | first screen | `background`, `surname`, `party[{id,name,age,role,sex}]`, `purse{coin, notes{ne,ny,mi}}` (cents), `team`, `skills`, `editable: ["surname","names"]` |
 | `choose` | an event is waiting for a choice | `event` (event id), `choice` (choice id) |
-| `travel` | on the road or the water; "Set out"; "Go out to the claim" | `go` with the family's own wagon and team also has `pace` (the pace in force) and `paces[{pace, label, detail}]`: see "The pace" below |
+| `travel` | on the road or the water; "Set out" (from Detroit: the Territorial Road, or a path's road: the Chicago road, or the road to the kin); "Go out to the claim"; `spring` (the Detroit winter: west in the spring) | `go` with the family's own wagon and team also has `pace` (the pace in force) and `paces[{pace, label, detail}]`: see "The pace" below |
 | `rest` | camp, lodging, tents; `sabbath` ("Keep the Sabbath") on a Sunday on the road or at the claim | |
-| `board` | Albany (canal), Buffalo (steamer, overland, or from 25 November the winter stage, `stage:winter`, $25 a head) | |
+| `board` | Albany (canal), Buffalo (steamer, overland, or from 25 November the winter stage, `stage:winter`, $25 a head); `passage` (turning back, at Detroit after the road back from Bronson) | |
 | `post` | Albany, Buffalo, Detroit, Bronson: "Go to the post office", once a visit (a week at Bronson) | Opens the `post-office` event: its choices are what can be done there now |
-| `buy`, `sell`, `broker`, `letter`, `work`, `dose`, `repair` | towns, the road, the claim | `buy-yoke` (Albany, Buffalo, Detroit, Bronson, the claim: the end of every leg the family drives) is offered while the team is short an ox (`view.gear.short`) |
-| `explore`, `apply`, `wait`, `pay` | the land office | `apply` has `tractId` (stable for the visit, e.g. `"t2"`), `tractLabel` (e.g. "prairie, 7 miles out, dry, good soil"), `acres`, and `tract` (same as `tractId`, kept for older callers). The UI groups by `tractId`. "Withdraw" is also `type: "apply"` but has no `tractId`. |
+| `buy`, `sell`, `broker`, `letter`, `work`, `dose`, `repair` | towns, the road, the claim | `buy-yoke` (Albany, Buffalo, Detroit, Bronson: the end of every leg the family drives that has road after it; not at the claim, where no leg starts) is offered while the team is short an ox (`view.gear.short`). `week:work` and `week:rest` (type `work` and `rest`, `days: 7`) are a week in a winter town (Detroit, Chicago). |
+| `pivot` | `pivot:detroit` (Detroit, from 1 November or once Bronson by 15 December looks unlikely), `pivot:chicago` (Detroit; Buffalo before the lakes close), `pivot:home` (Buffalo, Detroit, Bronson before land is paid) | Opens the pivot's confirm (an event). See "The paths". The UI groups them as "Change course". |
+| `lot` | Chicago | `lot:cash`, `lot:credit` (the money down), `lot:sell` (this week's buyer). The UI groups them as "The town lot". |
+| `explore`, `apply`, `wait`, `pay` | the land office (Bronson; Lima on the Ohio path). At Chicago, `farm:40` and `farm:80` (type `apply`, no `tractId`) enter prairie 9 miles out and set out for it. | `apply` has `tractId` (stable for the visit, e.g. `"t2"`), `tractLabel` (e.g. "prairie, 7 miles out, dry, good soil"), `acres`, and `tract` (same as `tractId`, kept for older callers). The UI groups by `tractId`. "Withdraw" is also `type: "apply"` but has no `tractId`. |
 | `build` | the claim | |
 
 **Start with player-edited names.** Send the start action with extra fields:
@@ -141,8 +143,8 @@ the HUD tells the two apart before then. Paid in person, a tie is `"settled"` at
 | `note` | `text`, `source`, `url` (may be `null`), `confidence` (`solid`, `likely`, `uncertain`, `invented`), and `event` or `about` (`"start"`, `"death"`) | The history note. Show the source and the link. When `confidence` is `uncertain` or `invented` the text already says so. |
 | `arrive` | `place`, `label`, `date`, `text`, `passing?` | Reached a place. `passing: true` means passing through (Sandusky, Perrysburg, Marshall). |
 | `death` | `who`, `name`, `age`, `cause`, `date`, `place`, `text` | Always followed by `letter`, then `note`. `text` is the factual line. |
-| `letter` | `fiction: true`, `label`, `from`, `to`, `date`, `text`; from home also `sender`, `office` | A fictional letter. **Always show `label`** (it says the letter is fiction). `text` has `\n\n` paragraph breaks. Three kinds: after a death (the register below); a letter home the family writes or sends money in (`from` is the writer's name); and a letter **from home** collected at a post office, where `from` is `"home"` and `sender` is the kin who wrote. |
-| `end` | `outcome`, `won`, `title`, `text`, `score`, `deaths[]`, `epilogue[{text,source,url,fiction?}]` | The ending. See below. |
+| `letter` | `fiction: true`, `label`, `from`, `to`, `date`, `text`; from home also `sender`, `office` | A fictional letter. **Always show `label`** (it says the letter is fiction). `text` has `\n\n` paragraph breaks. Four kinds: after a death (the register below); a letter home the family writes or sends money in (`from` is the writer's name); a letter **from home** collected at a post office, where `from` is `"home"` and `sender` is the kin who wrote; and a letter from **kin settled west** (`from: "west"`, `sender` the relative), which brings the kin path's offer. |
+| `end` | `outcome`, `won`, `tier`, `tierText`, `path`, `title`, `text`, `score`, `deaths[]`, `epilogue[{text,source,url,fiction?}]` | The ending. See below. |
 | `error` | `message` | The action was not on offer. |
 
 ### The death register (user decision; keep this exact form)
@@ -156,8 +158,12 @@ family then loses days (a `narrate` beat with `cue: "grief"`).
 
 `outcome` is one of `settled` (the win: land paid for and the cabin finished), `roofless` (land, but no
 finished cabin when winter closed), `winter` (no land by winter), `deadline` (past 15 December without enough
-coin), `stranded`, `lost` (no one survived). `score` is a ledger, not a points total:
-`{ acres, shelter: bool, alive, family, money (cents, value here), coin (cents), days }`. Show it as lines.
+coin), `stranded`, `lost` (no one survived); a path adds its own (see "The paths"). `tier` is 0 (failed),
+1 (arrived) or 2 (the full win); `tierText` says it in words, and the UI shows the words, never the number.
+`path` is the path taken, or `null`. `won` is the main route's (land and a roof) or, on a path, tier 2.
+`score` is a ledger, not a points total:
+`{ acres, shelter: bool | null, alive, family, money (cents, value here), coin (cents), days }`; `shelter` is
+`null` on a path with no cabin to raise (Detroit, home, kin). Show it as lines.
 Do not add the deaths into any score. `epilogue` is sourced history (the Panic of 1837, statehood, the
 Potawatomi); show each line with its source. Lines with `fiction: true` are what became of the family's ties
 at home (and letters that went to the dead-letter office); show them apart from the history, with their
@@ -168,7 +174,7 @@ at home (and letters that went to the dead-letter office); show them apart from 
 ```ts
 {
   date: "1836-09-15", dateLabel: "Thursday, 15 September 1836",
-  phase: "start" | "travel" | "town" | "office" | "claim" | "over",
+  phase: "start" | "travel" | "town" | "office" | "claim" | "winter" | "lots" | "kin" | "home" | "over",
   place, placeLabel,
   travel: null | { leg, label, mode: "wagon"|"canal"|"steamer", unit: "miles"|"days", done, of, next, nextLabel, terrain, terrainLabel },
   ticket: null | "packet" | "line-meals" | "line" | "cabin" | "deck",
@@ -183,7 +189,9 @@ at home (and letters that went to the dead-letter office); show them apart from 
   ties: [{ id, label, purpose, detail, amount, sent, status: "open"|"sent"|"settled"|"lost", news }],  // "Left behind"; news once a letter told them; "sent" = sent by mail, no word yet whether it came
   postOffice,                                       // at a town or office with a post office
   deadline: { date: "1836-12-15", daysLeft, passed },
-  snow: bool, winterWarning: null | daysLeft,   // set once the first snow has fallen
+  snow: bool, winterWarning: null | daysLeft,   // snow: from the first snow to the thaw (1 April 1837); winterWarning on the main route and the Ohio path only
+  path: null | { id, label },                   // the path taken (Phase B)
+  lot: null | { price, paid, owed, market, offer, held, sold, soldFor, forfeit },   // the Chicago town lot, cents
   land: { looker, candidates[{id,kind,label,miles,known,poor}], applied, paid, acres, tract, shelter (0-100), receiverTakesNY, conflicts },
   decisions, over
 }
@@ -228,7 +236,9 @@ pressing `go` the same number of times.
 `SCENES` (exported from `route.js`) lists every key a `scene` beat can carry, each with a one-line
 description for matching to art: `farm`, `road-vermont`, `town-albany`, `canal`, `town-buffalo`, `lake`,
 `lake-storm`, `ohio-road`, `black-swamp`, `toledo-strip`, `town-detroit`, `territorial-road`, `land-office`,
-`claim-track`, `claim`, `cabin`.
+`claim-track`, `claim`, `cabin`, and the paths' own: `winter-detroit`, `chicago-road`, `town-chicago`,
+`lima-road`, `lima-office`, `road-home`, `home`, `kin-farm`. There is no new art: `SCENE_FALLBACK` (exported
+from `route.js`) names the scene each path key stands for, and `ui/scene.js` `artFor` reads it.
 
 The UI maps scene keys to the 13 paintings in `ui/scene.js` (`ART`, plus `NIGHT` for night variants). In a
 tall window (aspect 4:5 or narrower) the painting takes the upper three quarters and pans between two
@@ -239,8 +249,11 @@ portrait points per painting (`PORTRAIT`), so figures at both sides come into fr
 
 - `data/numbers.json`: every game number, tagged `src` (with `source`, `url`, `confidence`) or `invented`
   (with a reason). A Sources or Credits screen can list the invented ones from here.
-- `data/events.json`: the event deck (103 events), each with its note. Decks: `travel`, `town`, `office`,
-  `claim`, plus `chain` (follow-ups that only come by the schedule) and `post` (the post office's own events).
+- `data/events.json`: the event deck (121 events), each with its note. Decks: `travel`, `town`, `office`,
+  `claim`, `winter` (a week in a winter town), plus `chain` (follow-ups that only come by the schedule), `post`
+  (the post office's own events) and `path` (the pivots' offers and confirms, the arrivals, and the path
+  events the route schedules itself). Events that name Bronson carry a `path` condition, so they keep off
+  the paths that never go there.
 - `data/text.json` also holds the six home ties (`ties`), their letters and epilogue lines, and the letters
   home (`homeLetters`).
 
@@ -279,3 +292,25 @@ Two more engine hooks: an event weight can scale by a route curve (`{"base", "mu
 "teamWorn"}`, the fatigue curve of the most tired person or of the team), and a choice's `next` event binds its
 own variables fresh (the post office menu shows what is left now), inheriting only the others.
 - `data/text.json`, `data/backgrounds.json`: narration, letters, endings, family defaults.
+
+## The paths (P2 Phase B)
+
+Halfway through, the family can change course. Each pivot is offered at its moment, opens a confirm (an
+event whose first choice declines and whose text says there is no going back), and is one-way: once on a
+path, no other pivot is offered. A path is one to three compact legs on the shared mechanics, its own
+ending and a sourced epilogue (`data/text.json` `paths`), and its own tiers (`tiers`).
+
+| path | pivot | legs and play | tier 1 | tier 2 |
+|---|---|---|---|---|
+| `detroit` | `pivot:detroit` at Detroit, from 1 Nov or when Bronson by 15 Dec looks unlikely | `week:work` / `week:rest` in a room by the night ($0.50 for the family), wages in Michigan notes ($1 a day, $2 skilled), winter flour at the scarcity price; the news of the suspension (16 May 1837) offers to change Michigan notes for silver; after 17 May they pass at 25 percent off. From the thaw (1 Apr 1837), `spring`: the Territorial Road to Bronson, land in coin only | through the winter (the thaw) with a household | 40+ acres in coin by 30 Jun 1837, no deaths |
+| `chicago` | `pivot:chicago` at Detroit (road 254 mi with a team; else the $21 stage) or Buffalo (cabin $20 round the lakes) | a town lot in cash or on credit (a note at 10 percent, due 1 May 1837); values slide through the winter and fall to a tenth or twentieth once the Illinois banks suspend; buyers come some weeks; then prairie 9 miles out at $1.25 and a cabin | reach Chicago with a household | a lot bought and sold before the thaw, farmland with a roof, no deaths. Holding the lot into 1837 is the trap. |
+| `ohio` | `ohio-offer` on passing Perrysburg on the swamp road, then `pivot-ohio` | the track south to Lima (70 mi, invented); the Lima office (its own short queue, invented; no Michigan notes); the claim and the main route's rules (15 Dec, winter) | reach Lima with a household | land and a roof, no deaths |
+| `home` | `pivot:home` at Buffalo, Detroit or Bronson | from Bronson the Territorial Road back first; then one passage home (deck $3, or the $25 winter stage once the lakes close, the line boat, the hill road); at home, `home-again`: pay what is owed, or keep it | home with a household | home before winter, no deaths, every tie settled in time (paid before it went wrong at home) |
+| `kin` | a letter from kin settled west (`kin.callP` of families; at Buffalo for the Maumee, at Detroit for Allen's Prairie and Brush Hill); read at the post office, it brings `kin-call`, then `pivot-kin`; refusing costs morale | the road (or the steamboat) to them; `kin-welcome`: their floor, work with them (if the letter offered it), or the 40 acres beside them at $5 an acre | arrive with a household | arrive before the snow, no deaths, land beside them or work with them |
+
+"Household" is at least one adult alive. On the paths that winter over (Detroit, Chicago) the game ends by
+30 June 1837 (`path.end`); the main route's winter end applies only to the main route and the Ohio path.
+
+The tier simulation (`test/tiers-*.test.mjs`) prints the table per strategy. The main route bands are over
+1,500 careful games; each path's band is over the games that took the path (n is printed). The kin path ends
+on arrival, so its games run about 50 decisions, under the 70-180 target; this is reported, not asserted.

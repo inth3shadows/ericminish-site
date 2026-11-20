@@ -80,13 +80,13 @@ games/
   engine/                 route-agnostic rules: rng, clock, state, event deck, save, step()
   engine/test/            node --test unit tests
   michigan-fever/
-    route.js mechanics/   this route's rules (purse, travel and pace, health and fatigue, land office, letters, home ties and the post)
+    route.js mechanics/   this route's rules (purse, travel and pace, health and fatigue, land office, letters, home ties and the post, the paths)
     data/                 numbers.json (every number, tagged src or invented), events.json, text.json, backgrounds.json
     art/                  13 webp scene paintings at 1920 and 960 wide, and manifest.json
     ui/                   the browser side: scene, light and weather, synthesised sound, HUD, actions, drive on
     ui/fonts/             IM FELL English (SIL Open Font License 1.1, licence file beside it)
     game.css              the game's stylesheet; assets/site.css is not touched
-    test/                 route tests, drive-on tests and the balance simulation
+    test/                 route tests, drive-on tests, the path tests and the tier simulation
     API.md                the engine interface the UI is built on
 ```
 
@@ -109,7 +109,9 @@ games/
   (never below half its fresh pace, and never past the swamp road's or the
   forest track's own pace), and falls with rest, a roof and a kept Sabbath. A
   team that goes short an ox can buy a fresh yoke at the end of every leg it
-  drives. The engine has a `schedule` effect: a choice can queue a later
+  drives that has road after it (not at the claim). A day that crosses into a
+  new segment runs the rest of the day at that segment's own pace, and pays
+  the swamp road's tolls on the miles it spends there. The engine has a `schedule` effect: a choice can queue a later
   consequence (after some days, or on reaching a place), kept in
   `state.queue`. At most one queued consequence fires in a step and one random
   event a day; every consequence waiting for a town fires while the family is
@@ -121,15 +123,31 @@ games/
   an odd half cent), and money goes home in notes cut in halves; it settles a
   tie only if it reaches home by the tie's date (halves a mail later than whole
   notes). Money sent by mail shows as sent until a letter says whether it came.
-  The route is at version 2, so P1 saves are refused cleanly; a save with a
-  malformed queue (including an `unless` that fails the deck's condition
-  check), ties, letters or fatigue is refused as damaged.
+  A save with a malformed queue (including an `unless` that fails the deck's
+  condition check), ties, letters or fatigue is refused as damaged.
+- **Paths and tiers (P2 Phase B).** Halfway the family can change course,
+  one way, each through a confirm: winter in Detroit for wages (land in coin
+  in the spring of 1837), the Chicago lot boom, settling in Ohio at the Lima
+  land office, turning back for home, or joining kin settled west (by a letter
+  at a post office). Each path is one to three compact legs on the shared
+  mechanics (`mechanics/paths.js`), with its own ending and a sourced
+  epilogue; new places reuse the paintings through `SCENE_FALLBACK` in
+  `route.js`. Every ending reports a tier (0 failed, 1 arrived, 2 full win),
+  shown on the ending screen in words. The route is at version 3, so P1 and
+  Phase A saves are refused cleanly ("old route version").
   The interface is in `games/michigan-fever/API.md`.
 - **Tests.** `node --test games/*/test/*.test.mjs` runs the engine units, the
   route rules, the drive-on checks, the depth systems (`test/depth.test.mjs`),
-  a seeded balance simulation, and the pace trade-off
+  the paths (`test/paths.test.mjs`), the pace trade-off
   (`test/pace-*.test.mjs`: pushing grueling while under 40 or 45 fatigue must
-  not beat a steady pace, and grueling everywhere must lose clearly). CI runs it.
+  not beat a steady pace, and grueling everywhere must lose clearly), and the
+  tier simulation (`test/tiers-main.test.mjs`, `test/tiers-paths.test.mjs`),
+  which prints the tier table per strategy and holds the bands: careful play
+  on the main route a full win in 35-45 percent of 1,500 games and arriving in
+  at least 90; careless play a full win in at most 5 and arriving in at most
+  75; random play about 0; each path's careful player a full win in 15-50
+  percent of the games that took the path, and the Chicago lot held into 1837
+  never. CI runs it.
 - **Saving.** One autosave in `localStorage`, wrapped so private mode or blocked
   storage only loses the save.
 - **Pictures.** The scene paintings are AI-generated (Gemini 3 Pro Image, via

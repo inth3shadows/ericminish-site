@@ -190,6 +190,17 @@ export function createHud(root, handlers) {
     else if (land.candidates.length) landLines.push(["Tracts seen", String(land.candidates.length)]);
     if (land.looker) landLines.push(["Land looker", "hired"]);
     sec("Land", landLines);
+    // A path taken (Phase B), and the Chicago lot if the family holds one.
+    if (v.path) {
+      const pathLines = [["Course", v.path.label]];
+      const lot = v.lot;
+      if (lot) {
+        if (lot.held) pathLines.push(["Town lot", `worth about ${money(lot.market)} now${lot.owed ? `; note owed ${money(lot.owed)}` : ""}${lot.offer ? `; a buyer offers ${money(lot.offer)}` : ""}`]);
+        else if (lot.soldFor != null) pathLines.push(["Town lot", `sold for ${money(lot.soldFor)}`]);
+        else if (lot.forfeit) pathLines.push(["Town lot", "let go for its note"]);
+      }
+      sec("The road taken", pathLines);
+    }
     sec("Family", v.party.map((p) => [`${p.name}, ${p.age}`, `${ROLE[p.role] ?? p.role}, ${personLine(p)}${p.status === "dead" ? "" : `; fatigue ${p.fatigue}`}`]));
     // What the family left behind at home: the ties, what is owed, and any news that has reached them.
     if (v.ties?.length) {

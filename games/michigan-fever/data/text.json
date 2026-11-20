@@ -14,7 +14,14 @@
     "detroit": "Detroit. Every tavern is crowded, and the talk is all of land, money and the road west.",
     "marshall": "Marshall, 115 miles out of Detroit. The land office at Bronson is a few days on.",
     "bronson": "Bronson. The square in front of the Kalamazoo House is white with the tents of the land lookers, and the two land offices are ringed round with them.",
-    "claim": "Your own land. Nothing stands on it yet but the trees."
+    "claim": "Your own land. Nothing stands on it yet but the trees.",
+    "whitepigeon": "White Pigeon, on the Chicago road. The land office here is crowded too.",
+    "chicago": "Chicago. The streets are crowded with land buyers, and every doorway has a man with a map.",
+    "lima": "Lima, a few log houses round the land office in the Ohio woods.",
+    "allens": "Allen's Prairie. Smoke from three cabins, and a man walking out across the stubble to meet you.",
+    "maumee": "The Maumee. The steamboat puts you ashore below the rapids, and your uncle's cabin is up the river road.",
+    "brushhill": "Brush Hill, out on the open prairie past Chicago. Your cousin's cabin stands by a grove of oaks.",
+    "home": "Home. The hill road, the stone walls, the house you left in September."
   },
   "boarding": {
     "packet": "You go aboard the packet. The cabin is one long room, with a curtain between the men's berths and the women's.",
@@ -45,7 +52,22 @@
     "town-detroit": "at Detroit",
     "office": "in the land office camp at Bronson",
     "default": "on the way west",
-    "claimTrack": "on the track out to the claim"
+    "claimTrack": "on the track out to the claim",
+    "chicagoRoad": "on the Chicago road",
+    "chicagoStage": "on the stage to Chicago",
+    "chicagoLakes": "aboard a steamboat on the upper lakes",
+    "toLima": "on the track south to Lima",
+    "backRoad": "on the Territorial Road, going back east",
+    "homePassage": "on the way home",
+    "toAllens": "on the road to Allen's Prairie",
+    "toMaumee": "aboard a steamboat bound for the Maumee",
+    "toBrushHill": "on the road to Brush Hill",
+    "town-chicago": "at Chicago",
+    "office-lima": "in the land office camp at Lima",
+    "kin-allens": "at Allen's Prairie",
+    "kin-maumee": "on the Maumee",
+    "kin-brushhill": "at Brush Hill",
+    "home": "at home"
   },
   "burial": {
     "vermont": "The family buried {him} in a churchyard by the road and went on {griefDays} days later.",
@@ -59,7 +81,22 @@
     "town-detroit": "The family buried {him} in the town burying ground and stayed {griefDays} days more.",
     "office": "The family buried {him} in the burying ground at Bronson and kept to the tents {griefDays} days before taking up their business again.",
     "default": "The family buried {him} and waited {griefDays} days before going on.",
-    "claimTrack": "The family buried {him} beside the road, marked the place with a cut board, and went on {griefDays} days later."
+    "claimTrack": "The family buried {him} beside the road, marked the place with a cut board, and went on {griefDays} days later.",
+    "chicagoRoad": "The family buried {him} beside the road, marked the place with a cut board, and went on {griefDays} days later.",
+    "toLima": "The family buried {him} beside the road, marked the place with a cut board, and went on {griefDays} days later.",
+    "backRoad": "The family buried {him} beside the road, marked the place with a cut board, and went on {griefDays} days later.",
+    "toAllens": "The family buried {him} beside the road, marked the place with a cut board, and went on {griefDays} days later.",
+    "toBrushHill": "The family buried {him} beside the road, marked the place with a cut board, and went on {griefDays} days later.",
+    "chicagoStage": "The stage waited while the family buried {him} at the next tavern, and they went on {griefDays} days later.",
+    "chicagoLakes": "The family carried {him} ashore at the next landing, buried {him} there, and waited {griefDays} days for another boat.",
+    "toMaumee": "The family carried {him} ashore at the river's mouth, buried {him} there, and waited {griefDays} days before going on.",
+    "homePassage": "The family buried {him} where the passage put in, and went on toward home {griefDays} days later.",
+    "town-chicago": "The family buried {him} in the burying ground by the lake and stayed {griefDays} days more.",
+    "office-lima": "The family buried {him} at Lima and kept to the camp {griefDays} days before taking up their business again.",
+    "kin-allens": "The family buried {him} on the prairie beside their kin's dead and did no work for {griefDays} days.",
+    "kin-maumee": "The family buried {him} on the river bank beside their kin's dead and did no work for {griefDays} days.",
+    "kin-brushhill": "The family buried {him} by the grove beside their kin's dead and did no work for {griefDays} days.",
+    "home": "The family buried {him} in the churchyard at home."
   },
   "letterLabel": "A letter home. This letter is fiction, written for the game: the family and its letters are invented.",
   "letters": {
@@ -421,5 +458,227 @@
         "open": "At home, the subscription still stood against the family's name."
       }
     }
-  ]
+  ],
+  "tiers": {
+    "main": {
+      "0": "The journey failed: the family never reached the Kalamazoo land office as a household.",
+      "1": "The family reached the land office country alive, but without everything they came for.",
+      "2": "A full success: land paid for, a roof before winter, and every one of the family alive."
+    },
+    "detroit": {
+      "0": "The family did not come through the Detroit winter as a household.",
+      "1": "The family came through the Detroit winter alive, but without everything they stayed for.",
+      "2": "A full success: through the winter, forty acres or more bought in coin by June, and no one lost."
+    },
+    "chicago": {
+      "0": "The family never reached Chicago as a household.",
+      "1": "The family reached Chicago alive, but the boom or the season beat them.",
+      "2": "A full success: out of the lot before the spring, a farm with a roof on it, and no one lost."
+    },
+    "ohio": {
+      "0": "The family never reached the Lima land office as a household.",
+      "1": "The family reached the Ohio land office alive, but without everything they came for.",
+      "2": "A full success: land in Ohio, a roof before winter, and every one of the family alive."
+    },
+    "home": {
+      "0": "The family did not get home together.",
+      "1": "The family got home alive, but late, short of someone, or too late to put things right at home.",
+      "2": "As good as turning back can be: home before winter, no one lost, and every tie at home seen to in time."
+    },
+    "kin": {
+      "0": "The family never reached their kin as a household.",
+      "1": "The family reached their kin alive, but late, short of someone, or without land or work.",
+      "2": "A full success: with kin before the snow, no one lost, and land beside them or work with them."
+    }
+  },
+  "westLetterLabel": "A letter from kin in the West. This letter is fiction, written for the game: the family and its letters are invented.",
+  "westOffer": {
+    "work": "There is work here for every pair of hands you bring, the winter through, and your keep besides.",
+    "land": "The government land near us is all taken up, but the forty acres next to ours is held by a man in Detroit who will sell for {land}."
+  },
+  "westLetters": {
+    "allens": "{to},\n\nWord came from home that you had sold up and were starting for Michigan. Come to us at Allen's Prairie before you settle anywhere. Father went first, and now four of our families are on the prairie together, and the soil is the best I ever put a plough in.\n\n{offer}\n\nThe road from Detroit is by Saline and the Chicago turnpike. Any man at Jonesville can tell you our place.\n\nYour affectionate\n{sender}",
+    "ohio": "{to},\n\nWe hear from home that you are on the road west. Before you go on to Michigan, think of us here on the Maumee. The boats from Buffalo put in at the river's mouth, and we are an easy day above it.\n\n{offer}\n\nWe have had the ague, but who has not.\n\nYour loving uncle\n{sender}",
+    "illinois": "{to},\n\nThey write from home that you are coming west. Come all the way to us at Brush Hill, past Chicago. One mile here on the prairie is not so much to travel as half a mile among your hills.\n\n{offer}\n\nThe Chicago road from Detroit is long, but it is full of wagons the whole way.\n\nYour affectionate cousin\n{sender}"
+  },
+  "paths": {
+    "setOut": {
+      "chicagoRoad": "You leave Detroit by the Chicago road, the busiest road in the West, with wagons ahead and behind as far as you can see.",
+      "toAllens": "You leave Detroit for Saline and the Chicago turnpike, to find {name} at Allen's Prairie.",
+      "toBrushHill": "You leave Detroit by the Chicago road, the long way to {name} at Brush Hill."
+    },
+    "winter": {
+      "earned": "The week's work brings in {amount} in {paper}.",
+      "noWork": "There is no work to be had this week.",
+      "noRoom": "With no money for the room, the family spends {n} in a shed against the cold.",
+      "westernPaper": "western paper"
+    },
+    "detroit": {
+      "label": "Wintering in Detroit",
+      "start": "You take a room by the night near the river and look for work by the day. Nobody goes west now until the roads open in the spring.",
+      "spring": "The roads are open. You load the wagon and take the Territorial Road west, with what coin you have sewn into a coat lining.",
+      "endings": {
+        "spring-land": {
+          "title": "Land in the spring",
+          "text": "{Family} came through the winter in Detroit and paid for their land in silver in the spring of 1837, when the land office took nothing else."
+        },
+        "spring-noland": {
+          "title": "Through the winter, no land",
+          "text": "{Family} came through the winter in Detroit, but June came with no land paid for. The land office takes only gold and silver, and their paper is worth less every week."
+        }
+      },
+      "epilogue": [
+        {
+          "text": "The banks of New York stopped paying specie on 10 May 1837. The news reached Detroit by the morning boat on 16 May, and the Detroit banks suspended the next day.",
+          "source": "Silas Farmer, History of Detroit and Michigan (1884)",
+          "url": "https://archive.org/details/historydetroita01farmgoog"
+        },
+        {
+          "text": "Blois's gazetteer told emigrants in 1838 that common labourers \"are, and will continue to be wanted for years\" on the state's canals and railroads. Within a year the Panic had stalled the state works.",
+          "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 417",
+          "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC"
+        },
+        {
+          "text": "In 1837 Detroit's carpenters struck for a ten-hour day and two dollars' pay, the city's first strike.",
+          "source": "Timeline of Labor in Detroit (Humanities Commons)",
+          "url": "https://hcommons.org/?get_group_doc=1004037%2F1692890320-TimelineofLaborinDetroit_1.pdf"
+        }
+      ]
+    },
+    "chicago": {
+      "label": "The Chicago lot boom",
+      "start": {
+        "road": "You will go on to Chicago by the Chicago road, with your own wagon.",
+        "stage": "You pay the stage fares and crowd aboard with the land buyers bound for Chicago.",
+        "lakes": "You take cabin passage on a steamboat bound round the lakes for Chicago."
+      },
+      "boughtCash": "You pay {price} and take the deed to a town lot on a street that is so far only stakes in the grass.",
+      "boughtCredit": "You pay the money down and sign a note for the rest. The lot is valued at {price} today.",
+      "sold": "You sell the lot for {amount} and count yourselves lucky to be out.",
+      "endings": {
+        "prairie-farm": {
+          "title": "A farm on the prairie",
+          "text": "{Family} came out of the Chicago boom with a farm on the prairie and a roof over it."
+        },
+        "prairie-roofless": {
+          "title": "Prairie land, no roof",
+          "text": "{Family} have land on the prairie, but no finished cabin. They will live in the wagon and a half-built shelter a while yet."
+        },
+        "lot-held": {
+          "title": "Holding the lot",
+          "text": "{Family} still hold their Chicago lot. Nobody is buying now, and the paper money they would be paid in is failing."
+        },
+        "no-farm": {
+          "title": "No farm",
+          "text": "{Family} came to Chicago for the boom and leave the spring of 1837 with no farm of their own."
+        }
+      },
+      "epilogue": [
+        {
+          "text": "Chicago lot prices peaked in July 1836. By 1839 the government sold the Fort Dearborn lots for $200 to $500 apiece, about $100,000 in all for land that would have brought over $900,000 in 1836.",
+          "source": "Homer Hoyt, One Hundred Years of Land Values in Chicago (1933), pp. 39-40",
+          "url": "https://archive.org/details/onehundredyearso00hoytrich"
+        },
+        {
+          "text": "William B. Ogden wrote in June 1839: \"One fourth of 1836 prices can hardly be obtained for much business property at this time and one 10th to a 20th is about all out town property will bring.\"",
+          "source": "Hoyt (1933), quoting Ogden to Butler, 17 June 1839",
+          "url": "https://archive.org/details/onehundredyearso00hoytrich"
+        }
+      ]
+    },
+    "ohio": {
+      "label": "Settling in Ohio",
+      "start": "You turn the wagon off the Detroit road and south into the woods, for the land office at Lima.",
+      "endings": {
+        "settled": {
+          "title": "Settled in Ohio",
+          "text": "The cabin is roofed. The land is entered and paid for at Lima, and {family} will winter on their own claim in Ohio."
+        },
+        "roofless": {
+          "title": "Ohio land, no roof",
+          "text": "The land at Lima is paid for, but the cabin is not finished. {Family} will spend the winter in a half-built shelter."
+        },
+        "winter": {
+          "title": "Caught by winter in Ohio",
+          "text": "The year ends with {family} still without land in Ohio. They will have to find work for the winter and try again in the spring, in coin."
+        },
+        "deadline": {
+          "title": "Past the deadline",
+          "text": "15 December has come and gone. The Lima office now takes only gold and silver, and {family} do not have enough of it."
+        }
+      },
+      "epilogue": [
+        {
+          "text": "The Lima land office sold federal land from 1835 to 1843. Its records burned with the Defiance office's in 1855, so little is known of its sales; patents dated March 1837 survive for land in Allen and Putnam counties.",
+          "source": "Wood County library wiki (summary only); BLM patent index via combs-families.org",
+          "url": "https://combs-families.org/combs/blm/oh.htm"
+        },
+        {
+          "text": "Federal land sales across the country fell from 1,282,992 acres in 1836 to 470,420 in 1837, after the crash.",
+          "source": "A Journal of Economic History note on Ohio canal lands, seen only as a search summary (uncertain)",
+          "url": null
+        }
+      ]
+    },
+    "home": {
+      "label": "Turning back",
+      "fromBronson": "First the Territorial Road back to Detroit, then passage east from there.",
+      "early": "Deck passage to Buffalo, the line boat to Albany and the hill road home: about {days} days.",
+      "late": "The lakes are closing: the winter stage to Buffalo, then the canal and the hill road, about {days} days.",
+      "passage": "You pay the fares east. It is about {days} days home by boat, canal and road.",
+      "startBronson": "You turn the wagon round and take the Territorial Road back toward Detroit.",
+      "endings": {
+        "home": {
+          "title": "Home again",
+          "text": "{Family} are back on the hill farm they left. The neighbours ask about Michigan, and nobody answers for long."
+        }
+      },
+      "epilogue": [
+        {
+          "text": "Michigan's boosters said few went back: \"Very few who have emigrated westward have been known to return.\" Those who did, Blois wrote, \"return impoverished, casting imprecations upon the country.\"",
+          "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 416-417",
+          "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC"
+        },
+        {
+          "text": "Some did go back. A settler at Gull Prairie wrote east in April 1837: \"Do you know anything about Mr. Fisk's family & how they like old Mass. since they returned?\"",
+          "source": "Sylvia Buell to Rhoderick and Emily Dwight, 8 April 1837 (Historical Society of Old Northfield transcription)",
+          "url": "https://nordoniahills.news/?p=67021"
+        }
+      ]
+    },
+    "kin": {
+      "label": "Joining kin",
+      "start": {
+        "allens": "You write {name} that you are coming, and turn your plans toward Allen's Prairie.",
+        "ohio": "You take deck passage for the Maumee, to go to {name}.",
+        "illinois": "You write {name} that you are coming, and turn your plans toward Brush Hill."
+      },
+      "endings": {
+        "kin-land": {
+          "title": "Land beside kin",
+          "text": "{Family} bought the forty acres beside {name} at {kinPlace}, and will winter with their own people around them."
+        },
+        "kin-work": {
+          "title": "Work with kin",
+          "text": "{Family} will winter at {kinPlace} working for {name}, for their keep and a share, and look for land of their own in the spring."
+        },
+        "kin-floor": {
+          "title": "A winter on kin's floor",
+          "text": "{Family} reached {name} at {kinPlace} and will winter on the floor by their fire, with no land and no work of their own yet."
+        }
+      },
+      "epilogue": [
+        {
+          "text": "The Lawrences of Geneseo went to Allen's Prairie one son at a time: the youngest cut the first tree in December 1835, the father entered land in May 1836, and by June 1837 four families, twenty-eight people, sat round the grandfather's fireplace.",
+          "source": "H. N. Lawrence, \"Twice a Pioneer\", Michigan Pioneer and Historical Collections vol. 18, pp. 355-360",
+          "url": "https://archive.org/details/michiganpioneerh0018unse"
+        },
+        {
+          "text": "Kin followed kin. An Illinois settler wrote home to Vermont in 1838: \"I should think that a man in Vermont would be sick of home if he was to be here one season and work over the soil.\"",
+          "source": "John Petrie to Eli English, 1838, in Flow of History, Migration from Vermont",
+          "url": "https://www.flowofhistory.org/wp-content/uploads/2020/07/Migration-from-Vermont-short.pdf"
+        }
+      ]
+    }
+  }
 }

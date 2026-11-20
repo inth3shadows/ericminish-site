@@ -32,17 +32,17 @@
   },
   {
     "id": "date.snowEarliest",
-    "value": "1836-11-18",
+    "value": "1836-11-10",
     "unit": "date",
     "tag": "invented",
-    "note": "No sourced first-snow date for 1836; the snow falls on a seeded day in this range."
+    "note": "No sourced first-snow date for 1836; the snow falls on a seeded day in this range. Retuned in P2 Phase B from 1836-11-18 to 1836-11-10: the tier band; still no sourced 1836 date, and Blois has the Detroit River closing only in December."
   },
   {
     "id": "date.snowLatest",
-    "value": "1836-12-08",
+    "value": "1836-12-03",
     "unit": "date",
     "tag": "invented",
-    "note": "Latest seeded first-snow date."
+    "note": "Latest seeded first-snow date. Retuned in P2 Phase B from 1836-12-08 to 1836-12-03: the tier band, with date.snowEarliest."
   },
   {
     "id": "swamp.dryLastMonth",
@@ -1364,10 +1364,10 @@
   },
   {
     "id": "shelter.perUnit",
-    "value": 0.72,
+    "value": 0.63,
     "unit": "points/worker/day",
     "tag": "invented",
-    "note": "Cabin progress per worker per day; families cut 50-60 trees for a temporary cabin (Michiganology), time unsourced."
+    "note": "Cabin progress per worker per day; families cut 50-60 trees for a temporary cabin (Michiganology), time unsourced. Retuned in P2 Phase B from 0.72 to 0.63: the tier band (careful play lands a full win 35-45 percent; user decision: hard at the end)."
   },
   {
     "id": "shelter.done",
@@ -2648,5 +2648,462 @@
     "unit": "points",
     "tag": "invented",
     "note": "Cabin progress from neighbours who come back to help drag logs; invented, and kept small for balance."
+  },
+  {
+    "id": "path.end",
+    "value": "1837-06-30",
+    "unit": "date",
+    "tag": "invented",
+    "note": "The last day of a path that winters over (Detroit, Chicago): the spec's 'by June 1837' for land bought in coin. A game choice, not a sourced date."
+  },
+  {
+    "id": "date.thaw",
+    "value": "1837-04-01",
+    "unit": "date",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), physical geography (r3 §2a)",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "likely",
+    "note": "Detroit navigation opens \"from the 20th of March to the 1st of April\". The game also ends the snow on the roads on this day; that use is the game's (r3 §7: no 1836-37 snow dates)."
+  },
+  {
+    "id": "ev.p.winter",
+    "value": 0.35,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of an event after a week wintering in a town (Detroit, Chicago); invented, the same as a day in town."
+  },
+  {
+    "id": "winter.findP",
+    "value": 0.5,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of a day's hire in a winter town, below the autumn 0.7: r3 §7 has no Detroit winter wage series, only that labourers were wanted (Blois). Invented."
+  },
+  {
+    "id": "winter.room",
+    "value": 0.5,
+    "unit": "USD/day",
+    "tag": "invented",
+    "note": "A room for the whole family by the night in a winter town. Invented: r3 §7 has no winter lodging series; the 50 cents is Kirkland's peak price for six feet of bar-room floor (one person), used here for a family's room."
+  },
+  {
+    "id": "path.detroit.offerFrom",
+    "value": "1836-11-01",
+    "unit": "date",
+    "tag": "invented",
+    "note": "From this date a family at Detroit is offered the winter there: the spec's 'after about 1 Nov'. Navigation closes about mid-December (r3 §2a, the researcher's estimate)."
+  },
+  {
+    "id": "bank.suspend.detroit",
+    "value": "1837-05-17",
+    "unit": "date",
+    "tag": "src",
+    "source": "Silas Farmer, History of Detroit and Michigan (1884), the Panic of 1837 (r3 §2a)",
+    "url": "https://archive.org/details/historydetroita01farmgoog",
+    "confidence": "solid",
+    "note": "The New York banks suspended on 10 May 1837; the news reached Detroit on 16 May, and the Detroit banks suspended on 17 May."
+  },
+  {
+    "id": "disc.miSuspended",
+    "value": 0.25,
+    "unit": "fraction",
+    "tag": "invented",
+    "note": "Michigan notes once the Detroit banks have suspended. Dove, Pecquet and Thies give 12.5 percent at Buffalo in November 1837 and later about 25; the Detroit spring rate itself is unsourced."
+  },
+  {
+    "id": "mi.detroitWhitePigeon",
+    "value": 144,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), article White Pigeon (r3 §2b)",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "solid",
+    "note": "White Pigeon, on the Chicago road, is \"144 [miles] from Detroit\"."
+  },
+  {
+    "id": "mi.whitePigeonChicago",
+    "value": 110,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 413 and article White Pigeon (r3 §2b)",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "likely",
+    "note": "Arithmetic on two printed figures: the Chicago road's whole length of 254 miles less White Pigeon's 144."
+  },
+  {
+    "id": "stage.chicago.days",
+    "value": 7,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days by stage from Detroit to Chicago. Blois prints the fare and 300 miles (r3 §2b) but no days; about 45 miles a day is invented."
+  },
+  {
+    "id": "fare.cabin.chicago",
+    "value": 20,
+    "unit": "USD",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 415 (r3 §2b)",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "solid",
+    "note": "Cabin passage by water from Buffalo to Chicago, $20 (\"$12 to Mackinac\")."
+  },
+  {
+    "id": "freight.chicago.cwt",
+    "value": 0.75,
+    "unit": "USD/cwt",
+    "tag": "src",
+    "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 415 (r3 §2b)",
+    "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+    "confidence": "solid",
+    "note": "Freight Buffalo to Chicago, 75 cents a hundredweight for heavy goods."
+  },
+  {
+    "id": "lake.chicago.days",
+    "value": 9,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days by steamboat from Buffalo round Mackinac to Chicago; Blois gives the fare but not the time. Invented."
+  },
+  {
+    "id": "lot.price",
+    "value": 300,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "What a town lot an emigrant family could reach cost in the autumn of 1836. Hoyt's lots ran from $100 (1830) to $100,000 (the best, 1836); r3 notes a family with $200 would buy on credit. The figure is invented."
+  },
+  {
+    "id": "lot.down",
+    "value": 0.25,
+    "unit": "fraction",
+    "tag": "invented",
+    "note": "The share paid down on a lot bought on credit; the rest is a note. Invented."
+  },
+  {
+    "id": "lot.interest",
+    "value": 0.1,
+    "unit": "fraction/year",
+    "tag": "src",
+    "source": "Hoyt, One Hundred Years of Land Values in Chicago (1933) (r3 §2b)",
+    "url": "https://archive.org/details/onehundredyearso00hoytrich",
+    "confidence": "solid",
+    "note": "Interest rates in 1836 Chicago were \"not less than 10 per cent per annum\"."
+  },
+  {
+    "id": "lot.noteDue",
+    "value": "1837-05-01",
+    "unit": "date",
+    "tag": "invented",
+    "note": "When a lot note falls due: a six-month term from the autumn, invented."
+  },
+  {
+    "id": "lot.index.start",
+    "value": 0.9,
+    "unit": "fraction",
+    "tag": "invented",
+    "note": "Market value of a lot on 15 September 1836 against the July peak. Hoyt: on 5 September the bids \"fell short of the Commissioners' appraisals\"; the 0.9 is invented."
+  },
+  {
+    "id": "lot.index.weekly",
+    "value": 0.015,
+    "unit": "fraction/week",
+    "tag": "invented",
+    "note": "How far lot values slide each week through the winter \"lull\" Hoyt describes; the rate is invented."
+  },
+  {
+    "id": "lot.crash",
+    "value": 0.075,
+    "unit": "fraction",
+    "tag": "src",
+    "source": "Hoyt, One Hundred Years of Land Values in Chicago (1933), pp. 39-40, Ogden to Butler, 17 June 1839 (r3 §2b)",
+    "url": "https://archive.org/details/onehundredyearso00hoytrich",
+    "confidence": "solid",
+    "note": "\"one 10th to a 20th is about all out town property will bring\" (1839): the game takes the middle of that range from the bank suspension of 1837 on, earlier than Ogden's date."
+  },
+  {
+    "id": "bank.suspend.illinois",
+    "value": "1837-05-29",
+    "unit": "date",
+    "tag": "src",
+    "source": "Wikipedia, Chicago real estate bubble of the 1830s, summarizing Glaeser (2013) (r3 §2b)",
+    "url": "https://en.wikipedia.org/wiki/Chicago_real_estate_bubble_of_the_1830s",
+    "confidence": "uncertain",
+    "note": "Illinois banks suspended on 29 May 1837 (summary only)."
+  },
+  {
+    "id": "lot.buyerP",
+    "value": 0.35,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance in a week that a buyer makes an offer for the family's lot through the autumn and winter. Invented."
+  },
+  {
+    "id": "lot.buyerP.spring",
+    "value": 0.1,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance of a buyer in a week from the spring of 1837: few were buying. Ogden still sold at full prices that May (Hoyt), but he held the best property; invented."
+  },
+  {
+    "id": "lot.offer.low",
+    "value": 0.8,
+    "unit": "fraction",
+    "tag": "invented",
+    "note": "The lowest offer, as a share of the lot's market value that week. Invented."
+  },
+  {
+    "id": "lot.offer.high",
+    "value": 1.3,
+    "unit": "fraction",
+    "tag": "invented",
+    "note": "The highest offer, as a share of market value: in the mania some buyers still overpaid (Martineau via Hoyt). Invented."
+  },
+  {
+    "id": "farm.chicago.miles",
+    "value": 9,
+    "unit": "miles",
+    "tag": "src",
+    "source": "Hoyt, One Hundred Years of Land Values in Chicago (1933) (r3 §2b)",
+    "url": "https://archive.org/details/onehundredyearso00hoytrich",
+    "confidence": "solid",
+    "note": "Some lots 8 to 10 miles out were \"valued at but little more than the original government minimum price of $1.25\": the middle of that range."
+  },
+  {
+    "id": "mi.perrysburgLima",
+    "value": 70,
+    "unit": "miles",
+    "tag": "invented",
+    "note": "Perrysburg to the Lima land office by the track south through the swamp country. UNRESOLVED (r3 §7 Ohio): no sourced distance or road; invented."
+  },
+  {
+    "id": "fare.homeRoad",
+    "value": 3,
+    "unit": "USD/person",
+    "tag": "invented",
+    "note": "Albany back to the hill farm by stage and carrier for a family without its own team. UNRESOLVED (r3 §7: no Vermont-Albany days or cost); invented."
+  },
+  {
+    "id": "kin.callP",
+    "value": 0.5,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance a relative already settled west writes inviting the family. Chain migration was common (r3 §2e, Lawrence and Flow of History), but no rate is sourced; invented."
+  },
+  {
+    "id": "kin.w.allens",
+    "value": 3,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Relative weight of kin settled at Allen's Prairie, Michigan (the Lawrence pattern, r3 §2e). Invented."
+  },
+  {
+    "id": "kin.w.ohio",
+    "value": 2,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Relative weight of kin settled in northern Ohio. Invented."
+  },
+  {
+    "id": "kin.w.illinois",
+    "value": 2,
+    "unit": "weight",
+    "tag": "invented",
+    "note": "Relative weight of kin settled in Illinois (the Torode letters, r3 §2b, summary only). Invented."
+  },
+  {
+    "id": "kin.workP",
+    "value": 0.3,
+    "unit": "probability",
+    "tag": "invented",
+    "note": "Chance the kin's letter says they have work for the family through the winter. Invented. Retuned in P2 Phase B from 0.5 to 0.3: the tier band for the kin path (15-50 percent full wins): most settled kin had no winter work to spare."
+  },
+  {
+    "id": "mi.detroitAllens",
+    "value": 90,
+    "unit": "miles",
+    "tag": "invented",
+    "note": "Detroit to Allen's Prairie by Saline and the Chicago turnpike (Lawrence, PC18 pp. 355-360). The distance is UNRESOLVED in the research; invented."
+  },
+  {
+    "id": "lake.maumee.days",
+    "value": 2,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days by steamboat from Buffalo to the Maumee; the Lawrences went Buffalo to Toledo with the wagon on deck in 1837 (PC18), but the time is unsourced. Invented."
+  },
+  {
+    "id": "fare.maumee",
+    "value": 3,
+    "unit": "USD/person",
+    "tag": "invented",
+    "note": "Deck passage Buffalo to the Maumee: unsourced, taken at the Detroit deck fare. Invented."
+  },
+  {
+    "id": "mi.chicagoBrushHill",
+    "value": 18,
+    "unit": "miles",
+    "tag": "invented",
+    "note": "Chicago to Brush Hill, Illinois, where the Torode letters were written (r3 §2b, summary only). Unsourced; invented."
+  },
+  {
+    "id": "zone.chicagoRoad",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.chicagoStage",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.chicagoLakes",
+    "value": 4,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.toLima",
+    "value": 3,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.backRoad",
+    "value": 4,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.homePassage",
+    "value": 2,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.toAllens",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.toMaumee",
+    "value": 3,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.toBrushHill",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.chicago",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.lima",
+    "value": 3,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.allens",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.maumee",
+    "value": 3,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.brushhill",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "zone.whitepigeon",
+    "value": 5,
+    "unit": "zone",
+    "tag": "invented",
+    "note": "Distance band west of New England, used for note discounts (a path's leg or place)."
+  },
+  {
+    "id": "winter.weekDays",
+    "value": 7,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days in one winter-town turn: a week, so a winter is some twenty turns rather than a hundred and fifty (pacing)."
+  },
+  {
+    "id": "ev.suspension.rate",
+    "value": 0.9,
+    "unit": "fraction",
+    "tag": "invented",
+    "note": "What brokers paid in silver for Michigan notes on the day the suspension news came; invented."
+  },
+  {
+    "id": "ev.wood.cost",
+    "value": 2,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A load of firewood in a Detroit winter; unsourced, invented."
+  },
+  {
+    "id": "ev.works.pay",
+    "value": 5,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "A week's pay for one man clearing the state railroad line, at about the day wage; invented."
+  },
+  {
+    "id": "ev.chiRent.cost",
+    "value": 2,
+    "unit": "USD",
+    "tag": "invented",
+    "note": "What a Chicago landlord added to the week's room; invented."
+  },
+  {
+    "id": "land.queue.lima.min",
+    "value": 1,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Shortest wait at the Lima window (the Ohio path). UNRESOLVED (r3 §7: no Lima sales records survive the 1855 fire); a small office in the woods is assumed less crowded than Bronson's. Invented."
+  },
+  {
+    "id": "land.queue.lima.max",
+    "value": 5,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Longest wait at the Lima window; invented, as land.queue.lima.min."
+  },
+  {
+    "id": "price.flour.winter",
+    "value": 20,
+    "unit": "USD/barrel",
+    "tag": "invented",
+    "note": "A barrel of flour in a winter town (Detroit, Chicago) once the lakes close and nothing comes in by water. Invented: no Detroit winter price is sourced (r3 §7); $20 is the 1836-37 interior scarcity price (History of Calhoun County, round 2)."
   }
 ]

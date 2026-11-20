@@ -16,6 +16,7 @@ import { compare, addDays, format } from "../../engine/clock.js";
 import { addRes, resolve } from "../../engine/events.js";
 import * as P from "./purse.js";
 import { living } from "./health.js";
+import { KIN_OFFICE } from "./paths.js";
 
 const PLACE_LABEL = { perrysburg: "Perrysburg" };
 // "5 November"
@@ -105,6 +106,10 @@ export function makeMail(ctx) {
     addMail(ctx, { key: "news", tie: t.id, office: def.newsAt, from: start, written: start });
     addMail(ctx, { key: "outcome", tie: t.id, office: "bronson", from: addDays(num(`tie.${t.id}.due`), num("post.transitDays")), written: num(`tie.${t.id}.due`) });
   }
+  // Kin already settled west (paths.js drawWest): their letter, written when word
+  // came from home that the family was starting, waits on the way (P2 Phase B).
+  const west = state.vars.west;
+  if (west) addMail(ctx, { key: "call", tie: null, office: KIN_OFFICE[west.where], from: start, written: addDays(start, -num("post.transitDays")) });
 }
 
 // Tie events (a mortgage agent at Detroit, ...) go in the schedule queue.
@@ -146,11 +151,26 @@ function letterText(ctx, m) {
   const head = headOf(ctx.state);
   const vars = { ...tieVars(ctx, t), to: head?.sex === "f" ? "Dear Sister" : "Dear Brother", sender: ctx.state.vars.kin?.name ?? "" };
   let tpl;
+  if (m.key === "call") return ctx.text(T.westLetters[ctx.state.vars.west.where], westVars(ctx));
   if (m.key === "kin") tpl = T.homeLetters.kin;
   else if (m.key === "news") tpl = def.news;
   else if (m.key === "lost") tpl = T.homeLetters.lost;
   else tpl = def.outcome[t.outcome] ?? def.news;
   return ctx.text(tpl, vars);
+}
+
+// The words a western kin's letter is filled with: who writes, where, what they offer.
+export function westVars(ctx) {
+  const s = ctx.state;
+  const w = s.vars.west;
+  const T = ctx.route.data.text;
+  const head = headOf(s);
+  const t = w?.tie ? tieOf(s, w.tie) : null;
+  return {
+    to: head?.sex === "f" ? "Dear Niece" : "Dear Nephew", name: w?.name ?? "", sender: w?.name ?? "",
+    what: t ? ctx.text(tieDef(ctx.route, t.id).purpose, tieVars(ctx, t)) : "",
+    offer: w?.work ? T.westOffer.work : T.westOffer.land, land: P.money(P.cents(ctx.num("spec.price.openings") * ctx.num("land.acres.small"))),
+  };
 }
 
 // Take every letter waiting at `office`: pay the postage, show each as a
@@ -165,10 +185,14 @@ export function collectMail(ctx, office) {
   for (const m of list) {
     m.status = "taken";
     m.taken = state.date;
+    const west = m.key === "call";
     ctx.emit({
-      type: "letter", fiction: true, label: T.homeLetterLabel, from: "home", sender: state.vars.kin?.name ?? "",
+      type: "letter", fiction: true, label: west ? T.westLetterLabel : T.homeLetterLabel, from: west ? "west" : "home",
+      sender: west ? state.vars.west.name : state.vars.kin?.name ?? "",
       to: head ? `${head.name} ${state.vars.surname}` : state.vars.surname, date: m.written ?? state.date, office, text: letterText(ctx, m),
     });
+    // The kin's invitation: the offer comes once the family has left the counter.
+    if (west && !state.vars.path) ctx.schedule({ event: "kin-call", in: { at: office } });
     let mood = num("morale.letterHome");
     const t = m.tie ? tieOf(state, m.tie) : null;
     if (t && m.key === "outcome") {
@@ -276,7 +300,7 @@ function takeNotesAtHome(state, num, amount) {
   let left = amount;
   for (const r of ["ne", "ny", "mi"]) {
     if (left <= 0) break;
-    const d = P.discount(r, num("zone.home"), num);
+    const d = P.discount(r, num("zone.home"), num, state);
     const cover = Math.min(left, Math.floor(state.purse.notes[r] * (1 - d)));
     if (cover <= 0) continue;
     state.purse.notes[r] -= Math.min(state.purse.notes[r], Math.ceil(cover / (1 - d)));

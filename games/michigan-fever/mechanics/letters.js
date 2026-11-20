@@ -18,6 +18,9 @@ function fill(tpl, vars) {
 export function placeKey(p) {
   const d = p.died;
   if (d.leg === "town") return `town-${d.place}`;
+  // The land office at Lima on the Ohio path has its own words; Bronson's are "office".
+  if (d.leg === "office" && d.place !== "bronson") return `office-${d.place}`;
+  if (d.leg === "kin") return `kin-${d.place}`;
   return d.leg;
 }
 

@@ -1841,7 +1841,17 @@
     "weight": "#w.frequent",
     "once": true,
     "when": {
-      "land": "applied"
+      "all": [
+        {
+          "land": "applied"
+        },
+        {
+          "path": [
+            "main",
+            "detroit"
+          ]
+        }
+      ]
     },
     "text": "A man in the next tent says he has handed in a description for the same quarter section you did.",
     "choices": [
@@ -1874,9 +1884,19 @@
     "weight": "#w.common",
     "once": true,
     "when": {
-      "coin": [
-        ">",
-        0
+      "all": [
+        {
+          "coin": [
+            ">",
+            0
+          ]
+        },
+        {
+          "path": [
+            "main",
+            "detroit"
+          ]
+        }
       ]
     },
     "text": "The innkeeper offers to keep your coin in his strongbox while you look for land.",
@@ -1956,7 +1976,17 @@
     "weight": "#w.common",
     "once": true,
     "when": {
-      "phase": "office"
+      "all": [
+        {
+          "phase": "office"
+        },
+        {
+          "path": [
+            "main",
+            "detroit"
+          ]
+        }
+      ]
     },
     "text": "A man putting up a frame house wants hands, and pays by the day.",
     "choices": [
@@ -2009,7 +2039,17 @@
     "weight": "#w.common",
     "once": true,
     "when": {
-      "phase": "office"
+      "all": [
+        {
+          "phase": "office"
+        },
+        {
+          "path": [
+            "main",
+            "detroit"
+          ]
+        }
+      ]
     },
     "text": "The ague is going through the tents. In the next tent a whole family lies shaking under one blanket.",
     "choices": [
@@ -2060,7 +2100,17 @@
     "weight": "#w.common",
     "once": true,
     "when": {
-      "phase": "office"
+      "all": [
+        {
+          "phase": "office"
+        },
+        {
+          "path": [
+            "main",
+            "detroit"
+          ]
+        }
+      ]
     },
     "text": "The store at Bronson has no flour at any price today. A man in the tents offers to sell half a barrel.",
     "choices": [
@@ -2265,10 +2315,19 @@
     "weight": "#w.frequent",
     "once": true,
     "when": {
-      "cmp": [
-        "land.tract.poor",
-        "==",
-        true
+      "all": [
+        {
+          "cmp": [
+            "land.tract.poor",
+            "==",
+            true
+          ]
+        },
+        {
+          "path": [
+            "main"
+          ]
+        }
       ]
     },
     "text": "The ground you chose turns out to hold water. The cabin site floods after a night's rain.",
@@ -2320,7 +2379,16 @@
     "weight": "#w.common",
     "once": true,
     "when": {
-      "phase": "claim"
+      "all": [
+        {
+          "phase": "claim"
+        },
+        {
+          "path": [
+            "main"
+          ]
+        }
+      ]
     },
     "text": "A neighbour is riding to Bronson and offers to carry a letter home, if you can pay the postage.",
     "choices": [
@@ -4195,6 +4263,12 @@
         },
         {
           "land": "applied"
+        },
+        {
+          "path": [
+            "main",
+            "detroit"
+          ]
         }
       ]
     },
@@ -4271,7 +4345,17 @@
     "id": "chain-loan-dunned",
     "deck": "chain",
     "when": {
-      "phase": "office"
+      "all": [
+        {
+          "phase": "office"
+        },
+        {
+          "path": [
+            "main",
+            "detroit"
+          ]
+        }
+      ]
     },
     "bind": {
       "late": {
@@ -4401,6 +4485,755 @@
       "source": "Invented for the game",
       "url": null,
       "confidence": "invented"
+    }
+  },
+  {
+    "id": "pivot-detroit",
+    "deck": "path",
+    "text": "Stay the winter in Detroit? You would take a room by the night, work by the day while the river is frozen, and go west when the roads open in the spring. By then the land office will take only gold and silver. There is no going back from it.",
+    "choices": [
+      {
+        "id": "no",
+        "label": "Go on west now",
+        "effects": []
+      },
+      {
+        "id": "yes",
+        "label": "Stay the winter in Detroit",
+        "effects": [
+          {
+            "pivot": "detroit"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Lake navigation at Detroit opened \"from the 20th of March to the 1st of April\", and the gazetteer promised that common labourers would be wanted for years on the state works.",
+      "source": "Blois, Gazetteer of the State of Michigan (1838), physical geography and appendix p. 417",
+      "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "pivot-chicago",
+    "deck": "path",
+    "text": "Everyone in the tavern is talking about Chicago, where town lots sell twice in a day and a man can double his money by spring. Go on to Chicago? The family would make its way in Illinois instead. There is no going back from it.",
+    "choices": [
+      {
+        "id": "no",
+        "label": "Keep to Michigan",
+        "effects": []
+      },
+      {
+        "id": "road",
+        "label": "Drive the Chicago road with your own wagon, {miles} miles",
+        "only": {
+          "all": [
+            {
+              "place": "detroit"
+            },
+            {
+              "team": true
+            }
+          ]
+        },
+        "effects": [
+          {
+            "pivot": "chicago:road"
+          }
+        ]
+      },
+      {
+        "id": "stage",
+        "label": "Take the stage to Chicago ({stage} for the family)",
+        "only": {
+          "all": [
+            {
+              "place": "detroit"
+            },
+            {
+              "team": false
+            }
+          ]
+        },
+        "requires": {
+          "afford": "$stageUsd"
+        },
+        "why": "You cannot pay the fares.",
+        "effects": [
+          {
+            "pivot": "chicago:stage"
+          }
+        ]
+      },
+      {
+        "id": "lakes",
+        "label": "Take cabin passage round the lakes ({lakes})",
+        "only": {
+          "place": "buffalo"
+        },
+        "requires": {
+          "afford": "$lakesUsd"
+        },
+        "why": "You cannot pay the fares.",
+        "effects": [
+          {
+            "pivot": "chicago:lakes"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Harriet Martineau found Chicago in 1836 \"crowded with land speculators, hurrying from one sale to another\". The stage from Detroit cost $21; cabin passage from Buffalo by the lakes, $20.",
+      "source": "Hoyt (1933), quoting Martineau; Blois (1838), appendix pp. 413, 415",
+      "url": "https://archive.org/details/onehundredyearso00hoytrich",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "pivot-home",
+    "deck": "path",
+    "text": "Turn back for home? {way} {fare} The land and the West would be given up, and there is no going back from it.",
+    "choices": [
+      {
+        "id": "no",
+        "label": "Keep on",
+        "effects": []
+      },
+      {
+        "id": "yes",
+        "label": "Turn back for home",
+        "requires": {
+          "afford": "$costUsd"
+        },
+        "why": "You cannot pay the way home.",
+        "effects": [
+          {
+            "pivot": "home"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Deck passage from Buffalo to Detroit was $3, but once the lakes closed the winter stage cost $25 a passenger. A family that missed the season paid more than eight times as much.",
+      "source": "Blois, Gazetteer of the State of Michigan (1838), appendix pp. 414-415",
+      "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "ohio-offer",
+    "deck": "path",
+    "once": true,
+    "text": "At the Perrysburg tavern a man says there is a land office at Lima, south through the woods, selling government land at the same price. No more swamp road, and no Michigan.",
+    "choices": [
+      {
+        "id": "on",
+        "label": "Keep on for Michigan",
+        "effects": []
+      },
+      {
+        "id": "south",
+        "label": "Think about turning south for Lima",
+        "effects": [],
+        "next": "pivot-ohio"
+      }
+    ],
+    "note": {
+      "text": "A federal land office at Lima, Ohio, sold land from 1835 to 1843; patents from it dated March 1837 survive for Allen and Putnam counties.",
+      "source": "BLM patent index via combs-families.org; Wood County library wiki (summary only)",
+      "url": "https://combs-families.org/combs/blm/oh.htm",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "pivot-ohio",
+    "deck": "path",
+    "text": "Turn south for Lima? The land there is a dollar and a quarter an acre, and the same rule holds: paper only until 15 December, then gold and silver. What the Receiver at Lima will take, nobody here can say. There is no going back from it.",
+    "choices": [
+      {
+        "id": "no",
+        "label": "Keep on for Michigan",
+        "effects": []
+      },
+      {
+        "id": "yes",
+        "label": "Turn south for Lima",
+        "effects": [
+          {
+            "pivot": "ohio"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "The research found no 1836 sales or rules for the Lima office and no Ohio resale prices, so the office's ways in the game are invented. The road south and its distance are invented too.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "kin-call",
+    "deck": "path",
+    "when": {
+      "path": "main"
+    },
+    "bind": {
+      "name": {
+        "west": "name"
+      },
+      "place": {
+        "west": "place"
+      },
+      "offer": {
+        "west": "offer"
+      }
+    },
+    "text": "{name}'s letter is still in your pocket. Come to us at {place}, it says. {offer}",
+    "choices": [
+      {
+        "id": "stay",
+        "label": "Write that you will go on to Michigan",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "You write it, and it is harder than you thought."
+      },
+      {
+        "id": "go",
+        "label": "Go to {name}",
+        "effects": [],
+        "next": "pivot-kin"
+      }
+    ],
+    "note": {
+      "text": "Kin called kin west. The Lawrences of Geneseo went to Allen's Prairie one son at a time, and the rest of the family followed in 1837.",
+      "source": "H. N. Lawrence, \"Twice a Pioneer\", Michigan Pioneer and Historical Collections vol. 18, pp. 355-360",
+      "url": "https://archive.org/details/michiganpioneerh0018unse",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "pivot-kin",
+    "deck": "path",
+    "bind": {
+      "name": {
+        "west": "name"
+      },
+      "place": {
+        "west": "place"
+      },
+      "fare": {
+        "kinFare": "text"
+      },
+      "fareUsd": {
+        "kinFare": "usd"
+      }
+    },
+    "text": "Go to {name} at {place}? {fare} The land office at Bronson would be given up for good. There is no going back from it.",
+    "choices": [
+      {
+        "id": "no",
+        "label": "Not yet: think it over",
+        "effects": [],
+        "next": "kin-call"
+      },
+      {
+        "id": "yes",
+        "label": "Go to them",
+        "requires": {
+          "afford": "$fareUsd"
+        },
+        "why": "You cannot pay the passage.",
+        "effects": [
+          {
+            "pivot": "kin"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Chain migration was common: brothers, sisters and cousins from one Vermont town moved on to the same Midwestern towns.",
+      "source": "Flow of History, Migration from Vermont",
+      "url": "https://www.flowofhistory.org/wp-content/uploads/2020/07/Migration-from-Vermont-short.pdf",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "kin-welcome",
+    "deck": "path",
+    "text": "{name} comes out to meet the wagon, and there is supper for everyone, and the children are put to sleep three to a bed. In the morning you talk about what comes next.",
+    "choices": [
+      {
+        "id": "floor",
+        "label": "Winter on their floor and look about in the spring",
+        "effects": [
+          {
+            "kinSettle": "floor"
+          }
+        ]
+      },
+      {
+        "id": "work",
+        "label": "Hire on with {name} through the winter",
+        "only": {
+          "westWork": true
+        },
+        "requires": {
+          "able": [
+            ">=",
+            1
+          ]
+        },
+        "why": "No one in the family is well enough to work.",
+        "effects": [
+          {
+            "kinSettle": "work"
+          }
+        ]
+      },
+      {
+        "id": "land",
+        "label": "Buy the forty acres beside them ({land})",
+        "requires": {
+          "afford": "$landUsd"
+        },
+        "why": "You do not have it.",
+        "effects": [
+          {
+            "kinSettle": "land"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "By June 1837 the Lawrences' four families, twenty-eight people, sat round the grandfather's fireplace at Allen's Prairie. Emigrants paid speculators $2 to $5 an acre for land near settled neighbours.",
+      "source": "Michigan Pioneer and Historical Collections vol. 18, pp. 355-360; Blois (1838), appendix",
+      "url": "https://archive.org/details/michiganpioneerh0018unse",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "home-again",
+    "deck": "path",
+    "text": "The hill road, the stone walls, the house. The neighbours come out to look, and nobody says much. There is the matter of what was left owing in the county.",
+    "choices": [
+      {
+        "id": "keep",
+        "label": "Keep what is left for the spring",
+        "effects": [
+          {
+            "homeSettle": "keep"
+          }
+        ]
+      },
+      {
+        "id": "pay",
+        "label": "Pay what is owed in the county ({owed})",
+        "only": {
+          "owedHome": true
+        },
+        "requires": {
+          "afford": "$owedUsd"
+        },
+        "why": "You do not have it.",
+        "effects": [
+          {
+            "homeSettle": "pay"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "\"If they retire, they return impoverished, casting imprecations upon the country,\" Blois wrote of emigrants who went back east.",
+      "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 417",
+      "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "chi-arrive",
+    "deck": "path",
+    "once": true,
+    "text": "A man in scarlet on a white horse rides down the street with a scarlet flag, calling the hour of the next land sale. Shopkeepers call out from their doors with lots to sell.",
+    "effects": [],
+    "note": {
+      "text": "Martineau, 1836: \"A negro dressed up in scarlet bearing a scarlet flag and riding a white horse with housings of scarlet announced the time of sale.\" The research found this passage only as Hoyt quotes it.",
+      "source": "Hoyt (1933), pp. 30-31, quoting Harriet Martineau",
+      "url": "https://archive.org/details/onehundredyearso00hoytrich",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "lot-note-due",
+    "deck": "path",
+    "when": {
+      "lot": "owing"
+    },
+    "bind": {
+      "owed": {
+        "lotOwed": "text"
+      },
+      "owedUsd": {
+        "lotOwed": "usd"
+      }
+    },
+    "text": "The man who holds your note on the Chicago lot has found you. It is due: {owed}, with the interest.",
+    "choices": [
+      {
+        "id": "forfeit",
+        "label": "Let the lot go, and the money down with it",
+        "effects": [
+          {
+            "lotNote": "forfeit"
+          },
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ]
+      },
+      {
+        "id": "pay",
+        "label": "Pay the note",
+        "requires": {
+          "afford": "$owedUsd"
+        },
+        "why": "You do not have it.",
+        "effects": [
+          {
+            "lotNote": "pay"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Money in 1836 Chicago cost \"not less than 10 per cent per annum\". The note and its term are invented.",
+      "source": "Hoyt, One Hundred Years of Land Values in Chicago (1933)",
+      "url": "https://archive.org/details/onehundredyearso00hoytrich",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "win-suspension-news",
+    "deck": "path",
+    "when": {
+      "path": "detroit"
+    },
+    "text": "News by the morning boat: the New York banks have stopped paying specie. By tomorrow the Detroit banks will stop too, and Michigan paper will pass at a discount.",
+    "choices": [
+      {
+        "id": "hold",
+        "label": "Hold on to your notes",
+        "effects": []
+      },
+      {
+        "id": "change",
+        "label": "Change your Michigan notes for silver today, at the brokers' rate",
+        "requires": {
+          "notes": [
+            "mi",
+            ">",
+            0
+          ]
+        },
+        "why": "You hold no Michigan notes.",
+        "effects": [
+          {
+            "exchange": {
+              "from": "mi",
+              "rate": "#ev.suspension.rate",
+              "cap": "#broker.cap"
+            }
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "The New York banks suspended on 10 May 1837. Sidney Ketchum brought the news to Detroit by the morning boat on 16 May, and the Detroit banks suspended on the 17th.",
+      "source": "Silas Farmer, History of Detroit and Michigan (1884)",
+      "url": "https://archive.org/details/historydetroita01farmgoog",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "win-river",
+    "deck": "winter",
+    "cooldown": "#cd.long",
+    "when": {
+      "all": [
+        {
+          "place": "detroit"
+        },
+        {
+          "month": [
+            12,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    "text": "The river has frozen from shore to shore. Sleighs cross to Canada on the ice, and firewood is dear.",
+    "choices": [
+      {
+        "id": "cold",
+        "label": "Burn less and wrap up",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ]
+      },
+      {
+        "id": "wood",
+        "label": "Buy a load of wood ({cost})",
+        "requires": {
+          "afford": "#ev.wood.cost"
+        },
+        "why": "You do not have it.",
+        "effects": [
+          {
+            "pay": "#ev.wood.cost"
+          },
+          {
+            "heal": {
+              "who": "all",
+              "amount": "#ev.heal.small"
+            }
+          }
+        ]
+      }
+    ],
+    "bind": {
+      "cost": {
+        "money": "#ev.wood.cost"
+      }
+    },
+    "note": {
+      "text": "The Detroit River \"has been known to remain one frozen bridge for six weeks\". The price of wood here is invented.",
+      "source": "Blois, Gazetteer of the State of Michigan (1838), physical geography",
+      "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "win-paper-cities",
+    "deck": "winter",
+    "once": true,
+    "when": {
+      "all": [
+        {
+          "place": "detroit"
+        },
+        {
+          "onOrAfter": "#date.yearEnd"
+        }
+      ]
+    },
+    "text": "The talk in the street is of failures. Town lots that sold for hundreds in the summer will not fetch a dollar, and the men who bought them on paper are leaving town.",
+    "effects": [
+      {
+        "morale": "#ev.morale.loss"
+      }
+    ],
+    "note": {
+      "text": "\"In January, 1837, disasters came thicker and faster ... 'Paper cities,' by the score, collapsed.\"",
+      "source": "Silas Farmer, History of Detroit and Michigan (1884)",
+      "url": "https://archive.org/details/historydetroita01farmgoog",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "win-works",
+    "deck": "winter",
+    "cooldown": "#cd.long",
+    "when": {
+      "all": [
+        {
+          "place": "detroit"
+        },
+        {
+          "able": [
+            ">",
+            0
+          ]
+        }
+      ]
+    },
+    "text": "A contractor on the new state railroad is taking on men to clear the line west of town.",
+    "choices": [
+      {
+        "id": "no",
+        "label": "Stay with the work in town",
+        "effects": []
+      },
+      {
+        "id": "go",
+        "label": "Send a man out with the clearing gang",
+        "requires": {
+          "able": [
+            ">",
+            0
+          ]
+        },
+        "why": "No one is well enough.",
+        "effects": [
+          {
+            "earn": {
+              "amount": "#ev.works.pay",
+              "kind": "mi"
+            }
+          },
+          {
+            "fatigue": {
+              "who": "wellAdult",
+              "amount": "#ev.fatigue.strain"
+            }
+          }
+        ],
+        "result": "He comes back at the week's end with his pay in Michigan notes and his hands raw."
+      }
+    ],
+    "note": {
+      "text": "\"As to common laborers, they are, and will continue to be wanted for years. The canals and rail-roads constructing by the State ... already employ many laborers.\"",
+      "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 417",
+      "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "win-close-room",
+    "deck": "winter",
+    "cooldown": "#cd.long",
+    "when": {
+      "phase": [
+        "winter",
+        "lots"
+      ]
+    },
+    "bind": {
+      "who": {
+        "member": "wellChild"
+      }
+    },
+    "text": "The whole family in one room, the windows shut against the cold. {who} is poorly.",
+    "effects": [
+      {
+        "chance": "#ev.dys.p",
+        "then": [
+          {
+            "sicken": {
+              "who": "$who",
+              "illness": "dysentery"
+            }
+          }
+        ],
+        "else": [
+          {
+            "narrate": "It passes in a day."
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Invented: the research has nothing on winter sickness in Detroit or Chicago lodgings. Crowded rooms raise the odds of the flux, as crowding does on the boats.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "chi-paper-town",
+    "deck": "winter",
+    "cooldown": "#cd.long",
+    "when": {
+      "place": "chicago"
+    },
+    "text": "A man at the hotel door unrolls a lithograph of a town on the Fox River: a courthouse square, a mill, a steamboat landing. He has shares to sell.",
+    "choices": [
+      {
+        "id": "no",
+        "label": "Walk on",
+        "effects": []
+      },
+      {
+        "id": "buy",
+        "label": "Buy a share ({cost})",
+        "requires": {
+          "afford": "#ev.paperCity.cost"
+        },
+        "why": "You do not have it.",
+        "effects": [
+          {
+            "pay": "#ev.paperCity.cost"
+          }
+        ],
+        "result": "You never see the place, and you never see the man again."
+      }
+    ],
+    "bind": {
+      "cost": {
+        "money": "#ev.paperCity.cost"
+      }
+    },
+    "note": {
+      "text": "\"Not only Chicago town lots, but the lots of five hundred Illinois towns, many of which never existed except on a plat and are now corn fields, were offered for sale in Chicago.\"",
+      "source": "Hoyt (1933), p. 31",
+      "url": "https://archive.org/details/onehundredyearso00hoytrich",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "chi-rents",
+    "deck": "winter",
+    "once": true,
+    "when": {
+      "place": "chicago"
+    },
+    "bind": {
+      "cost": {
+        "money": "#ev.chiRent.cost"
+      }
+    },
+    "text": "Your landlord says rents are rising everywhere and wants {cost} more for the room this week.",
+    "choices": [
+      {
+        "id": "pay",
+        "label": "Pay it",
+        "requires": {
+          "afford": "#ev.chiRent.cost"
+        },
+        "why": "You do not have it.",
+        "effects": [
+          {
+            "pay": "#ev.chiRent.cost"
+          }
+        ]
+      },
+      {
+        "id": "argue",
+        "label": "Argue, and sleep a night in the wagon while he thinks it over",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          },
+          {
+            "fatigue": {
+              "who": "all",
+              "amount": "#ev.fatigue.strain"
+            }
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Stores at the best Chicago sites rented for $1,000 to $1,500 a year in 1836, and money cost at least ten per cent. The landlord and his price are invented.",
+      "source": "Hoyt, One Hundred Years of Land Values in Chicago (1933)",
+      "url": "https://archive.org/details/onehundredyearso00hoytrich",
+      "confidence": "likely"
     }
   }
 ]

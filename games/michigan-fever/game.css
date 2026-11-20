@@ -502,6 +502,8 @@
 .mf-end-kicker { font-family: var(--mf-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mf-ink-2); margin: 0; }
 .mf-end-title { font-family: var(--mf-fell); font-weight: 400; font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.05; margin: 0.3rem 0 0.8rem; }
 .mf-end-text { font-size: 1.15rem; line-height: 1.55; margin: 0 0 1.1rem; }
+.mf-end-tier { font-size: 1.05rem; line-height: 1.5; margin: 0 0 1.1rem; padding: 0.6rem 0.8rem; border-left: 3px solid var(--mf-ink-3); }
+.mf-end-tier.tier-2 { border-left-color: var(--mf-ink); }
 .mf-end-inner h3 { font-family: var(--mf-mono); font-size: 0.74rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mf-ink-2); margin: 1.6rem 0 0.5rem; }
 .mf-ledger, .mf-dead { list-style: none; padding: 0; margin: 0; font-size: 1.05rem; line-height: 1.7; }
 .mf-ledger li::before { content: "·"; display: inline-block; width: 1rem; color: var(--mf-ink-3); }

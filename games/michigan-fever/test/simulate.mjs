@@ -38,6 +38,8 @@ export function playOne(route, strategy, seedIndex, seedPrefix = "sim", { pace =
     deaths: state.party.filter((p) => p.status === "dead").length,
     acres: state.land.paid ? state.land.acres : 0,
     route: state.vars.routeTaken ?? null,
+    tier: state.over?.tier ?? 0,
+    path: state.vars.path ?? "main",
     beatTypes,
   };
 }
@@ -82,5 +84,22 @@ export function summarize(results) {
     anyDeath: results.filter((r) => r.deaths > 0).length / n,
     meanDeaths: results.reduce((a, r) => a + r.deaths, 0) / n,
     byBackground: Object.fromEntries(Object.entries(byBg).map(([k, v]) => [k, +(v.won / v.n).toFixed(2)])),
+  };
+}
+
+// The tier table (P2 Phase B): shares of tier >= 1 and tier 2, over all games or over the
+// games that took `path` (a path strategy that never reached its pivot plays the main route).
+export function tierSummary(results, path = null) {
+  const rs = path ? results.filter((r) => r.path === path) : results;
+  const n = rs.length;
+  const dec = rs.map((r) => r.decisions).sort((a, b) => a - b);
+  return {
+    games: n,
+    took: results.length ? n / results.length : 0,
+    t0: n ? rs.filter((r) => r.tier === 0).length / n : 0,
+    t1: n ? rs.filter((r) => r.tier >= 1).length / n : 0,
+    t2: n ? rs.filter((r) => r.tier === 2).length / n : 0,
+    decisions: { min: dec[0], median: dec[Math.floor(n / 2)], max: dec[n - 1] },
+    outcomes: rs.reduce((o, r) => ({ ...o, [r.outcome]: (o[r.outcome] ?? 0) + 1 }), {}),
   };
 }

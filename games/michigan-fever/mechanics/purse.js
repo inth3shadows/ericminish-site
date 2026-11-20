@@ -18,15 +18,22 @@ export function zoneOf(state, num) {
   return num(`zone.${key}`);
 }
 
-// Fraction lost on a note of `region` at zone `zone`.
-export function discount(region, zone, num) {
+// Fraction lost on a note of `region` at zone `zone`. With a state: once the
+// Detroit banks have suspended (17 May 1837, a path that winters over),
+// Michigan paper is worth no more than disc.miSuspended off anywhere.
+export function discount(region, zone, num, state = null) {
   const issuer = num(`zone.issuer.${region}`);
-  if (region === "mi") return zone < issuer ? num("disc.miEast") : 0;
+  if (region === "mi") {
+    const d = zone < issuer ? num("disc.miEast") : 0;
+    return state && suspended(state, num) ? Math.max(d, num("disc.miSuspended")) : d;
+  }
   return Math.min(num("disc.max"), Math.max(0, zone - issuer) * num("disc.perZone"));
 }
 
+export const suspended = (state, num) => state.date >= num("bank.suspend.detroit");
+
 export function noteValue(state, num, region, zone = zoneOf(state, num)) {
-  return Math.floor(state.purse.notes[region] * (1 - discount(region, zone, num)));
+  return Math.floor(state.purse.notes[region] * (1 - discount(region, zone, num, state)));
 }
 
 export function paperValue(state, num) {
@@ -43,7 +50,7 @@ export function valueHere(state, num) {
 function worstFirst(state, num) {
   const zone = zoneOf(state, num);
   return REGIONS.filter((r) => state.purse.notes[r] > 0)
-    .sort((a, b) => discount(b, zone, num) - discount(a, zone, num));
+    .sort((a, b) => discount(b, zone, num, state) - discount(a, zone, num, state));
 }
 
 // Pay a merchant `amount` cents: paper first at its local value, then coin.
@@ -56,7 +63,7 @@ export function pay(state, num, amount, { coinOnly = false } = {}) {
     const zone = zoneOf(state, num);
     for (const r of worstFirst(state, num)) {
       if (left <= 0) break;
-      const d = discount(r, zone, num);
+      const d = discount(r, zone, num, state);
       const cover = Math.min(left, Math.floor(state.purse.notes[r] * (1 - d)));
       if (cover <= 0) continue;
       const face = Math.min(state.purse.notes[r], Math.ceil(cover / (1 - d)));
@@ -92,7 +99,7 @@ export function brokerToCoin(state, num, capCents) {
   const zone = zoneOf(state, num);
   let coinPaid = 0;
   for (const r of worstFirst(state, num)) {
-    const rate = 1 - discount(r, zone, num) - num("broker.fee");
+    const rate = 1 - discount(r, zone, num, state) - num("broker.fee");
     if (rate <= 0) continue;
     const room = capCents - coinPaid;
     if (room <= 0) break;
@@ -114,7 +121,7 @@ export function brokerToMichigan(state, num) {
   for (const r of ["ne", "ny"]) {
     const face = state.purse.notes[r];
     if (!face) continue;
-    got += Math.floor(face * (1 - discount(r, zone, num) - num("broker.fee")));
+    got += Math.floor(face * (1 - discount(r, zone, num, state) - num("broker.fee")));
     state.purse.notes[r] = 0;
   }
   state.purse.notes.mi += got;
@@ -127,11 +134,11 @@ export function brokerToMichigan(state, num) {
 // notes at par, and New York notes only if this receiver takes them. Distant
 // New England notes are refused. After the deadline: coin only.
 
-export function landTender(state, num, acres, receiverTakesNY, beforeDeadline) {
+export function landTender(state, num, acres, receiverTakesNY, beforeDeadline, takesMi = true) {
   const paperOk = beforeDeadline && acres <= num("land.settlerMax");
   return {
     coin: state.purse.coin,
-    mi: paperOk ? state.purse.notes.mi : 0,
+    mi: paperOk && takesMi ? state.purse.notes.mi : 0,
     ny: paperOk && receiverTakesNY ? state.purse.notes.ny : 0,
   };
 }
@@ -166,7 +173,7 @@ export function summary(state, num) {
       label: REGION_LABEL[r],
       face: state.purse.notes[r],
       value: noteValue(state, num, r, zone),
-      discount: discount(r, zone, num),
+      discount: discount(r, zone, num, state),
     })),
     valueHere: valueHere(state, num),
   };

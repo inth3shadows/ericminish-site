@@ -3,8 +3,12 @@
 // month, crowding and fatigue. No DOM. Deaths hand off to the death register
 // (letters.js).
 
-import { month } from "../../engine/clock.js";
 import { deathBeats } from "./letters.js";
+import { agueKey, seasonMonth } from "./travel.js";
+
+// Phases of the paths that borrow another phase's onset rates: a winter in a
+// town is the town's; a stay with kin is the claim's country.
+const PHASE_RATES = { winter: "town", lots: "town", kin: "claim", home: "town" };
 
 export const ILLNESS_LABEL = {
   ague: "fever and ague",
@@ -118,11 +122,12 @@ export function addFatigue(ctx, who, amount) {
 
 export function onsetRate(ctx, kind, crowded, p = null) {
   const { state, num } = ctx;
-  const where = state.phase === "travel" ? (state.vars.terrain === "swamp" ? "swamp" : state.leg) : state.phase === "town" ? "town" : state.phase;
+  const phase = PHASE_RATES[state.phase] ?? state.phase;
+  const where = state.phase === "travel" ? (state.vars.terrain === "swamp" ? "swamp" : agueKey(state.leg)) : phase;
   const crowd = crowded ? num("crowd.mult") : 1;
   const worn = fatigueMult(p, num);
   if (kind === "ague") {
-    const m = Math.min(12, Math.max(9, month(state.date)));
+    const m = seasonMonth(state.date);
     return num(`ague.base.${where}`) * num(`ague.month.${m}`) * crowd * worn;
   }
   if (kind === "dysentery") return num("dys.base") * crowd * worn;
@@ -165,7 +170,8 @@ export function die(ctx, p, cause) {
   p.status = "dead";
   p.health = 0;
   p.illness = null;
-  const leg = state.phase === "travel" ? (state.leg === "claim" ? "claimTrack" : state.leg) : state.phase;
+  // Where the register says it happened: the leg, or the phase (a winter in a town is the town's).
+  const leg = state.phase === "travel" ? (state.leg === "claim" ? "claimTrack" : state.leg) : ({ winter: "town", lots: "town" }[state.phase] ?? state.phase);
   p.died = { date: state.date, leg, place: state.place, cause };
   for (const b of deathBeats(ctx, p, cause)) ctx.emit(b);
   if (living(state).length) {
