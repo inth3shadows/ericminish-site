@@ -1043,3 +1043,305 @@ test("N-A2: a worn team pulls slower from the first point, so a pushed day costs
   s.gear.fatigue = 60;
   assert.equal(T.teamWearMult(makeCtx(calm, s)), 1);
 });
+
+// ---- Round 6 verify fixes (V1-V7) ------------------------------------------------
+// Each test names its finding in .review/add-michigan-fever.md ("Round 6 results").
+
+// A family stopped at a place, made by hand: a town, the land office at Bronson, or the claim.
+function stoppedAt(place, s = started("vermont", `stop-${place}`, calm)) {
+  if (place === "claim") {
+    inTown("claim", s);
+    s.phase = "claim";
+    s.land.paid = true;
+    s.land.acres = 40;
+    return s;
+  }
+  return inTown(place, s);
+}
+
+test("V1: a short team can be made whole at the end of every leg where an ox can give out", () => {
+  const legs = route.eventIndex.get("team-ox-down").when.all.find((c) => c.leg).leg;
+  assert.ok(legs.includes("road") && legs.includes("claim"));
+  for (const leg of legs) {
+    const dest = T.LEGS[leg].segments.at(-1).to;
+    for (const paid of [false, true]) {
+      const s = stoppedAt(dest);
+      if (paid) s.land.paid = true;
+      s.flags.teamShort = true;
+      s.purse = { coin: 50000, notes: { ne: 0, ny: 0, mi: 0 } };
+      const buy = availableActions(calm, s).find((a) => a.id === "buy-yoke");
+      assert.ok(buy?.enabled, `${leg} -> ${dest}${paid ? " (land paid)" : ""}: a fresh yoke on offer`);
+      const after = step(calm, s, "buy-yoke").state;
+      assert.equal(after.flags.teamShort, undefined, `${dest}: the team is whole`);
+      assert.equal(after.purse.coin, 50000 - buy.cost);
+    }
+  }
+});
+
+test("V1: an ox gives out on the Territorial Road; the family goes on short and makes the team whole at Bronson", () => {
+  let s = started("vermont", "v1-road", calm);
+  T.startLeg(makeCtx(calm, s), "road");
+  s.res.food = 5000;
+  s.purse.coin = 50000;
+  s.gear.fatigue = 80;
+  s.queue = [];
+  s.pending = { kind: "event", id: "team-ox-down", vars: {} };
+  s = step(calm, s, "choose:short").state;
+  assert.equal(s.flags.teamShort, true);
+  for (let i = 0; i < 80 && !s.over && s.place !== "bronson"; i++) s = settle(calm, step(calm, s, s.pending ? availableActions(calm, s).find((a) => a.enabled) : "go").state);
+  assert.equal(s.place, "bronson", "reached Bronson");
+  assert.equal(s.flags.teamShort, true, "still short on arrival");
+  const buy = availableActions(calm, s).find((a) => a.id === "buy-yoke");
+  assert.ok(buy?.enabled, "a fresh yoke at Bronson");
+  assert.equal(step(calm, s, "buy-yoke").state.flags.teamShort, undefined);
+});
+
+// Saves taken from real games: a strategy, with visits to the post office that send money home
+// (half of it lost in the mail), so ties, lost-money letters and the queue are all in the saves.
+function playSaving(r, strategy, seedIndex, check) {
+  const seed = `v2-${strategy}-${seedIndex}`;
+  const rng = cursor(createRng(`player-${seed}`));
+  let s = newGame(r, { seed }).state;
+  for (let n = 0; n < 600 && !s.over; n++) {
+    check(s);
+    const acts = availableActions(r, s);
+    let a = null;
+    if (s.pending?.id === "post-office") a = acts.find((x) => x.enabled && x.choice.startsWith("send-")) ?? acts.find((x) => x.enabled && x.choice === "ask");
+    if (s.pending?.id === "post-send-how") a = acts.find((x) => x.enabled && x.choice === (seedIndex % 2 ? "halves" : "whole"));
+    if (!s.pending && !s.vars.visit?.used?.postCall) a = acts.find((x) => x.id === "post" && x.enabled);
+    a ??= STRATEGIES[strategy](r, s, acts, { seedIndex, rng });
+    s = step(r, s, a).state;
+  }
+  check(s);
+  return s;
+}
+
+test("V2: a save from any point of a real game loads back unchanged", () => {
+  const r = routeWith({ "post.lossP": 0.5 });
+  let saves = 0;
+  const keys = new Set();
+  for (const strategy of ["cautious", "thrifty", "cheap"]) {
+    for (let i = 0; i < 4; i++) {
+      playSaving(r, strategy, i, (s) => {
+        const loaded = deserialize(r, serialize(s));
+        assert.equal(loaded.ok, true, `${strategy} ${i} day ${s.day} ${s.phase}: ${loaded.reason}`);
+        assert.deepEqual(loaded.state, s);
+        for (const m of s.mail) keys.add(m.key);
+        saves++;
+      });
+    }
+  }
+  assert.ok(saves > 1000, `${saves} saves`);
+  assert.deepEqual([...keys].sort(), ["kin", "lost", "news", "outcome"], "every kind of letter was in a save");
+});
+
+test("V2: a save whose letters have an unknown kind, or name a tie the family does not have, is damaged", () => {
+  const s = started("vermont", "v2-mail");
+  const news = s.mail.find((m) => m.key === "news");
+  const load = (mutate) => {
+    const doc = JSON.parse(serialize(s));
+    mutate(doc.state);
+    return deserialize(route, JSON.stringify(doc));
+  };
+  assert.equal(load(() => {}).ok, true);
+  const other = M.TIE_IDS.find((id) => !s.ties.some((t) => t.id === id));
+  const cases = {
+    "key: unknown": (x) => { x.mail[0].key = "zzz"; },
+    "key: missing": (x) => { delete x.mail[0].key; },
+    "news: tie not the family's": (x) => { x.mail.find((m) => m.id === news.id).tie = other; },
+    "news: no tie": (x) => { x.mail.find((m) => m.id === news.id).tie = null; },
+    "outcome: no tie": (x) => { x.mail.find((m) => m.key === "outcome").tie = null; },
+    "lost: tie not the family's": (x) => { x.mail.push({ id: "m99", key: "lost", tie: other, office: "bronson", from: "1836-11-01", written: "1836-10-20", sheets: 1, status: "waiting" }); },
+    "kin: names a tie": (x) => { x.mail.find((m) => m.key === "kin").tie = s.ties[0].id; },
+  };
+  for (const [name, f] of Object.entries(cases)) assert.deepEqual(load(f), { ok: false, reason: "damaged" }, name);
+});
+
+test("V3: halves go by the next mail, so their last day is earlier than whole notes'", () => {
+  const base = clone(reach("cautious", (x) => x.phase === "town" && x.place === "albany"));
+  base.purse.notes.ne = 100000;
+  base.purse.coin = 1000;
+  const r = routeWith({ "post.lossP": 0 });
+  const tie = base.ties[0];
+  const due = num(`tie.${tie.id}.due`);
+  const transit = num("post.transitDays");
+  const gap = num("post.halves.gapDays");
+  assert.ok(gap > 0);
+  const howMenu = (date) => {
+    const s = clone(base);
+    s.date = date;
+    return step(r, atPost(s, r), `choose:send-${tie.id}`).state;
+  };
+  const how = (s, id) => availableActions(r, s).find((a) => a.choice === id);
+  // The last day for halves: both ways reach home in time.
+  const lastHalves = addDays(due, -transit - gap);
+  let s = howMenu(lastHalves);
+  assert.equal(how(s, "halves").enabled, true);
+  s = step(r, s, "choose:halves").state;
+  assert.equal(s.ties.find((t) => t.id === tie.id).status, "settled");
+  // A day later the second halves would come after the date: halves refused, with the reason; whole still goes.
+  for (const date of [addDays(lastHalves, 1), addDays(due, -transit)]) {
+    s = howMenu(date);
+    const halves = how(s, "halves");
+    assert.equal(halves.enabled, false, date);
+    assert.match(halves.reason, /too late/i);
+    assert.match(halves.reason, /next mail/i);
+    assert.equal(how(s, "whole").enabled, true, date);
+    const ctx = makeCtx(r, clone(s));
+    const before = clone(ctx.state.purse);
+    assert.equal(M.sendMoney(ctx, tie.id, "halves", "albany"), false);
+    assert.deepEqual(ctx.state.purse, before, "no money taken");
+    const sent = step(r, s, "choose:whole").state;
+    assert.equal(sent.ties.find((t) => t.id === tie.id).status, "settled", date);
+  }
+  // Past the last day for whole notes the post office refuses both (PA3).
+  const late = clone(base);
+  late.date = addDays(due, -transit + 1);
+  assert.equal(availableActions(r, atPost(late, r)).find((a) => a.choice === `send-${tie.id}`).enabled, false);
+  // The letter saying halves never came is written after the second halves were due home.
+  const lost = clone(base);
+  lost.date = lastHalves;
+  const lr = routeWith({ "post.lossP": 1 });
+  const gone = step(lr, step(lr, atPost(lost, lr), `choose:send-${tie.id}`).state, "choose:halves").state;
+  const word = gone.mail.find((m) => m.key === "lost" && m.tie === tie.id);
+  assert.equal(word.written, addDays(lastHalves, transit + gap));
+  assert.equal(word.from, addDays(lastHalves, 2 * transit + gap));
+});
+
+test("V4: every sending reads as sent in the view until word comes, whether it arrived or went astray", () => {
+  const base = clone(reach("cautious", (x) => x.phase === "town" && x.place === "albany"));
+  base.purse.notes.ne = 100000;
+  base.purse.coin = 1000;
+  const tie = base.ties[0];
+  const sendWith = (lossP) => {
+    const r = routeWith({ "post.lossP": lossP });
+    return { r, s: step(r, step(r, atPost(clone(base), r), `choose:send-${tie.id}`).state, "choose:whole").state };
+  };
+  const ok = sendWith(0);
+  const astray = sendWith(1);
+  assert.equal(ok.s.ties.find((t) => t.id === tie.id).status, "settled", "internally it arrived");
+  assert.equal(astray.s.ties.find((t) => t.id === tie.id).status, "sent", "internally it went astray");
+  const lostWord = astray.s.mail.find((m) => m.key === "lost" && m.tie === tie.id);
+  const shown = (x, date) => {
+    const s = clone(x.s);
+    s.date = date;
+    const t = view(x.r, s).ties.find((y) => y.id === tie.id);
+    return { status: t.status, sent: t.sent, news: t.news };
+  };
+  const transit = num("post.transitDays");
+  for (const date of [base.date, addDays(base.date, transit), addDays(base.date, transit + 3), addDays(lostWord.from, -1), lostWord.from]) {
+    assert.deepEqual(shown(ok, date), shown(astray, date), date);
+    assert.equal(shown(ok, date).status, "sent", date);
+  }
+  // Word comes at Bronson: the outcome letter for the money that arrived, the lost-money letter for the other.
+  const outcome = ok.s.mail.find((m) => m.key === "outcome" && m.tie === tie.id);
+  const b = inTown("bronson", clone(ok.s));
+  b.pending = null;
+  b.date = outcome.from;
+  b.purse.coin += 1000;
+  makeCtx(ok.r, b).advanceDays(0);
+  M.resolveTies(makeCtx(ok.r, b));
+  assert.equal(M.collectMail(makeCtx(ok.r, b), "bronson"), true);
+  assert.equal(view(ok.r, b).ties.find((t) => t.id === tie.id).status, "settled");
+  // Paid in person, it is settled at once (the family paid it with their own hands).
+  const p = inTown("detroit", started("vermont", "v4-agent"));
+  p.ties = [{ id: "mortgage", amount: 5000, sent: 0, status: "open", outcome: null, learned: false }];
+  p.purse.coin = 10000;
+  assert.equal(M.payTieHere(makeCtx(route, p), "mortgage"), true);
+  assert.equal(view(route, p).ties[0].status, "settled");
+});
+
+// Play one step; note the queued events (in the queue when the step began) and the random ones it fired.
+function stepCounting(r, s, a, log) {
+  const queued = new Set((s.queue ?? []).map((q) => q.event));
+  const res = step(r, s, a);
+  const fired = evIds(res.beats);
+  const q = fired.filter((id) => queued.has(id));
+  const rnd = fired.filter((id) => !queued.has(id) && r.eventIndex.get(id).deck !== "post");
+  log.push({ day: res.state.day, queued: q, random: rnd, phase: res.state.phase });
+  return res.state;
+}
+
+// Arrive, then try to leave at once (answering whatever opens) until the family is on the road.
+function arriveAndLeave(r, s, leave) {
+  const log = [];
+  s = stepCounting(r, s, "go", log);
+  for (let i = 0; i < 20 && !s.over && s.phase !== "travel"; i++) {
+    s = stepCounting(r, s, s.pending ? availableActions(r, s).find((a) => a.enabled) : leave, log);
+  }
+  return { s, log };
+}
+
+// No random event can be drawn at all (every deck weight 0): only the queue fires.
+const NO_DRAW = Object.fromEntries(readData().numbers.filter((n) => /^w\./.test(n.id)).map((n) => [n.id, 0]));
+
+for (const [variant, r] of [["with a random town event", routeWith({ ...QUIET, "ev.p.town": 1 })], ["with no random event", routeWith({ ...QUIET, ...NO_DRAW })]]) test(`V5: at Detroit (${variant}), a due chain event, a loan come due and the mortgage agent all fire before the family leaves, one queued event a step and one random event a day`, () => {
+  const s = started("vermont", "v5-detroit", r);
+  s.ties = [{ id: "mortgage", amount: 5000, sent: 0, status: "open", outcome: null, learned: false }];
+  s.purse.coin = 50000;
+  s.res.food = 5000;
+  T.startLeg(makeCtx(r, s), "overland");
+  s.vars.seg = 2;
+  s.vars.terrain = "strip";
+  s.vars.segMi = num("mi.perrysburgDetroit") - 1;
+  s.queue = [{ event: "chain-light-coin", due: s.day }, { event: "chain-loan-due", at: "detroit" }, { event: "tie-mortgage-agent", at: "detroit" }];
+  const { s: end, log } = arriveAndLeave(r, s, "set-out");
+  assert.equal(end.leg, "road", "the family left on the Territorial Road");
+  const fired = log.flatMap((l) => l.queued);
+  assert.deepEqual(fired.sort(), ["chain-light-coin", "chain-loan-due", "tie-mortgage-agent"], JSON.stringify(log));
+  for (const l of log) assert.ok(l.queued.length <= 1, `one queued event a step: ${JSON.stringify(l)}`);
+  const randomByDay = {};
+  for (const l of log) randomByDay[l.day] = (randomByDay[l.day] ?? 0) + l.random.length;
+  for (const [day, n] of Object.entries(randomByDay)) assert.ok(n <= 1, `day ${day}: ${n} random events`);
+  assert.deepEqual(end.queue.filter((q) => q.at === "detroit"), [], "nothing left waiting at Detroit");
+});
+
+for (const [variant, r] of [["with a random town event", routeWith(QUIET)], ["with no random event", routeWith({ ...QUIET, ...NO_DRAW })]]) test(`V5: at Buffalo (${variant}), a consequence with no choice and one with a choice both fire before the steamer leaves`, () => {
+  const s = started("vermont", "v5-buffalo", r);
+  s.ties = [{ id: "store", amount: 1000, sent: 0, status: "open", outcome: null, learned: false }];
+  s.purse.coin = 50000;
+  s.res.food = 5000;
+  s.vars.ticket = "packet";
+  T.startLeg(makeCtx(r, s), "canal");
+  s.vars.segMi = num("mi.canal") - 1;
+  s.queue = [{ event: "tie-store-drummer", at: "buffalo" }, { event: "chain-fight-buffalo", at: "buffalo" }];
+  const { s: end, log } = arriveAndLeave(r, s, "book:deck");
+  assert.equal(end.leg, "lake", "on the lake");
+  assert.deepEqual(log.flatMap((l) => l.queued).sort(), ["chain-fight-buffalo", "tie-store-drummer"], JSON.stringify(log));
+  for (const l of log) assert.ok(l.queued.length <= 1, JSON.stringify(l));
+});
+
+test("V6: a spent team crawls but never stops, and wears the same on bad road, under its cap", () => {
+  const floor = num("fat.team.floor");
+  assert.ok(floor > 0 && floor < 1);
+  for (const [terrain, leg] of [["hill", "vermont"], ["swamp", "overland"], ["track", "claim"]]) {
+    const s = started("vermont", "v6", calm);
+    s.leg = leg;
+    s.vars.terrain = terrain;
+    const miles = (pace, f) => { s.vars.pace = pace; s.gear.fatigue = f; return T.dayMiles(makeCtx(calm, s), "fair"); };
+    const fresh = miles("steady", 0);
+    assert.ok(miles("steady", 100) > 0, `${terrain}: a spent team still moves`);
+    assert.ok(Math.abs(miles("steady", 100) - fresh * floor) < 1e-9, `${terrain}: floored`);
+    assert.ok(miles("steady", 30) < fresh, `${terrain}: a tired team is slower`);
+    assert.ok(Math.abs(miles("steady", 30) - fresh * (1 - 30 * num("fat.team.slow"))) < 1e-9, terrain);
+    if (terrain !== "hill") {
+      for (const f of [0, 30, 70, 100]) {
+        for (const pace of ["hard", "grueling"]) assert.equal(miles(pace, f), miles("steady", f), `${terrain} ${pace} at ${f}: the cap holds`);
+        assert.ok(miles("grueling", f) <= fresh, `${terrain} at ${f}: never faster than a fresh team at the road's pace`);
+      }
+    }
+  }
+});
+
+test("V7: buying a fresh yoke for an ox that gave out rests the team once", () => {
+  const r = routeWith({ ...QUIET, "ev.team.fresh": -20 });
+  const s = started("vermont", "v7", r);
+  s.gear.fatigue = 90;
+  s.purse = { coin: 50000, notes: { ne: 0, ny: 0, mi: 0 } };
+  s.queue = [];
+  s.pending = { kind: "event", id: "team-ox-down", vars: {} };
+  const after = step(r, s, "choose:buy").state;
+  assert.equal(after.gear.fatigue, 70);
+  assert.equal(after.flags.teamShort, undefined);
+  assert.equal(after.purse.coin, 50000 - Math.round(num("price.oxen") * 100));
+});

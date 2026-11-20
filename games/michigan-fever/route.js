@@ -310,13 +310,19 @@ function townActions(ctx) {
     const ready = Boolean(s.gear.team || s.gear.teamster);
     out.push({ id: "set-out", type: "travel", label: "Set out on the Territorial Road", forward: true, enabled: ready, reason: ready ? undefined : "You need a team or a teamster first." });
   }
-  // A team gone short (an ox given out): a fresh yoke makes it up again.
-  if (s.gear.team && s.flags.teamShort) {
-    const yoke = usd(ctx, "price.oxen");
-    out.push(priced(ctx, "buy-yoke", "buy", `Buy a fresh yoke to make up the team (${P.money(yoke)})`, yoke));
-  }
+  yokeAction(ctx, out);
   commonTownActions(ctx, out);
   return out;
+}
+
+// A team gone short (an ox given out): a fresh yoke makes it up again. Offered
+// wherever a leg the family drives ends (Albany, Buffalo, Detroit, Bronson, the
+// claim), so a team that goes short on any leg can be made whole at its end.
+function yokeAction(ctx, out, from = "") {
+  const s = ctx.state;
+  if (!s.gear.team || !s.flags.teamShort) return;
+  const yoke = usd(ctx, "price.oxen");
+  out.push(priced(ctx, "buy-yoke", "buy", `Buy a fresh yoke${from} to make up the team (${P.money(yoke)})`, yoke));
 }
 
 function officeActions(ctx) {
@@ -325,8 +331,10 @@ function officeActions(ctx) {
   const out = [];
   if (land.paid) {
     out.push({ id: "go-claim", type: "travel", label: `Go out to the claim (${land.claimMiles} miles)`, forward: true });
+    yokeAction(ctx, out);
     return out;
   }
+  yokeAction(ctx, out);
   if (!land.looker && !land.applied) {
     out.push(priced(ctx, "hire-looker", "buy", `Hire a land looker (${P.money(usd(ctx, "price.looker"))})`, usd(ctx, "price.looker"), { detail: "He knows which sections are still open and which are swamp." }));
   }
@@ -378,6 +386,7 @@ function claimActions(ctx) {
     const cost = provisionsCost(ctx);
     out.push(priced(ctx, "buy:provisions", "buy", `Buy provisions from a neighbour (${P.money(cost)})`, cost));
   }
+  yokeAction(ctx, out, " from a neighbour");
   if (anyAgue(s) && s.res.quinine > 0) out.push({ id: "dose", type: "dose", label: "Give quinine to the sick" });
   return out;
 }
@@ -442,13 +451,32 @@ function passDay(ctx, today) {
   ctx.advanceDays(1);
 }
 
+// Queued consequences (V5, round 6). At most one fires in a step: the day's
+// draw (a travel day, a day in town or at the office, the arrival) fires the
+// first one due, and a step that fired none fires the next one waiting for this
+// place. Items counted in days come due only on the day's draw, so at most one a
+// day; the random draw stays at most one a day. A place's items all fire while
+// the family is there: each later step in the town fires the next, and leaving
+// meets the next one first (see LEAVING), so none is left behind. A town with
+// several waiting can see several in a day, one a step: that is the rule chosen
+// over "one a day", which could only be kept by holding the family in town.
+function fireQueued(ctx, opts) {
+  if (ctx.queueFired) return false;
+  const fired = ctx.fireDue(opts);
+  if (fired) ctx.queueFired = true;
+  return fired;
+}
+
+// Actions that leave a town or the land office.
+const LEAVING = new Set(["board", "book", "overland", "stage", "set-out", "go-claim"]);
+
 function maybeEvent(ctx, deck, pId) {
   // No other event on a day someone died: the family stops to grieve first.
   if (ctx.state.over || ctx.state.pending || ctx.state.vars.griefDays > 0) return;
   // A scheduled consequence that has come due fires ahead of the random draw,
-  // which still happens unless it opened a choice. One a day: the draw does not
-  // fire the queue a second time.
-  ctx.fireDue();
+  // which still happens unless it opened a choice. The draw does not fire the
+  // queue a second time.
+  fireQueued(ctx);
   if (ctx.state.over || ctx.state.pending) return;
   if (ctx.rng.chance(ctx.num(pId))) ctx.drawEvent(deck, { due: false });
 }
@@ -480,7 +508,8 @@ function arriveTown(ctx, place) {
   ctx.emit({ type: "arrive", place, label: T.PLACES[place], date: s.date, text: T0.arrivals[place] });
   s.vars.ticket = null;
   s.gear.teamster = place === "bronson" || place === "claim" ? s.gear.teamster : false;
-  ctx.drawEvent("town");
+  fireQueued(ctx);
+  ctx.drawEvent("town", { due: false });
 }
 
 function travelDay(ctx) {
@@ -556,6 +585,9 @@ function act(ctx, a, params) {
   const s = ctx.state;
   const { num } = ctx;
   const [verb, arg, arg2] = a.id.split(":");
+  // Something still waiting for the family here meets them as they make ready
+  // to leave; they leave on the next try, once it is dealt with.
+  if (LEAVING.has(verb) && fireQueued(ctx, { atOnly: true })) return;
   switch (verb) {
     case "start": startGame(ctx, a.background, params); return;
     case "go":
@@ -757,9 +789,9 @@ function afterAction(ctx) {
     ctx.emit({ type: "narrate", text: `The family stops for ${d} days.`, cue: "grief" });
     ctx.advanceDays(d);
   }
-  // Every consequence waiting for this town fires while the family is here, one
-  // after another (each after the last one's choice), so none is left behind.
-  while (!s.over && !s.pending && ctx.fireDue({ atOnly: true }));
+  // A consequence waiting for this place fires on a step that fired none yet:
+  // one a step, so the rest come on the family's next steps here (fireQueued).
+  if (!s.over && !s.pending) fireQueued(ctx, { atOnly: true });
 }
 
 // A fresh yoke: the team is whole and rested, and the spent animal's troubles go with it.
@@ -971,9 +1003,11 @@ const effects = {
     const s = ctx.state;
     const t = M.tieOf(s, id);
     s.vars.sendTie = id;
+    const why = (how) => (M.canSendFor(s, ctx.num, t, how) ? ctx.route.data.text.post.noPostage : M.sendWhy(ctx.route, s, ctx.num, t, how));
     ctx.startEvent("post-send-how", {
       amount: P.money(t.amount), what: M.summary(ctx.route, { ...s, ties: [t] })[0].purpose,
       halves: P.money(M.sendPostage(ctx.num, s.place, "halves")), whole: P.money(M.sendPostage(ctx.num, s.place, "whole")),
+      whyHalves: why("halves"), whyWhole: why("whole"),
     });
   },
   sendMoney: (how, ctx) => { M.sendMoney(ctx, ctx.state.vars.sendTie, how, ctx.state.place); ctx.state.vars.sendTie = null; },
@@ -1152,6 +1186,8 @@ const isDate = (d) => {
   try { return fromDayNumber(toDayNumber(d)) === d; } catch { return false; }
 };
 const MAIL_STATUS = ["waiting", "taken", "left"];
+// Letters from home: kin's own (no tie), and a tie's news, outcome, or word that money never came.
+const MAIL_KEYS = ["kin", "news", "outcome", "lost"];
 
 function readable(route, s) {
   if (!Array.isArray(s.party) || !Array.isArray(s.ties) || !Array.isArray(s.mail) || !isObj(s.gear)) return false;
@@ -1163,7 +1199,8 @@ function readable(route, s) {
   if (!s.ties.every(tieOk)) return false;
   const mailOk = (m) => isObj(m) && typeof m.id === "string" && typeof m.key === "string" && M.POST_OFFICES.includes(m.office)
     && isDate(m.from) && (m.written === undefined || isDate(m.written)) && Number.isInteger(m.sheets) && m.sheets >= 1
-    && MAIL_STATUS.includes(m.status) && (m.tie === null || M.TIE_IDS.includes(m.tie));
+    && MAIL_STATUS.includes(m.status) && MAIL_KEYS.includes(m.key)
+    && (m.key === "kin" ? m.tie === null : s.ties.some((t) => t.id === m.tie));
   return s.mail.every(mailOk);
 }
 

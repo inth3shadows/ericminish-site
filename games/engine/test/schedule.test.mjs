@@ -219,3 +219,19 @@ test("PA9: a route's own readable() check is part of loading", () => {
   doc.state.vars.good = true;
   assert.equal(deserialize(route, JSON.stringify(doc)).ok, true);
 });
+
+test("V2: a saved queue item's 'unless' gets validateDeck's condition check, and must evaluate, or the save is damaged", () => {
+  const route = chainRoute();
+  const start = newGame(route, { seed: "v2" }).state;
+  const load = (unless) => {
+    const doc = JSON.parse(serialize(start));
+    doc.state.queue = [{ event: "later", due: 4, unless }];
+    return deserialize(route, JSON.stringify(doc));
+  };
+  for (const ok of [{ flag: "x" }, { not: { flag: "!x" } }, { any: [{ flag: "x" }, { seen: "later" }] }, true]) {
+    assert.equal(load(ok).ok, true, JSON.stringify(ok));
+  }
+  for (const bad of [{ nonsense: 1 }, { any: [{ flag: "x" }, { ghost: 2 }] }, { flag: "x", seen: "later" }, { all: 5 }, { flag: 5 }, 7, "soon"]) {
+    assert.deepEqual(load(bad), { ok: false, reason: "damaged" }, JSON.stringify(bad));
+  }
+});

@@ -2,8 +2,9 @@
 // localStorage can be missing or throw (private mode, blocked storage), so
 // every access is wrapped and failure is reported, never thrown.
 
-import { availableActions } from "./engine.js";
-import { isPlainJSON, SCHEMA_VERSION } from "./state.js";
+import { availableActions, makeCtx } from "./engine.js";
+import { condErrors, evalCond } from "./events.js";
+import { clone, isPlainJSON, SCHEMA_VERSION } from "./state.js";
 
 export const SAVE_FORMAT = 1;
 export const SLOTS = ["main", "auto"];
@@ -70,6 +71,9 @@ function readable(route, s) {
     && (s.over === null || isObj(s.over));
   if (!shaped) return false;
   try {
+    // A queued item's "unless" must evaluate on this state (an argument of the
+    // wrong shape throws here, not mid-game). Run on a copy: "chance" draws.
+    for (const q of s.queue ?? []) if (q.unless !== undefined) evalCond(q.unless, makeCtx(route, clone(s)));
     if (route.readable && !route.readable(s)) return false;
     availableActions(route, s);
     route.view?.(s);
@@ -79,9 +83,11 @@ function readable(route, s) {
   }
 }
 
-// A queued event the route knows, waiting either for a day (due) or for a place (at).
+// A queued event the route knows, waiting either for a day (due) or for a place (at),
+// and an "unless" (if any) that passes validateDeck's condition check.
 function queueItemOk(route, q) {
   if (!isObj(q) || typeof q.event !== "string") return false;
+  if (q.unless !== undefined && condErrors(q.unless, route, "unless").length) return false;
   if (!(route.eventIndex?.has(q.event) ?? route.events?.some((e) => e.id === q.event))) return false;
   const byDay = Number.isInteger(q.due);
   const byPlace = typeof q.at === "string" && (!route.places || route.places.includes(q.at));

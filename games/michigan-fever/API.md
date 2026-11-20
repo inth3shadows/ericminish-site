@@ -22,7 +22,7 @@ import { money } from "/games/michigan-fever/mechanics/purse.js"; // cents -> "$
 | `step(route, state, action)` | `{ state, beats }` | `action` is an object from `availableActions` (or just its `id`). Returns a **new** state; the old one is untouched. |
 | `view(route, state)` | `View` | HUD data (date, place, purse, family, land, deadline). Plain JSON. |
 | `saveGame(state, { slot })` | `boolean` | `slot` is `"auto"` (default) or `"main"`. `false` if storage is missing, full or blocked (private mode). Never throws. |
-| `loadGame(route, { slot })` | `{ ok: true, state }` or `{ ok: false, reason }` | Reasons: `"no storage"`, `"empty"`, `"unreadable"`, `"unknown format"`, `"different route"`, `"old engine version"`, `"old route version"`, `"damaged"` (the state is not shaped like a game state, a queued consequence names an unknown event or has neither a due day nor a place, the route's own fields are malformed (ties, letters, fatigue, the pace), or the route's view or actions throw on it). The route is at version 2 (P2 Phase A), so a P1 save is refused as `"old route version"`. |
+| `loadGame(route, { slot })` | `{ ok: true, state }` or `{ ok: false, reason }` | Reasons: `"no storage"`, `"empty"`, `"unreadable"`, `"unknown format"`, `"different route"`, `"old engine version"`, `"old route version"`, `"damaged"` (the state is not shaped like a game state, a queued consequence names an unknown event, has neither a due day nor a place, or has a malformed `unless`, the route's own fields are malformed (ties, letters, fatigue, the pace), or the route's view or actions throw on it). The route is at version 2 (P2 Phase A), so a P1 save is refused as `"old route version"`. |
 | `hasSave(route.id, { slot })`, `clearSave(route.id, { slot })` | `boolean` | Storage keys are `trail:michigan-fever:auto` and `trail:michigan-fever:main`. |
 | `serialize(state)` / `deserialize(route, text)` | string / like `loadGame` | For a copy-paste or file export, if wanted. |
 
@@ -73,7 +73,7 @@ type Action = {
 | `rest` | camp, lodging, tents; `sabbath` ("Keep the Sabbath") on a Sunday on the road or at the claim | |
 | `board` | Albany (canal), Buffalo (steamer, overland, or from 25 November the winter stage, `stage:winter`, $25 a head) | |
 | `post` | Albany, Buffalo, Detroit, Bronson: "Go to the post office", once a visit (a week at Bronson) | Opens the `post-office` event: its choices are what can be done there now |
-| `buy`, `sell`, `broker`, `letter`, `work`, `dose`, `repair` | towns, the road, the claim | `buy-yoke` (Albany, Buffalo, Detroit) is offered while the team is short an ox (`view.gear.short`) |
+| `buy`, `sell`, `broker`, `letter`, `work`, `dose`, `repair` | towns, the road, the claim | `buy-yoke` (Albany, Buffalo, Detroit, Bronson, the claim: the end of every leg the family drives) is offered while the team is short an ox (`view.gear.short`) |
 | `explore`, `apply`, `wait`, `pay` | the land office | `apply` has `tractId` (stable for the visit, e.g. `"t2"`), `tractLabel` (e.g. "prairie, 7 miles out, dry, good soil"), `acres`, and `tract` (same as `tractId`, kept for older callers). The UI groups by `tractId`. "Withdraw" is also `type: "apply"` but has no `tractId`. |
 | `build` | the claim | |
 
@@ -102,9 +102,12 @@ Fatigue costs from the first point (user decision 2026-11-19). Illness, accident
 likelier with every point up to 40 (half again as likely there), then steeply, to four times at 100: one
 continuous curve. Hard and grueling wear the team at once: a cast shoe is possible from the first pushed day,
 and a cast shoe or a lame ox is likelier on a hard (x1.5) or grueling (x2.5) day. A worn team pulls slower on
-good road, 1 percent a point of its fatigue, until it rests, so a pushed day costs miles on the days after it.
+every road, 1 percent a point of its fatigue (never below half its fresh pace, `fat.team.floor`), until it
+rests, so a pushed day costs miles on the days after it; on the swamp road and the forest track that is below
+the road's own pace, which pushing never raises.
 A steady day on good road adds no fatigue; bad road still does. In the balance sim, pushing grueling while
-under 40 or 45 fatigue loses to a steady pace, and a short push at the end of a leg still pays.
+under 40 or 45 fatigue loses to a steady pace, grueling everywhere loses clearly, and a short push at the end
+of a leg still pays.
 
 **The post office.** `post` opens an event whose choices are: ask for letters (once a visit; waiting letters
 open a pay-or-leave choice, and the postage is paid on collection), send money home for one of the family's
@@ -115,11 +118,14 @@ kept exact: the counter charges the exact sum of the letters paid for together, 
 25, and drops an odd half cent in the family's favour (a single sheet to Albany is $0.12).
 
 Money settles a tie only if it reaches home by the tie's date: a letter takes 12 days (`post.transitDays`), so
-the "send" choice is disabled with a reason ("Too late: ...") once the date is nearer than that. Paying an
+the "send" choice is disabled with a reason ("Too late: ...") once the date is nearer than that. Halves arrive
+later: the second halves go by the next mail, 7 days on (`post.halves.gapDays`), so the halves choice closes
+that much earlier than whole notes, with its own reason ("Too late for halves: ..."). Paying an
 agent in person (the mortgage agent at Detroit) works only before the date; once the outcome at home is
-decided the agent does not come. Money lost in the mail shows as sent (`status: "sent"`) and is not offered
-again until the letter saying it never came is collected at Bronson; then the status is `"lost"` and it can
-be sent again if there is still time.
+decided the agent does not come. Every sending by mail shows as sent (`status: "sent"`, `sent` = the amount) whether it
+arrived or went astray, until a letter says which: the tie's outcome letter (then `"settled"`) or the letter
+saying it never came (then `"lost"`, and it can be sent again if there is still time). Neither the view nor
+the HUD tells the two apart before then. Paid in person, a tie is `"settled"` at once.
 
 ## Beats
 
@@ -174,7 +180,7 @@ at home (and letters that went to the dead-letter office); show them apart from 
   gear: { team: null|"oxen"|"horse", wagon, wagonCond, teamster, fatigue, tired, short },   // short: an ox gave out
   pace: "steady"|"hard"|"grueling", paceApplies,   // paceApplies: the family's own wagon is on the road
   fatigue: { tired, high },                         // the thresholds: "tired" at 40, "worn" (drive on stops) at 70
-  ties: [{ id, label, purpose, detail, amount, sent, status: "open"|"sent"|"settled"|"lost", news }],  // "Left behind"; news once a letter told them; "sent" = on its way as far as the family knows
+  ties: [{ id, label, purpose, detail, amount, sent, status: "open"|"sent"|"settled"|"lost", news }],  // "Left behind"; news once a letter told them; "sent" = sent by mail, no word yet whether it came
   postOffice,                                       // at a town or office with a post office
   deadline: { date: "1836-12-15", daysLeft, passed },
   snow: bool, winterWarning: null | daysLeft,   // set once the first snow has fallen
@@ -251,15 +257,23 @@ An event effect can schedule another event for later:
 `route.places`; passing through does not count). The queue lives in `state.queue` (plain JSON, saved with the
 game). When the route next asks for an event (or calls `ctx.fireDue()`), the first item that is due, whose
 event's `when` holds and whose binders find someone, fires ahead of the random draw; the random draw still
-happens unless it opened a choice. One a day: the route's daily draw fires the queue once and then draws with
-`ctx.drawEvent(deck, { due: false })`. Items waiting for a place all fire while the family is there: after
-every action in a town the route calls `ctx.fireDue({ atOnly: true })` until none is left or a choice is
-open. If `unless` holds by then, the item is dropped. Items whose `when` fails wait in the queue; the same
+happens unless it opened a choice. The route fires at most one queued item in a step: the day's draw (a day
+on the road, in town or at the office, or the arrival) fires the queue once and then draws with
+`ctx.drawEvent(deck, { due: false })`, so items counted in days fire at most one a day, and so does the
+random draw. Items waiting for a place all fire while the family is there, one a step: a step in town that
+fired none calls `ctx.fireDue({ atOnly: true })` once, and an action that leaves the town (a boat, the
+overland road, the stage, setting out, going out to the claim) first fires the next one still waiting and,
+if one fired, stays put: the family leaves on the next try. So a town with several waiting can show several
+in one day, one a step; holding the family in town to keep "one a day" was the rule not chosen. If `unless`
+holds by then, the item is dropped. Items whose `when` fails wait in the queue; the same
 event is never queued twice at once. A chain event marked `"outfit": "team"` or `"wagon"` belongs to the
 family's own outfit: selling the team, buying a new team and wagon, or a fresh yoke drops it from the queue.
 `validateDeck` checks that the event exists, that `in` is days or a known place, and the `unless` condition,
 for the deck and for the tie schedules in `text.json` (`route.schedules`). A loaded save is refused as damaged
-if a queued item names an unknown event or has neither a due day nor a place. The UI never reads the queue.
+if a queued item names an unknown event, has neither a due day nor a place, or has an `unless` that fails the
+same condition check (`condErrors` in `engine/events.js`) or throws when evaluated; and if a letter's kind is
+not `kin`, `news`, `outcome` or `lost`, or a tie's letter names a tie the family does not have. The UI never
+reads the queue.
 
 Two more engine hooks: an event weight can scale by a route curve (`{"base", "mul"?, "scale": "worn" |
 "teamWorn"}`, the fatigue curve of the most tired person or of the team), and a choice's `next` event binds its

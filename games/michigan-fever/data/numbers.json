@@ -2078,7 +2078,14 @@
     "value": 0.01,
     "unit": "share/point",
     "tag": "invented",
-    "note": "Share of the day's miles a team loses on good road for each point of its fatigue (1 percent a point: a team at 40 pulls 40 percent slower), so a hard or grueling day costs miles on the days after it until the team rests. On the swamp road and the forest track the road sets the speed. Oxen need rest often and a worn team slows (Overland Journal 33(1), about the later western trails); no rate is sourced, so the figure is invented. Tuned in the sim (test/pace-*.test.mjs): pushing while under 40 or 45 fatigue loses to a steady pace, a short push at the end of a leg still pays."
+    "note": "Share of the day's miles a team loses for each point of its fatigue (1 percent a point: a team at 40 pulls 40 percent slower), so a hard or grueling day costs miles on the days after it until the team rests. It applies on every road: on the swamp road and the forest track a worn team is slower than the road's own pace, and pushing there never makes it faster. Floored at fat.team.floor. Oxen need rest often and a worn team slows (Overland Journal 33(1), about the later western trails); no rate is sourced, so the figure is invented. Tuned in the sim (test/pace-*.test.mjs): pushing while under 40 or 45 fatigue loses to a steady pace, a short push at the end of a leg still pays."
+  },
+  {
+    "id": "fat.team.floor",
+    "value": 0.5,
+    "unit": "x",
+    "tag": "invented",
+    "note": "The slowest a worn team pulls, as a share of a fresh team's miles: a spent team crawls but never stops dead (V6, round 6 review). No source gives a rate; invented."
   },
   {
     "id": "fat.tired",
@@ -2585,6 +2592,13 @@
     "unit": "days",
     "tag": "invented",
     "note": "Days for a letter from home to reach Michigan; mail in the new counties ran once a week (Blois), the transit time is invented."
+  },
+  {
+    "id": "post.halves.gapDays",
+    "value": 7,
+    "unit": "days",
+    "tag": "invented",
+    "note": "Days between the first halves of cut notes and the second halves, which go by the next mail (V3, round 6 review), so halves reach home this much later than notes sent whole. Mail in the new counties ran once a week (Blois, see post.transitDays); the interval is invented."
   },
   {
     "id": "post.longP",

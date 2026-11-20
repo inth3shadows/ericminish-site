@@ -9,7 +9,8 @@
 // Status: "open" (owed), "sent" (money in the mail; as far as the family knows
 // it is on its way), "settled" (it arrived, or was paid in person), "lost"
 // (the letter saying it never came has been read). Money that goes astray stays
-// "sent", with t.astray, until that letter is collected.
+// "sent", with t.astray, until that letter is collected. The view shows every
+// sending by mail as "sent", arrived or astray, until word comes (shownStatus).
 
 import { compare, addDays, format } from "../../engine/clock.js";
 import { addRes, resolve } from "../../engine/events.js";
@@ -173,6 +174,8 @@ export function collectMail(ctx, office) {
     if (t && m.key === "outcome") {
       t.learned = true;
       mood = BAD.has(t.outcome) ? -num("tie.morale.bad") : num("tie.morale.good");
+      // The outcome letter tells of money that never came, if its own letter was left on a shelf.
+      if (t.astray && t.status === "sent") t.status = "lost";
     } else if (m.key === "lost") {
       mood = -num("tie.morale.bad");
       // Only now does the family know the money never came.
@@ -238,15 +241,20 @@ export function inTime(num, t, arrives) {
   return t.outcome == null && compare(arrives, num(`tie.${t.id}.due`)) <= 0;
 }
 
-export const lettersArrive = (state, num) => addDays(state.date, num("post.transitDays"));
+// When money sent today is all at home: whole notes by this mail; halves only
+// when the second halves, which go by the next mail, arrive (V3).
+export const lettersArrive = (state, num, how = "whole") =>
+  addDays(state.date, num("post.transitDays") + (how === "halves" ? num("post.halves.gapDays") : 0));
 
-export const canSendFor = (state, num, t) => sendOpen(t) && inTime(num, t, lettersArrive(state, num)) && homeValue(state, num) >= t.amount;
+export const canSendFor = (state, num, t, how = "whole") => sendOpen(t) && inTime(num, t, lettersArrive(state, num, how)) && homeValue(state, num) >= t.amount;
 
-// Why a tie's money cannot go by this mail (null when it can).
-export function sendWhy(route, state, num, t) {
-  if (canSendFor(state, num, t)) return null;
+// Why a tie's money cannot go by this mail, sent `how` (null when it can).
+export function sendWhy(route, state, num, t, how = "whole") {
+  if (canSendFor(state, num, t, how)) return null;
   const P0 = route.data.text.post;
-  if (sendOpen(t) && !inTime(num, t, lettersArrive(state, num))) return P0.tooLate.replace("{due}", formatDay(num(`tie.${t.id}.due`)));
+  if (sendOpen(t) && !inTime(num, t, lettersArrive(state, num, how))) {
+    return P0[how === "halves" ? "tooLateHalves" : "tooLate"].replace("{due}", formatDay(num(`tie.${t.id}.due`)));
+  }
   return P0.noPaper;
 }
 
@@ -279,7 +287,7 @@ function takeNotesAtHome(state, num, amount) {
 // The notes for the tie, and the postage from what is left.
 export function canSendHow(state, num, tieId, how, office) {
   const t = tieOf(state, tieId);
-  if (!canSendFor(state, num, t)) return false;
+  if (!canSendFor(state, num, t, how)) return false;
   const copy = { ...state, purse: { coin: state.purse.coin, notes: { ...state.purse.notes } } };
   takeNotesAtHome(copy, num, t.amount);
   return P.canPay(copy, num, sendPostage(num, office, how));
@@ -290,7 +298,7 @@ export function canSendHow(state, num, tieId, how, office) {
 export function sendMoney(ctx, tieId, how, office) {
   const { state, num, rng } = ctx;
   const t = tieOf(state, tieId);
-  if (!canSendFor(state, num, t)) return false;
+  if (!canSendFor(state, num, t, how)) return false;
   const purse = { coin: state.purse.coin, notes: { ...state.purse.notes } };
   takeNotesAtHome(state, num, t.amount);
   if (!P.pay(state, num, sendPostage(num, office, how))) {
@@ -303,15 +311,20 @@ export function sendMoney(ctx, tieId, how, office) {
   const H = ctx.route.data.text.homeLetters;
   outgoing(ctx, H.money[how], tieVars(ctx, t));
   state.vars.lettersHome = (state.vars.lettersHome ?? 0) + 1;
+  // Arrived or astray, the money left the family and goes by mail: the view shows
+  // it as sent until word comes (shownStatus), so neither leaks the loss.
+  const arrives = lettersArrive(state, num, how);
+  t.sent = t.amount;
+  t.mailed = true;
   if (lost) {
-    // As far as the family knows it is on its way. Word that it never came
-    // reaches Bronson in time; until that letter is read it shows as sent.
+    // Word that it never came is written when it should have arrived, and
+    // reaches Bronson a transit later; until that letter is read it shows as sent.
     t.status = "sent";
     t.astray = true;
-    state.mail.push({ id: nextMail(state), key: "lost", tie: t.id, office: "bronson", from: addDays(state.date, 2 * num("post.transitDays")), written: addDays(state.date, num("post.transitDays")), sheets: 1, status: "waiting" });
+    state.mail.push({ id: nextMail(state), key: "lost", tie: t.id, office: "bronson", from: addDays(arrives, num("post.transitDays")), written: arrives, sheets: 1, status: "waiting" });
   } else {
-    t.sent = t.amount;
     t.status = "settled";
+    delete t.astray;
   }
   ctx.emit({ type: "narrate", text: ctx.text(ctx.route.data.text.post[how === "halves" ? "sentHalves" : "sentWhole"], tieVars(ctx, t)) });
   return true;
@@ -324,6 +337,8 @@ export function payTieHere(ctx, tieId) {
   if (!canPayHere(state, num, t) || !P.pay(state, num, t.amount)) return false;
   t.sent = t.amount;
   t.status = "settled";
+  delete t.mailed;
+  delete t.astray;
   return true;
 }
 
@@ -355,6 +370,15 @@ export function resolveTies(ctx) {
 
 // ---- the HUD and the ending ----------------------------------------------
 
+// What the family knows (V4): money sent by mail shows as "sent", whether it
+// arrived or went astray, until a letter says which: the tie's outcome letter
+// ("settled") or the letter saying it never came ("lost"). Paid in person, it is
+// settled at once.
+export function shownStatus(t) {
+  if (t.status === "settled" && t.mailed && !t.learned) return "sent";
+  return t.status;
+}
+
 export function summary(route, state) {
   return (state.ties ?? []).map((t) => {
     const def = tieDef(route, t.id);
@@ -362,7 +386,7 @@ export function summary(route, state) {
     const fill = (s) => String(s).replaceAll("{parent}", t.who ?? "").replaceAll("{child}", party?.name ?? "")
       .replaceAll("{amount}", P.money(t.amount)).replaceAll("{kin}", state.vars.kin?.name ?? "");
     return {
-      id: t.id, label: fill(def.label), purpose: fill(def.purpose), detail: fill(def.detail), amount: t.amount, sent: t.sent, status: t.status,
+      id: t.id, label: fill(def.label), purpose: fill(def.purpose), detail: fill(def.detail), amount: t.amount, sent: t.sent, status: shownStatus(t),
       news: t.learned && t.outcome ? fill(def.short[t.outcome]) : null,
     };
   });

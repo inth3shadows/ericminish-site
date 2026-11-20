@@ -58,6 +58,7 @@ export const PACE_POLICIES = {
   steady: () => "steady",
   gruelingUnder40: (v) => (!BAD_ROAD.has(v.travel?.terrain) && mostTired(v) + 12 < 40 ? "grueling" : "steady"),
   gruelingUnder45: (v) => (!BAD_ROAD.has(v.travel?.terrain) && mostTired(v) + 12 < 45 ? "grueling" : "steady"),
+  gruelingEverywhere: () => "grueling",
 };
 
 export function summarize(results) {

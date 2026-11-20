@@ -2891,12 +2891,6 @@
             "pay": "#price.oxen"
           },
           {
-            "fatigue": {
-              "who": "team",
-              "amount": "#ev.team.fresh"
-            }
-          },
-          {
             "freshTeam": true
           }
         ],
@@ -3508,7 +3502,7 @@
         "requires": {
           "sendable": "halves"
         },
-        "why": "You cannot pay the postage.",
+        "why": "{whyHalves}",
         "effects": [
           {
             "sendMoney": "halves"
@@ -3522,7 +3516,7 @@
         "requires": {
           "sendable": "whole"
         },
-        "why": "You cannot pay the postage.",
+        "why": "{whyWhole}",
         "effects": [
           {
             "sendMoney": "whole"

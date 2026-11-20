@@ -332,6 +332,14 @@ function walkCond(cond, route, errs, where) {
   if (k === "not") walkCond(cond[k], route, errs, where);
 }
 
+// The condition check validateDeck uses, for one condition on its own (a saved
+// queue item's "unless", say). Returns the errors; a malformed one never throws.
+export function condErrors(cond, route, where = "condition") {
+  const errs = [];
+  try { walkCond(cond, route, errs, where); } catch (err) { errs.push(`${where}: ${err.message}`); }
+  return errs;
+}
+
 function walkEffects(effects, route, errs, where) {
   for (const e of effects ?? []) {
     let k;

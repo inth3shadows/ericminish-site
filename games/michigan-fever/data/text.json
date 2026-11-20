@@ -188,6 +188,8 @@
     "deadLetters": "{n} from home never reached the family. After the quarter's advertising they went to the dead-letter office in Washington.",
     "sendDetail": "Notes go by mail at their value at home, where New England paper passes at face.",
     "tooLate": "Too late: a letter sent now would reach home after {due}, when it falls due.",
+    "tooLateHalves": "Too late for halves: the second halves go by the next mail and would reach home after {due}, when it falls due. Whole notes in one letter can still go.",
+    "noPostage": "You cannot pay the postage.",
     "noPaper": "Not enough paper money to send: coin does not go by mail.",
     "fellDue": "Too late: it fell due at home on {due}.",
     "cannotPayTie": "You do not have it to pay."
