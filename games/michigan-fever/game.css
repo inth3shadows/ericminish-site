@@ -197,6 +197,8 @@
 .mf-family .mf-status { font-family: var(--mf-mono); font-size: 0.7rem; color: var(--mf-amber); }
 .mf-family .is-dead .mf-name { color: var(--mf-ink-2); }
 .mf-family .is-dead .mf-status { color: var(--mf-ink-2); font-style: italic; }
+.mf-family .mf-tired { font-family: var(--mf-mono); font-size: 0.7rem; color: var(--mf-ink-2); }
+.mf-family .mf-tired.is-worn { color: var(--mf-amber); }
 
 .mf-tools { display: flex; gap: 0; margin-right: -4px; }
 .mf-icon {
@@ -249,6 +251,9 @@
 .mf-sheet dl { display: grid; grid-template-columns: minmax(6.5rem, auto) 1fr; gap: 0.2rem 0.9rem; margin: 0; }
 .mf-sheet dt { font-size: 0.92rem; color: var(--mf-ink-2); }
 .mf-sheet dd { margin: 0; font-size: 1rem; }
+/* Left behind: long labels, so each tie reads as a label over its status. */
+.mf-sheet dl.is-stacked { grid-template-columns: 1fr; gap: 0; }
+.mf-sheet dl.is-stacked dd { margin-bottom: 0.45rem; }
 
 /* Title and arrival cards */
 .mf-card {
@@ -349,6 +354,9 @@
 .mf-choice[aria-disabled="true"] { cursor: default; color: #bfb7aa; border-style: dashed; border-color: rgba(241, 235, 224, 0.2); background: rgba(24, 22, 19, 0.35); }
 .mf-choice[aria-disabled="true"]:hover { background: rgba(24, 22, 19, 0.35); }
 .mf-choice.is-back { border-color: rgba(241, 235, 224, 0.16); background: none; }
+/* The pace group: the pace in force is marked (aria-pressed). */
+.mf-choice.is-selected { border-color: rgba(240, 217, 168, 0.85); background: rgba(240, 217, 168, 0.14); }
+.mf-choice.is-selected .mf-choice-label::after { content: " \2713"; }
 .mf-choice-text { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
 .mf-choice-sub { font-size: 0.9rem; color: var(--mf-ink-3); }
 .mf-choice[aria-disabled="true"] .mf-choice-sub { color: #d1c8b9; }

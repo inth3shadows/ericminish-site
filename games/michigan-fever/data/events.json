@@ -19,6 +19,14 @@
           },
           {
             "morale": "#ev.morale.mid"
+          },
+          {
+            "schedule": {
+              "event": "chain-cousin",
+              "in": {
+                "at": "bronson"
+              }
+            }
           }
         ],
         "result": "It costs a day, but the family goes on in better heart."
@@ -26,7 +34,16 @@
       {
         "id": "on",
         "label": "Take the letter, thank them, and drive on",
-        "effects": [],
+        "effects": [
+          {
+            "schedule": {
+              "event": "chain-cousin",
+              "in": {
+                "at": "bronson"
+              }
+            }
+          }
+        ],
         "result": "You wave from the wagon until the farm is out of sight."
       }
     ],
@@ -53,6 +70,12 @@
         "effects": [
           {
             "wagon": "#ev.wagon.small"
+          },
+          {
+            "schedule": {
+              "event": "chain-team-strained",
+              "in": "#chain.in.short"
+            }
           }
         ],
         "result": "You make your miles, and the wagon takes a beating for it."
@@ -103,6 +126,12 @@
               "from": "ne",
               "rate": "#ev.shaver.rate",
               "cap": "#broker.cap"
+            }
+          },
+          {
+            "schedule": {
+              "event": "chain-light-coin",
+              "in": "#chain.in.short"
             }
           }
         ],
@@ -159,6 +188,15 @@
         "effects": [
           {
             "wagon": "#ev.wagon.mid"
+          },
+          {
+            "schedule": {
+              "event": "chain-axle",
+              "in": "#chain.axle.in",
+              "unless": {
+                "flag": "wheelMended"
+              }
+            }
           }
         ],
         "result": "The wheel holds, more or less."
@@ -208,6 +246,14 @@
         "effects": [
           {
             "morale": "#ev.morale.small"
+          },
+          {
+            "schedule": {
+              "event": "chain-ohio-family",
+              "in": {
+                "at": "buffalo"
+              }
+            }
           }
         ],
         "result": "The children run between the two wagons all afternoon."
@@ -274,6 +320,12 @@
         "effects": [
           {
             "flag": "lineBargain"
+          },
+          {
+            "schedule": {
+              "event": "chain-bargain-boat",
+              "in": "#chain.in.short"
+            }
           }
         ],
         "result": "He chalks your name on his slate. The line-boat fares are now lower for you."
@@ -626,6 +678,12 @@
                 }
               }
             ]
+          },
+          {
+            "schedule": {
+              "event": "chain-late-ague",
+              "in": "#chain.in.long"
+            }
           }
         ]
       }
@@ -1044,7 +1102,20 @@
   {
     "id": "ohio-lame-ox",
     "deck": "travel",
-    "weight": "#w.uncommon",
+    "weight": {
+      "base": "#w.uncommon",
+      "mul": [
+        [
+          {
+            "teamTired": [
+              ">=",
+              "#fat.tired"
+            ]
+          },
+          "#fat.ev.mult"
+        ]
+      ]
+    },
     "cooldown": "#cd.long",
     "when": {
       "all": [
@@ -1081,6 +1152,12 @@
           },
           {
             "progress": "#ev.progress.loss"
+          },
+          {
+            "schedule": {
+              "event": "chain-ox-worse",
+              "in": "#chain.in.short"
+            }
           }
         ]
       }
@@ -1115,6 +1192,12 @@
         "effects": [
           {
             "morale": "#ev.morale.loss"
+          },
+          {
+            "schedule": {
+              "event": "chain-strip-gate",
+              "in": "#ev.delay.day"
+            }
           }
         ],
         "result": "The Ohio man glowers at you for the rest of the evening."
@@ -1238,6 +1321,14 @@
           },
           {
             "morale": "#ev.morale.loss"
+          },
+          {
+            "schedule": {
+              "event": "chain-paper-city-news",
+              "in": {
+                "at": "bronson"
+              }
+            }
           }
         ],
         "result": "You never hear of the town again."
@@ -1314,6 +1405,12 @@
         "effects": [
           {
             "wagon": "#ev.wagon.mid"
+          },
+          {
+            "schedule": {
+              "event": "chain-corduroy-spring",
+              "in": "#chain.in.short"
+            }
           }
         ],
         "result": "Something in the wagon cracks."
@@ -1389,7 +1486,14 @@
       {
         "id": "sleep",
         "label": "Bank the fire and sleep",
-        "effects": [],
+        "effects": [
+          {
+            "schedule": {
+              "event": "chain-wolves-again",
+              "in": "#chain.in.short"
+            }
+          }
+        ],
         "result": "In the morning there are tracks at the edge of the clearing, nothing more."
       }
     ],
@@ -1869,6 +1973,12 @@
               "amount": "#wage.day",
               "kind": "mi"
             }
+          },
+          {
+            "schedule": {
+              "event": "chain-frame-house",
+              "in": "#chain.in.mid"
+            }
           }
         ],
         "result": "A day's work, a dollar in Michigan paper."
@@ -1920,6 +2030,12 @@
                 }
               }
             ]
+          },
+          {
+            "schedule": {
+              "event": "chain-late-ague",
+              "in": "#chain.in.long"
+            }
           }
         ]
       }
@@ -2002,6 +2118,12 @@
           },
           {
             "morale": "#ev.morale.mid"
+          },
+          {
+            "schedule": {
+              "event": "chain-neighbours-return",
+              "in": "#chain.in.mid"
+            }
           }
         ],
         "result": "By evening the walls are up another four rounds."
@@ -2009,7 +2131,14 @@
       {
         "id": "no",
         "label": "Thank them; you will manage",
-        "effects": []
+        "effects": [
+          {
+            "schedule": {
+              "event": "chain-neighbours-cool",
+              "in": "#chain.in.mid"
+            }
+          }
+        ]
       }
     ],
     "note": {
@@ -2072,7 +2201,20 @@
   {
     "id": "claim-axe",
     "deck": "claim",
-    "weight": "#w.common",
+    "weight": {
+      "base": "#w.common",
+      "mul": [
+        [
+          {
+            "tired": [
+              ">=",
+              "#fat.tired"
+            ]
+          },
+          "#fat.ev.mult"
+        ]
+      ]
+    },
     "cooldown": "#cd.long",
     "when": {
       "phase": "claim"
@@ -2092,6 +2234,12 @@
             "injure": {
               "who": "$who",
               "amount": "#ev.injury.small"
+            }
+          },
+          {
+            "schedule": {
+              "event": "chain-axe-festers",
+              "in": "#chain.in.short"
             }
           }
         ]
@@ -2152,6 +2300,12 @@
                 }
               }
             ]
+          },
+          {
+            "schedule": {
+              "event": "chain-late-ague",
+              "in": "#chain.in.long"
+            }
           }
         ]
       }
@@ -2240,7 +2394,20 @@
   {
     "id": "any-trunk",
     "deck": "travel",
-    "weight": "#w.uncommon",
+    "weight": {
+      "base": "#w.uncommon",
+      "mul": [
+        [
+          {
+            "tired": [
+              ">=",
+              "#fat.tired"
+            ]
+          },
+          "#fat.ev.mult"
+        ]
+      ]
+    },
     "cooldown": "#cd.long",
     "when": {
       "leg": [
@@ -2479,6 +2646,1714 @@
       "text": "In the wet season the swamp crossing could take \"days or even weeks\" (local history, likely). Waiting out the rain at a tavern is invented for the game.",
       "source": "Historic Perrysburg, The Great Black Swamp; tavern invented",
       "url": "https://www.historicperrysburg.org/copy-of-great-black-swamp",
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "travel-quarrel",
+    "deck": "travel",
+    "weight": "#w.common",
+    "cooldown": "#cd.long",
+    "when": {
+      "all": [
+        {
+          "leg": [
+            "vermont",
+            "overland",
+            "road",
+            "claim"
+          ]
+        },
+        {
+          "tired": [
+            ">=",
+            "#fat.tired"
+          ]
+        }
+      ]
+    },
+    "bind": {
+      "who": {
+        "member": "wellAdult"
+      }
+    },
+    "text": "Tempers are short at the end of a long day. {who} snaps at the children over nothing, and then everyone is shouting.",
+    "choices": [
+      {
+        "id": "early",
+        "label": "Stop early and let everyone sleep",
+        "effects": [
+          {
+            "fatigue": {
+              "who": "all",
+              "amount": "#ev.fatigue.ease"
+            }
+          },
+          {
+            "progress": "#ev.progress.loss"
+          }
+        ],
+        "result": "You make camp with an hour of light left. Nobody says much, but by morning it has blown over."
+      },
+      {
+        "id": "on",
+        "label": "Say nothing and drive on",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "You make your miles. The quarrel rides along with you."
+      }
+    ],
+    "note": {
+      "text": "One pioneer remembered the road west as \"as good as a picnic\" for the children, and the cost as \"the anxious parental care of those who watched over us.\" The research has no figures for exhaustion, so quarrels from fatigue are invented.",
+      "source": "Lawrence, \"Twice a Pioneer,\" Michigan Pioneer and Historical Collections vol. 18 (quote); the event is invented",
+      "url": "https://archive.org/details/michiganpioneerh0018unse",
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "travel-stumble",
+    "deck": "travel",
+    "weight": "#w.common",
+    "cooldown": "#cd.long",
+    "when": {
+      "all": [
+        {
+          "leg": [
+            "vermont",
+            "overland",
+            "road",
+            "claim"
+          ]
+        },
+        {
+          "tired": [
+            ">=",
+            "#fat.high"
+          ]
+        }
+      ]
+    },
+    "bind": {
+      "who": {
+        "member": "wellAdult"
+      }
+    },
+    "text": "Worn out, {who} stumbles over the wagon tongue at dusk and goes down hard.",
+    "effects": [
+      {
+        "injure": {
+          "who": "$who",
+          "amount": "#ev.injury.small"
+        }
+      }
+    ],
+    "note": {
+      "text": "The research has no figures for accidents on the road, or for how tiredness raised them. This event and its odds are invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "team-cast-shoe",
+    "deck": "travel",
+    "weight": "#w.common",
+    "cooldown": "#cd.long",
+    "when": {
+      "all": [
+        {
+          "leg": [
+            "vermont",
+            "overland",
+            "road",
+            "claim"
+          ]
+        },
+        {
+          "team": true
+        },
+        {
+          "teamTired": [
+            ">=",
+            "#fat.tired"
+          ]
+        }
+      ]
+    },
+    "text": "One of the team has worn a shoe through on the hard road and goes tender on the bare hoof.",
+    "choices": [
+      {
+        "id": "smith",
+        "label": "Have a smith reshoe it at the next forge",
+        "requires": {
+          "afford": "#ev.shoe.cost"
+        },
+        "why": "You cannot pay a smith.",
+        "effects": [
+          {
+            "pay": "#ev.shoe.cost"
+          },
+          {
+            "fatigue": {
+              "who": "team",
+              "amount": "#ev.fatigue.ease"
+            }
+          }
+        ],
+        "result": "The smith has it done in an hour, and the animal steps out sound."
+      },
+      {
+        "id": "on",
+        "label": "Go on and favour the foot",
+        "effects": [
+          {
+            "progress": "#ev.progress.loss"
+          },
+          {
+            "fatigue": {
+              "who": "team",
+              "amount": "#ev.fatigue.strain"
+            }
+          }
+        ],
+        "result": "The team limps along. It is a slow day."
+      }
+    ],
+    "note": {
+      "text": "Oxen were shod with eight comma-shaped iron pieces each, and needed \"several changes of shoes to prevent serious lameness.\" The source describes the later overland trails, not 1836 Michigan.",
+      "source": "Overland Journal 33(1), \"Oxen: Engines of the Overland Emigration\" (2015)",
+      "url": "https://www.nps.gov/cali/learn/historyculture/upload/OJ-spring2015-oxen.pdf",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "team-ox-down",
+    "deck": "travel",
+    "weight": "#w.frequent",
+    "when": {
+      "all": [
+        {
+          "leg": [
+            "vermont",
+            "overland",
+            "road",
+            "claim"
+          ]
+        },
+        {
+          "team": true
+        },
+        {
+          "teamTired": [
+            ">=",
+            "#fat.high"
+          ]
+        },
+        {
+          "flag": "!teamShort"
+        }
+      ]
+    },
+    "text": "One of the team will not get up this morning. It is not lame and not sick: it is used up.",
+    "choices": [
+      {
+        "id": "buy",
+        "label": "Buy a fresh yoke from a farmer by the road",
+        "requires": {
+          "afford": "#price.oxen"
+        },
+        "why": "You cannot raise the price of a yoke.",
+        "effects": [
+          {
+            "pay": "#price.oxen"
+          },
+          {
+            "fatigue": {
+              "who": "team",
+              "amount": "#ev.team.fresh"
+            }
+          }
+        ],
+        "result": "The farmer drives a hard bargain, but you go on with a sound team."
+      },
+      {
+        "id": "short",
+        "label": "Go on with what is left and a lighter load",
+        "effects": [
+          {
+            "flag": "teamShort"
+          },
+          {
+            "progress": "#ev.progress.loss"
+          }
+        ],
+        "result": "You leave the spent animal with the farmer for what he will give, and crawl on."
+      }
+    ],
+    "note": {
+      "text": "\"A lame ox unable to work was just a steer, and possibly a soon-to-be meal.\" Overwork was among the causes of oxen lost on the trail, and handlers rested them often because cattle do not sweat.",
+      "source": "Overland Journal 33(1), \"Oxen: Engines of the Overland Emigration\" (2015)",
+      "url": "https://www.nps.gov/cali/learn/historyculture/upload/OJ-spring2015-oxen.pdf",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "road-sabbath-movers",
+    "deck": "travel",
+    "weight": "#w.frequent",
+    "once": true,
+    "when": {
+      "all": [
+        {
+          "leg": [
+            "overland",
+            "road"
+          ]
+        },
+        {
+          "dow": 0
+        }
+      ]
+    },
+    "text": "Sunday. A camp of movers beside the road has not stirred: they do not travel on the Sabbath, and their oxen graze in the morning sun.",
+    "note": {
+      "text": "Of the 1830s movers on the Chicago road one Lenawee settler remembered: \"Very rarely they traveled on the Sabbath; very rarely they turned their faces to the east.\" Not everyone kept the day, and some neighbours jeered at those who did.",
+      "source": "Michigan Pioneer and Historical Collections vol. 28, p. 417; vol. 18, p. 360",
+      "url": "https://archive.org/details/michiganpioneerh0028unse",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "canal-stranger",
+    "deck": "travel",
+    "weight": "#w.uncommon",
+    "once": true,
+    "when": {
+      "leg": "canal"
+    },
+    "text": "A young man travelling alone had his pocket picked at the Albany basin. He has not eaten since, and is too proud to ask.",
+    "choices": [
+      {
+        "id": "help",
+        "label": "Share your supper and lend him a dollar",
+        "requires": {
+          "afford": "#ev.steward.cost"
+        },
+        "why": "You have nothing to spare.",
+        "effects": [
+          {
+            "pay": "#ev.steward.cost"
+          },
+          {
+            "morale": "#ev.morale.small"
+          },
+          {
+            "schedule": {
+              "event": "chain-stranger-office",
+              "in": {
+                "at": "bronson"
+              }
+            }
+          }
+        ],
+        "result": "He writes your name in a pocket book and says he will not forget it."
+      },
+      {
+        "id": "no",
+        "label": "It is not your trouble",
+        "effects": [],
+        "result": "He gets off at Utica, and you do not see him again."
+      }
+    ],
+    "note": {
+      "text": "The research has no record of thefts at the Albany basin in 1836. This traveller and his story are invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "canal-share-quinine",
+    "deck": "travel",
+    "weight": "#w.uncommon",
+    "once": true,
+    "when": {
+      "all": [
+        {
+          "leg": "canal"
+        },
+        {
+          "res": [
+            "quinine",
+            ">",
+            0
+          ]
+        }
+      ]
+    },
+    "text": "A woman on the boat has a child shaking with the ague and no quinine. She has heard you carry some.",
+    "choices": [
+      {
+        "id": "give",
+        "label": "Give her a dose",
+        "effects": [
+          {
+            "add": [
+              "quinine",
+              "#ev.quinine.give"
+            ]
+          },
+          {
+            "morale": "#ev.morale.mid"
+          },
+          {
+            "schedule": {
+              "event": "chain-quinine-short",
+              "in": "#chain.in.long"
+            }
+          }
+        ],
+        "result": "She presses your hand and will not let go of it."
+      },
+      {
+        "id": "keep",
+        "label": "Keep it for your own",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "You tell her you have none to spare. It is the truth, and it does not feel like it."
+      }
+    ],
+    "note": {
+      "text": "Kirkland wrote that quinine \"acts like a charm on intermittents\" but \"is sometimes not to be procured in the interior at any price.\" The woman and her child are invented.",
+      "source": "Caroline Kirkland, A New Home: Who'll Follow? (1839), ch. 35",
+      "url": "https://crookedlakereview.com/articles/1_33/31oct1990/31kirkland.html",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "canal-line-fight",
+    "deck": "travel",
+    "weight": {
+      "base": "#w.uncommon",
+      "mul": [
+        [
+          {
+            "tired": [
+              ">=",
+              "#fat.tired"
+            ]
+          },
+          "#fat.ev.mult"
+        ]
+      ]
+    },
+    "once": true,
+    "when": {
+      "all": [
+        {
+          "leg": "canal"
+        },
+        {
+          "ticket": [
+            "line",
+            "line-meals"
+          ]
+        }
+      ]
+    },
+    "text": "A big man on the line boat pushes your family from the cook stove and tells you to wait your turn like everybody else.",
+    "choices": [
+      {
+        "id": "stand",
+        "label": "Stand up to him in front of the boat",
+        "effects": [
+          {
+            "morale": "#ev.morale.small"
+          },
+          {
+            "schedule": {
+              "event": "chain-fight-buffalo",
+              "in": {
+                "at": "buffalo"
+              }
+            }
+          }
+        ],
+        "result": "He backs off, red in the face, and the other families make room for you. He does not forget it."
+      },
+      {
+        "id": "wait",
+        "label": "Let it go and wait",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "Supper is late and cold."
+      }
+    ],
+    "note": {
+      "text": "The research has nothing on quarrels aboard the line boats, which carried emigrants packed among the freight. This event is invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "buf-loan",
+    "deck": "town",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "place": "buffalo"
+    },
+    "bind": {
+      "amount": {
+        "value": "#ev.loan.amount"
+      },
+      "due": {
+        "value": "#ev.loan.due"
+      }
+    },
+    "text": "A broker on the wharf will lend on a family's note: ${amount} in coin now, ${due} to his agent at Detroit.",
+    "choices": [
+      {
+        "id": "no",
+        "label": "Thank him and keep clear of debt",
+        "effects": [],
+        "result": "He shrugs. There are plenty who will sign."
+      },
+      {
+        "id": "take",
+        "label": "Sign his note and take the coin",
+        "effects": [
+          {
+            "earn": {
+              "amount": "#ev.loan.amount",
+              "kind": "coin"
+            }
+          },
+          {
+            "schedule": {
+              "event": "chain-loan-due",
+              "in": {
+                "at": "detroit"
+              }
+            }
+          }
+        ],
+        "result": "He counts the silver into your hand and folds your note into his pocket book."
+      }
+    ],
+    "note": {
+      "text": "Money was dear in 1836: in Chicago, Hoyt found interest \"not less than 10 per cent per annum.\" The broker and his terms are invented.",
+      "source": "Hoyt, One Hundred Years of Land Values in Chicago (1933) (interest); the broker is invented",
+      "url": "https://archive.org/details/onehundredyearso00hoytrich",
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "det-chicago-talk",
+    "deck": "town",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "place": "detroit"
+    },
+    "bind": {
+      "miles": {
+        "value": "#mi.detroitChicago"
+      },
+      "fare": {
+        "value": "#fare.stage.chicago"
+      }
+    },
+    "text": "On the tavern porch men talk of nothing but Chicago: {miles} miles by the Chicago road, ${fare} by the stage, and town lots there doubling while you sleep.",
+    "note": {
+      "text": "Blois called the travel on the Chicago road \"immense, equal to, if not more, than on any other in the United States of the same length,\" and gave its whole length as 254 miles. His stage table priced Detroit to Chicago at $21.",
+      "source": "Blois, Gazetteer of the State of Michigan (1838), appendix p. 413",
+      "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "claim-salt",
+    "deck": "claim",
+    "weight": "#w.common",
+    "once": true,
+    "when": {
+      "phase": "claim"
+    },
+    "bind": {
+      "price": {
+        "value": "#price.salt.barrel"
+      }
+    },
+    "text": "A neighbour has a barrel of salt to sell at ${price}, winter prices. Without salt there is no putting up meat for the cold months.",
+    "choices": [
+      {
+        "id": "no",
+        "label": "Do without",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "You will eat what you can get, as you get it."
+      },
+      {
+        "id": "buy",
+        "label": "Buy the barrel",
+        "requires": {
+          "afford": "#price.salt.barrel"
+        },
+        "why": "You cannot raise the price.",
+        "effects": [
+          {
+            "pay": "#price.salt.barrel"
+          },
+          {
+            "add": [
+              "food",
+              "#ev.salt.food"
+            ]
+          }
+        ],
+        "result": "You roll it into the half-built cabin. It is the dearest thing you own."
+      }
+    ],
+    "note": {
+      "text": "Salt sold at $10 a barrel in the interior in the winter of 1836-37; one boy traded a venison ham for a lump the size of his fist. By the summer of 1837 \"pork was worth twenty-five cents per pound and potatoes were one dollar per bushel.\"",
+      "source": "Michigan Pioneer and Historical Collections vol. 18, p. 372",
+      "url": "https://archive.org/details/michiganpioneerh0018unse",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "post-office",
+    "deck": "post",
+    "text": "The post office is a counter at the back of a store, with pigeonholes behind it. Money goes by mail in notes, at their value at home, where New England paper passes at face.",
+    "choices": [
+      {
+        "id": "ask",
+        "label": "Ask for letters",
+        "only": {
+          "not": {
+            "used": "post"
+          }
+        },
+        "effects": [
+          {
+            "askMail": true
+          }
+        ]
+      },
+      {
+        "id": "send-parent",
+        "label": "{send_parent}",
+        "only": {
+          "tie": [
+            "parent",
+            "unsettled"
+          ]
+        },
+        "requires": {
+          "canSendTie": "parent"
+        },
+        "why": "Not enough paper money to send: coin does not go by mail.",
+        "effects": [
+          {
+            "sendTie": "parent"
+          }
+        ]
+      },
+      {
+        "id": "send-note",
+        "label": "{send_note}",
+        "only": {
+          "tie": [
+            "note",
+            "unsettled"
+          ]
+        },
+        "requires": {
+          "canSendTie": "note"
+        },
+        "why": "Not enough paper money to send: coin does not go by mail.",
+        "effects": [
+          {
+            "sendTie": "note"
+          }
+        ]
+      },
+      {
+        "id": "send-mortgage",
+        "label": "{send_mortgage}",
+        "only": {
+          "tie": [
+            "mortgage",
+            "unsettled"
+          ]
+        },
+        "requires": {
+          "canSendTie": "mortgage"
+        },
+        "why": "Not enough paper money to send: coin does not go by mail.",
+        "effects": [
+          {
+            "sendTie": "mortgage"
+          }
+        ]
+      },
+      {
+        "id": "send-sweetheart",
+        "label": "{send_sweetheart}",
+        "only": {
+          "tie": [
+            "sweetheart",
+            "unsettled"
+          ]
+        },
+        "requires": {
+          "canSendTie": "sweetheart"
+        },
+        "why": "Not enough paper money to send: coin does not go by mail.",
+        "effects": [
+          {
+            "sendTie": "sweetheart"
+          }
+        ]
+      },
+      {
+        "id": "send-store",
+        "label": "{send_store}",
+        "only": {
+          "tie": [
+            "store",
+            "unsettled"
+          ]
+        },
+        "requires": {
+          "canSendTie": "store"
+        },
+        "why": "Not enough paper money to send: coin does not go by mail.",
+        "effects": [
+          {
+            "sendTie": "store"
+          }
+        ]
+      },
+      {
+        "id": "send-subscription",
+        "label": "{send_subscription}",
+        "only": {
+          "tie": [
+            "subscription",
+            "unsettled"
+          ]
+        },
+        "requires": {
+          "canSendTie": "subscription"
+        },
+        "why": "Not enough paper money to send: coin does not go by mail.",
+        "effects": [
+          {
+            "sendTie": "subscription"
+          }
+        ]
+      },
+      {
+        "id": "write",
+        "label": "Write a letter home ({letter} postage)",
+        "only": {
+          "not": {
+            "used": "letter"
+          }
+        },
+        "requires": {
+          "afford": "$letterUsd"
+        },
+        "why": "You cannot pay the postage.",
+        "effects": [
+          {
+            "writeHome": "here"
+          }
+        ]
+      },
+      {
+        "id": "leave",
+        "label": "Leave the post office",
+        "effects": []
+      }
+    ],
+    "note": {
+      "text": "Postage was rated by distance and by the sheet: 6 cents up to 30 miles, 25 cents over 400, double for two pieces of paper. That a banknote folded into a letter counted as one more piece is the research's own reading of the act, not a stated rule.",
+      "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 sec. 13",
+      "url": "https://archive.org/details/lawsregulationsf00unit",
+      "confidence": "likely"
+    },
+    "bind": {
+      "left": {
+        "postLeft": true
+      },
+      "letter": {
+        "post": "letter"
+      },
+      "letterUsd": {
+        "post": "letterUsd"
+      },
+      "send_parent": {
+        "post": "send_parent"
+      },
+      "send_note": {
+        "post": "send_note"
+      },
+      "send_mortgage": {
+        "post": "send_mortgage"
+      },
+      "send_sweetheart": {
+        "post": "send_sweetheart"
+      },
+      "send_store": {
+        "post": "send_store"
+      },
+      "send_subscription": {
+        "post": "send_subscription"
+      }
+    }
+  },
+  {
+    "id": "post-letters",
+    "deck": "post",
+    "text": "The postmaster has {n} for {family}. The postage is {cost}, paid before he hands them over.",
+    "choices": [
+      {
+        "id": "take",
+        "label": "Pay the postage and take them",
+        "requires": {
+          "afford": "$costUsd"
+        },
+        "why": "You cannot pay the postage.",
+        "effects": [
+          {
+            "collectMail": "here"
+          }
+        ],
+        "next": "post-office"
+      },
+      {
+        "id": "leave",
+        "label": "Leave them for now",
+        "effects": [
+          {
+            "leaveMail": "here"
+          }
+        ],
+        "next": "post-office"
+      }
+    ],
+    "note": {
+      "text": "Postage was usually paid by whoever took the letter out: six cents up to 30 miles, rising to 25 cents over 400, double for two sheets. Each quarter, letters not called for were listed and advertised, and after three months they went to the dead-letter office.",
+      "source": "Laws and Regulations for the Government of the Post Office Department (1843), Act of 1825 and chs. 31-34",
+      "url": "https://archive.org/details/lawsregulationsf00unit",
+      "confidence": "solid"
+    }
+  },
+  {
+    "id": "post-send-how",
+    "deck": "post",
+    "text": "You count out {amount} in notes for {what}. The postmaster waits with his pen.",
+    "choices": [
+      {
+        "id": "halves",
+        "label": "Cut the notes in halves and send them in two letters ({halves} postage)",
+        "requires": {
+          "sendable": "halves"
+        },
+        "why": "You cannot pay the postage.",
+        "effects": [
+          {
+            "sendMoney": "halves"
+          }
+        ],
+        "next": "post-office"
+      },
+      {
+        "id": "whole",
+        "label": "Send them whole in one letter ({whole} postage)",
+        "requires": {
+          "sendable": "whole"
+        },
+        "why": "You cannot pay the postage.",
+        "effects": [
+          {
+            "sendMoney": "whole"
+          }
+        ],
+        "next": "post-office"
+      },
+      {
+        "id": "back",
+        "label": "Not now",
+        "effects": [],
+        "next": "post-office"
+      }
+    ],
+    "note": {
+      "text": "\"Money, or other valuable things, sent in the mail, is at the risk of the owner.\" Senders cut notes in halves and mailed the halves apart; in an 1808 case a firm whose second halves were lost recovered the full value.",
+      "source": "Post Office Laws (1843) sec. 235; Bullet v. Bank of Pennsylvania (C.C.D. Pa. 1808)",
+      "url": "https://archive.org/details/lawsregulationsf00unit",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "post-perrysburg",
+    "deck": "post",
+    "once": true,
+    "text": "Perrysburg has a post office, but nothing waits for you here: nobody at home knew you would come this way. The postmaster says the mail goes east once a week.",
+    "note": {
+      "text": "Most western post offices had mail once a week. Gershom Flagg told his family in 1816 to direct their letters exactly, \"if otherwisee I may never get them.\"",
+      "source": "Gershom Flagg to A. C. Flagg, 12 Nov 1816 (Flow of History); Blois (weekly mail)",
+      "url": "https://www.flowofhistory.org/wp-content/uploads/2020/07/Flagg-Letter-1.pdf",
+      "confidence": "likely"
+    },
+    "effects": []
+  },
+  {
+    "id": "claim-mail",
+    "deck": "post",
+    "when": {
+      "all": [
+        {
+          "phase": "claim"
+        },
+        {
+          "mailWaiting": "bronson"
+        }
+      ]
+    },
+    "text": "A neighbour back from Bronson brings letters for you that were waiting at the post office. You pay him what he paid in postage.",
+    "effects": [
+      {
+        "collectMail": "bronson"
+      }
+    ],
+    "note": {
+      "text": "\"Our nearest postoffice was fifteen miles away, and when we found a letter there we had to pay twenty-five cents for it.\"",
+      "source": "Michigan Pioneer and Historical Collections vol. 18, p. 372",
+      "url": "https://archive.org/details/michiganpioneerh0018unse",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "tie-mortgage-agent",
+    "deck": "chain",
+    "when": {
+      "place": "detroit"
+    },
+    "bind": {
+      "amount": {
+        "value": "#tie.mortgage.amount"
+      }
+    },
+    "text": "A lawyer finds you at the tavern with a letter from the bank at home. The mortgage note on the old farm is due, ${amount}, and your surety will answer for it if you do not.",
+    "choices": [
+      {
+        "id": "later",
+        "label": "Tell him it will be sent from the land office",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "He writes something in his book and wishes you a good journey."
+      },
+      {
+        "id": "pay",
+        "label": "Pay him here and take his receipt",
+        "requires": {
+          "afford": "#tie.mortgage.amount"
+        },
+        "why": "You do not have it to pay.",
+        "effects": [
+          {
+            "payTie": "mortgage"
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "The research found no 1830s Vermont mortgage sizes or cases (r3 §7). The note, the surety and the lawyer are invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "tie-store-drummer",
+    "deck": "chain",
+    "when": {
+      "place": "buffalo"
+    },
+    "bind": {
+      "amount": {
+        "value": "#tie.store.amount"
+      }
+    },
+    "text": "A drummer for a wholesale house knows Hammond's store at home, and your name. The old man is short this autumn, he says, and the ${amount} you owe would be welcome. He will tell Mr. Hammond he saw you.",
+    "note": {
+      "text": "The research has no figures for what emigrants left owing at home. This account and its collector are invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    },
+    "effects": [
+      {
+        "morale": "#ev.morale.loss"
+      }
+    ]
+  },
+  {
+    "id": "tie-sweetheart-low",
+    "deck": "chain",
+    "when": {
+      "phase": "office"
+    },
+    "bind": {
+      "child": {
+        "tieWho": "sweetheart"
+      }
+    },
+    "text": "{child} has gone quiet since Buffalo, and at night writes letters that are never sent.",
+    "effects": [
+      {
+        "morale": "#ev.morale.loss"
+      }
+    ],
+    "note": {
+      "text": "A settler at Richland, Michigan, wrote home in April 1837: \"do write me immediately tell me everything which you know would interest me.\" The family here is invented.",
+      "source": "Sylvia Buell to Rhoderick and Emily Dwight, 8 April 1837 (Nordonia Hills transcription)",
+      "url": "https://nordoniahills.news/?p=67021",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "chain-axle",
+    "deck": "chain",
+    "when": {
+      "all": [
+        {
+          "phase": "travel"
+        },
+        {
+          "leg": [
+            "vermont",
+            "overland",
+            "road"
+          ]
+        },
+        {
+          "team": true
+        }
+      ]
+    },
+    "text": "The wedged wheel gives out at last. Two spokes crack, the rim springs, and the wagon settles on its axle in the road.",
+    "effects": [
+      {
+        "wagon": "#ev.wagon.mid"
+      },
+      {
+        "wagon": "#ev.wagon.mid"
+      }
+    ],
+    "note": {
+      "text": "The research has no source on wagon breakdowns on these roads, and no wagon or repair prices (r3 §7). This consequence is invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "chain-cousin",
+    "deck": "chain",
+    "when": {
+      "all": [
+        {
+          "phase": "office"
+        },
+        {
+          "land": "looking"
+        },
+        {
+          "candidates": [
+            "<",
+            "#land.maxCandidates"
+          ]
+        }
+      ]
+    },
+    "text": "Among the tents you find the cousin your neighbours gave you the letter for. He reads it twice, and in return tells you of a quarter section he looked at himself and could not afford.",
+    "effects": [
+      {
+        "candidate": "tip"
+      }
+    ],
+    "note": {
+      "text": "Kin and neighbours pulled newcomers along. Col. Barnes of Gull Prairie, who had helped survey Eaton County, told the Vermont colony's agent which land in town 3 north, range 6 west was still unentered.",
+      "source": "Barber, \"The Vermontville Colony,\" Michigan Pioneer and Historical Collections vol. 28",
+      "url": "https://archive.org/details/michiganpioneerh0028unse",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "chain-team-strained",
+    "deck": "chain",
+    "when": {
+      "team": true
+    },
+    "text": "The team has not been right since the hill road. They hang back in the yoke and blow at every rise.",
+    "effects": [
+      {
+        "fatigue": {
+          "who": "team",
+          "amount": "#ev.fatigue.strain"
+        }
+      }
+    ],
+    "note": {
+      "text": "Cattle do not sweat, so heat and strain wear oxen down, and \"it is imperative to rest oxen often.\" The source is about the later western trails.",
+      "source": "Overland Journal 33(1), \"Oxen: Engines of the Overland Emigration\" (2015)",
+      "url": "https://www.nps.gov/cali/learn/historyculture/upload/OJ-spring2015-oxen.pdf",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "chain-light-coin",
+    "deck": "chain",
+    "text": "A storekeeper rings one of the note shaver's silver pieces on the counter and pushes it back. It is light: clipped round the edge.",
+    "effects": [
+      {
+        "loseCoin": "#ev.coin.light"
+      }
+    ],
+    "note": {
+      "text": "The research has no record of clipped or false coin on the road west. This consequence is invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "chain-ohio-family",
+    "deck": "chain",
+    "when": {
+      "place": "buffalo"
+    },
+    "text": "On the Buffalo wharf you meet the family you travelled with in company. Their horse died at Rochester, and they are going on by boat with what they can carry. The mother asks whether you can spare any food for the children.",
+    "choices": [
+      {
+        "id": "share",
+        "label": "Share what you can",
+        "effects": [
+          {
+            "add": [
+              "food",
+              "#ev.share.food"
+            ]
+          },
+          {
+            "morale": "#ev.morale.mid"
+          }
+        ],
+        "result": "She does not thank you in words. She does not need to."
+      },
+      {
+        "id": "no",
+        "label": "Wish them well and keep your stores",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "You tell yourself there is a long road ahead."
+      }
+    ],
+    "note": {
+      "text": "Hoffman, on the road in 1833, wrote that \"a covered one-horse wagon generally contains the whole worldly substance of a family.\" This family and their loss are invented.",
+      "source": "Hoffman, A Winter in the West (1835), vol. I (quote); the event is invented",
+      "url": "https://archive.org/stream/winterinwest01hoff/winterinwest01hoff_djvu.txt",
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "chain-bargain-boat",
+    "deck": "chain",
+    "when": {
+      "all": [
+        {
+          "leg": "canal"
+        },
+        {
+          "ticket": [
+            "line",
+            "line-meals"
+          ]
+        }
+      ]
+    },
+    "text": "The captain who took you cheap has filled every foot of his boat. Families sleep sitting up among the freight, and nobody rests.",
+    "effects": [
+      {
+        "fatigue": {
+          "who": "all",
+          "amount": "#ev.fatigue.strain"
+        }
+      },
+      {
+        "chance": "#ev.dys.p",
+        "then": [
+          {
+            "sicken": {
+              "who": "random",
+              "illness": "dysentery"
+            }
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Blois printed the line-boat fares and added: \"Families are frequently taken for much less than this, in proportion.\" How crowded a cheap boat was is not recorded, so this consequence is invented.",
+      "source": "Blois (fare remark); the consequence is invented",
+      "url": "https://archive.org/details/bub_gb_AX1V9lU_i5MC",
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "chain-late-ague",
+    "deck": "chain",
+    "bind": {
+      "who": {
+        "member": "well"
+      }
+    },
+    "text": "The marsh nights are some days behind you, but the ague is slow to show itself.",
+    "effects": [
+      {
+        "chance": "#ev.ague.pHigh",
+        "then": [
+          {
+            "sicken": {
+              "who": "$who",
+              "illness": "ague"
+            }
+          }
+        ],
+        "else": [
+          {
+            "narrate": "It passes the family by, this time."
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "Anson Van Buren, who settled in Calhoun County in 1836, said the ague's chill \"crept over your system in streaks, faster and faster.\" The days between the bites and the fever are not in the research, so this timing is invented.",
+      "source": "Laura Bien, \"Ague in Ann Arbor,\" Ann Arbor Observer (2009) (quote); the timing is invented",
+      "url": "https://annarborobserver.com/ague-in-ann-arbor/",
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "chain-paper-city-news",
+    "deck": "chain",
+    "when": {
+      "phase": "office"
+    },
+    "text": "A man in the land office tents laughs out loud at your share certificate. He knows that town: the site was bought for four hundred dollars a week before the shares went on sale.",
+    "effects": [
+      {
+        "morale": "#ev.morale.loss"
+      },
+      {
+        "morale": "#ev.morale.loss"
+      }
+    ],
+    "note": {
+      "text": "Caroline Kirkland told of eastern buyers sold \"only one hundred shares at three hundred dollars each\" in a town site \"purchased for four hundred dollars, just a week before.\" She wrote partly in satire, so the story is uncertain as fact.",
+      "source": "Caroline Kirkland, A New Home: Who'll Follow? (1839)",
+      "url": "https://archive.org/details/anewhomewhollfo04kirkgoog",
+      "confidence": "uncertain"
+    }
+  },
+  {
+    "id": "chain-corduroy-spring",
+    "deck": "chain",
+    "when": {
+      "all": [
+        {
+          "leg": "road"
+        },
+        {
+          "team": true
+        }
+      ]
+    },
+    "text": "A spring under the wagon box cracks on a log end, and every jolt after it comes straight up through the seat.",
+    "effects": [
+      {
+        "wagon": "#ev.wagon.small"
+      },
+      {
+        "morale": "#ev.morale.loss"
+      }
+    ],
+    "note": {
+      "text": "A woman on a Michigan road in the 1830s said she was \"jolted to a jelly\" (the exact wording is uncertain). The cracked spring is invented.",
+      "source": "Michiganology, \"Yankees Come to Michigan\"",
+      "url": "https://michiganology.org/stories/yankees-come-to-michigan",
+      "confidence": "uncertain"
+    }
+  },
+  {
+    "id": "chain-wolves-again",
+    "deck": "chain",
+    "when": {
+      "all": [
+        {
+          "leg": [
+            "road",
+            "claim"
+          ]
+        },
+        {
+          "team": true
+        }
+      ]
+    },
+    "text": "The wolves come back to the camp that kept no fire. In the dark the team breaks its tether, and the morning goes in finding it.",
+    "effects": [
+      {
+        "progress": "#ev.progress.loss"
+      },
+      {
+        "fatigue": {
+          "who": "team",
+          "amount": "#ev.fatigue.strain"
+        }
+      }
+    ],
+    "note": {
+      "text": "Wolves were \"destructive to the few flocks of sheep and herds of swine\" in Wayne County, and Michigan paid a wolf bounty from 1838. The research found no sourced attacks on people, and the lost morning is invented.",
+      "source": "Michigan DNR, Wolf history and legal status",
+      "url": "https://www.michigan.gov/dnr/education/michigan-species/mammals/wolves-in-michigan/wolf-history-and-legal-status",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "chain-frame-house",
+    "deck": "chain",
+    "when": {
+      "all": [
+        {
+          "phase": "office"
+        },
+        {
+          "land": "looking"
+        },
+        {
+          "candidates": [
+            "<",
+            "#land.maxCandidates"
+          ]
+        }
+      ]
+    },
+    "text": "The man you worked for on the frame house stops by your tent. He has heard of a quarter section near his brother's that nobody has entered, and tells you where the corner stake is.",
+    "effects": [
+      {
+        "candidate": "tip"
+      }
+    ],
+    "note": {
+      "text": "Settlers heard of open land by word of mouth as much as from the plats: \"land lookers literally flocked in,\" one recollection says, and \"the choice lands were soon selected.\" The place of that account is uncertain.",
+      "source": "Michigan Pioneer and Historical Collections vol. 18, p. 368",
+      "url": "https://archive.org/details/michiganpioneerh0018unse",
+      "confidence": "uncertain"
+    }
+  },
+  {
+    "id": "chain-neighbours-return",
+    "deck": "chain",
+    "when": {
+      "all": [
+        {
+          "phase": "claim"
+        },
+        {
+          "shelter": [
+            "<",
+            "#shelter.done"
+          ]
+        }
+      ]
+    },
+    "text": "The neighbours you fed at the raising come back with a yoke of oxen to drag logs, and will not hear of payment.",
+    "effects": [
+      {
+        "shelter": "#ev.return.shelter"
+      },
+      {
+        "morale": "#ev.morale.small"
+      }
+    ],
+    "note": {
+      "text": "A temporary cabin took 50 or 60 trees (Michiganology). Neighbours coming back to help is invented.",
+      "source": "Michiganology, \"Yankees Come to Michigan\" (cabin detail); the event is invented",
+      "url": "https://michiganology.org/stories/yankees-come-to-michigan",
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "chain-neighbours-cool",
+    "deck": "chain",
+    "when": {
+      "phase": "claim"
+    },
+    "text": "A neighbour rides past the claim and does not stop. Word has gone round that you would not have help at the raising.",
+    "effects": [
+      {
+        "morale": "#ev.morale.loss"
+      }
+    ],
+    "note": {
+      "text": "The research has no account of neighbours turning cool on newcomers. This consequence is invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "chain-strip-gate",
+    "deck": "chain",
+    "when": {
+      "terrain": "strip"
+    },
+    "text": "Two men with muskets at a gate on the Maumee road have heard that a Michigan family is coming through. They want a toll that is not on any board.",
+    "choices": [
+      {
+        "id": "pay",
+        "label": "Pay them and go through",
+        "requires": {
+          "afford": "#ev.gate.cost"
+        },
+        "why": "You have nothing to give them.",
+        "effects": [
+          {
+            "pay": "#ev.gate.cost"
+          }
+        ],
+        "result": "They lift the bar and watch you all the way out of sight."
+      },
+      {
+        "id": "round",
+        "label": "Turn round and go by the back road",
+        "effects": [
+          {
+            "progress": "#ev.progress.loss"
+          },
+          {
+            "fatigue": {
+              "who": "all",
+              "amount": "#ev.fatigue.strain"
+            }
+          }
+        ],
+        "result": "The back road is worse, and longer."
+      }
+    ],
+    "note": {
+      "text": "In 1835 Michigan's Pains and Penalties Act threatened Ohioans acting under Ohio authority with fines up to $1,000. Whether emigrants on the Strip road were troubled in 1836 is unresolved, so this gate is invented.",
+      "source": "Wikipedia, Toledo War (the act); the gate is invented",
+      "url": "https://en.wikipedia.org/wiki/Toledo_War",
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "chain-ox-worse",
+    "deck": "chain",
+    "when": {
+      "all": [
+        {
+          "phase": "travel"
+        },
+        {
+          "team": true
+        }
+      ]
+    },
+    "text": "The lame animal you pushed on is worse. It favours the foot at every step and drags on the other.",
+    "effects": [
+      {
+        "fatigue": {
+          "who": "team",
+          "amount": "#ev.fatigue.strain"
+        }
+      }
+    ],
+    "note": {
+      "text": "Oxen needed \"several changes of shoes to prevent serious lameness,\" and a lame ox could not work. The source describes the later western trails.",
+      "source": "Overland Journal 33(1), \"Oxen: Engines of the Overland Emigration\" (2015)",
+      "url": "https://www.nps.gov/cali/learn/historyculture/upload/OJ-spring2015-oxen.pdf",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "chain-axe-festers",
+    "deck": "chain",
+    "when": {
+      "phase": "claim"
+    },
+    "bind": {
+      "who": {
+        "member": "wellAdult"
+      }
+    },
+    "text": "A cut from the axe, bound up and worked through last week, has gone angry and hot. {who} can barely grip a helve.",
+    "effects": [
+      {
+        "injure": {
+          "who": "$who",
+          "amount": "#ev.injury.small"
+        }
+      }
+    ],
+    "note": {
+      "text": "The research has no figures for accidents in clearing land. This consequence is invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "chain-stranger-office",
+    "deck": "chain",
+    "when": {
+      "all": [
+        {
+          "phase": "office"
+        },
+        {
+          "land": "applied"
+        }
+      ]
+    },
+    "text": "At the land office window you hear your name. It is the young man you helped on the canal; he writes a fair hand and has found work with the clerks, and he moves your description up the pile.",
+    "effects": [
+      {
+        "queue": "#ev.stranger.queue"
+      },
+      {
+        "morale": "#ev.morale.small"
+      }
+    ],
+    "note": {
+      "text": "At Kalamazoo applicants \"were obliged to hand in their descriptions of lands at the window of the office, and often weeks would elapse\" before a claim was issued. The young man's help is invented.",
+      "source": "Pritchard, Kalamazoo County Directory with a history (1869), p. 62",
+      "url": "https://archive.org/details/kalamazoocounty01pritgoog",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "chain-loan-due",
+    "deck": "chain",
+    "when": {
+      "place": "detroit"
+    },
+    "bind": {
+      "due": {
+        "value": "#ev.loan.due"
+      }
+    },
+    "text": "The Buffalo broker's agent finds you at the tavern before you have unloaded. He has your note: ${due}, today.",
+    "choices": [
+      {
+        "id": "pay",
+        "label": "Pay him",
+        "requires": {
+          "afford": "#ev.loan.due"
+        },
+        "why": "You do not have it.",
+        "effects": [
+          {
+            "pay": "#ev.loan.due"
+          }
+        ],
+        "result": "He tears the note across and gives you the halves."
+      },
+      {
+        "id": "slip",
+        "label": "Slip out before dawn on the Territorial Road",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          },
+          {
+            "schedule": {
+              "event": "chain-loan-dunned",
+              "in": {
+                "at": "bronson"
+              }
+            }
+          }
+        ],
+        "result": "You are out of Detroit before the town is awake."
+      }
+    ],
+    "note": {
+      "text": "Debts were dear and pressing in 1836; the Detroit Free Press warned in 1837 that it was no use for a merchant to come to town \"unless he is prepared to pay all his former debts.\" The broker and his agent are invented.",
+      "source": "Dove, Pecquet and Thies (2014), quoting the Detroit Free Press (quote); the event is invented",
+      "url": "https://ebhsoc.org/journal/index.php/ebhs/article/download/240/223",
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "chain-loan-dunned",
+    "deck": "chain",
+    "when": {
+      "phase": "office"
+    },
+    "bind": {
+      "late": {
+        "value": "#ev.loan.late"
+      }
+    },
+    "text": "The broker's man has followed you to Bronson. With costs, he says, the note is now ${late}, and he will write to your people at home if you do not pay.",
+    "choices": [
+      {
+        "id": "pay",
+        "label": "Pay him",
+        "requires": {
+          "afford": "#ev.loan.late"
+        },
+        "why": "You do not have it.",
+        "effects": [
+          {
+            "pay": "#ev.loan.late"
+          }
+        ],
+        "result": "It costs more than the coin was ever worth to you."
+      },
+      {
+        "id": "refuse",
+        "label": "Tell him to write if he likes",
+        "effects": [
+          {
+            "morale": "#ev.morale.loss"
+          },
+          {
+            "morale": "#ev.morale.loss"
+          }
+        ],
+        "result": "He goes, and he will write. It sits on you for days."
+      }
+    ],
+    "note": {
+      "text": "The research has no record of brokers chasing emigrant debts west. This consequence is invented.",
+      "source": "Invented for the game",
+      "url": null,
+      "confidence": "invented"
+    }
+  },
+  {
+    "id": "chain-quinine-short",
+    "deck": "chain",
+    "when": {
+      "all": [
+        {
+          "sick": [
+            ">",
+            0
+          ]
+        },
+        {
+          "res": [
+            "quinine",
+            "==",
+            0
+          ]
+        }
+      ]
+    },
+    "text": "The fever is in the family now, and the quinine is gone: the dose you gave away on the canal was the one you needed.",
+    "effects": [
+      {
+        "morale": "#ev.morale.loss"
+      }
+    ],
+    "note": {
+      "text": "Kirkland wrote that quinine \"is sometimes not to be procured in the interior at any price.\" The game's scarcity is built on that line.",
+      "source": "Caroline Kirkland, A New Home: Who'll Follow? (1839), ch. 35",
+      "url": "https://crookedlakereview.com/articles/1_33/31oct1990/31kirkland.html",
+      "confidence": "likely"
+    }
+  },
+  {
+    "id": "chain-fight-buffalo",
+    "deck": "chain",
+    "when": {
+      "place": "buffalo"
+    },
+    "text": "On the Buffalo wharf the man from the line boat is waiting with two friends. He says you shamed him in front of the boat.",
+    "choices": [
+      {
+        "id": "pay",
+        "label": "Buy him a drink and pay him to forget it",
+        "requires": {
+          "afford": "#ev.fight.cost"
+        },
+        "why": "You have nothing to give him.",
+        "effects": [
+          {
+            "pay": "#ev.fight.cost"
+          }
+        ],
+        "result": "He takes the money and the drink, and the friends drift away."
+      },
+      {
+        "id": "stand",
+        "label": "Stand your ground",
+        "effects": [
+          {
+            "chance": "#ev.rails.injuryP",
+            "then": [
+              {
+                "injure": {
+                  "who": "head",
+                  "amount": "#ev.injury.small"
+                }
+              },
+              {
+                "narrate": "It comes to blows before the watch breaks it up."
+              }
+            ],
+            "else": [
+              {
+                "narrate": "The watch comes along the wharf, and the three of them think better of it."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "note": {
+      "text": "The research has nothing on quarrels that followed emigrants off the boats. This consequence is invented.",
+      "source": "Invented for the game",
+      "url": null,
       "confidence": "invented"
     }
   }

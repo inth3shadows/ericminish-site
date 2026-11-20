@@ -23,7 +23,8 @@ const reducedMq = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)");
 const reduced = () => Boolean(reducedMq?.matches);
 const params = new URLSearchParams(location.search);
 
-const LEG_SCENE = { vermont: "road-vermont", canal: "canal", lake: "lake", overland: "ohio-road", road: "territorial-road", claim: "claim-track" };
+const LEG_SCENE = { vermont: "road-vermont", canal: "canal", lake: "lake", overland: "ohio-road", road: "territorial-road", claim: "claim-track", stage: "ohio-road" };
+const PACE_WORD = { steady: "steady", hard: "hard", grueling: "grueling" };
 const TERRAIN_SCENE = { swamp: "black-swamp", strip: "toledo-strip" };
 const CONFIDENCE = { solid: "Well sourced", likely: "Likely", uncertain: "Uncertain", invented: "Invented for the game" };
 const NOTE_LABEL = "What really happened"; // rendered from JS: lint-copy reads only the HTML
@@ -86,6 +87,9 @@ let groupStack = [];
 let topItems = [];
 let lightTimer = 0;
 let shownAt = 0; // when the current buttons appeared: a Space meant for the narration must not pick one
+// The pace the player has set in the pace group, sent with the next travel
+// step ({id: "go", pace}); null means the family's own pace (view.pace).
+let paceChoice = null;
 // Which journey is on screen (ui/journey.js). Every awaited step of the
 // playback chain (scene changes, pauses, the player's Continue, the veil) goes
 // through the journey that started it. begin() cancels the one before, so a
@@ -353,6 +357,24 @@ async function deathRegister(j, d, letter, note) {
   audio.duck(1);
 }
 
+// A letter on its own (not after a death): one written home, or one from home
+// collected at a post office (from: "home"). Always shown with its fiction label.
+async function letterBeat(j, b) {
+  j.check();
+  const incoming = b.from === "home";
+  veilShow(incoming ? "A letter from home" : "A letter home");
+  const paras = String(b.text).split(/\n\s*\n/).map((t) => el("p", {}, t.trim()));
+  const who = incoming ? `From ${b.sender}${b.to ? ` to ${b.to}` : ""}` : `From ${b.from}${b.to ? ` to ${b.to}` : ""}`;
+  await veilStep(j, [
+    el("p", { class: "mf-fiction-label" }, b.label),
+    el("div", { class: `mf-letter${incoming ? " is-incoming" : ""}` },
+      el("p", { class: "mf-letter-head" }, who),
+      el("p", { class: "mf-letter-date" }, b.date ? fullDate(b.date) : ""),
+      ...paras),
+  ]);
+  veilHide();
+}
+
 function fullDate(iso) {
   const M = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const [y, m, d] = iso.split("-").map(Number);
@@ -392,9 +414,17 @@ function ending(j, b) {
     box.append(el("h3", {}, "Buried on the way"));
     box.append(el("ul", { class: "mf-dead" }, ...b.deaths.map((d) => el("li", {}, `${d.name}${d.age != null ? `, aged ${d.age}` : ""}${d.date ? `, ${fullDate(d.date)}` : ""}`))));
   }
-  if (b.epilogue?.length) {
+  // The family's ties at home (fiction, from the route) get their own heading, apart from the sourced history.
+  const home = (b.epilogue ?? []).filter((e) => e.fiction);
+  if (home.length) {
+    box.append(el("h3", {}, "Left behind at home"));
+    box.append(el("p", { class: "mf-fiction-label" }, home[0].source));
+    for (const e of home) box.append(el("div", { class: "mf-epi" }, el("p", {}, e.text)));
+  }
+  const history = (b.epilogue ?? []).filter((e) => !e.fiction);
+  if (history.length) {
     box.append(el("h3", {}, "After 1836"));
-    for (const e of b.epilogue) {
+    for (const e of history) {
       const li = el("div", { class: "mf-epi" }, el("p", {}, e.text));
       const src = el("p", { class: "mf-note-src" });
       if (e.url) src.append(el("a", { href: e.url, rel: "noopener noreferrer", target: "_blank" }, e.source));
@@ -474,7 +504,7 @@ async function play(j, beats) {
         break;
       }
       case "letter":
-        await deathRegister(j, { text: "" }, b, null);
+        await letterBeat(j, b);
         break;
       case "end":
         ending(j, b);
@@ -491,7 +521,7 @@ async function play(j, beats) {
 function statusLine(action) {
   const v = view(route, state);
   if (v.travel) {
-    const where = { canal: "on the canal", steamer: "on the lake", wagon: "on the road" }[v.travel.mode] ?? "";
+    const where = { canal: "on the canal", steamer: "on the lake", wagon: "on the road", stage: "on the stage road" }[v.travel.mode] ?? "";
     if (tod === "night" && v.travel.mode === "canal") return `The boat goes on through the night, lock by lock. ${v.travel.of - v.travel.done} miles to ${v.travel.nextLabel}.`;
     const w = { fair: `A fair day ${where}.`, rain: `Rain all day ${where}.`, cold: `A raw, cold day ${where}.`, snow: `Snow ${where}.` }[weather.weather] ?? "";
     const left = v.travel.of - v.travel.done;
@@ -530,7 +560,7 @@ function drawActions() {
   const items = level ? level.items : topItems;
   buttons = renderActions(actionsBox, items, {
     title: level?.label ?? null,
-    onPick: (a) => act(a),
+    onPick: (a) => (a.setPace ? choosePace(a.setPace) : act(a)),
     onOpen: (g) => {
       groupStack.push(g);
       drawActions();
@@ -547,6 +577,13 @@ function closeGroup() {
   drawActions();
 }
 
+// The pace group's items set the pace for the travel buttons; no step is taken.
+function choosePace(p) {
+  paceChoice = p === view(route, state).pace ? null : p;
+  groupStack = [];
+  showActions();
+}
+
 function showActions() {
   if (!state || state.over) return;
   const acts = availableActions(route, state);
@@ -554,12 +591,16 @@ function showActions() {
   // "Drive on": a UI loop over step() (ui/driveon.js), offered next to the one-day action.
   const goAt = acts.findIndex((a) => a.id === "go" && a.type === "travel");
   if (goAt >= 0 && !state.pending) {
+    const go = acts[goAt];
+    const pace = paceChoice ?? go.pace;
+    const at = go.paces && pace !== "steady" ? ` at a ${PACE_WORD[pace]} pace` : "";
+    if (go.paces) acts[goAt] = { ...go, label: `Drive on for the day${at}` };
     const c = canDriveOn(ENGINE, route, state);
-    const label = { canal: "Let the days go by until something happens", steamer: "Keep on until something happens" }[v.travel?.mode] ?? "Drive on until something happens";
+    const label = { canal: "Let the days go by until something happens", steamer: "Keep on until something happens", stage: "Keep on until something happens" }[v.travel?.mode] ?? `Drive on until something happens${at}`;
     acts.splice(goAt + 1, 0, { id: "drive-on", type: "travel", label, forward: true, enabled: c.ok, reason: c.reason });
-  }
-  hud.render(v, acts);
-  topItems = arrange(acts);
+  } else paceChoice = null;
+  hud.render(v, acts, { pace: paceChoice });
+  topItems = arrange(acts, { pace: paceChoice });
   groupStack = [];
   line.classList.add("is-dim");
   drawActions();
@@ -633,7 +674,10 @@ async function act(action) {
       noteBtn.hidden = true;
       latestNote = null;
     }
-    const r = step(route, state, action);
+    // The pace set in the pace group rides on the travel step; the family then keeps it.
+    const sent = action.id === "go" && paceChoice ? { ...action, pace: paceChoice } : action;
+    if (action.id === "go") paceChoice = null;
+    const r = step(route, state, sent);
     state = r.state;
     const nextTod = todFor(action, state);
     if (nextTod !== tod) await setLight(j, nextTod);
@@ -672,7 +716,8 @@ async function driveLapse() {
     audio.unlock();
     hud.toggleSheet(false);
     said = false;
-    const r = driveOn(ENGINE, route, state);
+    const r = driveOn(ENGINE, route, state, { pace: paceChoice });
+    paceChoice = null;
     if (!r.days.length) {
       busy = false;
       return showActions();
@@ -816,6 +861,7 @@ async function begin() {
     noteAge = 0;
     lastLine = "";
     pendingEvent = null;
+    paceChoice = null;
     const seed = params.get("seed") || randomSeed();
     const g = newGame(route, { seed });
     state = g.state;
@@ -889,6 +935,7 @@ async function resume(saved) {
     setImmersive(true);
     leaveTitle();
     state = saved;
+    paceChoice = null;
     const meta = store.getJSON(store.KEYS.meta, {}) ?? {};
     const v = view(route, state);
     const sameGame = meta.seed === state.seed;

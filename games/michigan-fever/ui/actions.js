@@ -2,17 +2,32 @@
 // land office; showing them all at once is a wall of buttons. arrange() keeps
 // at most five things on screen: the actions that move the journey on, plus
 // groups ("Buy and trade", "Lodging and work", "Enter land", "More") that open
-// in place. Pure function, so it is easy to reason about; render() draws it.
+// in place. With the family's own wagon the travel action carries the paces
+// (go.paces): they become a "Pace" group, whose items set the pace for the
+// travel buttons rather than taking a step. Pure function, so it is easy to
+// reason about; render() draws it.
 
 import { money } from "../mechanics/purse.js";
 import { el } from "./dom.js";
 
 const MAX_TOP = 5;
 const PRIMARY_TYPES = new Set(["start", "choose", "travel", "board", "build", "explore", "wait", "pay", "dose"]);
-const PRIMARY_IDS = new Set(["buy-team", "hire-teamster", "hire-looker"]);
+const PRIMARY_IDS = new Set(["buy-team", "hire-teamster", "hire-looker", "sabbath"]);
 const TRADE = new Set(["buy", "sell", "broker"]);
 const STAY = new Set(["rest", "work", "letter"]);
-const GROUP_LABEL = { land: "Enter land", trade: "Buy and trade", stay: "Lodging and work", more: "More" };
+const GROUP_LABEL = { land: "Enter land", trade: "Buy and trade", stay: "Lodging and work", post: "Post office", more: "More" };
+const PACE_WORD = { steady: "steady", hard: "hard", grueling: "grueling" };
+
+// The pace group: one item per pace, the chosen one marked. Picking one sets
+// the pace for the next travel action (`pace` is the UI's choice, or the family's).
+export function paceGroup(go, pace) {
+  if (!go?.paces) return null;
+  const now = pace ?? go.pace ?? "steady";
+  return {
+    group: "pace", label: `Pace: ${PACE_WORD[now] ?? now}`, enabled: true, reason: null,
+    items: go.paces.map((p) => ({ id: `pace-set:${p.pace}`, setPace: p.pace, label: p.label, detail: p.detail, enabled: true, selected: p.pace === now })),
+  };
+}
 
 const isLandApply = (a) => a.type === "apply" && a.tractId != null;
 
@@ -37,34 +52,43 @@ function landItems(applies) {
   });
 }
 
-export function arrange(actions) {
+export function arrange(actions, { pace = null } = {}) {
   const forwardFirst = (list) => [...list.filter((a) => a.forward), ...list.filter((a) => !a.forward)];
-  if (actions.length <= MAX_TOP && !actions.some(isLandApply)) return forwardFirst(actions);
+  const paces = paceGroup(actions.find((a) => a.id === "go"), pace);
+  // The pace group sits right after the actions that move the journey on.
+  const withPace = (list) => {
+    if (!paces) return list;
+    const i = list.filter((a) => a.forward).length;
+    return [...list.slice(0, i), paces, ...list.slice(i)];
+  };
+  const room = MAX_TOP - (paces ? 1 : 0);
+  if (actions.length <= room && !actions.some(isLandApply)) return withPace(forwardFirst(actions));
   const top = [];
-  const groups = { land: [], trade: [], stay: [], more: [] };
+  const groups = { land: [], trade: [], stay: [], post: [], more: [] };
   for (const a of actions) {
     if (isLandApply(a)) groups.land.push(a);
     else if (a.forward || PRIMARY_TYPES.has(a.type) || PRIMARY_IDS.has(a.id)) top.push(a);
     else if (TRADE.has(a.type)) groups.trade.push(a);
     else if (STAY.has(a.type)) groups.stay.push(a);
+    else if (a.type === "post") groups.post.push(a);
     else groups.more.push(a);
   }
   const ordered = forwardFirst(top);
   const used = () => Object.values(groups).filter((g) => g.length).length;
   // Too many on top: the last non-forward ones go into "More".
-  while (ordered.length + used() > MAX_TOP) {
+  while (ordered.length + used() > room) {
     const i = ordered.map((a) => !a.forward).lastIndexOf(true);
     if (i < 0) break;
     groups.more.unshift(...ordered.splice(i, 1));
   }
   // A group of one is just a button, if there is room for it.
-  for (const k of ["trade", "stay", "more"]) {
-    if (groups[k].length === 1 && ordered.length + used() <= MAX_TOP) {
+  for (const k of ["post", "trade", "stay", "more"]) {
+    if (groups[k].length === 1 && ordered.length + used() <= room) {
       ordered.push(groups[k].pop());
     }
   }
-  const out = [...ordered];
-  for (const k of ["land", "trade", "stay", "more"]) {
+  const out = withPace([...ordered]);
+  for (const k of ["land", "trade", "stay", "post", "more"]) {
     const list = groups[k];
     if (!list.length) continue;
     const items = k === "land" ? landItems(list) : list;
@@ -83,12 +107,13 @@ export function render(box, items, { onPick, onOpen, onBack, title }) {
   items.forEach((it, i) => {
     const n = i + 1;
     const b = el("button", {
-      class: `mf-choice${it.group ? " is-group" : ""}${it.forward ? " is-forward" : ""}`,
+      class: `mf-choice${it.group ? " is-group" : ""}${it.forward ? " is-forward" : ""}${it.selected ? " is-selected" : ""}`,
       type: "button",
       "data-id": it.id ?? null,
       "data-group": it.group ?? null,
       "data-ids": it.group ? flatIds(it.items).join(" ") : null,
       "aria-disabled": it.enabled === false ? "true" : null,
+      "aria-pressed": it.setPace ? String(Boolean(it.selected)) : null,
     });
     const keyHint = n <= 9 ? el("span", { class: "mf-key", "aria-hidden": "true" }, String(n)) : null;
     const text = el("span", { class: "mf-choice-text" }, el("span", { class: "mf-choice-label" }, it.label + (it.group ? "\u00a0…" : "")));

@@ -22,11 +22,19 @@ function goAction(engine, route, state) {
 
 // Conditions that need the player right now, whatever happened before.
 // Low food does not count while the passage itself feeds the family (packet, cabin).
+// "tired": anyone, or the team, at the route's high-fatigue mark (view.fatigue.high).
 function hazard(v) {
   if (v.food.days <= LOW_FOOD_DAYS && !v.food.meals) return "food";
   if (v.purse.valueHere < LOW_MONEY) return "money";
   if (v.party.some((p) => p.status === "sick" && p.health < WEAK)) return "weak";
+  if (worn(v)) return "tired";
   return null;
+}
+
+function worn(v) {
+  const high = v.fatigue?.high;
+  if (high == null) return false;
+  return v.party.some((p) => p.status !== "dead" && (p.fatigue ?? 0) >= high) || (v.gear?.team && (v.gear.fatigue ?? 0) >= high);
 }
 
 // Can the player drive on from here? -> { ok, reason? }
@@ -37,6 +45,7 @@ export function canDriveOn(engine, route, state) {
   if (h === "food") return { ok: false, reason: "Not with food this low." };
   if (h === "money") return { ok: false, reason: "Not with money this low." };
   if (h === "weak") return { ok: false, reason: "Not while someone is this ill." };
+  if (h === "tired") return { ok: false, reason: "Not while the family is this worn out." };
   return { ok: true };
 }
 
@@ -60,7 +69,9 @@ export function stopReason(beats, before, after, state) {
 
 // -> { state, days: [{ beats, state, view }], reason }
 // The last day carries the beats that need the player; the UI plays those in full.
-export function driveOn(engine, route, state, { maxDays = MAX_DAYS } = {}) {
+// `pace` (optional) rides on every day's "go", as the UI's pace control sends it;
+// without it the family keeps the pace it has.
+export function driveOn(engine, route, state, { maxDays = MAX_DAYS, pace = null } = {}) {
   const days = [];
   let s = state;
   let reason = "limit";
@@ -72,7 +83,7 @@ export function driveOn(engine, route, state, { maxDays = MAX_DAYS } = {}) {
       break;
     }
     const before = engine.view(route, s);
-    const r = engine.step(route, s, go);
+    const r = engine.step(route, s, pace ? { ...go, pace } : go);
     s = r.state;
     const after = engine.view(route, s);
     days.push({ beats: r.beats, state: s, view: after });

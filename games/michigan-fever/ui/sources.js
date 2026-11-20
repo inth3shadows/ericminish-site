@@ -16,6 +16,7 @@ const GROUPS = {
   terrain: "Roads and terrain", swamp: "The Black Swamp", canal: "The canal", lake: "The lake", toll: "Tolls",
   wagon: "The wagon", yoke: "The team", skill: "Skills", age: "Ages", ev: "Event odds and effects",
   w: "Event weights", cd: "Event cooldowns", m: "Months", crowd: "Crowding",
+  fat: "Fatigue", team: "The team", chain: "Consequences", tie: "Home ties", post: "Postage and the mail", stage: "The winter stage",
 };
 const CONF = { solid: "well sourced", likely: "likely", uncertain: "uncertain", invented: "invented" };
 

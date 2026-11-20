@@ -1,6 +1,7 @@
 // Travel modes and their daily rules: ox or horse wagon, canal packet or line
-// boat, lake steamer, the Black Swamp road. A leg is a chain of segments; each
-// travel action is one day. No DOM.
+// boat, lake steamer, the winter stage, the Black Swamp road. A leg is a chain
+// of segments; each travel action is one day. The family's own wagon has a
+// pace (steady, hard, grueling) that pays only on good road. No DOM.
 
 import { compare, month } from "../../engine/clock.js";
 
@@ -24,7 +25,21 @@ export const LEGS = {
     ] },
   claim: { label: "Out to the claim", mode: "wagon", scene: "claim-track",
     segments: [{ to: "claim", miles: null, terrain: "track" }] },
+  stage: { label: "The winter stage to Detroit", mode: "stage", scene: "ohio-road", unit: "days",
+    segments: [{ to: "detroit", miles: "stage.days", terrain: "road" }] },
 };
+
+export const PACES = ["steady", "hard", "grueling"];
+// Roads where pushing the team gains miles. The Black Swamp road and the forest
+// track cap the speed whatever the pace (r3 §1a-1b).
+export const GOOD_ROAD = new Set(["hill", "road", "corduroy", "strip"]);
+export const BAD_ROAD = new Set(["swamp", "track"]);
+
+// The pace applies to the family's own wagon and team; a boat, the stage or a
+// hired teamster sets its own.
+export function ownPace(state) {
+  return state.phase === "travel" && LEGS[state.leg]?.mode === "wagon" && Boolean(state.gear.team) && !state.gear.teamster;
+}
 
 export const PLACES = {
   home: "the farm", albany: "Albany", buffalo: "Buffalo", sandusky: "Sandusky", perrysburg: "Perrysburg",
@@ -73,13 +88,22 @@ export function dayMiles(ctx, weather) {
   if (leg.mode === "canal") {
     return num(state.vars.ticket === "packet" ? "canal.packetMph" : "canal.lineMph") * num("canal.hoursPerDay");
   }
-  if (leg.mode === "steamer") return 1;
+  if (leg.mode === "steamer" || leg.mode === "stage") return 1;
   if (!state.gear.teamster && state.gear.wagonCond <= 0) return 0;
   let base = num(state.gear.team === "horse" ? "speed.horse" : "speed.oxen");
   // A second yoke (bought on the Ohio road) spells the first and pulls through mud.
   if (state.flags.secondYoke && state.gear.team === "oxen" && !state.gear.teamster) base *= num("yoke.second.mult");
+  // An ox that gave out: the wagon crawls until a new yoke is bought.
+  if (state.flags.teamShort && !state.gear.teamster) base *= num("team.short.mult");
   const t = state.vars.terrain;
-  return base * terrainMult(ctx, t) * weatherMult(ctx, weather) * moraleMult(ctx);
+  return base * terrainMult(ctx, t) * weatherMult(ctx, weather) * moraleMult(ctx) * paceMult(ctx, t);
+}
+
+// Hard and grueling multiply the miles only on good road.
+export function paceMult(ctx, terrain) {
+  const { state, num } = ctx;
+  if (!ownPace(state) || !GOOD_ROAD.has(terrain)) return 1;
+  return num(`speed.pace.${state.vars.pace ?? "steady"}`);
 }
 
 // The Black Swamp road is passable in July-September and worsens month by month after.

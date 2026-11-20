@@ -175,5 +175,235 @@
       "source": "Wikipedia, Specie Circular",
       "url": "https://en.wikipedia.org/wiki/Specie_Circular"
     }
+  ],
+  "homeLetterLabel": "A letter from home. This letter is fiction, written for the game: the family and its letters are invented.",
+  "tieSource": "Fiction: the family's ties at home are invented for the game",
+  "stage": "You take places on the winter stage for Detroit. The road is long and the coach is cold, but it does not wait on the ice.",
+  "post": {
+    "nothing": "The postmaster looks through the pigeonholes. There is nothing for {family}.",
+    "left": "You leave them on the shelf. At the quarter they will be advertised in the paper, and if no one calls, sent on to the dead-letter office in Washington.",
+    "cannotPay": "There is not enough in the purse to pay the postage, so the letters stay where they are.",
+    "sentHalves": "The postmaster takes the first letter. The other halves go by the next mail.",
+    "sentWhole": "The postmaster takes the letter, notes and all.",
+    "deadLetters": "{n} from home never reached the family. After the quarter's advertising they went to the dead-letter office in Washington.",
+    "sendDetail": "Notes go by mail at their value at home, where New England paper passes at face."
+  },
+  "homeLetters": {
+    "kin": "{to},\n\nYou will hardly be out of the county when this reaches Albany, but I promised to write, and so I do. The house looks strange from the road with no smoke from the chimney.\n\nWrite from every place you stop, if you can spare the postage. We pay for the letters that come here, so do not write small to save paper.\n\nYour affectionate\n{sender}",
+    "lost": "{to},\n\nYou wrote that money was coming for {what}, but the letter with the notes never reached us. The postmaster says money in the mail goes at the risk of the owner, and there is nothing to be done.\n\nI am sorry to send such news so far.\n\n{sender}",
+    "out": [
+      "{salutation},\n\nWe are at {place}, {date}. {news}\n\nThe road is longer than anyone told us, and dearer. Everything that can be sold to a traveller is sold at twice the price.\n\nGive our love to all at home. I will write again from the land office.\n\nYour affectionate\n{sign}",
+      "{salutation},\n\nI take up my pen at {place}, {date}, to let you know how we do. {news}\n\nThe whole country seems to be going west with us. There is not a tavern without its floor full of movers.\n\nDo not forget us.\n\nYour loving\n{sign}",
+      "{salutation},\n\nA line from {place}, {date}, in haste. {news}\n\nWe think of you all at home more than I can say. Write to us at Bronson, in the Territory of Michigan, where the land office is.\n\nYour affectionate\n{sign}"
+    ],
+    "money": {
+      "halves": "{salutation},\n\nI enclose the first halves of notes to the sum of {amount}, for {what}. The other halves follow by the next mail, so that neither letter alone is worth a thief's trouble.\n\n{news}\n\nYour affectionate\n{sign}",
+      "whole": "{salutation},\n\nI enclose notes to the sum of {amount}, for {what}. I send them whole, and trust to Providence and the mails.\n\n{news}\n\nYour affectionate\n{sign}"
+    },
+    "newsLines": {
+      "well": "We are all well, thank God, and the children stand the journey better than we do.",
+      "sick": "{who} is down with a fever, but we hope the worst is past.",
+      "loss": "You will have had our sad news of {who}.",
+      "land": "The land is entered and paid for, and we are raising a cabin on it."
+    }
+  },
+  "ties": [
+    {
+      "id": "parent",
+      "label": "{parent}'s keep at home",
+      "purpose": "{parent}'s keep this winter",
+      "detail": "{parent} is old and lives on at the farm under a support-for-deed promise. The neighbours keeping {parent} want {amount} for the winter.",
+      "newsAt": "albany",
+      "news": "{to},\n\nI write so that a word from home will be waiting at Albany. {parent} sits by the fire most days and asks after the children. The Coles are keeping the house as we agreed, but they will want paying for the winter.\n\nIf you can send {amount} before November, the promise will be kept and nobody need say a word.\n\nYour affectionate\n{sender}",
+      "outcome": {
+        "died": "{to},\n\nI have hard news, and no easy way to write it. {parent} died at the end of October, quietly, with the neighbours by, and we buried {parent} beside the others in the churchyard.\n\nNo money came for the keep, and the Coles had grown short with the house. I do not say it to reproach you. You had the children to think of.\n\nYour sorrowing\n{sender}",
+        "passed": "{to},\n\nI have hard news. {parent} died at the end of October, and we buried {parent} beside the others in the churchyard.\n\nYour money came in time, and {parent} wanted for nothing at the end. Take what comfort you can from that.\n\nYour sorrowing\n{sender}",
+        "cared": "{to},\n\nYour money came safe, and the Coles are paid through the winter. {parent} sits by the fire and asks after the children, and says you were always the one who would go.\n\nYour affectionate\n{sender}",
+        "managing": "{to},\n\nNo money has come from you, and the Coles have given up the keeping. I have taken {parent} in with us, though there is little room and less to spare.\n\nI do not complain, but I wish you had written.\n\n{sender}"
+      },
+      "short": {
+        "died": "died at home; the keep was not paid",
+        "passed": "died at home, cared for to the end",
+        "cared": "kept through the winter",
+        "managing": "taken in by kin; the keep was not paid"
+      },
+      "epilogue": {
+        "died": "At home, {parent} died in the autumn of 1836, while the family was on the road west. The keep had not been paid.",
+        "passed": "At home, {parent} died that autumn, cared for to the end with the money the family sent.",
+        "cared": "At home, {parent} lived on through the winter at the old farm, kept with the money the family sent.",
+        "managing": "At home, kin took {parent} in when no money came for the keep.",
+        "open": "At home, {parent} waited for word from the West."
+      }
+    },
+    {
+      "id": "note",
+      "label": "Your note of hand to {kin}",
+      "purpose": "your note of hand",
+      "detail": "{kin} lent you {amount} on your note of hand for the journey, and has payments of the same kind falling due.",
+      "newsAt": "buffalo",
+      "news": "{to},\n\nI hope this finds you at Buffalo and all well. I will not hide that the {amount} I lent you on your note has left me short. The tanner wants his money at the end of October, and if yours does not come I must ask him to wait, which he will not like.\n\nDo not think I grudge it.\n\nYour affectionate\n{sender}",
+      "outcome": {
+        "repaid": "{to},\n\nYour money came, and I paid the tanner the same week. You may tear up the note, or keep it as a curiosity.\n\nYour affectionate\n{sender}",
+        "pressed": "{to},\n\nThe tanner would not wait, and I have had to sell the heifer to meet him. I say no more about the note. Pay it when you can.\n\n{sender}",
+        "waiting": "{to},\n\nThe tanner has agreed to wait until spring, at interest. Send what you can when you are settled.\n\nYour affectionate\n{sender}"
+      },
+      "short": {
+        "repaid": "repaid",
+        "pressed": "unpaid; kin had to sell stock to meet their own debt",
+        "waiting": "unpaid, but the creditor waits"
+      },
+      "epilogue": {
+        "repaid": "At home, {kin} had the note repaid that autumn.",
+        "pressed": "At home, {kin} sold a heifer to meet a debt when the note went unpaid.",
+        "waiting": "At home, {kin}'s creditor agreed to wait until spring for the money on the note.",
+        "open": "At home, the note of hand was still unpaid at the year's end."
+      }
+    },
+    {
+      "id": "mortgage",
+      "label": "The mortgage note, with {kin} as surety",
+      "purpose": "the mortgage note on the old farm",
+      "detail": "The farm's mortgage was not cleared at the sale. {amount} falls due after harvest, and {kin} signed as surety for it.",
+      "newsAt": "detroit",
+      "schedule": [
+        {
+          "event": "tie-mortgage-agent",
+          "in": {
+            "at": "detroit"
+          },
+          "unless": {
+            "tie": [
+              "mortgage",
+              "settled"
+            ]
+          }
+        }
+      ],
+      "news": "{to},\n\nMr. Barker at the bank has been asking after the mortgage money. I told him you would send it from the West. He reminded me that my name is on the note as well as yours, and that the bank looks to the surety when the maker is gone.\n\nI trust you will not leave me to answer for it.\n\n{sender}",
+      "outcome": {
+        "cleared": "{to},\n\nThe bank has your money, and Mr. Barker has given me back my name. The note is cancelled. I own I slept better for it.\n\nYour affectionate\n{sender}",
+        "sued": "{to},\n\nThe bank has brought suit against me as your surety. The sheriff came with the papers on a Saturday, with half the village watching. I will answer it as best I can.\n\n{sender}",
+        "extended": "{to},\n\nThe bank has agreed to wait until spring, at interest, and only because the harvest was good. Do not count on such patience twice.\n\n{sender}"
+      },
+      "short": {
+        "cleared": "paid; the note is cancelled",
+        "sued": "unpaid; the bank sued the surety",
+        "extended": "unpaid; the bank waits until spring"
+      },
+      "epilogue": {
+        "cleared": "At home, the mortgage note was paid and cancelled.",
+        "sued": "At home, the bank sued {kin} as surety on the mortgage note the family left unpaid.",
+        "extended": "At home, the bank let the mortgage note run until spring, at interest.",
+        "open": "At home, the mortgage note was still running at the year's end."
+      }
+    },
+    {
+      "id": "sweetheart",
+      "label": "{child}'s betrothed at home",
+      "purpose": "a passage west for {child}'s betrothed",
+      "detail": "{child} is promised to someone at home, who means to come west once there is a roof. {amount} would go toward the passage in the spring.",
+      "newsAt": "buffalo",
+      "schedule": [
+        {
+          "event": "tie-sweetheart-low",
+          "in": {
+            "at": "bronson"
+          },
+          "unless": {
+            "any": [
+              {
+                "tie": [
+                  "sweetheart",
+                  "settled"
+                ]
+              },
+              {
+                "cmp": [
+                  "vars.lettersHome",
+                  ">",
+                  0
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "news": "{to},\n\nI will say only that a certain young person asks every week at the post office whether there is word from the West, and goes home with nothing. Tell {child} that a letter would not go amiss.\n\nYour affectionate\n{sender}",
+      "outcome": {
+        "coming": "{to},\n\nThe young person has the passage money put by and will come out by the lakes in the spring with the Andrews family. Tell {child} to have a roof ready.\n\nYour affectionate\n{sender}",
+        "married": "{to},\n\nI do not know how to tell {child} this. With no word from the West since September, the young person has given up waiting, and is to marry the miller's son at Christmas.\n\n{sender}"
+      },
+      "short": {
+        "coming": "will come west in the spring",
+        "married": "gave up waiting and is to marry at home"
+      },
+      "epilogue": {
+        "coming": "In the spring of 1837, {child}'s betrothed came west by the lakes.",
+        "married": "At home, {child}'s betrothed gave up waiting and married that winter.",
+        "open": "At home, {child}'s betrothed waited for word from the West."
+      }
+    },
+    {
+      "id": "store",
+      "label": "The account at Hammond's store",
+      "purpose": "the account at Hammond's store",
+      "detail": "You left {amount} owing at the village store. Mr. Hammond let it stand on your word.",
+      "newsAt": "albany",
+      "schedule": [
+        {
+          "event": "tie-store-drummer",
+          "in": {
+            "at": "buffalo"
+          },
+          "unless": {
+            "tie": [
+              "store",
+              "settled"
+            ]
+          }
+        }
+      ],
+      "news": "{to},\n\nMr. Hammond stopped me after meeting to ask whether you had sent anything on his account. He was civil about it, but it is a hard autumn for a storekeeper, with half his customers gone west.\n\nYour affectionate\n{sender}",
+      "outcome": {
+        "cleared": "{to},\n\nMr. Hammond has his money and crossed out your name in the book in front of me. He says to tell you he wishes you well.\n\nYour affectionate\n{sender}",
+        "posted": "{to},\n\nMr. Hammond has put your account in the hands of a lawyer in the county town. Your name was read out with the other debtors who have gone west.\n\n{sender}",
+        "patient": "{to},\n\nMr. Hammond says he will wait for his money. He says it in a way that makes me wish he would not.\n\n{sender}"
+      },
+      "short": {
+        "cleared": "paid",
+        "posted": "unpaid; put in a lawyer's hands",
+        "patient": "unpaid, but the storekeeper waits"
+      },
+      "epilogue": {
+        "cleared": "At home, the store account was settled and the name crossed out of the book.",
+        "posted": "At home, the store account went to a lawyer, and the family's name was read out with the other debtors gone west.",
+        "patient": "At home, the storekeeper waited on the account.",
+        "open": "At home, the store account still stood at the year's end."
+      }
+    },
+    {
+      "id": "subscription",
+      "label": "Your subscription to the new meeting house",
+      "purpose": "the meeting house subscription",
+      "detail": "You put your name down for {amount} toward the new meeting house before you sold the farm.",
+      "newsAt": "detroit",
+      "news": "{to},\n\nThe frame of the new meeting house is up, and the committee is collecting on the subscriptions. Your {amount} is still against your name on the list.\n\nYour affectionate\n{sender}",
+      "outcome": {
+        "thanked": "{to},\n\nYour subscription came, and the minister thanked you from the pulpit as one who had not forgotten us.\n\nYour affectionate\n{sender}",
+        "named": "{to},\n\nThe subscription list was read out at meeting, with the names of those in arrears. Yours was among them.\n\n{sender}",
+        "excused": "{to},\n\nThe committee has let the subscriptions of those gone west stand over. Nobody spoke of it.\n\nYour affectionate\n{sender}"
+      },
+      "short": {
+        "thanked": "paid, and thanked from the pulpit",
+        "named": "unpaid; named at meeting",
+        "excused": "unpaid, but excused"
+      },
+      "epilogue": {
+        "thanked": "At home, the family's subscription helped finish the new meeting house.",
+        "named": "At home, the family was named at meeting among those in arrears on the subscription.",
+        "excused": "At home, the meeting house committee let the family's subscription stand over.",
+        "open": "At home, the subscription still stood against the family's name."
+      }
+    }
   ]
 }

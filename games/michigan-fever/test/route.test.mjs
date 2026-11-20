@@ -272,6 +272,8 @@ test("land: look, enter at the window, wait, pay, go to the claim", () => {
   for (let i = 0; i < 60 && !s.land.ready && s.land.applied && !s.over; i++) {
     s = step(route, s, s.pending ? availableActions(route, s)[0] : "wait").state;
   }
+  // An office event can open on the day the description clears: answer it before paying.
+  for (let i = 0; i < 10 && s.pending && !s.over; i++) s = step(route, s, availableActions(route, s)[0]).state;
   if (!s.land.applied) return; // a conflicting claim took it: covered by the sim
   const coin = s.purse.coin;
   s = step(route, s, "pay:coin").state;

@@ -21,6 +21,8 @@
 //   textVar?(name, value, prop, ctx)       format "{who}" / "{who.his}" in text
 //   textVars?(ctx) -> {name: string}       global text variables
 //   view?(state) -> HUD data
+//   places?: string[]                      places a scheduled event may wait for ({"at": place}); validateDeck checks them
+//   atPlace?(state) -> place | null        where the family is for an {"at"} schedule (default: state.place)
 
 import { addDays } from "./clock.js";
 import { cursor } from "./rng.js";
@@ -39,7 +41,16 @@ export function makeCtx(route, state) {
     text(tpl, vars = {}) { return renderText(tpl, ctx, vars); },
     evalCond: (cond, vars) => deck.evalCond(cond, ctx, vars),
     applyEffects: (effects, vars) => deck.applyEffects(effects, ctx, vars),
-    drawEvent: (name) => (state.pending || state.over ? false : deck.drawEvent(ctx, name)),
+    // A due scheduled event fires ahead of the random draw; the draw still
+    // happens unless the scheduled event opened a choice.
+    drawEvent(name) {
+      if (state.pending || state.over) return false;
+      const due = deck.fireDue(ctx);
+      if (state.pending || state.over) return due;
+      return deck.drawEvent(ctx, name) || due;
+    },
+    fireDue: () => (state.pending || state.over ? false : deck.fireDue(ctx)),
+    schedule: (spec, vars = {}) => deck.schedule(ctx, spec, vars),
     startEvent: (id, vars) => deck.startEvent(ctx, id, vars),
     queueEvent(id, vars = {}) {
       if (state.pending || state.over) return;

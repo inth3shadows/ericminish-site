@@ -83,7 +83,7 @@ export function evalCond(cond, ctx, vars = {}) {
   }
 }
 
-export const CORE_EFFECTS = new Set(["add", "set", "flag", "days", "narrate", "chance", "if", "event", "scene"]);
+export const CORE_EFFECTS = new Set(["add", "set", "flag", "days", "narrate", "chance", "if", "event", "scene", "schedule"]);
 // Keys beside an effect's operation: the branches, and "as" (the kind of day a
 // "days" effect spends, passed to route.eventDay).
 const BRANCH_KEYS = new Set(["then", "else", "as"]);
@@ -140,12 +140,60 @@ function applyEffect(e, ctx, vars) {
       return;
     case "event": ctx.queueEvent(arg, vars); return;
     case "scene": ctx.emit({ type: "scene", scene: arg }); return;
+    case "schedule": schedule(ctx, arg, vars); return;
     default: {
       const f = ctx.route.effects?.[k];
       if (!f) throw new Error(`unknown effect: ${k}`);
       f(arg, ctx, vars);
     }
   }
+}
+
+// ---- scheduled events ---------------------------------------------------------
+// {"schedule": {"event": id, "in": days | {"at": place}, "unless"?: cond}}
+// queues an event in state.queue. It comes due after that many days, or once
+// the family is at the place; the next time the route asks for an event (or
+// calls ctx.fireDue) it fires ahead of the random draw. If "unless" holds by
+// then, it is dropped. An event whose "when" fails, or whose binders find
+// nobody, waits in the queue. The same event is never queued twice at once.
+
+export function schedule(ctx, spec, vars = {}) {
+  const s = ctx.state;
+  s.queue ??= [];
+  if (s.queue.some((q) => q.event === spec.event)) return;
+  const item = { event: spec.event };
+  if (spec.in && typeof spec.in === "object") item.at = spec.in.at;
+  else item.due = s.day + resolve(spec.in, ctx, vars);
+  if (spec.unless != null) item.unless = spec.unless;
+  s.queue.push(item);
+}
+
+function atPlace(ctx) {
+  return ctx.route.atPlace ? ctx.route.atPlace(ctx.state) : ctx.state.place;
+}
+
+// Fire the first due scheduled event. Returns true when one started.
+export function fireDue(ctx) {
+  const s = ctx.state;
+  if (!s.queue?.length || s.pending || s.over) return false;
+  const here = atPlace(ctx);
+  for (let i = 0; i < s.queue.length; i++) {
+    const q = s.queue[i];
+    if (q.unless != null && evalCond(q.unless, ctx)) {
+      s.queue.splice(i--, 1);
+      continue;
+    }
+    const due = q.at != null ? here === q.at : s.day >= q.due;
+    if (!due) continue;
+    const ev = eventById(ctx.route, q.event);
+    if (!evalCond(ev.when, ctx)) continue;
+    const v = bindVars(ev, ctx);
+    if (!v) continue;
+    s.queue.splice(i, 1);
+    startEvent(ctx, ev, v);
+    return true;
+  }
+  return false;
 }
 
 // ---- the deck ---------------------------------------------------------------
@@ -209,8 +257,10 @@ export function drawEvent(ctx, deck) {
   return false;
 }
 
+// A choice with "only" is offered only while that condition holds; one with
+// "requires" is shown but disabled (with "why") while it fails.
 export function choiceList(ev, ctx, vars) {
-  return (ev.choices ?? []).map((c) => {
+  return (ev.choices ?? []).filter((c) => c.only == null || evalCond(c.only, ctx, vars)).map((c) => {
     const ok = evalCond(c.requires, ctx, vars);
     return { id: c.id, label: ctx.text(c.label, vars), enabled: ok, reason: ok ? undefined : (c.why ? ctx.text(c.why, vars) : "Not possible now") };
   });
@@ -284,9 +334,21 @@ function walkEffects(effects, route, errs, where) {
     }
     if (k === "if") walkCond(e.if, route, errs, where);
     if (k === "event" && !route.events.some((x) => x.id === e.event)) errs.push(`${where}: unknown event ${e.event}`);
+    if (k === "schedule") walkSchedule(e.schedule, route, errs, where);
     walkEffects(e.then, route, errs, where);
     walkEffects(e.else, route, errs, where);
   }
+}
+
+function walkSchedule(spec, route, errs, where) {
+  if (!spec || typeof spec !== "object") { errs.push(`${where}: schedule needs {event, in}`); return; }
+  if (!route.events.some((x) => x.id === spec.event)) errs.push(`${where}: schedule: unknown event ${spec.event}`);
+  const n = spec.in;
+  const days = typeof n === "number" || (typeof n === "string" && n.startsWith("#"));
+  const at = n && typeof n === "object" && !Array.isArray(n) && typeof n.at === "string" && Object.keys(n).length === 1;
+  if (!days && !at) errs.push(`${where}: schedule: "in" must be days or {at: place}`);
+  if (at && route.places && !route.places.includes(n.at)) errs.push(`${where}: schedule: unknown place ${n.at}`);
+  walkCond(spec.unless, route, errs, where);
 }
 
 function walkRefs(node, route, errs, where) {
@@ -314,13 +376,14 @@ export function validateDeck(route) {
       if (!route.binders?.[k]) errs.push(`${where}: unknown binder ${k} for ${name}`);
     }
     const choices = ev.choices ?? [];
-    if (choices.length && !choices.some((c) => c.requires == null)) errs.push(`${where}: every choice has a requirement (possible dead end)`);
+    if (choices.length && !choices.some((c) => c.requires == null && c.only == null)) errs.push(`${where}: every choice has a requirement (possible dead end)`);
     const cids = new Set();
     for (const c of choices) {
       if (cids.has(c.id)) errs.push(`${where}: duplicate choice ${c.id}`);
       cids.add(c.id);
       if (!c.label) errs.push(`${where}.${c.id}: no label`);
       walkCond(c.requires, route, errs, `${where}.${c.id}`);
+      walkCond(c.only, route, errs, `${where}.${c.id}`);
       walkEffects(c.effects, route, errs, `${where}.${c.id}`);
       if (c.next && !route.events.some((x) => x.id === c.next)) errs.push(`${where}.${c.id}: unknown next ${c.next}`);
     }

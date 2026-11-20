@@ -23,6 +23,7 @@ export function createState({ routeId, routeVersion, seed, date }) {
     vars: {},      // route scratch values
     events: { seen: {}, last: {} },  // id -> times seen; id -> day last seen
     pending: null, // {kind: "event", id, vars} while a choice is open
+    queue: [],     // scheduled events: [{event, due} | {event, at}, with "unless"?] (see events.js "schedule")
     over: null,    // the end record once the game has ended
   };
 }

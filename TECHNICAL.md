@@ -80,7 +80,7 @@ games/
   engine/                 route-agnostic rules: rng, clock, state, event deck, save, step()
   engine/test/            node --test unit tests
   michigan-fever/
-    route.js mechanics/   this route's rules (purse, travel, health, land office, letters)
+    route.js mechanics/   this route's rules (purse, travel and pace, health and fatigue, land office, letters, home ties and the post)
     data/                 numbers.json (every number, tagged src or invented), events.json, text.json, backgrounds.json
     art/                  13 webp scene paintings at 1920 and 960 wide, and manifest.json
     ui/                   the browser side: scene, light and weather, synthesised sound, HUD, actions, drive on
@@ -101,8 +101,21 @@ games/
   "Drive on" (`ui/driveon.js`) repeats the one-day travel action and stops at
   the first thing that needs the player; its tests check it against pressing
   the action day by day.
+- **Depth systems (P2 Phase A).** The family's own wagon travels at a pace
+  (steady, hard, grueling) sent as a parameter of the travel action; it pays
+  only on good road. Each person and the team carry fatigue, which raises the
+  odds of illness, quarrels, injuries and a lame or lost ox, and falls with
+  rest, a roof and a kept Sabbath. The engine has a `schedule` effect: a choice
+  can queue a later consequence (after some days, or on reaching a place),
+  kept in `state.queue`. Each family draws two or three ties at home (a parent's
+  keep, a note of hand, a mortgage, a sweetheart, a store account, a
+  subscription; every size invented). Letters from home wait at the post
+  offices at postage by the 1825 distance bands, and money goes home in notes
+  cut in halves. The route is at version 2, so P1 saves are refused cleanly.
+  The interface is in `games/michigan-fever/API.md`.
 - **Tests.** `node --test games/*/test/*.test.mjs` runs the engine units, the
-  route rules, the drive-on checks and a seeded balance simulation. CI runs it.
+  route rules, the drive-on checks, the depth systems (`test/depth.test.mjs`)
+  and a seeded balance simulation. CI runs it.
 - **Saving.** One autosave in `localStorage`, wrapped so private mode or blocked
   storage only loses the save.
 - **Pictures.** The scene paintings are AI-generated (Gemini 3 Pro Image, via

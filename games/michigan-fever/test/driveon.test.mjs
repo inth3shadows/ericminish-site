@@ -81,7 +81,7 @@ test("drive on is refused when the food is nearly gone or someone is very ill", 
     for (let n = 0; n < 800 && !state.over; n++) {
       const v = engine.view(route, state);
       const goOk = engine.availableActions(route, state).some((a) => a.id === "go" && a.enabled !== false);
-      if (state.phase === "travel" && !state.pending && goOk && (v.food.days <= LOW_FOOD_DAYS || v.party.some((p) => p.status === "sick" && p.health < WEAK))) {
+      if (state.phase === "travel" && !state.pending && goOk && ((v.food.days <= LOW_FOOD_DAYS && !v.food.meals) || v.party.some((p) => p.status === "sick" && p.health < WEAK))) {
         assert.equal(canDriveOn(engine, route, state).ok, false);
         checked += 1;
       }

@@ -1,6 +1,7 @@
-// Health of the family: each person has health 0-100 and a status
-// (well / sick / dead). Illness onset is weighted by leg, month and crowding.
-// No DOM. Deaths hand off to the death register (letters.js).
+// Health of the family: each person has health 0-100, a status
+// (well / sick / dead) and fatigue 0-100. Illness onset is weighted by leg,
+// month, crowding and fatigue. No DOM. Deaths hand off to the death register
+// (letters.js).
 
 import { month } from "../../engine/clock.js";
 import { deathBeats } from "./letters.js";
@@ -66,16 +67,63 @@ export function cure(ctx, id) {
   return true;
 }
 
-function onsetRate(ctx, kind, crowded) {
+// ---- fatigue ------------------------------------------------------------------
+// Each person and the team carry fatigue 0-100. Pace and bad road raise it;
+// rest, the Sabbath and a roof bring it down (the day's numbers come from the
+// route). Above fat.ill.from it makes illness likelier, up to 1 + fat.ill.mult
+// times at full fatigue.
+
+const clamp = (x, num) => Math.min(num("fat.max"), Math.max(0, x));
+
+export function fatigueMult(p, num) {
+  const from = num("fat.ill.from");
+  const f = p?.fatigue ?? 0;
+  if (f <= from) return 1;
+  return 1 + num("fat.ill.mult") * ((f - from) / (num("fat.max") - from));
+}
+
+// "worn" at fat.high, "tired" at fat.tired, else null.
+export function tiredness(f, num) {
+  if ((f ?? 0) >= num("fat.high")) return "worn";
+  if ((f ?? 0) >= num("fat.tired")) return "tired";
+  return null;
+}
+
+export const maxFatigue = (state) => living(state).reduce((m, p) => Math.max(m, p.fatigue ?? 0), 0);
+
+// One day's fatigue: `person` and `team` are the day's change in points
+// (positive tires). Children gain at fat.childMult; recovery is the same for all.
+export function dailyFatigue(ctx, { person = 0, team = 0 }) {
+  const { state, num } = ctx;
+  for (const p of living(state)) {
+    const d = person > 0 && isChild(p, num) ? person * num("fat.childMult") : person;
+    p.fatigue = clamp((p.fatigue ?? 0) + d, num);
+  }
+  if (state.gear.team) state.gear.fatigue = clamp((state.gear.fatigue ?? 0) + team, num);
+}
+
+// An event's fatigue for one person, everyone ("all") or the team ("team").
+export function addFatigue(ctx, who, amount) {
+  const { state, num } = ctx;
+  if (who === "team") {
+    if (state.gear.team) state.gear.fatigue = clamp((state.gear.fatigue ?? 0) + amount, num);
+    return;
+  }
+  const targets = who === "all" ? living(state) : [person(state, who)].filter((p) => p && p.status !== "dead");
+  for (const p of targets) p.fatigue = clamp((p.fatigue ?? 0) + amount, num);
+}
+
+export function onsetRate(ctx, kind, crowded, p = null) {
   const { state, num } = ctx;
   const where = state.phase === "travel" ? (state.vars.terrain === "swamp" ? "swamp" : state.leg) : state.phase === "town" ? "town" : state.phase;
   const crowd = crowded ? num("crowd.mult") : 1;
+  const worn = fatigueMult(p, num);
   if (kind === "ague") {
     const m = Math.min(12, Math.max(9, month(state.date)));
-    return num(`ague.base.${where}`) * num(`ague.month.${m}`) * crowd;
+    return num(`ague.base.${where}`) * num(`ague.month.${m}`) * crowd * worn;
   }
-  if (kind === "dysentery") return num("dys.base") * crowd;
-  if (kind === "cholera") return ["canal", "lake"].includes(state.leg) && state.phase === "travel" ? num("cholera.base") : 0;
+  if (kind === "dysentery") return num("dys.base") * crowd * worn;
+  if (kind === "cholera") return ["canal", "lake"].includes(state.leg) && state.phase === "travel" ? num("cholera.base") * worn : 0;
   return 0;
 }
 
@@ -95,7 +143,7 @@ export function dailyHealth(ctx, day) {
     } else {
       p.health = Math.min(num("health.max"), p.health + num(day.resting ? "health.restRegen" : "health.regen"));
       for (const kind of ["ague", "dysentery", "cholera"]) {
-        const hit = rng.chance(onsetRate(ctx, kind, day.crowded));
+        const hit = rng.chance(onsetRate(ctx, kind, day.crowded, p));
         if (hit && p.status === "well") sicken(ctx, p.id, kind);
       }
     }
@@ -127,6 +175,6 @@ export function summary(state, num) {
   return state.party.map((p) => ({
     id: p.id, name: p.name, age: p.age, role: p.role, sex: p.sex,
     status: p.status, illness: p.illness?.kind ?? null, health: Math.max(0, Math.round(p.health)),
-    child: isChild(p, num),
+    child: isChild(p, num), fatigue: Math.round(p.fatigue ?? 0), tired: p.status === "dead" ? null : tiredness(p.fatigue, num),
   }));
 }

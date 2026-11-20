@@ -66,6 +66,7 @@ function readable(route, s) {
     && isObj(s.flags) && isObj(s.res) && isObj(s.vars)
     && isObj(s.events) && isObj(s.events.seen) && isObj(s.events.last)
     && (s.pending === null || (isObj(s.pending) && typeof s.pending.id === "string"))
+    && (s.queue === undefined || (Array.isArray(s.queue) && s.queue.every((q) => isObj(q) && typeof q.event === "string")))
     && (s.over === null || isObj(s.over));
   if (!shaped) return false;
   try {

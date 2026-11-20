@@ -22,7 +22,7 @@ import { money } from "/games/michigan-fever/mechanics/purse.js"; // cents -> "$
 | `step(route, state, action)` | `{ state, beats }` | `action` is an object from `availableActions` (or just its `id`). Returns a **new** state; the old one is untouched. |
 | `view(route, state)` | `View` | HUD data (date, place, purse, family, land, deadline). Plain JSON. |
 | `saveGame(state, { slot })` | `boolean` | `slot` is `"auto"` (default) or `"main"`. `false` if storage is missing, full or blocked (private mode). Never throws. |
-| `loadGame(route, { slot })` | `{ ok: true, state }` or `{ ok: false, reason }` | Reasons: `"no storage"`, `"empty"`, `"unreadable"`, `"unknown format"`, `"different route"`, `"old engine version"`, `"old route version"`, `"damaged"` (the state is not shaped like a game state, or the route's view or actions throw on it). |
+| `loadGame(route, { slot })` | `{ ok: true, state }` or `{ ok: false, reason }` | Reasons: `"no storage"`, `"empty"`, `"unreadable"`, `"unknown format"`, `"different route"`, `"old engine version"`, `"old route version"`, `"damaged"` (the state is not shaped like a game state, or the route's view or actions throw on it). The route is at version 2 (P2 Phase A), so a P1 save is refused as `"old route version"`. |
 | `hasSave(route.id, { slot })`, `clearSave(route.id, { slot })` | `boolean` | Storage keys are `trail:michigan-fever:auto` and `trail:michigan-fever:main`. |
 | `serialize(state)` / `deserialize(route, text)` | string / like `loadGame` | For a copy-paste or file export, if wanted. |
 
@@ -69,9 +69,10 @@ type Action = {
 |---|---|---|
 | `start` | first screen | `background`, `surname`, `party[{id,name,age,role,sex}]`, `purse{coin, notes{ne,ny,mi}}` (cents), `team`, `skills`, `editable: ["surname","names"]` |
 | `choose` | an event is waiting for a choice | `event` (event id), `choice` (choice id) |
-| `travel` | on the road or the water; "Set out"; "Go out to the claim" | |
-| `rest` | camp, lodging, tents | |
-| `board` | Albany (canal), Buffalo (steamer or overland) | |
+| `travel` | on the road or the water; "Set out"; "Go out to the claim" | `go` with the family's own wagon and team also has `pace` (the pace in force) and `paces[{pace, label, detail}]`: see "The pace" below |
+| `rest` | camp, lodging, tents; `sabbath` ("Keep the Sabbath") on a Sunday on the road or at the claim | |
+| `board` | Albany (canal), Buffalo (steamer, overland, or from 25 November the winter stage, `stage:winter`, $25 a head) | |
+| `post` | Albany, Buffalo, Detroit, Bronson: "Go to the post office", once a visit (a week at Bronson) | Opens the `post-office` event: its choices are what can be done there now |
 | `buy`, `sell`, `broker`, `letter`, `work`, `dose`, `repair` | towns, the road, the claim | |
 | `explore`, `apply`, `wait`, `pay` | the land office | `apply` has `tractId` (stable for the visit, e.g. `"t2"`), `tractLabel` (e.g. "prairie, 7 miles out, dry, good soil"), `acres`, and `tract` (same as `tractId`, kept for older callers). The UI groups by `tractId`. "Withdraw" is also `type: "apply"` but has no `tractId`. |
 | `build` | the claim | |
@@ -86,6 +87,22 @@ Names are cleaned by the engine (letters, spaces, `' . -`, at most 24 characters
 keeps the default. There are three backgrounds: `vermont`, `connecticut`, `widow`.
 
 When `state.pending` is set, `availableActions` returns only that event's choices (`type: "choose"`).
+A choice with an `only` condition in the data is left out entirely while it fails (the post office shows a
+"send money" choice only for the family's own ties); one with `requires` is shown disabled with its reason.
+
+**The pace.** With its own wagon and team the family travels at a pace: `steady` (the default), `hard` or
+`grueling`. The pace is a parameter of the travel action, not an action of its own: send
+`step(route, state, { id: "go", pace: "hard" })`. The family keeps that pace until another is sent; a plain
+`go` uses the pace in force (`view.pace`). Hard and grueling add miles only on good road (the hill road, the
+turnpike, the corduroy, the Toledo Strip), never on the Black Swamp road or the forest track, and they tire the
+family and the team faster. On a boat, the stage or with a hired teamster there is no `paces` list: they set
+their own pace. An unknown `pace` is ignored.
+
+**The post office.** `post` opens an event whose choices are: ask for letters (once a visit; waiting letters
+open a pay-or-leave choice, and the postage is paid on collection), send money home for one of the family's
+ties (notes cut in halves in two letters, or whole in one: then the halves-or-whole choice), write a letter
+home, or leave. After the letters and after sending, the menu comes back while something is left to do.
+Postage is by distance band and doubled per sheet (6, 10, 12.5, 18.75, 25 cents; Act of 1825).
 
 ## Beats
 
@@ -101,8 +118,8 @@ When `state.pending` is set, `availableActions` returns only that event's choice
 | `note` | `text`, `source`, `url` (may be `null`), `confidence` (`solid`, `likely`, `uncertain`, `invented`), and `event` or `about` (`"start"`, `"death"`) | The history note. Show the source and the link. When `confidence` is `uncertain` or `invented` the text already says so. |
 | `arrive` | `place`, `label`, `date`, `text`, `passing?` | Reached a place. `passing: true` means passing through (Sandusky, Perrysburg, Marshall). |
 | `death` | `who`, `name`, `age`, `cause`, `date`, `place`, `text` | Always followed by `letter`, then `note`. `text` is the factual line. |
-| `letter` | `fiction: true`, `label`, `from`, `to`, `date`, `text` | The fictional letter home. **Always show `label`** (it says the letter is fiction). `text` has `\n\n` paragraph breaks. |
-| `end` | `outcome`, `won`, `title`, `text`, `score`, `deaths[]`, `epilogue[{text,source,url}]` | The ending. See below. |
+| `letter` | `fiction: true`, `label`, `from`, `to`, `date`, `text`; from home also `sender`, `office` | A fictional letter. **Always show `label`** (it says the letter is fiction). `text` has `\n\n` paragraph breaks. Three kinds: after a death (the register below); a letter home the family writes or sends money in (`from` is the writer's name); and a letter **from home** collected at a post office, where `from` is `"home"` and `sender` is the kin who wrote. |
+| `end` | `outcome`, `won`, `title`, `text`, `score`, `deaths[]`, `epilogue[{text,source,url,fiction?}]` | The ending. See below. |
 | `error` | `message` | The action was not on offer. |
 
 ### The death register (user decision; keep this exact form)
@@ -119,7 +136,9 @@ finished cabin when winter closed), `winter` (no land by winter), `deadline` (pa
 coin), `stranded`, `lost` (no one survived). `score` is a ledger, not a points total:
 `{ acres, shelter: bool, alive, family, money (cents, value here), coin (cents), days }`. Show it as lines.
 Do not add the deaths into any score. `epilogue` is sourced history (the Panic of 1837, statehood, the
-Potawatomi); show each line with its source.
+Potawatomi); show each line with its source. Lines with `fiction: true` are what became of the family's ties
+at home (and letters that went to the dead-letter office); show them apart from the history, with their
+`source`, which says they are fiction.
 
 ## View (HUD)
 
@@ -133,9 +152,13 @@ Potawatomi); show each line with its source.
   purse: { coin, valueHere, notes: [{ region: "ne"|"ny"|"mi", label, face, value, discount }] },  // cents; discount is a fraction
   food: { rations, days, meals },   // days = how long the food lasts at today's family size; meals = the boat ticket feeds the family (packet, line boat with meals, cabin)
   morale, quinine,
-  party: [{ id, name, age, role, sex, status: "well"|"sick"|"dead", illness, health, child }],
+  party: [{ id, name, age, role, sex, status: "well"|"sick"|"dead", illness, health, child, fatigue, tired: null|"tired"|"worn" }],
   surname, background,
-  gear: { team: null|"oxen"|"horse", wagon, wagonCond, teamster },
+  gear: { team: null|"oxen"|"horse", wagon, wagonCond, teamster, fatigue, tired, short },   // short: an ox gave out
+  pace: "steady"|"hard"|"grueling", paceApplies,   // paceApplies: the family's own wagon is on the road
+  fatigue: { tired, high },                         // the thresholds: "tired" at 40, "worn" (drive on stops) at 70
+  ties: [{ id, label, purpose, detail, amount, sent, status: "open"|"settled"|"lost", news }],  // "Left behind"; news once a letter told them
+  postOffice,                                       // at a town or office with a post office
   deadline: { date: "1836-12-15", daysLeft, passed },
   snow: bool, winterWarning: null | daysLeft,   // set once the first snow has fallen
   land: { looker, candidates[{id,kind,label,miles,known,poor}], applied, paid, acres, tract, shelter (0-100), receiverTakesNY, conflicts },
@@ -155,12 +178,14 @@ import * as engine from "/games/engine/engine.js";
 import { canDriveOn, driveOn } from "/games/michigan-fever/ui/driveon.js";
 canDriveOn(engine, route, state);   // { ok, reason? }: refused with food at 3 days or less (unless the passage includes meals), money under $5, or someone sick below 35 health
 driveOn(engine, route, state);      // { state, days: [{ beats, state, view }], reason }
+driveOn(engine, route, state, { pace: "hard" });   // the pace rides on every day's go
 ```
 
 It calls `step(route, state, "go")` day by day and stops after the first day whose beats include `event`,
 `choice`, `arrive`, `death`, `letter`, `note`, `end`, `error` or `scene`, a `narrate` with cue `illness`,
-`broken`, `grief`, `conflict` or `ready`, the first snow, low food, money or health, or the deadline crossing
-30, 14 or 7 days left; at most 30 days. The last day's beats are the ones that need the player; the UI plays
+`broken`, `grief`, `conflict` or `ready`, the first snow, low food, money or health, anyone (or the team)
+reaching the high-fatigue mark `view.fatigue.high` (reason `"tired"`; it is also refused while someone is
+that worn out), or the deadline crossing 30, 14 or 7 days left; at most 30 days. The last day's beats are the ones that need the player; the UI plays
 them in full. `test/driveon.test.mjs` checks that no earlier day needed input and that the result equals
 pressing `go` the same number of times.
 
@@ -190,5 +215,25 @@ portrait points per painting (`PORTRAIT`), so figures at both sides come into fr
 
 - `data/numbers.json`: every game number, tagged `src` (with `source`, `url`, `confidence`) or `invented`
   (with a reason). A Sources or Credits screen can list the invented ones from here.
-- `data/events.json`: the event deck (63 events), each with its note.
+- `data/events.json`: the event deck (103 events), each with its note. Decks: `travel`, `town`, `office`,
+  `claim`, plus `chain` (follow-ups that only come by the schedule) and `post` (the post office's own events).
+- `data/text.json` also holds the six home ties (`ties`), their letters and epilogue lines, and the letters
+  home (`homeLetters`).
+
+## Consequence chains (engine)
+
+An event effect can schedule another event for later:
+
+```json
+{ "schedule": { "event": "chain-axle", "in": "#chain.axle.in", "unless": { "flag": "wheelMended" } } }
+{ "schedule": { "event": "chain-loan-due", "in": { "at": "detroit" } } }
+```
+
+`in` is a number of days (a literal or `#number`) or `{ "at": place }` (a place the family stops at:
+`route.places`; passing through does not count). The queue lives in `state.queue` (plain JSON, saved with the
+game). When the route next asks for an event (or calls `ctx.fireDue()`), the first item that is due, whose
+event's `when` holds and whose binders find someone, fires ahead of the random draw; the random draw still
+happens unless it opened a choice. If `unless` holds by then, the item is dropped. Items whose `when` fails
+wait in the queue; the same event is never queued twice at once. `validateDeck` checks that the event exists,
+that `in` is days or a known place, and the `unless` condition. The UI never reads the queue.
 - `data/text.json`, `data/backgrounds.json`: narration, letters, endings, family defaults.

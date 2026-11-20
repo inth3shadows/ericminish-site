@@ -3,12 +3,13 @@
 // This file wires the route-owned mechanics into the engine's route
 // interface (see games/engine/engine.js). No DOM.
 
-import { compare, diffDays, addDays, format } from "../engine/clock.js";
+import { compare, diffDays, addDays, format, dayOfWeek } from "../engine/clock.js";
 import { addRes, resolve } from "../engine/events.js";
 import * as P from "./mechanics/purse.js";
 import * as H from "./mechanics/health.js";
 import * as T from "./mechanics/travel.js";
 import * as L from "./mechanics/landoffice.js";
+import * as M from "./mechanics/home.js";
 
 // Every scene key a "scene" beat can carry, for the UI and art to map to images.
 export const SCENES = {
@@ -31,11 +32,14 @@ export const SCENES = {
 };
 
 export const ROUTE_ID = "michigan-fever";
-export const ROUTE_VERSION = 1;
+export const ROUTE_VERSION = 2; // 2: P2 Phase A (pace and fatigue, the schedule queue, home ties, letters)
 const list = (x) => (Array.isArray(x) ? x : [x]);
 const usd = (ctx, id) => P.cents(ctx.num(id));
 const TOWNS = new Set(["albany", "buffalo", "detroit"]);
 const NOTE_KIND = { albany: "ny", buffalo: "ny", detroit: "mi", bronson: "mi" };
+// Post offices where the family stops (Perrysburg, passed on the Ohio road, has its own event).
+const POST_TOWNS = new Set(["albany", "buffalo", "detroit", "bronson"]);
+const PACE_LABEL = { steady: "steady", hard: "hard", grueling: "grueling" };
 
 // ---- setup --------------------------------------------------------------------
 
@@ -46,14 +50,17 @@ function init(ctx) {
   s.place = "home";
   s.party = [];
   s.purse = P.emptyPurse();
-  s.gear = { team: null, wagon: false, wagonCond: 0, goods: 0, teamster: false };
+  s.gear = { team: null, wagon: false, wagonCond: 0, goods: 0, teamster: false, fatigue: 0 };
   s.land = L.newLand();
+  s.ties = [];
+  s.mail = [];
   s.res = { food: 0, morale: num("morale.start"), quinine: 0 };
   const spread = diffDays(num("date.snowEarliest"), num("date.snowLatest"));
   Object.assign(s.vars, {
     background: null, surname: "", kin: null, skills: [], ticket: null, teamSold: false,
     seg: 0, segMi: 0, legMi: 0, terrain: null, tollMi: 0,
     visit: { place: "home", used: {} }, griefDays: 0, today: null,
+    pace: "steady", lettersHome: 0, sendTie: null,
     snowDate: addDays(num("date.snowEarliest"), rng.int(0, spread)),
   });
   // Deep winter closes the season a few days after the first snow, and never later than the year's end.
@@ -80,12 +87,16 @@ function startGame(ctx, bgId, params) {
   s.vars.skills = [...bg.skills];
   s.party = bg.party.map((m) => ({
     id: m.id, name: cleanName(names[m.id], m.name), age: m.age, role: m.role, sex: m.sex,
-    health: ctx.num("health.max"), status: "well", illness: null,
+    health: ctx.num("health.max"), status: "well", illness: null, fatigue: 0,
   }));
   s.purse.coin = P.cents(resolve(bg.purse.coin, ctx));
   for (const r of P.REGIONS) s.purse.notes[r] = P.cents(resolve(bg.purse.notes[r] ?? 0, ctx));
   s.res.food = resolve(bg.food, ctx);
-  s.gear = { team: bg.team, wagon: true, wagonCond: ctx.num("wagon.max"), goods: resolve(bg.goods, ctx), teamster: false };
+  s.gear = { team: bg.team, wagon: true, wagonCond: ctx.num("wagon.max"), goods: resolve(bg.goods, ctx), teamster: false, fatigue: 0 };
+  // What they leave behind: two or three ties at home, the letters home will write, and the tie events.
+  M.drawTies(ctx, bg);
+  M.makeMail(ctx);
+  M.scheduleTies(ctx);
   ctx.emit({ type: "narrate", text: ctx.text(bg.departure) });
   T.startLeg(ctx, "vermont");
 }
@@ -136,10 +147,12 @@ function provisionsOpen(ctx) {
   return last == null || ctx.state.day - last >= ctx.num("food.provisionsGap");
 }
 
+// In Michigan the bundle is priced from PC18's pork and potatoes; in the east the price is invented.
 function provisionsCost(ctx) {
-  const s = ctx.state;
-  const west = s.phase === "claim" || ["road", "claim"].includes(s.leg) ? "michigan" : "east";
-  return usd(ctx, `price.provisions.${west}`);
+  const { state: s, num } = ctx;
+  const west = s.phase === "claim" || ["road", "claim"].includes(s.leg);
+  if (!west) return usd(ctx, "price.provisions.east");
+  return P.cents(num("food.provisions.porkLb") * num("price.pork.lb") + num("food.provisions.potatoBu") * num("price.potatoes.bu"));
 }
 
 function wageFor(ctx) {
@@ -174,6 +187,25 @@ function anyAgue(s) {
   return H.living(s).some((p) => p.illness?.kind === "ague");
 }
 
+const isSunday = (s) => dayOfWeek(s.date) === 0;
+
+// The paces on offer with the family's own wagon. The pace is a parameter of
+// the travel action ({id: "go", pace}), not an action of its own: the player
+// sets it next to the travel buttons, and it holds until changed.
+function paceOptions(ctx) {
+  const s = ctx.state;
+  if (!T.ownPace(s)) return null;
+  const good = T.GOOD_ROAD.has(s.vars.terrain);
+  const base = ctx.num(s.gear.team === "horse" ? "speed.horse" : "speed.oxen");
+  const LABEL = { steady: "Steady", hard: "Hard", grueling: "Grueling" };
+  return T.PACES.map((p) => ({
+    pace: p, label: LABEL[p],
+    detail: good
+      ? `About ${Math.round(base * ctx.num(`speed.pace.${p}`))} miles a day on good road.${p === "steady" ? " The pace a family can keep." : " The family and the team tire faster."}`
+      : `The ${T.TERRAIN_LABEL[s.vars.terrain]} will not go faster for pushing.${p === "steady" ? "" : " The family and the team still tire faster."}`,
+  }));
+}
+
 function travelActions(ctx) {
   const s = ctx.state;
   const leg = T.LEGS[s.leg];
@@ -182,11 +214,14 @@ function travelActions(ctx) {
     if (s.vars.skills.includes("repair")) out.push({ id: "repair:self", type: "repair", label: "Mend the wagon yourself (1 day)", days: 1, forward: true });
     else out.push({ id: "repair:slow", type: "repair", label: `Mend the wagon as best you can (${ctx.num("wagon.repairDays")} days)`, days: ctx.num("wagon.repairDays"), forward: true });
   } else {
-    const label = { wagon: "Drive on for the day", canal: "Another day on the canal", steamer: "Another day on the lake" }[leg.mode];
-    out.push({ id: "go", type: "travel", label, days: 1, forward: true });
+    const paced = T.ownPace(s) && s.vars.pace !== "steady" ? ` (${PACE_LABEL[s.vars.pace]} pace)` : "";
+    const label = { wagon: `Drive on for the day${paced}`, canal: "Another day on the canal", steamer: "Another day on the lake", stage: "Another day on the stage" }[leg.mode];
+    const paces = paceOptions(ctx);
+    out.push({ id: "go", type: "travel", label, days: 1, forward: true, ...(paces ? { pace: s.vars.pace, paces } : {}) });
   }
   if (leg.mode === "wagon") {
     out.push({ id: "rest", type: "rest", label: "Rest a day in camp", days: 1 });
+    if (isSunday(s)) out.push({ id: "sabbath", type: "rest", label: "Keep the Sabbath: rest the day", days: 1, detail: "A day of rest by custom. The family recovers more than on a common rest day." });
     if (provisionsOpen(ctx)) {
       const cost = provisionsCost(ctx);
       out.push(priced(ctx, "buy:provisions", "buy", `Buy provisions from a farm by the road (${P.money(cost)})`, cost));
@@ -215,8 +250,29 @@ function commonTownActions(ctx, out) {
     out.push(priced(ctx, "stay", "rest", `Take lodging for a day (${P.money(lodgingCost(ctx))})`, lodgingCost(ctx), { days: 1 }));
   }
   if (H.ableAdults(s, ctx.num) > 0) out.push({ id: "work", type: "work", label: `Hire out for a day (up to ${P.money(wageFor(ctx))})`, days: 1 });
-  if (!has(ctx, "letter")) out.push(priced(ctx, "letter", "letter", `Send a letter home (${P.money(usd(ctx, "price.postage"))})`, usd(ctx, "price.postage")));
+  if (POST_TOWNS.has(place)) postActions(ctx, out);
   if (anyAgue(s) && s.res.quinine > 0) out.push({ id: "dose", type: "dose", label: "Give quinine to the sick", remedy: true });
+}
+
+// The post office is one action; its event offers what can be done there now
+// (ask for letters once a visit, write home, send a tie's money home).
+// One call a visit (a week at Bronson). The menu comes back after each errand
+// while something is left to do (the "postLeft" binder on post-office).
+function postLeft(ctx) {
+  const { state: s, num } = ctx;
+  return !has(ctx, "post") || !has(ctx, "letter") || s.ties.some((t) => t.status !== "settled" && M.canSendFor(s, num, t));
+}
+
+function postActions(ctx, out) {
+  if (!has(ctx, "postCall") && postLeft(ctx)) out.push({ id: "post", type: "post", label: "Go to the post office", detail: "Ask for letters, write home, or send money home." });
+}
+
+function postVars(ctx) {
+  const { state: s, num } = ctx;
+  const letter = M.postage(num, M.officeMiles(num, s.place), 1);
+  const vars = { letter: P.money(letter), letterUsd: letter / 100 };
+  for (const t of M.summary(ctx.route, s)) vars[`send_${t.id}`] = `Send ${P.money(t.amount)} home for ${t.purpose}`;
+  return vars;
 }
 
 function townActions(ctx) {
@@ -237,6 +293,11 @@ function townActions(ctx) {
       out.push({ id: "overland", type: "board", label: "Go overland through Ohio and the Black Swamp", detail: "374 miles by your own wagon. No fare, but the swamp road is passable mainly July to September.", forward: true });
     } else {
       out.push(priced(ctx, "buy-team", "buy", `Buy a yoke of oxen and a wagon for the overland road (${P.money(teamPrice(ctx))})`, teamPrice(ctx), { forward: true }));
+      // Late in the year, the winter stage (Blois: $25 a passenger in the winter season).
+      if (compare(s.date, ctx.num("date.lakeLate")) >= 0) {
+        const fare = stageCost(ctx);
+        out.push(priced(ctx, "stage:winter", "board", `Take the winter stage to Detroit (${P.money(fare)})`, fare, { forward: true, detail: `About ${ctx.num("stage.days")} days by road, with the late boats taking their chances on the lake.` }));
+      }
     }
   } else if (s.place === "detroit") {
     if (!s.gear.team && !s.gear.teamster) {
@@ -304,6 +365,7 @@ function claimActions(ctx) {
   const hands = P.cents(ctx.num("wage.day") * ctx.num("hands.count") * days);
   out.push(priced(ctx, "hire-hands", "build", `Hire ${ctx.num("hands.count")} hands to work alongside you (${days} days, ${P.money(hands)})`, hands, { days, forward: true }));
   out.push({ id: "rest", type: "rest", label: "Rest a day", days: 1 });
+  if (isSunday(s)) out.push({ id: "sabbath", type: "rest", label: "Keep the Sabbath: rest the day", days: 1 });
   if (provisionsOpen(ctx)) {
     const cost = provisionsCost(ctx);
     out.push(priced(ctx, "buy:provisions", "buy", `Buy provisions from a neighbour (${P.money(cost)})`, cost));
@@ -334,10 +396,16 @@ function teamPrice(ctx) {
   return P.cents(ctx.num("price.oxen") + ctx.num("price.wagon"));
 }
 
+function stageCost(ctx) {
+  return Math.round(fareUnits(ctx) * ctx.num("fare.winterStage") * 100);
+}
+
 // What a day aboard is like on the current ticket: meals and a berth on the
 // packet, the line boat with meals and the cabin; crowding on the line boats and the deck.
 function boatDay(s) {
   const mode = s.phase === "travel" ? T.LEGS[s.leg]?.mode : null;
+  // The winter stage: crowded, but each night at an inn on the road.
+  if (mode === "stage") return { meals: false, crowded: true, lodged: true };
   const meals = (mode === "canal" && ["packet", "line-meals"].includes(s.vars.ticket)) || (mode === "steamer" && s.vars.ticket === "cabin");
   const crowded = (mode === "canal" && s.vars.ticket !== "packet") || (mode === "steamer" && s.vars.ticket === "deck");
   return { meals, crowded, lodged: meals && mode !== "wagon" };
@@ -369,6 +437,10 @@ function passDay(ctx, today) {
 function maybeEvent(ctx, deck, pId) {
   // No other event on a day someone died: the family stops to grieve first.
   if (ctx.state.over || ctx.state.pending || ctx.state.vars.griefDays > 0) return;
+  // A scheduled consequence that has come due fires ahead of the random draw,
+  // which still happens unless it opened a choice.
+  ctx.fireDue();
+  if (ctx.state.over || ctx.state.pending) return;
   if (ctx.rng.chance(ctx.num(pId))) ctx.drawEvent(deck);
 }
 
@@ -408,6 +480,10 @@ function travelDay(ctx) {
   for (const place of passed.slice(0, done ? -1 : undefined)) {
     ctx.emit({ type: "arrive", place, label: T.PLACES[place], date: s.date, passing: true, text: ctx.route.data.text.arrivals[place] });
     if (place === "perrysburg" || place === "sandusky") ctx.emit({ type: "scene", scene: place === "sandusky" ? "black-swamp" : "toledo-strip" });
+    // Perrysburg's post office, passed on the Ohio road: nothing waits there.
+    if (place === "perrysburg" && !s.events.seen["post-perrysburg"]) {
+      ctx.queueEvent("post-perrysburg");
+    }
   }
   if (done) {
     const dest = leg.segments[leg.segments.length - 1].to;
@@ -466,7 +542,25 @@ function act(ctx, a, params) {
   const [verb, arg, arg2] = a.id.split(":");
   switch (verb) {
     case "start": startGame(ctx, a.background, params); return;
-    case "go": travelDay(ctx); return;
+    case "go":
+      // The pace rides on the travel action ({id: "go", pace}); it holds until changed.
+      if (T.PACES.includes(params.pace) && T.ownPace(s)) s.vars.pace = params.pace;
+      travelDay(ctx);
+      return;
+    case "sabbath": {
+      passDay(ctx, { kind: "sabbath", resting: true, lodged: false });
+      if (!s.over) addRes(ctx, "morale", num("morale.sabbath"));
+      if (s.phase === "claim" && !s.over) maybeEvent(ctx, "claim", "ev.p.claim");
+      return;
+    }
+    case "post": use(ctx, "postCall"); ctx.startEvent("post-office", postVars(ctx)); return;
+    case "stage": {
+      P.pay(s, num, a.cost);
+      s.vars.ticket = null;
+      T.startLeg(ctx, "stage");
+      ctx.emit({ type: "narrate", text: ctx.route.data.text.stage });
+      return;
+    }
     case "rest": {
       passDay(ctx, { kind: "rest", resting: true, lodged: false, crowded: s.phase === "office" });
       if (s.phase === "office") maybeEvent(ctx, "office", "ev.p.office");
@@ -478,6 +572,7 @@ function act(ctx, a, params) {
       if (a.days > 1) ctx.advanceDays(a.days - 1);
       if (s.over) return;
       s.gear.wagonCond = num(arg === "self" ? "wagon.max" : "wagon.patched");
+      s.flags.wheelMended = true; // a wedged wheel's breakdown (chain-axle) no longer waits down the road
       ctx.emit({ type: "narrate", text: "The wagon is fit to roll again." });
       return;
     }
@@ -488,6 +583,7 @@ function act(ctx, a, params) {
       s.gear.wagon = false;
       s.gear.wagonCond = 0;
       s.vars.teamSold = true;
+      delete s.flags.teamShort;
       ctx.emit({ type: "narrate", text: "A drover buys the wagon and team, paying in New York paper." });
       return;
     }
@@ -501,7 +597,8 @@ function act(ctx, a, params) {
     }
     case "buy-team": {
       P.pay(s, num, a.cost);
-      s.gear = { ...s.gear, team: "oxen", wagon: true, wagonCond: num("wagon.max"), teamster: false };
+      s.gear = { ...s.gear, team: "oxen", wagon: true, wagonCond: num("wagon.max"), teamster: false, fatigue: 0 };
+      delete s.flags.teamShort;
       ctx.emit({ type: "narrate", text: "You buy a yoke of oxen and a wagon." });
       return;
     }
@@ -534,13 +631,6 @@ function act(ctx, a, params) {
     }
     case "stay": P.pay(s, num, a.cost); passDay(ctx, { kind: "rest", resting: true, lodged: true }); if (!s.over) maybeEvent(ctx, "town", "ev.p.town"); return;
     case "work": work(ctx); if (s.phase === "office" && !s.over) maybeEvent(ctx, "office", "ev.p.office"); return;
-    case "letter": {
-      use(ctx, "letter");
-      P.pay(s, num, a.cost);
-      addRes(ctx, "morale", num("morale.letter"));
-      ctx.emit({ type: "narrate", text: ctx.text(ctx.route.data.text.letterSent) });
-      return;
-    }
     case "hire-looker": P.pay(s, num, a.cost); s.land.looker = true; ctx.emit({ type: "narrate", text: ctx.route.data.text.looker }); return;
     case "explore":
       passDay(ctx, { kind: "explore", crowded: false });
@@ -576,9 +666,40 @@ function act(ctx, a, params) {
 
 // ---- the day, the end ---------------------------------------------------------
 
+// The day's fatigue, from what the family did: the pace and the road on a wagon
+// day, the berth or the crowd on a boat, rest, a roof, the Sabbath, work, waiting.
+function fatigueToday(ctx, t) {
+  const { state: s, num } = ctx;
+  const mode = s.phase === "travel" ? T.LEGS[s.leg]?.mode : null;
+  const idleTeam = -num("fat.team.idle");
+  if (t.kind === "travel") {
+    if (mode === "wagon") {
+      const bad = T.BAD_ROAD.has(s.vars.terrain);
+      const own = T.ownPace(s);
+      const pace = own ? s.vars.pace ?? "steady" : "steady";
+      return {
+        person: num(`fat.day.${pace}`) + (bad ? num("fat.badRoad") : 0),
+        team: own ? num(`fat.teamDay.${pace}`) + (bad ? num("fat.team.badRoad") : 0) : idleTeam,
+      };
+    }
+    if (mode === "stage") return { person: num("fat.day.steady"), team: idleTeam };
+    return { person: -num(t.crowded ? "fat.boat.crowded" : "fat.boat.berth"), team: idleTeam };
+  }
+  if (t.kind === "sabbath") return { person: -num("fat.sabbath"), team: -num("fat.team.rest") };
+  if (t.resting) return { person: -num(t.lodged ? "fat.inn" : "fat.rest"), team: -num("fat.team.rest") };
+  if (["work", "build", "repair", "explore"].includes(t.kind)) return { person: num("fat.labour"), team: idleTeam };
+  return { person: -num("fat.idle"), team: idleTeam };
+}
+
 function onDay(ctx) {
   const { state: s, num } = ctx;
   const t = s.vars.today ?? {};
+  H.dailyFatigue(ctx, fatigueToday(ctx, t));
+  // Worn-out people quarrel: morale frays each day someone is past fat.morale.from.
+  if (H.maxFatigue(s) >= num("fat.morale.from")) addRes(ctx, "morale", -num("fat.morale.loss"));
+  M.resolveTies(ctx);
+  // Letters that reached Bronson after the family left: a neighbour brings them out to the claim.
+  if (s.phase === "claim" && M.waitingMail(s, "bronson").length) ctx.schedule({ event: "claim-mail", in: "#chain.in.mid" });
   let hungry = false;
   if (!t.meals) {
     const need = needPerDay(ctx);
@@ -665,7 +786,7 @@ function ending(ctx, end) {
       days: s.day,
     },
     deaths: s.party.filter((p) => p.status === "dead").map((p) => ({ name: `${p.name} ${s.vars.surname}`, age: p.age, date: p.died.date, cause: p.died.cause })),
-    epilogue: [...(E.epilogue ?? []), ...T0.epilogue],
+    epilogue: [...(E.epilogue ?? []), ...T0.epilogue, ...M.epilogue(ctx)],
   };
 }
 
@@ -702,6 +823,23 @@ const conditions = {
   candidates: ([op, n], ctx, vars) => cmpN(ctx.state.land.candidates.length, op, resolve(n, ctx, vars)),
   shelter: ([op, n], ctx, vars) => cmpN(ctx.state.land.shelter, op, resolve(n, ctx, vars)),
   snow: (arg, ctx) => (compare(ctx.state.date, ctx.state.vars.snowDate) >= 0) === arg,
+  // Fatigue: the most tired living person, and the team.
+  tired: ([op, n], ctx, vars) => cmpN(H.maxFatigue(ctx.state), op, resolve(n, ctx, vars)),
+  teamTired: ([op, n], ctx, vars) => Boolean(ctx.state.gear.team) && cmpN(ctx.state.gear.fatigue ?? 0, op, resolve(n, ctx, vars)),
+  pace: (arg, ctx) => list(arg).includes(ctx.state.vars.pace),
+  // A home tie: ["mortgage", "open" | "settled" | "lost" | "has"].
+  tie: ([id, st], ctx) => {
+    const t = M.tieOf(ctx.state, id);
+    if (st === "has") return Boolean(t);
+    if (st === "unsettled") return Boolean(t) && t.status !== "settled";
+    return t?.status === st;
+  },
+  mailWaiting: (office, ctx) => M.waitingMail(ctx.state, office).length > 0,
+  // Done already on this visit to the town ("post", "letter").
+  used: (key, ctx) => has(ctx, key),
+  canSendTie: (id, ctx) => M.canSendFor(ctx.state, ctx.num, M.tieOf(ctx.state, id)),
+  // Can the tie picked for sending go "halves" or "whole" with the postage paid?
+  sendable: (how, ctx) => M.canSendHow(ctx.state, ctx.num, ctx.state.vars.sendTie, how, ctx.state.place),
   deadlinePassed: (arg, ctx) => (compare(ctx.state.date, ctx.num("date.deadline")) > 0) === arg,
 };
 
@@ -752,6 +890,60 @@ const effects = {
     ctx.emit({ type: "narrate", text: `You pay ${P.money(cost)} and take the speculator's deed for ${a} acres.` });
   },
   morale: (amount, ctx, vars) => addRes(ctx, "morale", resolve(amount, ctx, vars)),
+  fatigue: ({ who, amount }, ctx, vars) => {
+    const id = who === "team" || who === "all" ? who : target(ctx, who, vars);
+    if (id) H.addFatigue(ctx, id, resolve(amount, ctx, vars));
+  },
+  // The post office and home ties.
+  collectMail: (office, ctx) => {
+    const where = office === "here" ? ctx.state.place : office;
+    if (!M.collectMail(ctx, where)) ctx.emit({ type: "narrate", text: ctx.text(ctx.route.data.text.post.cannotPay) });
+  },
+  leaveMail: (office, ctx) => M.leaveMail(ctx, office === "here" ? ctx.state.place : office),
+  writeHome: (office, ctx) => {
+    const here = office === "here";
+    const where = here ? ctx.state.place : office;
+    const cost = M.postage(ctx.num, M.officeMiles(ctx.num, where), 1);
+    if (!P.pay(ctx.state, ctx.num, cost)) return;
+    if (here) use(ctx, "letter");
+    addRes(ctx, "morale", ctx.num("morale.letter"));
+    M.writeHome(ctx, here ? null : office);
+    ctx.emit({ type: "narrate", text: ctx.text(ctx.route.data.text.letterSent) });
+  },
+  // "Ask for letters": once a visit; letters waiting open the pay-or-leave choice.
+  askMail: (_, ctx) => {
+    const s = ctx.state;
+    use(ctx, "post");
+    const waiting = M.waitingMail(s, s.place);
+    if (!waiting.length) {
+      ctx.emit({ type: "narrate", text: ctx.text(ctx.route.data.text.post.nothing) });
+      if (postLeft(ctx)) ctx.startEvent("post-office", postVars(ctx));
+      return;
+    }
+    const cost = M.mailCost(s, ctx.num, s.place);
+    ctx.startEvent("post-letters", { n: waiting.length === 1 ? "a letter" : `${waiting.length} letters`, cost: P.money(cost), costUsd: cost / 100 });
+  },
+  // Pick a tie to send money for: the halves-or-whole choice follows.
+  sendTie: (id, ctx) => {
+    const s = ctx.state;
+    const t = M.tieOf(s, id);
+    s.vars.sendTie = id;
+    ctx.startEvent("post-send-how", {
+      amount: P.money(t.amount), what: M.summary(ctx.route, { ...s, ties: [t] })[0].purpose,
+      halves: P.money(M.sendPostage(ctx.num, s.place, "halves")), whole: P.money(M.sendPostage(ctx.num, s.place, "whole")),
+    });
+  },
+  sendMoney: (how, ctx) => { M.sendMoney(ctx, ctx.state.vars.sendTie, how, ctx.state.place); ctx.state.vars.sendTie = null; },
+  // Coin taken (a clipped piece refused): never more than the coin in hand.
+  loseCoin: (amount, ctx, vars) => {
+    const s = ctx.state;
+    const c = Math.min(s.purse.coin, P.cents(resolve(amount, ctx, vars)));
+    s.purse.coin -= c;
+    if (c > 0) ctx.emit({ type: "narrate", text: `That costs you ${P.money(c)} in coin.` });
+  },
+  payTie: (id, ctx) => {
+    if (M.payTieHere(ctx, id)) ctx.emit({ type: "narrate", text: `You pay ${P.money(M.tieOf(ctx.state, id).amount)} and take a receipt.` });
+  },
   // Sell notes for coin at a flat rate of face value: from "ne", "ny", "mi" or "eastern" (ne + ny).
   exchange: ({ from, rate, cap }, ctx, vars) => {
     const s = ctx.state;
@@ -771,6 +963,17 @@ const effects = {
 };
 
 const binders = {
+  // A number for an event's text: {"miles": {"value": "#mi.detroitChicago"}}.
+  value: (spec, ctx) => resolve(spec, ctx),
+  // The post office menu's own words, computed fresh each time it opens (it reopens after
+  // the letters and after sending money). "postLeft" finds nothing once nothing is left to do.
+  postLeft: (spec, ctx) => (postLeft(ctx) ? true : null),
+  post: (spec, ctx) => postVars(ctx)[spec] ?? "",
+  // The family member a home tie is about (the sweetheart's betrothed child), if alive.
+  tieWho(spec, ctx) {
+    const id = M.tieOf(ctx.state, spec)?.who;
+    return H.living(ctx.state).some((p) => p.id === id) ? id : null;
+  },
   member(spec, ctx) {
     const { state: s, num, rng } = ctx;
     const alive = H.living(s);
@@ -836,7 +1039,12 @@ function view(route, s) {
     party: H.summary(s, num),
     surname: s.vars.surname,
     background: s.vars.background,
-    gear: { team: s.gear.team, wagon: s.gear.wagon, wagonCond: s.gear.wagonCond, teamster: s.gear.teamster },
+    gear: { team: s.gear.team, wagon: s.gear.wagon, wagonCond: s.gear.wagonCond, teamster: s.gear.teamster, fatigue: Math.round(s.gear.fatigue ?? 0), tired: s.gear.team ? H.tiredness(s.gear.fatigue, num) : null, short: Boolean(s.flags.teamShort) },
+    pace: s.vars.pace ?? "steady",
+    paceApplies: T.ownPace(s),
+    fatigue: { tired: num("fat.tired"), high: num("fat.high") },
+    ties: M.summary(route, s),
+    postOffice: ["town", "office"].includes(s.phase) && POST_TOWNS.has(s.place),
     deadline: { date: num("date.deadline"), daysLeft: diffDays(s.date, num("date.deadline")), passed: compare(s.date, num("date.deadline")) > 0 },
     snow: compare(s.date, s.vars.snowDate) >= 0,
     winterWarning: compare(s.date, s.vars.snowDate) >= 0 ? diffDays(s.date, s.vars.winterDate) : null,
@@ -867,6 +1075,9 @@ export function createRoute({ numbers, events, backgrounds, text }) {
     limits: { morale: [0, 100], food: [0, Number.MAX_SAFE_INTEGER], quinine: [0, Number.MAX_SAFE_INTEGER] },
     startDate: () => num("date.start"),
     init, actions, act, onDay, eventDay, eventDayKinds: EVENT_DAY_KINDS, afterAction, checkEnd, ending,
+    // Where a scheduled {"at": place} event may wait: places the family stops at, not passes.
+    places: ["albany", "buffalo", "detroit", "bronson", "claim"],
+    atPlace: (st) => (st.phase === "travel" ? null : st.place),
     conditions, effects, binders, textVar, textVars,
     view: (state) => view(route, state),
   };

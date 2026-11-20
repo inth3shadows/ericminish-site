@@ -1,7 +1,8 @@
 // The heads-up display: two quiet corners. Top left: date, place, the leg, and
 // the family. Top right: the purse (coin against paper), the deadline, and the
 // sound / full-screen / menu buttons. The purse button opens a detail sheet
-// with supplies, gear, each region's notes, the land, and today's prices.
+// with supplies, gear, each region's notes, the land, what the family left
+// behind at home, and today's prices.
 
 import { money } from "../mechanics/purse.js";
 import { el, icon } from "./dom.js";
@@ -33,10 +34,19 @@ function mood(m) {
   return "worn down";
 }
 
+const TIRED = { tired: "tired", worn: "worn out" };
+const TIE_STATUS = { open: "not yet paid", settled: "money sent", lost: "money lost in the mail" };
+
+// Fatigue in words (the route's own thresholds, view.party[].tired), with the number.
+function fatigueWords(f, tired) {
+  return tired ? `${TIRED[tired]} (${f})` : f > 0 ? `rested (${f})` : "rested";
+}
+
 function personLine(p) {
   if (p.status === "dead") return "died";
-  if (p.status === "sick") return `${ILLNESS[p.illness] ?? "sick"}${p.health < 35 ? ", very weak" : ""}`;
-  return "well";
+  const tired = p.tired ? `, ${TIRED[p.tired]}` : "";
+  if (p.status === "sick") return `${ILLNESS[p.illness] ?? "sick"}${p.health < 35 ? ", very weak" : ""}${tired}`;
+  return `well${tired}`;
 }
 
 export function createHud(root, handlers) {
@@ -149,9 +159,9 @@ export function createHud(root, handlers) {
 
   function fillSheet(v, actions) {
     const rows = [];
-    const sec = (title, lines) => {
+    const sec = (title, lines, cls = null) => {
       rows.push(el("h3", {}, title));
-      const dl = el("dl");
+      const dl = el("dl", { class: cls });
       for (const [k, val] of lines) dl.append(el("dt", {}, k), el("dd", {}, val));
       rows.push(dl);
     };
@@ -161,12 +171,17 @@ export function createHud(root, handlers) {
       ...notes.map((n) => [n.label, n.value !== n.face ? `${money(n.face)} face, worth ${money(n.value)} here (${Math.round((1 - n.value / n.face) * 100)}% off)` : `${money(n.face)}, taken at face value here`]),
       ["All of it, here", money(v.purse.valueHere)],
     ]);
-    sec("Supplies", [
+    const team = v.gear.team
+      ? `${v.gear.team === "horse" ? "a horse" : "a yoke of oxen"}${v.gear.short ? " short an animal" : ""}${v.gear.wagon ? `, wagon ${v.gear.wagonCond}%` : ""}; ${fatigueWords(v.gear.fatigue, v.gear.tired)}`
+      : v.gear.teamster ? "a hired teamster" : "none";
+    const supplies = [
       ["Food", v.food.days > 0 ? `about ${v.food.days} day${v.food.days === 1 ? "" : "s"}` : "none left"],
       ["Quinine", v.quinine ? `${v.quinine} dose${v.quinine === 1 ? "" : "s"}` : "none"],
       ["Spirits", mood(v.morale)],
-      ["Team", v.gear.team ? `${v.gear.team === "horse" ? "a horse" : "a yoke of oxen"}${v.gear.wagon ? `, wagon ${v.gear.wagonCond}%` : ""}` : v.gear.teamster ? "a hired teamster" : "none"],
-    ]);
+      ["Team", team],
+    ];
+    if (v.paceApplies) supplies.push(["Pace", `${pacing(v)} (worn out at ${v.fatigue.high})`]);
+    sec("Supplies", supplies);
     const land = v.land;
     const landLines = [["Deadline", `${shortDate(v.deadline.date)}${v.deadline.passed ? ", passed" : `, ${v.deadline.daysLeft} days`}`]];
     if (land.paid) landLines.push(["Entered", `${land.acres} acres, ${land.tract?.label ?? ""}`], ["Cabin", `${land.shelter}% built`]);
@@ -174,7 +189,11 @@ export function createHud(root, handlers) {
     else if (land.candidates.length) landLines.push(["Tracts seen", String(land.candidates.length)]);
     if (land.looker) landLines.push(["Land looker", "hired"]);
     sec("Land", landLines);
-    sec("Family", v.party.map((p) => [`${p.name}, ${p.age}`, `${ROLE[p.role] ?? p.role}, ${personLine(p)}`]));
+    sec("Family", v.party.map((p) => [`${p.name}, ${p.age}`, `${ROLE[p.role] ?? p.role}, ${personLine(p)}${p.status === "dead" ? "" : `; fatigue ${p.fatigue}`}`]));
+    // What the family left behind at home: the ties, what is owed, and any news that has reached them.
+    if (v.ties?.length) {
+      sec("Left behind", v.ties.map((t) => [t.label, `${money(t.amount)}, ${TIE_STATUS[t.status] ?? t.status}${t.news ? `. News from home: ${t.news}` : ""}`]), "is-stacked");
+    }
     const priced = actions.filter((a) => a.cost > 0);
     if (priced.length) sec("Prices here", priced.map((a) => [a.label.replace(/\s*\(\$[\d,.]+\)\s*$/, ""), money(a.cost)]));
     const close = el("button", { class: "mf-link", type: "button" }, "Close");
@@ -182,9 +201,14 @@ export function createHud(root, handlers) {
     sheet.replaceChildren(...rows, close);
   }
 
-  function render(v, actions = []) {
+  // The pace shown: the one the player has just set in the pace group, else the family's.
+  let paceShown = null;
+  const pacing = (v) => paceShown ?? v.pace;
+
+  function render(v, actions = [], { pace = null } = {}) {
     lastView = v;
     lastActions = actions;
+    paceShown = pace;
     // Come forward when the family's situation changes: a new place, or someone falls ill or dies.
     const key = `${v.place}|${v.travel?.leg ?? ""}|${v.party.map((p) => p.status).join("")}`;
     if (lastKey && key !== lastKey && !phone?.matches) showFor(6000);
@@ -194,7 +218,7 @@ export function createHud(root, handlers) {
     place.textContent = v.travel ? `Toward ${v.travel.nextLabel}` : v.placeLabel ? v.placeLabel[0].toUpperCase() + v.placeLabel.slice(1) : "";
     if (v.travel) {
       const unit = v.travel.unit === "days" ? "days" : small ? "mi" : "miles";
-      trip.textContent = `${v.travel.label} · ${v.travel.done} of ${v.travel.of} ${unit}`;
+      trip.textContent = `${v.travel.label} · ${v.travel.done} of ${v.travel.of} ${unit}${v.paceApplies ? ` · ${pacing(v)} pace` : ""}`;
     } else trip.textContent = "";
     trip.hidden = !v.travel;
     family.replaceChildren(
@@ -202,6 +226,7 @@ export function createHud(root, handlers) {
         const li = el("li", { class: `is-${p.status}` });
         li.append(el("span", { class: "mf-name" }, p.name));
         if (p.status !== "well") li.append(el("span", { class: "mf-status" }, p.status === "dead" ? "died" : ILLNESS[p.illness] ?? "sick"));
+        if (p.status !== "dead" && p.tired) li.append(el("span", { class: `mf-tired is-${p.tired}` }, TIRED[p.tired]));
         return li;
       }),
     );
