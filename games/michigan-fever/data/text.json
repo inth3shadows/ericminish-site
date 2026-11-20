@@ -67,7 +67,8 @@
     "kin-allens": "at Allen's Prairie",
     "kin-maumee": "on the Maumee",
     "kin-brushhill": "at Brush Hill",
-    "home": "at home"
+    "home": "at home",
+    "toMaumeeRoad": "on the Ohio road to the Maumee"
   },
   "burial": {
     "vermont": "The family buried {him} in a churchyard by the road and went on {griefDays} days later.",
@@ -96,7 +97,8 @@
     "kin-allens": "The family buried {him} on the prairie beside their kin's dead and did no work for {griefDays} days.",
     "kin-maumee": "The family buried {him} on the river bank beside their kin's dead and did no work for {griefDays} days.",
     "kin-brushhill": "The family buried {him} by the grove beside their kin's dead and did no work for {griefDays} days.",
-    "home": "The family buried {him} in the churchyard at home."
+    "home": "The family buried {him} in the churchyard at home.",
+    "toMaumeeRoad": "The family buried {him} beside the road, marked the place with a cut board, and went on {griefDays} days later."
   },
   "letterLabel": "A letter home. This letter is fiction, written for the game: the family and its letters are invented.",
   "letters": {
@@ -510,8 +512,7 @@
     "winter": {
       "earned": "The week's work brings in {amount} in {paper}.",
       "noWork": "There is no work to be had this week.",
-      "noRoom": "With no money for the room, the family spends {n} in a shed against the cold.",
-      "westernPaper": "western paper"
+      "noRoom": "With no money for the room, the family spends {n} in a shed against the cold."
     },
     "detroit": {
       "label": "Wintering in Detroit",
@@ -525,6 +526,16 @@
         "spring-noland": {
           "title": "Through the winter, no land",
           "text": "{Family} came through the winter in Detroit, but June came with no land paid for. The land office takes only gold and silver, and their paper is worth less every week."
+        },
+        "lost": {
+          "title": "No one left",
+          "text": "None of {family} lived to buy the land they stayed the winter in Detroit for.",
+          "epilogue": []
+        },
+        "stranded": {
+          "title": "Stranded",
+          "text": "{Family} are stuck at {place} with no money to go on and no one well enough to earn it. The land they wintered in Detroit for is out of their reach.",
+          "epilogue": []
         }
       },
       "epilogue": [
@@ -571,6 +582,16 @@
         "no-farm": {
           "title": "No farm",
           "text": "{Family} came to Chicago for the boom and leave the spring of 1837 with no farm of their own."
+        },
+        "lost": {
+          "title": "No one left",
+          "text": "None of {family} lived to see the prairie farm they went to Chicago for.",
+          "epilogue": []
+        },
+        "stranded": {
+          "title": "Stranded",
+          "text": "{Family} are stuck at {place} with no money to go on and no one well enough to earn it. The Chicago boom will go on without them.",
+          "epilogue": []
         }
       },
       "epilogue": [
@@ -605,6 +626,16 @@
         "deadline": {
           "title": "Past the deadline",
           "text": "15 December has come and gone. The Lima office now takes only gold and silver, and {family} do not have enough of it."
+        },
+        "lost": {
+          "title": "No one left",
+          "text": "None of {family} lived to see land of their own in Ohio.",
+          "epilogue": []
+        },
+        "stranded": {
+          "title": "Stranded",
+          "text": "{Family} are stuck at {place} with no money to go on and no one well enough to earn it, and no land of their own in Ohio.",
+          "epilogue": []
         }
       },
       "epilogue": [
@@ -632,6 +663,16 @@
         "home": {
           "title": "Home again",
           "text": "{Family} are back on the hill farm they left. The neighbours ask about Michigan, and nobody answers for long."
+        },
+        "lost": {
+          "title": "No one left",
+          "text": "None of {family} lived to see the farm again.",
+          "epilogue": []
+        },
+        "stranded": {
+          "title": "Short of home",
+          "text": "{Family} never got home. The money and the strength to finish the journey ran out on the way back.",
+          "epilogue": []
         }
       },
       "epilogue": [
@@ -654,6 +695,8 @@
         "ohio": "You take deck passage for the Maumee, to go to {name}.",
         "illinois": "You write {name} that you are coming, and turn your plans toward Brush Hill."
       },
+      "startRoad": "With the lakes closing, you take the Ohio road for the Maumee with your own wagon, to go to {name}.",
+      "lakesShut": "The lakes are closing, and no boat will go to the Maumee now. The way there is the Ohio road and the Black Swamp, {miles} miles with your own wagon.",
       "endings": {
         "kin-land": {
           "title": "Land beside kin",
@@ -666,6 +709,16 @@
         "kin-floor": {
           "title": "A winter on kin's floor",
           "text": "{Family} reached {name} at {kinPlace} and will winter on the floor by their fire, with no land and no work of their own yet."
+        },
+        "lost": {
+          "title": "No one left",
+          "text": "None of {family} lived to reach {name} at {kinPlace}.",
+          "epilogue": []
+        },
+        "stranded": {
+          "title": "Short of kin",
+          "text": "{Family} never reached {name} at {kinPlace}. The money and the strength to finish the journey ran out on the way.",
+          "epilogue": []
         }
       },
       "epilogue": [

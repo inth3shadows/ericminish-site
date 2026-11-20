@@ -136,12 +136,19 @@ games/
   mechanics (`mechanics/paths.js`), with its own ending and a sourced
   epilogue; new places reuse the paintings through `SCENE_FALLBACK` in
   `route.js`. Every ending reports a tier (0 failed, 1 arrived, 2 full win),
-  shown on the ending screen in words. The route is at version 3, so P1 and
-  Phase A saves are refused cleanly ("old route version").
+  shown on the ending screen in words; each path has its own "lost" and
+  "stranded" endings. Dated news (the Detroit suspension, 16 May 1837) stops
+  any multi-day advance on its day (a winter week, grief days, a wagon
+  repair). Chicago money is Illinois paper, which falls with the Illinois
+  banks (29 May 1837), not Detroit's. The route is at version 3, so P1 and
+  Phase A saves are refused cleanly ("old route version"); a version 3 save
+  from before Illinois paper loads with none.
   The interface is in `games/michigan-fever/API.md`.
 - **Tests.** `node --test games/*/test/*.test.mjs` runs the engine units, the
   route rules, the drive-on checks, the depth systems (`test/depth.test.mjs`),
-  the paths (`test/paths.test.mjs`), the pace trade-off
+  the paths (`test/paths.test.mjs`), the review regressions
+  (`test/regressions.test.mjs`, `test/review-pb.test.mjs`,
+  `test/review-pc.test.mjs`), the pace trade-off
   (`test/pace-*.test.mjs`: pushing grueling while under 40 or 45 fatigue must
   not beat a steady pace, and grueling everywhere must lose clearly), and the
   tier simulation (`test/tiers-main.test.mjs`, `test/tiers-paths.test.mjs`),

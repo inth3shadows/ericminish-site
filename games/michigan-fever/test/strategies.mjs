@@ -375,7 +375,7 @@ export function carefulHome(route, state, acts, ctx) {
 
 export function carefulKin(route, state, acts, ctx) {
   if (pending(state, "kin-call")) return choose(acts, "go");
-  if (pending(state, "pivot-kin")) return choose(acts, "yes") ?? choose(acts, "no");
+  if (pending(state, "pivot-kin")) return choose(acts, "yes") ?? choose(acts, "road") ?? choose(acts, "no");
   if (pending(state, "kin-welcome")) return choose(acts, "land") ?? choose(acts, "work") ?? choose(acts, "floor");
   if (pending(state, "post-office")) return choose(acts, "ask") ?? choose(acts, "leave");
   if (pending(state, "post-letters")) return choose(acts, "take") ?? choose(acts, "leave");
@@ -414,7 +414,7 @@ export function holdLot(route, state, acts, ctx) {
 // Random on the main route (the tier table's random): uniform over what is enabled, but it
 // never takes a pivot (the spec's random is a main-route strategy).
 const PIVOT_CHOICES = new Set(["pivot-detroit:yes", "pivot-chicago:road", "pivot-chicago:stage", "pivot-chicago:lakes", "pivot-home:yes",
-  "ohio-offer:south", "pivot-ohio:yes", "kin-call:go", "pivot-kin:yes"]);
+  "ohio-offer:south", "pivot-ohio:yes", "kin-call:go", "pivot-kin:yes", "pivot-kin:road"]);
 export function randomMain(route, state, acts, { seedIndex, rng }) {
   if (state.phase === "start") return startPick(acts, seedIndex);
   const ok = acts.filter((a) => a.enabled && a.type !== "pivot" && !(a.type === "choose" && PIVOT_CHOICES.has(`${a.event}:${a.choice}`)));

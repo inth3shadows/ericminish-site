@@ -325,10 +325,13 @@ test("Chicago: a buyer's offer sells the lot; a credit lot's note is paid from t
   s.vars.lot.offer = 40000;
   const owed = Pa.lotOwed(s, num);
   const mi = s.purse.notes.mi;
+  const il = s.purse.notes.il ?? 0; // the RICH purse predates Illinois paper (reads as none)
   const coin = s.purse.coin;
   s = go(s, "lot:sell").state;
   assert.equal(s.vars.lot.sold, s.date);
-  assert.equal(s.purse.notes.mi + s.purse.coin - mi - coin, 40000 - owed);
+  // The buyer pays in Illinois paper (PC6; was Michigan notes before round 9).
+  assert.equal(s.purse.notes.il + s.purse.notes.mi + s.purse.coin - il - mi - coin, 40000 - owed);
+  assert.equal(s.purse.notes.il - il, 40000 - owed);
 });
 
 test("Chicago: holding the lot into spring 1837 is the trap: tier 1 at best, even with a farm and a roof", () => {

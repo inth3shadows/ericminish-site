@@ -319,7 +319,7 @@ test("the HUD view is plain data", () => {
   const v = view(route, s);
   assert.ok(isPlainJSON(v));
   assert.equal(v.travel.leg, "canal");
-  assert.equal(v.purse.notes.length, 3);
+  assert.equal(v.purse.notes.length, 4); // ne, ny, mi, and Illinois paper (PC6; 3 before round 9)
   assert.equal(v.deadline.date, "1836-12-15");
   assert.ok(v.party.every((p) => ["well", "sick", "dead"].includes(p.status)));
 });

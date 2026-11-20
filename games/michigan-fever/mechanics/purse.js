@@ -2,15 +2,18 @@
 // region. Paper loses value the farther west it travels from its bank.
 // All amounts are integer cents. No DOM.
 
-export const REGIONS = ["ne", "ny", "mi"];
-export const REGION_LABEL = { ne: "New England notes", ny: "New York notes", mi: "Michigan notes" };
+// "il": Illinois paper, earned or paid at Chicago on that path (PC6). A save from before
+// it has no "il" in its notes: it reads as none (face()).
+export const REGIONS = ["ne", "ny", "mi", "il"];
+export const REGION_LABEL = { ne: "New England notes", ny: "New York notes", mi: "Michigan notes", il: "Illinois notes" };
+const face = (state, r) => state.purse.notes[r] ?? 0;
 
 export const cents = (dollars) => Math.round(dollars * 100);
 export const dollars = (c) => c / 100;
 export const money = (c) => `$${(c / 100).toFixed(2)}`;
 
 export function emptyPurse() {
-  return { coin: 0, notes: { ne: 0, ny: 0, mi: 0 } };
+  return { coin: 0, notes: { ne: 0, ny: 0, mi: 0, il: 0 } };
 }
 
 export function zoneOf(state, num) {
@@ -21,7 +24,11 @@ export function zoneOf(state, num) {
 // Fraction lost on a note of `region` at zone `zone`. With a state: once the
 // Detroit banks have suspended (17 May 1837, a path that winters over),
 // Michigan paper is worth no more than disc.miSuspended off anywhere.
+// Illinois paper (the Chicago path) passes at face until the Illinois banks
+// suspend (bank.suspend.illinois, 29 May 1837), then at disc.ilSuspended off.
+// It never travels east of Chicago in the game, so it has no eastern discount.
 export function discount(region, zone, num, state = null) {
+  if (region === "il") return state && state.date >= num("bank.suspend.illinois") ? num("disc.ilSuspended") : 0;
   const issuer = num(`zone.issuer.${region}`);
   if (region === "mi") {
     const d = zone < issuer ? num("disc.miEast") : 0;
@@ -33,7 +40,7 @@ export function discount(region, zone, num, state = null) {
 export const suspended = (state, num) => state.date >= num("bank.suspend.detroit");
 
 export function noteValue(state, num, region, zone = zoneOf(state, num)) {
-  return Math.floor(state.purse.notes[region] * (1 - discount(region, zone, num, state)));
+  return Math.floor(face(state, region) * (1 - discount(region, zone, num, state)));
 }
 
 export function paperValue(state, num) {
@@ -49,7 +56,7 @@ export function valueHere(state, num) {
 // in the paper the family least wants to keep.
 function worstFirst(state, num) {
   const zone = zoneOf(state, num);
-  return REGIONS.filter((r) => state.purse.notes[r] > 0)
+  return REGIONS.filter((r) => face(state, r) > 0)
     .sort((a, b) => discount(b, zone, num, state) - discount(a, zone, num, state));
 }
 
@@ -76,7 +83,7 @@ export function pay(state, num, amount, { coinOnly = false } = {}) {
 }
 
 // The face value of all the paper in the purse (to tell whether a payment took any).
-export const noteFace = (state) => REGIONS.reduce((a, r) => a + state.purse.notes[r], 0);
+export const noteFace = (state) => REGIONS.reduce((a, r) => a + face(state, r), 0);
 
 export function canPay(state, num, amount, opts = {}) {
   return (opts.coinOnly ? state.purse.coin : valueHere(state, num)) >= amount;
@@ -84,14 +91,14 @@ export function canPay(state, num, amount, opts = {}) {
 
 export function receive(state, kind, amount) {
   if (kind === "coin") state.purse.coin += amount;
-  else state.purse.notes[kind] += amount;
+  else state.purse.notes[kind] = face(state, kind) + amount;
 }
 
 // Lose a share of the face value of one region's notes (or the worst-held).
 export function loseNotes(state, num, region, share) {
   const r = region === "worst" ? worstFirst(state, num)[0] : region;
-  if (!r) return 0;
-  const lost = Math.floor(state.purse.notes[r] * share);
+  if (!r || !face(state, r)) return 0;
+  const lost = Math.floor(face(state, r) * share);
   state.purse.notes[r] -= lost;
   return lost;
 }
@@ -174,7 +181,7 @@ export function summary(state, num) {
     notes: REGIONS.map((r) => ({
       region: r,
       label: REGION_LABEL[r],
-      face: state.purse.notes[r],
+      face: face(state, r),
       value: noteValue(state, num, r, zone),
       discount: discount(r, zone, num, state),
     })),

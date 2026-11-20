@@ -52,6 +52,14 @@ export const LEGS = {
     segments: [{ to: "allens", miles: "mi.detroitAllens", terrain: "corduroy" }] },
   toMaumee: { label: "By steamboat to the Maumee", mode: "steamer", scene: "lake", unit: "days", ague: "lake",
     segments: [{ to: "maumee", miles: "lake.maumee.days", terrain: "lake" }] },
+  // The Maumee once the lakes close (PC3): the Ohio road and the Black Swamp with the family's
+  // own wagon. Maumee lies across the river from Perrysburg, at the swamp road's end, so the
+  // road's own miles (Blois) serve.
+  toMaumeeRoad: { label: "The Ohio road to the Maumee", mode: "wagon", scene: "ohio-road", ague: "overland",
+    segments: [
+      { to: "sandusky", miles: "mi.buffaloSandusky", terrain: "road" },
+      { to: "maumee", miles: "mi.sanduskyPerrysburg", terrain: "swamp" },
+    ] },
   toBrushHill: { label: "The Chicago road to Brush Hill", mode: "wagon", scene: "chicago-road", ague: "road",
     segments: [
       { to: "whitepigeon", miles: "mi.detroitWhitePigeon", terrain: "corduroy" },

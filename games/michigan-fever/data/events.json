@@ -4731,6 +4731,9 @@
       },
       "fareUsd": {
         "kinFare": "usd"
+      },
+      "miles": {
+        "kinFare": "miles"
       }
     },
     "text": "Go to {name} at {place}? {fare} The land office at Bronson would be given up for good. There is no going back from it.",
@@ -4744,6 +4747,18 @@
       {
         "id": "yes",
         "label": "Go to them",
+        "only": {
+          "any": [
+            {
+              "not": {
+                "west": "ohio"
+              }
+            },
+            {
+              "before": "#date.lakeLate"
+            }
+          ]
+        },
         "requires": {
           "afford": "$fareUsd"
         },
@@ -4751,6 +4766,29 @@
         "effects": [
           {
             "pivot": "kin"
+          }
+        ]
+      },
+      {
+        "id": "road",
+        "label": "Drive the Ohio road and the Black Swamp to them, {miles} miles",
+        "only": {
+          "all": [
+            {
+              "west": "ohio"
+            },
+            {
+              "onOrAfter": "#date.lakeLate"
+            }
+          ]
+        },
+        "requires": {
+          "team": true
+        },
+        "why": "The road needs your own wagon and team. A yoke of oxen and a wagon can be bought here.",
+        "effects": [
+          {
+            "pivot": "kin:road"
           }
         ]
       }

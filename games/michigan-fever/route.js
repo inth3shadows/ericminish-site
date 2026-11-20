@@ -240,8 +240,13 @@ function travelActions(ctx) {
   const leg = T.LEGS[s.leg];
   const out = [];
   if (leg.mode === "wagon" && !s.gear.teamster && s.gear.wagonCond <= 0) {
+    // A repair held up by the Detroit news (PC1) has only its days left to run.
+    const left = s.vars.repairLeft;
     if (s.vars.skills.includes("repair")) out.push({ id: "repair:self", type: "repair", label: "Mend the wagon yourself (1 day)", days: 1, forward: true });
-    else out.push({ id: "repair:slow", type: "repair", label: `Mend the wagon as best you can (${ctx.num("wagon.repairDays")} days)`, days: ctx.num("wagon.repairDays"), forward: true });
+    else {
+      const days = left ?? ctx.num("wagon.repairDays");
+      out.push({ id: "repair:slow", type: "repair", label: `Mend the wagon as best you can (${days} ${days === 1 ? "day" : "days"})`, days, forward: true });
+    }
   } else {
     const paced = T.ownPace(s) && s.vars.pace !== "steady" ? ` (${PACE_LABEL[s.vars.pace]} pace)` : "";
     const label = { wagon: `Drive on for the day${paced}`, canal: "Another day on the canal", steamer: "Another day on the lake", stage: "Another day on the stage",
@@ -464,6 +469,14 @@ function startPath(ctx, spec) {
       } else startPassage(ctx);
       return;
     case "kin":
+      // The Maumee: by steamboat while the lakes are open; after date.lakeLate by the
+      // Ohio road with the family's own wagon (PC3, "kin:road").
+      if (via === "road") {
+        s.vars.ticket = null;
+        T.startLeg(ctx, "toMaumeeRoad");
+        ctx.emit({ type: "narrate", text: ctx.text(W.kin.startRoad, { name: s.vars.west.name }) });
+        return;
+      }
       if (s.vars.west.where === "ohio") {
         P.pay(s, num, maumeeCost(ctx));
         s.vars.ticket = "deck";
@@ -491,8 +504,27 @@ function startPassage(ctx) {
 // The Detroit winter's one dated piece of news (PB1): it must reach the family on its
 // own day, the eve of the suspension, though the winter goes by the week.
 const SUSPENSION_NEWS = "win-suspension-news";
-const newsDue = (s, num) => compare(s.date, num("bank.suspend.detroit")) < 0
-  && (s.queue ?? []).some((q) => q.event === SUSPENSION_NEWS && q.due != null && s.day >= q.due);
+const newsItem = (s) => (s.queue ?? []).find((q) => q.event === SUSPENSION_NEWS && q.due != null);
+const newsDue = (s, num) => compare(s.date, num("bank.suspend.detroit")) < 0 && s.day >= (newsItem(s)?.due ?? Infinity);
+// Days until the news falls due, or null when none is waiting (PC1).
+function daysToNews(s, num) {
+  const q = newsItem(s);
+  if (!q || compare(s.date, num("bank.suspend.detroit")) >= 0) return null;
+  return Math.max(0, q.due - s.day);
+}
+
+// Tell the news now if it is due (PC1): ahead of anything else waiting in the queue,
+// and on whatever step reaches its day, since it cannot wait for the next day's draw
+// (by then the banks have stopped and it is dropped). A step that has already fired
+// another queued item still tells it: it is the one item that cannot wait.
+function fireNews(ctx) {
+  const s = ctx.state;
+  if (s.over || s.pending || !newsDue(s, ctx.num)) return false;
+  s.queue.unshift(...s.queue.splice(s.queue.indexOf(newsItem(s)), 1));
+  const fired = ctx.fireDue();
+  if (fired) ctx.queueFired = true;
+  return fired;
+}
 
 // A week in a winter town (Detroit, or Chicago through the lull): a room by
 // the night if it can be paid for, the food, and work by the day if wanted
@@ -500,7 +532,8 @@ const newsDue = (s, num) => compare(s.date, num("bank.suspend.detroit")) < 0
 // suspension news comes due, so it is told that day and not a week late.
 function winterWeek(ctx, working) {
   const { state: s, num } = ctx;
-  const kind = s.place === "chicago" ? "mi" : NOTE_KIND[s.place] ?? "mi";
+  // Chicago pays in Illinois paper (PC6): it falls with the Illinois banks, not Detroit's.
+  const kind = s.place === "chicago" ? "il" : NOTE_KIND[s.place] ?? "mi";
   let earned = 0;
   let cold = 0;
   for (let d = 0; d < num("winter.weekDays") && !s.over; d++) {
@@ -518,7 +551,7 @@ function winterWeek(ctx, working) {
     if (newsDue(s, num)) break;
   }
   const W = ctx.route.data.text.paths.winter;
-  if (working) ctx.emit({ type: "narrate", text: earned > 0 ? ctx.text(W.earned, { amount: P.money(earned), paper: s.place === "chicago" ? W.westernPaper : P.REGION_LABEL[kind] }) : ctx.text(W.noWork) });
+  if (working) ctx.emit({ type: "narrate", text: earned > 0 ? ctx.text(W.earned, { amount: P.money(earned), paper: P.REGION_LABEL[kind] }) : ctx.text(W.noWork) });
   if (cold) ctx.emit({ type: "narrate", text: ctx.text(W.noRoom, { n: cold === 1 ? "one night" : `${cold} nights` }) });
   // A new week: the store, the broker and the post office open again.
   s.vars.visit = { place: s.place, used: {}, since: s.day };
@@ -569,8 +602,12 @@ function lotActions(ctx, out) {
       const cost = L.landCost(num, acres);
       const tender = P.landTender(s, num, acres, false, L.beforeDeadline(s, num));
       const ok = P.tenderTotal(tender) >= cost;
-      out.push({ id: `farm:${acres}`, type: "apply", label: `Enter ${acres} acres of prairie ${num("farm.chicago.miles")} miles out (${P.money(cost)})`, cost, forward: !Pa.lotHeld(s),
-        enabled: ok, reason: ok ? undefined : L.beforeDeadline(s, num) ? "The Receiver would not take enough of what is in your purse." : "Since 15 December the land office takes only coin." });
+      // Not while the lot is held (PC4): nine miles out, no buyer would find the family,
+      // and the lot would be left to fall with the market unseen. Sell it or let it go first.
+      const held = Pa.lotHeld(s);
+      out.push({ id: `farm:${acres}`, type: "apply", label: `Enter ${acres} acres of prairie ${num("farm.chicago.miles")} miles out (${P.money(cost)})`, cost, forward: !held,
+        enabled: ok && !held,
+        reason: held ? "Sell the town lot first: nine miles out on the prairie, no buyer would find you." : ok ? undefined : L.beforeDeadline(s, num) ? "The Receiver would not take enough of what is in your purse." : "Since 15 December the land office takes only coin." });
     }
   }
 }
@@ -740,6 +777,7 @@ function passDay(ctx, today) {
 // several waiting can see several in a day, one a step: that is the rule chosen
 // over "one a day", which could only be kept by holding the family in town.
 function fireQueued(ctx, opts) {
+  if (!opts?.atOnly && fireNews(ctx)) return true;
   if (ctx.queueFired) return false;
   const fired = ctx.fireDue(opts);
   if (fired) ctx.queueFired = true;
@@ -917,9 +955,12 @@ function act(ctx, a, params) {
       return;
     }
     case "repair": {
-      passDay(ctx, { kind: "repair" });
-      if (a.days > 1) ctx.advanceDays(a.days - 1);
+      // Held on the day the Detroit news falls due (PC1): the days left wait for the next try.
+      let left = a.days;
+      for (; left > 0 && !s.over && !newsDue(s, num); left--) passDay(ctx, { kind: "repair" });
       if (s.over) return;
+      if (left > 0) { s.vars.repairLeft = left; return; }
+      delete s.vars.repairLeft;
       s.gear.wagonCond = num(arg === "self" ? "wagon.max" : "wagon.patched");
       s.flags.wheelMended = true; // a wedged wheel's breakdown (chain-axle) no longer waits down the road
       ctx.emit({ type: "narrate", text: "The wagon is fit to roll again." });
@@ -949,6 +990,7 @@ function act(ctx, a, params) {
       P.pay(s, num, a.cost);
       s.gear = { ...s.gear, team: "oxen", wagon: true, wagonCond: num("wagon.max"), teamster: false, fatigue: 0 };
       delete s.flags.teamShort;
+      delete s.vars.repairLeft;
       dropOutfit(ctx, ["team", "wagon"]);
       ctx.emit({ type: "narrate", text: "You buy a yoke of oxen and a wagon." });
       return;
@@ -981,7 +1023,7 @@ function act(ctx, a, params) {
         const lot = s.vars.lot;
         const owed = Pa.lotOwed(s, num);
         if (owed > lot.offer) P.pay(s, num, owed - lot.offer);
-        else P.receive(s, "mi", lot.offer - owed);
+        else P.receive(s, "il", lot.offer - owed); // a Chicago buyer pays in Illinois paper (PC6)
         lot.sold = s.date;
         lot.soldFor = lot.offer;
         lot.note = 0;
@@ -1125,12 +1167,23 @@ function onDay(ctx) {
 
 function afterAction(ctx) {
   const s = ctx.state;
+  // A step that reached the day of the Detroit news tells it, before any grief (PC1).
+  fireNews(ctx);
   if (s.vars.griefDays > 0 && !(s.phase === "travel" && s.leg === "lake") && !s.pending) {
+    // The grief days stop on the day the news falls due (PC1); the rest are spent once
+    // it has been answered (the next step's afterAction), so none are lost or added.
     const d = s.vars.griefDays;
-    s.vars.griefDays = 0;
+    const until = daysToNews(s, ctx.num);
+    const now = until > 0 && until < d ? until : d;
+    const more = Boolean(s.vars.griefHeld);
+    s.vars.griefDays = d - now;
+    if (s.vars.griefDays > 0) s.vars.griefHeld = true;
+    else delete s.vars.griefHeld;
     s.vars.today = { kind: "grief", resting: true, lodged: s.phase === "town" };
-    ctx.emit({ type: "narrate", text: `The family stops for ${d} days.`, cue: "grief" });
-    ctx.advanceDays(d);
+    const days = now === 1 ? (more ? "one more day" : "a day") : `${now}${more ? " more" : ""} days`;
+    ctx.emit({ type: "narrate", text: more ? `The family stops ${days}.` : `The family stops for ${days}.`, cue: "grief" });
+    ctx.advanceDays(now);
+    fireNews(ctx);
   }
   // A consequence waiting for this place fires on a step that fired none yet:
   // one a step, so the rest come on the family's next steps here (fireQueued).
@@ -1233,7 +1286,8 @@ function ending(ctx, end) {
   const builds = !path || ["ohio", "chicago"].includes(path);
   return {
     title: E.title,
-    text: ctx.text(E.text, path === "kin" ? { name: s.vars.west.name, kinPlace: T.PLACES[s.place] ?? "" } : {}),
+    // The kin's own place, wherever the family stopped (PC7: a family lost on the way).
+    text: ctx.text(E.text, path === "kin" ? { name: s.vars.west.name, kinPlace: T.PLACES[Pa.kinPlace(s)] ?? "" } : {}),
     tier: end.tier,
     tierText: T0.tiers[path ?? "main"][String(end.tier)],
     path,
@@ -1353,6 +1407,7 @@ const effects = {
     const g = ctx.state.gear;
     if (!g.team || g.teamster) return;
     g.wagonCond = Math.max(0, Math.min(ctx.num("wagon.max"), g.wagonCond + resolve(amount, ctx, vars)));
+    if (g.wagonCond > 0) delete ctx.state.vars.repairLeft;
     if (g.wagonCond <= 0) ctx.emit({ type: "narrate", text: "The wagon is broken down and will not roll.", cue: "broken" });
   },
   // Miles gained or lost on the road: segMi and legMi move together (PB5, PB7; travel.js shift).
@@ -1446,9 +1501,7 @@ const effects = {
   // Home again: pay what is owed in the county, or keep the money. The path ends.
   homeSettle: (how, ctx) => {
     const s = ctx.state;
-    if (how === "pay" && P.pay(s, ctx.num, Pa.owedAtHome(s))) {
-      for (const t of s.ties) if (t.status !== "settled") { t.sent = t.amount; t.status = "settled"; t.learned = true; delete t.mailed; delete t.astray; }
-    }
+    if (how === "pay" && P.pay(s, ctx.num, Pa.owedAtHome(s))) M.settleAtHome(ctx);
     s.flags.homeDone = true;
   },
   // The note on a Chicago lot falls due: pay it, or let the lot go and the money down with it.
@@ -1510,10 +1563,16 @@ const binders = {
     return ctx.text(ctx.route.data.text.westOffer[w.work ? "work" : "land"], { land: P.money(Pa.kinLandCost(ctx.num)) });
   },
   // The passage to the kin out west, if it is by water (the Maumee); nothing by road.
+  // From date.lakeLate no boat goes to the Maumee: the way is the Ohio road (PC3).
+  // "miles": the road's length, for the road choice.
   kinFare: (spec, ctx) => {
-    if (!ctx.state.vars.west) return null;
-    const c = ctx.state.vars.west.where === "ohio" ? maumeeCost(ctx) : 0;
+    const s = ctx.state;
+    if (!s.vars.west) return null;
+    if (spec === "miles") return T.legMiles(s, ctx.num, "toMaumeeRoad");
+    const lakesShut = compare(s.date, ctx.num("date.lakeLate")) >= 0;
+    const c = s.vars.west.where === "ohio" && !lakesShut ? maumeeCost(ctx) : 0;
     if (spec === "usd") return c / 100;
+    if (s.vars.west.where === "ohio" && lakesShut) return ctx.text(ctx.route.data.text.paths.kin.lakesShut, { miles: T.legMiles(s, ctx.num, "toMaumeeRoad") });
     return c ? `Deck passage to the Maumee comes to ${P.money(c)}.` : "The road there is the family's own.";
   },
   // What the family's lot note stands at today, for the event that calls it in.
@@ -1660,6 +1719,11 @@ function readable(route, s) {
   if (!s.party.every((p) => isObj(p) && isNum(p.fatigue ?? 0))) return false;
   if (!isNum(s.gear.fatigue ?? 0)) return false;
   if (!T.PACES.includes(s.vars.pace ?? "steady")) return false;
+  // PC1: a repair held up by the Detroit news, and grief days held over it; PC6: Illinois paper
+  // (absent from a save made before it, which reads as none).
+  if (!(s.vars.repairLeft == null || (Number.isInteger(s.vars.repairLeft) && s.vars.repairLeft >= 1))) return false;
+  if (!(s.vars.griefHeld == null || typeof s.vars.griefHeld === "boolean")) return false;
+  if (!isObj(s.purse?.notes) || !(s.purse.notes.il === undefined || Number.isInteger(s.purse.notes.il))) return false;
   const tieOk = (t) => isObj(t) && M.TIE_IDS.includes(t.id) && Number.isInteger(t.amount) && Number.isInteger(t.sent)
     && M.TIE_STATUSES.includes(t.status) && (t.outcome === null || typeof t.outcome === "string")
     && (t.inTime === undefined || typeof t.inTime === "boolean");

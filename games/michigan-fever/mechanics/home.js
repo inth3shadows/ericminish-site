@@ -300,8 +300,9 @@ export function sendPostage(num, office, how) {
 
 function takeNotesAtHome(state, num, amount) {
   let left = amount;
-  for (const r of ["ne", "ny", "mi"]) {
+  for (const r of P.REGIONS) {
     if (left <= 0) break;
+    if (!state.purse.notes[r]) continue;
     const d = P.discount(r, num("zone.home"), num, state);
     const cover = Math.min(left, Math.floor(state.purse.notes[r] * (1 - d)));
     if (cover <= 0) continue;
@@ -395,6 +396,26 @@ export function resolveTies(ctx) {
   for (const t of ctx.state.ties ?? []) {
     if (t.outcome == null && compare(ctx.state.date, ctx.num(`tie.${t.id}.due`)) >= 0) {
       t.inTime = t.status === "settled";
+      t.outcome = roll(ctx, t);
+    }
+  }
+}
+
+// Paid on coming home (the home path's end, PC2). Money paid at home on a tie's own
+// date is in time by inTime's rule (arrives <= due); the daily tick has already
+// turned the tie out that morning as unpaid, so it is turned out again as paid.
+// Paid after the date, it stays late: inTime as the tick recorded it.
+export function settleAtHome(ctx) {
+  const { state, num } = ctx;
+  for (const t of state.ties) {
+    if (t.status === "settled") continue;
+    t.sent = t.amount;
+    t.status = "settled";
+    t.learned = true;
+    delete t.mailed;
+    delete t.astray;
+    if (t.outcome != null && compare(state.date, num(`tie.${t.id}.due`)) === 0) {
+      t.inTime = true;
       t.outcome = roll(ctx, t);
     }
   }
