@@ -34,8 +34,8 @@
   --s-56: 56px;
 
   /* type scale — every size on the site is one of these */
-  --t-micro: 0.62rem;
-  --t-label: 0.72rem;
+  --t-micro: 0.75rem;
+  --t-label: 0.75rem;
   --t-fine: 0.82rem;
   --t-body: 0.95rem;
   --t-lead: 1.05rem;
@@ -157,12 +157,16 @@ figure {
 .eyebrow,
 .small-cap,
 .ledger-key,
-.tag,
-.fine {
+.tag {
   font-family: var(--mono);
   font-size: var(--t-fine);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.fine {
+  font-family: var(--mono);
+  font-size: var(--t-fine);
 }
 
 .brand-copy span,
@@ -243,6 +247,15 @@ h3 {
 .prose p,
 .bridge p {
   margin: 0 0 12px;
+}
+
+/* Cap the text, leaving its container available for wide evidence. */
+.hero-copy :where(p, ul, ol),
+.prose :where(p, ul, ol),
+.section > :where(p, ul, ol),
+.post :where(p, ul, ol),
+.subs .sx {
+  max-width: 68ch;
 }
 
 .hero-actions,
@@ -700,6 +713,10 @@ h3 {
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--t-label);
+  letter-spacing: 0.02em;
+}
+
+.ui-pane-label {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -882,8 +899,7 @@ h3 {
   align-items: baseline;
   font-family: var(--mono);
   font-size: var(--t-micro);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--muted);
   margin-bottom: 12px;
 }
@@ -906,8 +922,7 @@ h3 {
 
 .facts .fk {
   font-size: var(--t-micro);
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--muted);
 }
 
@@ -933,13 +948,24 @@ h3 {
   letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--muted);
-  padding: 0 0 8px;
+  padding: 0 var(--s-12) var(--s-8);
   border-bottom: 1px solid var(--line);
 }
 
-.data-table td { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.data-table td { padding: var(--s-8) var(--s-12); border-bottom: 1px solid var(--line); }
 
-.data-table td.num { text-align: right; letter-spacing: 0.12em; }
+.data-table .num { text-align: right; }
+
+/* A trailing explanation after two text columns is prose, even where
+   the existing markup calls it .num (the language/engine/why table). */
+.data-table td:nth-child(2):not(.num) + td.num:last-child {
+  text-align: left;
+  font-variant-numeric: normal;
+}
+
+.data-table:has(td:nth-child(2):not(.num) + td.num:last-child) th:last-child {
+  text-align: left !important; /* Override that prose column's inline alignment. */
+}
 
 .data-table .win { color: var(--accent); }
 
@@ -947,11 +973,13 @@ h3 {
 
 .table-scroll { overflow-x: auto; }
 
-/* A table and the prose that reads it are separate groups: give them
-   more air between than the rows have within. */
+/* Separate evidence blocks from the prose that reads them. */
 .table-scroll + .prose,
 .table-scroll + .fine,
-.data-table + .prose { margin-top: var(--s-16); }
+.data-table + .prose,
+:is(.code-window, .note, .panel, .grid-2, .grid-3, .facts) + :is(.prose, p) {
+  margin-top: var(--s-16);
+}
 
 .beats { list-style: none; margin: 0; padding: 0; counter-reset: beat; }
 
@@ -993,8 +1021,7 @@ h3 {
 .subs .st {
   font-family: var(--mono);
   font-size: var(--t-micro);
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--accent);
 }
 
@@ -1049,6 +1076,8 @@ h3 {
 .hero-meta span { color: var(--line-strong); }
 
 /* Resume headings retain their display style with sentence-case markup. */
+.resume-page .hero { grid-template-columns: minmax(0, 1fr); }
+
 .resume-page .name,
 .resume-page h2 { text-transform: uppercase; }
 
@@ -1124,7 +1153,7 @@ h3 {
 
 .bar span {
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.02em;
   color: var(--muted);
   text-align: center;
@@ -1133,7 +1162,6 @@ h3 {
 
 @media (max-width: 520px) {
   .bars { gap: 2px; }
-  .bar span { font-size: 0.5rem; }
 }
 
 /* ── Grid maps ───────────────────────────────────────────────────────────
@@ -1402,6 +1430,11 @@ h3 {
   .subs .st { color: #111; }
   .subs .sx, .prose p, .prose li { color: #222; }
   .section { page-break-inside: avoid; }
+  .resume-page .hero .lede { max-width: none; }
+  .resume-page .section { break-inside: auto; page-break-inside: auto; }
+  .resume-page .section-head { break-after: avoid; page-break-after: avoid; }
+  .resume-page article,
+  .resume-page .subs > div { break-inside: avoid; page-break-inside: avoid; }
 }
 
 /* ── Vertical rhythm ─────────────────────────────────────────────────────
@@ -1492,12 +1525,13 @@ h3 {
 .post figcaption { font-size: 0.92rem; color: var(--muted); margin-bottom: 10px; }
 .post figure { overflow-x: auto; }
 .post figure .chart { min-width: 560px; max-width: 680px; } /* native viewBox width: wider columns would scale chart text up */
+.post figure .chart-wide { min-width: 800px; max-width: 800px; } /* wider label gutters, with 12px chart text */
 .post td:first-child { white-space: nowrap; }
 .post details { margin-top: 10px; font-size: 0.9rem; }
 .post summary { cursor: pointer; color: var(--muted); font-family: var(--mono); font-size: var(--t-fine); }
 .post .table-scroll { overflow-x: auto; margin: 1.4em 0; }
 .post table { border-collapse: collapse; width: 100%; font-size: 0.88rem; font-family: var(--mono); }
-.post th, .post td { text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.post th, .post td { text-align: left; padding: 7px var(--s-12); border-bottom: 1px solid var(--line); vertical-align: top; }
 .post th { color: var(--muted); font-weight: 500; }
 .post td.num, .post th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .post pre { background: var(--bg-soft); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; overflow-x: auto; font-size: 0.85rem; line-height: 1.55; }

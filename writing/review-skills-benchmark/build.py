@@ -134,7 +134,8 @@ def econ_fig():
     X = lambda m: x0 + m / mmax * (x1 - x0)  # noqa: E731
     Y = lambda v: y1 - min(v, ymax) / ymax * (y1 - y0)  # noqa: E731
     lo, hi = (lambda m: breakeven("dual_nocg - none", m, bound="hi")), (lambda m: breakeven("dual_nocg - none", m, bound="lo"))
-    out = ['<svg viewBox="0 0 680 300" role="img" aria-labelledby="t-econ" class="chart">',
+    # The right-hand legend needs about 210 units beyond the plot's x=520.
+    out = ['<svg viewBox="0 0 800 300" role="img" aria-labelledby="t-econ" class="chart chart-wide">',
            '<title id="t-econ">Break-even value of a caught defect against triage minutes per finding</title>',
            f'<polygon points="{X(0):.1f},{Y(lo(0)):.1f} {X(mmax):.1f},{Y(lo(mmax)):.1f} {X(mmax):.1f},{Y(hi(mmax)):.1f} '
            f'{X(0):.1f},{Y(hi(0)):.1f}" style="fill: var(--accent); opacity: 0.15"/>',
@@ -153,7 +154,7 @@ def econ_fig():
         out += [f'<line class="c-tick" x1="{x0 - 5}" x2="{x0}" y1="{Y(v):.1f}" y2="{Y(v):.1f}"/>',
                 f'<text class="c-axis" x="{x0 - 9}" y="{Y(v) + 4:.1f}" text-anchor="end">{v}</text>']
     out += [f'<text class="c-axis" x="{(x0 + x1) / 2:.0f}" y="{y1 + 38}" text-anchor="middle">Minutes to triage one finding</text>',
-            f'<text class="c-axis" x="16" y="{(y0 + y1) / 2:.0f}" text-anchor="middle" transform="rotate(-90 16 {(y0 + y1) / 2:.0f})">'
+            '<text class="c-axis" x="16" y="150" text-anchor="middle" transform="rotate(-90 16 150)">'
             'Break-even, minutes per caught defect</text>', '</svg>']
     return "\n".join(out)
 
@@ -162,10 +163,11 @@ def forest():
     arms = [a for a in ORDER if a != "none"]
     lo = min(A[a]["minus_bare"]["ci95"][0] for a in arms) - 2
     hi = max(A[a]["minus_bare"]["ci95"][1] for a in arms) + 2
-    x0, x1, row = 220, 650, 30
+    # Reserve 280 units for left labels, retaining the 430-unit plot width.
+    x0, x1, row = 280, 710, 30
     X = lambda v: x0 + (v - lo) / (hi - lo) * (x1 - x0)  # noqa: E731
     base = 20 + row * len(arms)
-    out = [f'<svg viewBox="0 0 680 {base + 50}" role="img" aria-labelledby="t-forest" class="chart">',
+    out = [f'<svg viewBox="0 0 800 {base + 50}" role="img" aria-labelledby="t-forest" class="chart chart-wide">',
            '<title id="t-forest">Real defects per rep, difference from bare Claude Code (A)</title>',
            f'<line class="c-zero" x1="{X(0):.1f}" x2="{X(0):.1f}" y1="10" y2="{base}"/>']
     for i, a in enumerate(arms):
@@ -351,11 +353,11 @@ def main():
     fu_lo, fu_hi, fu_dn = FU["arms"]["builtin"], FU["arms"]["builtin_high"], FU["arms"]["dual_nocg"]
     fu_c = FU["contrasts"]
     fu_ci = lambda k: f"{sg(fu_c[k]['ci95'][0])} to {sg(fu_c[k]['ci95'][1])}"  # noqa: E731
-    fu_row = lambda name, a: (f"<tr><td>{name}</td><td>{', '.join(str(r) for r in a['reps'])}</td>"  # noqa: E731
-                              f"<td>{f1(a['real_per_rep'])}</td><td>{f1(a['ci95'][0])} to {f1(a['ci95'][1])}</td>"
-                              f"<td>{a['precision']:.2f}</td><td>{a['cost_per_review']:.2f}</td><td>{a['secs_per_review']}</td></tr>")
-    t8 = ("<div class=\"table-scroll\"><table><tr><th>Arm</th><th>Reps</th><th>Real / rep</th><th>95% interval</th>"
-          "<th>Precision</th><th>Est. $ / review</th><th>s / review</th></tr>"
+    fu_row = lambda name, a: (f"<tr><td>{name}</td><td class=\"num\">{', '.join(str(r) for r in a['reps'])}</td>"  # noqa: E731
+                              f"<td class=\"num\">{f1(a['real_per_rep'])}</td><td class=\"num\">{f1(a['ci95'][0])} to {f1(a['ci95'][1])}</td>"
+                              f"<td class=\"num\">{a['precision']:.2f}</td><td class=\"num\">{a['cost_per_review']:.2f}</td><td class=\"num\">{a['secs_per_review']}</td></tr>")
+    t8 = ("<div class=\"table-scroll\"><table><tr><th>Arm</th><th class=\"num\">Reps</th><th class=\"num\">Real / rep</th><th class=\"num\">95% interval</th>"
+          "<th class=\"num\">Precision</th><th class=\"num\">Est. $ / review</th><th class=\"num\">s / review</th></tr>"
           + fu_row("Built-in /code-review, low (as run)", fu_lo) + fu_row("Built-in /code-review, high", fu_hi)
           + fu_row("Dual review", fu_dn) + "</table></div>")
 
@@ -379,7 +381,7 @@ def main():
                  ["Est. $ / review", f"{vA['verify_full']['cost'] / vn:.2f}", f"{vA['verify_agent']['cost'] / vn:.2f}", ""],
                  ["s / review", vA["verify_full"]["secs_per_review"], vA["verify_agent"]["secs_per_review"], ""]])
     flA, flC = fl["arms"], fl["contrasts"]
-    t11 = table(["Arm", "Reviews", "Real / rep", "95% interval", "Not real in main list / rep", "Real only in Unconfirmed / rep",
+    t11 = table(["Arm", "Reviews", "Real / rep", "95% interval", "Not real defects in main list / rep", "Real defects only in Unconfirmed / rep",
                  "S1+S2 / rep", "Est. $ / review", "s / review"],
                 [[lbl, flA[a]["cells"], f1(flA[a]["real_per_rep"]["value"]), rng(flA[a]["real_per_rep"]),
                   f1(flA[a]["not_real_main_per_rep"]["value"]),
@@ -719,7 +721,7 @@ def main():
         concrete failing input and the wrong output, or two reviewers raised it independently, and moves the rest to an
         Unconfirmed list. The second arm adds a third reviewer, the same agent and brief pinned to Opus. Only the main
         list is scored. With the filter, real defects changed by {fc('dual_filter - dual_nocg', 'real')} per rep and S1+S2
-        defects by {fc('dual_filter - dual_nocg', 'S1S2')}, while findings that were not real fell by
+        defects by {fc('dual_filter - dual_nocg', 'S1S2')}, while findings that were not real defects fell by
         {nr_cut('dual_filter'):.0f}% ({sg(flC['dual_filter - dual_nocg']['not_real_main']['value'])} per rep,
         {rng(flC['dual_filter - dual_nocg']['not_real_main'], sg)}). That missed the one-third cut set
         in advance, and about {f1(flA['dual_filter']['demoted_per_rep']['value'])} real defects per rep moved to the
