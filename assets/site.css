@@ -1048,6 +1048,27 @@ h3 {
 
 .hero-meta span { color: var(--line-strong); }
 
+/* Resume headings retain their display style with sentence-case markup. */
+.resume-page .name,
+.resume-page h2 { text-transform: uppercase; }
+
+.resume-page .name { line-height: inherit; }
+
+.resume-page .resume-meta {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
+.resume-page .entry-stamp { column-gap: 0; }
+
+.resume-page .resume-meta > :not(:last-child),
+.resume-page .entry-stamp > :not(:last-child) {
+  border-right: 1px solid var(--muted);
+  padding-right: 12px;
+  margin-right: 12px;
+}
+
 /* ── Public commit history ───────────────────────────────────────────────
    A snapshot, not a live feed: the numbers are stamped with the date they
    were captured, the same rule the Now page follows. */

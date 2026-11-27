@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>codegraph — case study | Eric Minish</title>
-  <meta name="description" content="Case study: checking codegraph, an open-source code-intelligence tool, against compiler type checkers and against fresh indexes. 131 issues filed upstream, 81 closed as completed by the maintainer, 17 pull requests merged; the test tooling is public as graph-assay.">
-  <link rel="stylesheet" href="/assets/site.css?v=4434258a">
+  <meta name="description" content="Case study: checking codegraph, an open-source code-intelligence tool, against compiler type checkers and against fresh indexes. 143 issues filed upstream, 130 closed, 17 pull requests merged; the test tooling is public as graph-assay.">
+  <link rel="stylesheet" href="/assets/site.css?v=32fe1e29">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/codegraph/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="codegraph — Eric Minish">
-  <meta property="og:description" content="Checking a code-intelligence tool's call graph against compilers and fresh indexes: 131 issues filed upstream, 17 pull requests merged.">
+  <meta property="og:description" content="Checking a code-intelligence tool's call graph against compilers and fresh indexes: 143 issues filed upstream, 17 pull requests merged.">
   <meta property="og:url" content="https://www.ericminish.com/portfolio/codegraph/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="codegraph — Eric Minish">
-  <meta name="twitter:description" content="Checking a code-intelligence tool's call graph against compilers and fresh indexes: 131 issues filed upstream, 17 pull requests merged.">
+  <meta name="twitter:description" content="Checking a code-intelligence tool's call graph against compilers and fresh indexes: 143 issues filed upstream, 17 pull requests merged.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 </head>
@@ -56,14 +56,14 @@
       </div>
       <aside class="note">
         <p><strong>What it is</strong>: a public fork with fixes for wrong call edges, graph-assay (the test tooling, public since 12 November), a TypeScript grammar fork checked against the compiler, and codeshot, a diagram tool built on the graph.</p>
-        <p><strong>Status</strong>: issues filed from 26 June to 16 November 2026. Counts from GitHub search on 17 November 2026.</p>
+        <p><strong>Status</strong>: Issues filed starting 26 June 2026. Counts from the GitHub API on 27 November 2026.</p>
       </aside>
     </section>
 
     <section class="section">
       <div class="facts">
-        <div><span class="fk">issues filed upstream</span><span class="fv">131</span></div>
-        <div><span class="fk">closed as completed by the maintainer</span><span class="fv good">81</span></div>
+        <div><span class="fk">issues filed upstream</span><span class="fv">143</span></div>
+        <div><span class="fk">issues closed</span><span class="fv good">130</span></div>
         <div><span class="fk">my pull requests merged</span><span class="fv good">17</span></div>
         <div><span class="fk">sync replay steps / drifts found</span><span class="fv">2,979 / 12</span></div>
       </div>
@@ -136,13 +136,13 @@
           <tr><td>Fault injection</td><td>2 (#1356, #1357)</td><td>both closed as completed</td></tr>
         </table>
       </div>
-      <p class="fine">The table covers 33 of the 131 issues, all on the upstream tracker, colbymchenry/codegraph.</p>
+      <p class="fine">The table covers 33 of the 143 issues, all on the upstream tracker, colbymchenry/codegraph. Table outcomes are as of 17 November 2026.</p>
       <div class="prose">
         <p>
-          Of the 131 issues, 89 are closed and 42 are open. The maintainer closed 81 as completed. I closed 3 as duplicates of my own earlier reports, which got through because my pre-filing check searched by keyword only, and 2 as not planned. On 4 November I closed 3 more that no longer reproduced on upstream code, each with a note naming the change that most likely fixed it.
+          Of the 143 issues, 130 are closed and 13 are open as of 27 November 2026. Of the closed issues, 125 were completed. I closed 3 as duplicates of my own earlier reports, which got through because my pre-filing check searched by keyword only, and 2 as not planned. Three of the closed issues I closed myself on 4 November because they no longer reproduced on upstream code, each with a note naming the change that most likely fixed it.
         </p>
         <p>
-          Of my 37 pull requests, 17 were merged and 4 are open. By 3 November, nine more had been closed after the maintainer carried my commits into his own pull requests with my authorship kept, which is how the three sync fixes landed (#3061, #3062, #3072).
+          Of my 41 pull requests, 17 were merged, 4 are open and 20 were closed without merging as of 27 November 2026. Nine of the unmerged ones were closed by 3 November after the maintainer carried my commits into his own pull requests with my authorship kept, which is how the three sync fixes landed (#3061, #3062, #3072).
         </p>
       </div>
     </section>
@@ -235,7 +235,7 @@
 
   <footer class="site-footer">
     <div class="shell footer-row">
-      <p>Eric Minish · Central Lake, Michigan</p>
+      <p>Eric Minish · Michigan, USA</p>
       <div class="footer-links">
         <a href="/portfolio/">Portfolio</a>
         <a href="/contact/">Contact</a>
