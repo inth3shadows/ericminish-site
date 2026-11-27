@@ -18,4 +18,4 @@ jobs:
       - run: python3 tools/lint-copy.py
       - run: python3 tools/check-pages.py
       - run: python3 tools/check-facts.py
-      - run: python3 -m unittest tools/test_gen_now.py tools/test_draft_now.py tools/test_check_live.py tools/test_gen_lastmod.py tools/test_check_facts.py
+      - run: python3 -m unittest tools/test_gen_now.py tools/test_draft_now.py tools/test_check_live.py tools/test_gen_lastmod.py tools/test_check_facts.py tools/test_make_resume_pdf.py

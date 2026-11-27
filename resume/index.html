@@ -4,22 +4,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Resume — Eric Minish</title>
-  <meta name="description" content="Eric Minish — systems engineer. I build checks that find problems in systems before people notice them.">
-  <link rel="stylesheet" href="/assets/site.css?v=4434258a">
+  <meta name="description" content="Eric Minish — Software Engineer — Backend Systems, Automation and AI Evaluation.">
+  <link rel="stylesheet" href="/assets/site.css?v=32fe1e29">
   <link rel="canonical" href="https://www.ericminish.com/resume/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="Resume — Eric Minish">
-  <meta property="og:description" content="Systems engineer. I build checks that find problems in systems before people notice them.">
+  <meta property="og:description" content="Software Engineer — Backend Systems, Automation and AI Evaluation.">
   <meta property="og:url" content="https://www.ericminish.com/resume/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Resume — Eric Minish">
-  <meta name="twitter:description" content="Systems engineer. I build checks that find problems in systems before people notice them.">
+  <meta name="twitter:description" content="Software Engineer — Backend Systems, Automation and AI Evaluation.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Person","name":"Eric Minish","jobTitle":"Senior AI Engineer","url":"https://www.ericminish.com/","email":"mailto:hi@ericminish.com","address":{"@type":"PostalAddress","addressRegion":"Michigan","addressCountry":"US"},"alumniOf":{"@type":"CollegeOrUniversity","name":"Central Michigan University"},"sameAs":["https://github.com/inth3shadows","https://www.linkedin.com/in/ericminish"]}
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -45,35 +48,18 @@
     </div>
   </header>
 
-  <main class="shell" id="main">
+  <main class="shell resume-page" id="main">
     <section class="hero hero-home">
-      <h2 class="name">Eric Minish</h2>
-      <h1 class="lede">I build checks that find problems in systems before people notice them.</h1>
-      <p class="hero-meta" style="margin-top:16px">AI infrastructure &amp; backend engineering · embedded in operations</p>
-      <p class="fine" style="margin-top:12px">
-        <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> ·
-        <a href="https://github.com/inth3shadows">github.com/inth3shadows</a> ·
-        <a href="https://www.linkedin.com/in/ericminish">linkedin.com/in/ericminish</a> ·
-        Central Lake, Michigan
-      </p>
+      <h1 class="name">Eric Minish</h1>
+      <p class="lede">Software Engineer — Backend Systems, Automation and AI Evaluation</p>
+      <p class="fine resume-meta" style="margin-top:12px"><span><a href="mailto:hi@ericminish.com">hi@ericminish.com</a></span> <span><a href="https://ericminish.com">ericminish.com</a></span> <span><a href="https://github.com/inth3shadows">github.com/inth3shadows</a></span> <span><a href="https://www.linkedin.com/in/ericminish">linkedin.com/in/ericminish</a></span> <span>Michigan, USA (Remote)</span></p>
     </section>
 
     <section class="section">
+      <div class="section-head"><div><h2>Summary</h2></div></div>
       <div class="prose">
-        <p>
-          I work in Python, Go and SQL. I build MCP servers, retrieval systems, evaluation harnesses, ingestion pipelines, and the cloud
-          services they run on. I built, deployed and maintain most of it myself.
-        </p>
-        <p>
-          I look for problems that do not raise an error, and build checks that catch them. In
-          customer-success operations the problem was account risk: churn fell from 30% to under 10%
-          after the system began flagging at-risk customers before they left. More recently I have
-          applied the same approach to my own tools: a proxy that only sends compressed output it can
-          decode back exactly, a search engine whose evaluation showed it gave useful answers to half
-          of the test questions, and a well-record model in which a target that looked like new signal
-          turned out to be about 96% a restatement of well depth, once it was compared with a baseline
-          computed from depth.
-        </p>
+        <p>I build and maintain software for business operations, primarily in Python, TypeScript and SQL. My professional background spans backend development, systems integration, automation and data analysis.</p>
+        <p>Much of my independent work focuses on AI evaluation, including testing coding agents, benchmarking models and building tools to identify errors in generated code. I publish my findings, including negative results and corrections to earlier work.</p>
       </div>
     </section>
 
@@ -81,139 +67,96 @@
       <div class="section-head"><div><h2>Experience</h2></div></div>
 
       <article style="margin-bottom:32px">
-        <div class="entry-stamp"><b>Jul 2023 — present</b><span>Transactly</span><span>Remote</span></div>
         <h3>Senior AI Engineer</h3>
-        <p class="fine" style="margin:0 0 12px">At Transactly since Sep 2020.</p>
+        <div class="entry-stamp"><span>Transactly</span> <b>Jul 2023 - Present</b> <span>Remote</span> <span>At Transactly since Sep 2020</span></div>
         <div class="prose">
-          <p>
-            I build and run the software our sales, operations and partner teams work in: the workflow logic, its integrations with the other systems, and the reporting that explains the results. As of November 2026 that is 60 repositories, 29 of which changed in the last 30 days; I wrote about 95% of the commits since September.
-          </p>
+          <p>Develop and maintain software, integrations and automation across more than 50 repositories supporting sales, operations and partner teams.</p>
           <ul>
-            <li>Lead technical integrations with partners: requirements with their teams, the data exchange, then launch and support. Built the partner lead-intake API, released to production three times between October and November 2026, and the partner portal.</li>
-            <li>Build AI automations through the company&rsquo;s LiteLLM gateway, with evaluation and cost tracking. The LLM-assisted call-compliance service transcribes calls and scores them against a rubric: rule-based checks run first, then a person reviews, and the model never makes the final decision.</li>
-            <li>Own the company&rsquo;s HubSpot CRM: workflows, custom code, integrations and API rate limits, and the services built around it.</li>
-            <li>Built and run a console that gathers a consultant&rsquo;s tools in one place, in production since September 2026.</li>
-            <li>Monitor the production automations from a health dashboard I built, and fix data problems where they start.</li>
-            <li>Write the services and jobs behind them: call-activity sync and CRM record cleanup, ingestion and scheduled jobs on managed cloud infrastructure, reporting on a data warehouse behind access control. The code is about evenly split between Python and TypeScript, with about 940 test files across the 33 repositories active in the last 90 days.</li>
+            <li>Build AI automations through the company's LiteLLM gateway and track their cost and evaluation results. One service transcribes calls and scores them against a compliance rubric, with rule-based checks first and a person making the final call.</li>
+            <li>Write services, ingestion pipelines and scheduled jobs on managed cloud infrastructure using Python and TypeScript.</li>
+            <li>Built and maintain a consultant console that consolidates prioritized call queues, customer records and communications into a single workspace. Reached 78% weekly usage among active consultants within four weeks of wider rollout.</li>
+            <li>Lead partner integrations from requirements through launch and support, including the partner lead-intake API and partner portal.</li>
+            <li>Own the technical implementation of the company's HubSpot CRM, including more than 450 active workflows, custom code, integrations and supporting services.</li>
           </ul>
         </div>
       </article>
 
       <article style="margin-bottom:32px">
-        <div class="entry-stamp"><b>Sep 2020 — Apr 2023</b><span>Transactly</span></div>
-        <h3>Customer Success Operations Manager</h3>
-        <p class="fine" style="margin:0 0 12px">Previously Client Success Operations Lead, Success Coach, Success Support Specialist.</p>
-        <div class="prose">
-          <p>
-            Owned process infrastructure and automation across customer success, product, sales and
-            operations, including the reporting, tools and workflows that let the company see churn
-            risk early.
-          </p>
-          <ul>
-            <li>Cut client churn from <strong>30% to under 10%</strong> by redesigning processes and customer engagement around real-time risk scoring.</li>
-            <li>Built and ran SQL-driven credit, billing and subscription reporting.</li>
-            <li>Coordinated ticket workflows between the success and transaction-coordination teams. Issue resolution time fell by <strong>half</strong>.</li>
-            <li>Represented customer success in decisions about the CRM, internal tools and platform workflows.</li>
-            <li>Wrote and rolled out the customer-success playbooks and onboarding documentation.</li>
-            <li>Kept the systems I was responsible for running through a 30% headcount reduction.</li>
-          </ul>
-        </div>
-      </article>
-
-      <article style="margin-bottom:32px">
-        <div class="entry-stamp"><b>2025 — present</b><span>Independent</span><span>Built, shipped and run</span></div>
-        <h3>Agent infrastructure</h3>
+        <h3>Independent Software Development &amp; Research</h3>
+        <div class="entry-stamp"><b>2025 - Present</b></div>
         <div class="prose">
           <ul>
-            <li><a href="/portfolio/runecho/">RunEcho</a> checks each edit a coding agent makes, before the file changes, against the names the repository declares. On nine confirmed invented names it caught four. Each check takes about 12 ms, uses no model or network, and adds nothing to the agent&rsquo;s context when it passes. Public, MIT license.</li>
-            <li><a href="/portfolio/terse/">terse</a> is a proxy that compresses AI tool output without losing information: 59% fewer tokens on GitHub API payloads, its best case. A replay of my own sessions, priced at what each call was billed, put it at 23% of MCP result cost and under 1% of the bill, and decided which two tools to keep working on. Public, MIT license.</li>
-            <li><a href="/portfolio/testgraph/">testgraph</a> reads a diff and names the user journeys the change could have broken. Similar tools list tests and need coverage data from an earlier test run; testgraph works on a repository whose tests have never been run. Public, MIT license, published on PyPI.</li>
-            <li><a href="/portfolio/modelbench/">modelbench</a> benchmarks models on real bug-fix commits mined from my own repositories. Each model runs each task three times, and models are scored on cost per solved task. Its write-up lists the earlier figures that were later corrected.</li>
-            <li><a href="/portfolio/harness/">harness</a> gives each code change a verdict from four rule-based checks: the tests, a symbol contract, a credential scan and a vulnerability scan. No model takes part in the judging, and nothing is committed automatically. Its agent runtime so far uses read-only tools.</li>
-          </ul>
-        </div>
-      </article>
-
-      <article style="margin-bottom:32px">
-        <div class="entry-stamp"><b>2025 — present</b><span>Independent</span><span>Data, delivery and evidence</span></div>
-        <h3>Data work and shipped applications</h3>
-        <div class="prose">
-          <ul>
-            <li><a href="/portfolio/lodestone/">Lodestone</a> is local search over years of my working notes. Its evaluation showed that it gave useful answers to 5 of 10 test questions at full scale, and I published that result.</li>
-            <li><a href="/portfolio/frostline/">Frostline</a> is a set of spatial models built on 50,083 well records, and a business built around what the models can predict. One candidate target, the aquifer interval (the top and bottom depths of the water-bearing layer), showed +38.8% apparent skill against the global median. Against a baseline computed from well depth, that skill disappeared: the interval was about 96% a restatement of depth, so I cut it.</li>
-            <li>Filed <strong>131 issues</strong> against codegraph (colbymchenry/codegraph), an open-source code-intelligence tool I use daily; 89 have since been closed, and 17 of my pull requests were merged (GitHub, 17 November 2026). The checks are public as graph-assay. I built fault-injection harnesses that reproduce two of the bugs.</li>
+            <li>Contributed 17 merged pull requests and filed 143 issues against <a href="/portfolio/codegraph/">codegraph</a>, an open-source code-intelligence tool (130 closed as of November 2026). Built fault-injection harnesses that reproduce two of the bugs.</li>
+            <li><a href="/portfolio/modelbench/">modelbench</a> tests models on real bug-fix commits from my repositories, three runs per task, scored on cost per solved task. Published reports keep earlier figures and document corrections.</li>
+            <li><a href="/portfolio/knowledge-base/">kb-mcp</a> gives coding agents a shared memory of infrastructure facts, past decisions and standing rules over MCP. Agents can only propose changes; a separate reviewer model approves, edits or rejects each one.</li>
+            <li><a href="/portfolio/runecho/">RunEcho</a> (Go) flags names in a coding-agent edit that the repository doesn't declare. A fast first filter (about 12 ms, no model or network call), not a complete check. MIT licensed.</li>
+            <li><a href="/portfolio/testgraph/">testgraph</a> reads a diff and lists the user journeys it could break, even in repositories whose tests have never run. MIT licensed, on PyPI.</li>
+            <li><a href="/portfolio/frostline/">Frostline</a> builds spatial models from about 50,000 well records; a depth baseline showed one promising target mostly restated depth, so I excluded it.</li>
+            <li><a href="/portfolio/terse/">terse</a> losslessly compresses what an agent's tool servers return; its best measured case cut GitHub API payloads by 59%. MIT licensed.</li>
+            <li><a href="/portfolio/lodestone/">Lodestone</a> is local hybrid retrieval over my working notes; I published its full-scale evaluation, including where it fell short.</li>
+            <li><a href="/portfolio/harness/">harness</a> checks each code change with tests, a symbol contract, a credential scan and a vulnerability scan. No model judges the result and nothing commits automatically.</li>
             <li>Deployed three applications end to end: a task scheduler with calendar sync, an e-signature and payment intake tool, and a lead-intake product for a client.</li>
           </ul>
         </div>
       </article>
 
       <article style="margin-bottom:32px">
-        <div class="entry-stamp"><b>Jun 2017 — Jun 2020</b><span>Geotix</span><span>Traverse City, Michigan</span></div>
-        <h3>Customer Success Manager</h3>
+        <h3>Customer Success Operations Manager</h3>
+        <div class="entry-stamp"><span>Transactly</span> <b>Sep 2020 - Apr 2023</b> <span>Previously Client Success Operations Lead, Success Coach and Success Support Specialist</span></div>
         <div class="prose">
+          <p>Owned reporting, automation, tools and workflows across customer success, product, sales and operations.</p>
           <ul>
-            <li>Handled customer service for 70+ partners, 3,000+ partner clients and 400,000+ end customers. Every ticket received a response within two hours.</li>
-            <li>Tested each issue for reproducibility before escalating it, documented the ones that would not reproduce, and ran the weekly session that reported them back to product.</li>
-            <li>Wrote the FAQ and knowledge-base documentation, and turned customer feedback into product recommendations.</li>
+            <li>Cut client churn from 30% to under 10% by redesigning processes and customer engagement around real-time risk scoring.</li>
+            <li>Built and ran SQL-driven credit, billing and subscription reporting.</li>
+            <li>Coordinated ticket workflows between success and transaction-coordination teams, halving issue-resolution time.</li>
+            <li>Represented customer success in CRM, internal-tool and platform decisions, and wrote the team's playbooks and onboarding documentation.</li>
           </ul>
         </div>
       </article>
 
       <article style="margin-bottom:32px">
-        <div class="entry-stamp"><b>Apr 2013 — Jun 2017</b><span>Independent, contract</span><span>Bellaire, Michigan</span></div>
-        <h3>Owner and founder</h3>
+        <h3>Customer Success Manager</h3>
+        <div class="entry-stamp"><span>Geotix</span> <b>Jun 2017 - Jun 2020</b> <span>Traverse City, Michigan</span></div>
         <div class="prose">
           <ul>
-            <li>Ran day-to-day operations under five service contracts. The work involved up to 70 calls and 100 emails a day.</li>
-            <li>Created and documented the processes behind refunds, chargebacks, phone sales and fulfillment.</li>
-          </ul>
-        </div>
-      </article>
-
-      <article>
-        <div class="entry-stamp"><b>Apr 2010 — Mar 2013</b><span>4th Judicial District Attorney's Office</span></div>
-        <h3>District Court Legal Assistant II</h3>
-        <div class="prose">
-          <ul>
-            <li>Managed complex caseloads for four attorneys.</li>
-            <li>Worked across departments to keep discovery moving, so the attorneys had time to prepare for hearings.</li>
+            <li>Supported 70+ partners, 3,000+ partner clients and 400,000+ end customers, answering every ticket within two hours.</li>
+            <li>Tested issues for reproducibility before escalation and documented those that could not be reproduced for weekly product reviews.</li>
+            <li>Wrote FAQ and knowledge-base documentation and turned customer feedback into product recommendations.</li>
           </ul>
         </div>
       </article>
     </section>
 
     <section class="section">
-      <div class="section-head"><div><h2>What I work with</h2></div></div>
+      <div class="section-head"><div><h2>Technical skills</h2></div></div>
       <div class="subs">
-        <div><span class="st">Languages</span><span class="sx">Python, TypeScript/JavaScript, Go, SQL, Bash</span></div>
-        <div><span class="st">AI &amp; ML</span><span class="sx">LLM evaluation and benchmarking, retrieval and RAG, embeddings, cross-encoder re-ranking, MCP servers and clients, agent tooling, prompt and eval harnesses, LiteLLM</span></div>
-        <div><span class="st">Data</span><span class="sx">PostgreSQL, BigQuery, SQLite, ETL and ingestion pipelines, spatial modeling, conformal prediction intervals, reporting and dashboards</span></div>
-        <div><span class="st">Cloud &amp; infra</span><span class="sx">Google Cloud Platform (Cloud Run, Cloud Scheduler, Cloud Tasks, BigQuery), Terraform, Docker, Proxmox, Cloudflare Tunnel and Access, Caddy, nginx, systemd, Linux</span></div>
-        <div><span class="st">Platforms &amp; integration</span><span class="sx">HubSpot Ops Hub, REST APIs, webhooks, Google Apps Script, Stripe, OAuth and access provisioning</span></div>
-        <div><span class="st">Practice</span><span class="sx">pytest and Go test, CI/CD with GitHub Actions, git, technical writing and documentation</span></div>
+        <div><span class="st">Languages:</span> <span class="sx">Python, TypeScript, JavaScript, Go, SQL, Bash, HTML/CSS</span></div>
+        <div><span class="st">Frameworks &amp; Runtimes:</span> <span class="sx">FastAPI, Node.js, Express, React, Next.js, SvelteKit</span></div>
+        <div><span class="st">Engineering Practices:</span> <span class="sx">Backend services, REST APIs, webhooks, OAuth, systems integration, automated testing (pytest, Go test), CI/CD (GitHub Actions), Git, code review, debugging, regression testing, fault injection, technical documentation</span></div>
+        <div><span class="st">AI &amp; Machine Learning:</span> <span class="sx">LLM evaluation, coding-agent evaluation, model benchmarking, RAG, embeddings, cross-encoder reranking, MCP servers and clients, prompt testing, LiteLLM, OpenRouter, Claude Code, Codex</span></div>
+        <div><span class="st">Data &amp; Analytics:</span> <span class="sx">PostgreSQL, BigQuery, SQLite, ETL and ingestion pipelines, pandas, NumPy, scikit-learn, spatial modeling, statistical analysis, conformal prediction intervals, reporting and dashboards</span></div>
+        <div><span class="st">Cloud &amp; Infrastructure:</span> <span class="sx">Google Cloud Platform (Cloud Run), Terraform, Docker, Linux, Proxmox, Cloudflare, Caddy, nginx, systemd</span></div>
+        <div><span class="st">Platforms &amp; Tools:</span> <span class="sx">HubSpot Ops Hub, Google Apps Script, Stripe</span></div>
       </div>
-      <p class="fine" style="margin-top:12px">
-        Each of these is used in work listed above.
-      </p>
     </section>
 
     <section class="section">
       <div class="section-head"><div><h2>Education &amp; certifications</h2></div></div>
       <div class="subs">
-        <div><span class="st">Central Michigan University</span><span class="sx">B.A. Sociology, emphasis in institutional systems.</span></div>
-        <div><span class="st">Gainsight</span><span class="sx">Customer Success Certified, Level 1 and Advanced (2021–2022). Customer Success Leader Certified (2022).</span></div>
-        <div><span class="st">PostgreSQL &amp; SQL</span><span class="sx">Bootcamp, 2023.</span></div>
+        <div><span class="st">Central Michigan University</span> <span class="sx">- B.A. Sociology, emphasis in institutional systems</span></div>
+        <div><span class="st">Gainsight</span> <span class="sx">- Customer Success Certified, Level 1 and Advanced (2021-2022); Customer Success Leader Certified (2022)</span></div>
+        <div><span class="st">PostgreSQL &amp; SQL Bootcamp</span> <span class="sx">(2023)</span></div>
       </div>
     </section>
 
     <p class="closing-line">
-      <a class="button" href="/resume/eric-minish-resume-44adc3e0.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
+      <a class="button" href="/resume/eric-minish-resume-1b48ef52.pdf" download="Eric-Minish-Resume.pdf">Download PDF</a> &nbsp; or email me: <a href="mailto:hi@ericminish.com">hi@ericminish.com</a>.
     </p>
   </main>
 
   <footer class="site-footer">
     <div class="shell footer-row">
-      <p>Eric Minish · Central Lake, Michigan</p>
+      <p>Eric Minish · Michigan, USA</p>
       <div class="footer-links">
         <a href="/portfolio/">Portfolio</a>
         <a href="/status/">Now</a>

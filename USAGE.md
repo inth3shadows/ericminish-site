@@ -32,11 +32,15 @@ goes wrong.
 `portfolio/`, rename it, replace the words, and add a card linking to it on
 the portfolio page. The layout comes along with the copy.
 
-**Updating the résumé.** Edit `resume/index.html` for the page text. If the
-PDF itself needs to change, ask the operator to run
-`python tools/make-resume-pdf.py` — it regenerates the file under a new
-content-addressed name, deletes the old one, and rewrites the download link,
-so the file on the page always matches what was last built.
+**Updating the résumé.** Edit `resume/index.html` for the page text. The PDF
+is the reviewed Word/PDF résumé, supplied via
+`python tools/make-resume-pdf.py --from <pdf>`. This copies the PDF under a new
+content-addressed name, rewrites the download link, then deletes stale résumé
+PDFs. Input must start with the PDF signature. Paths are anchored to the repo
+root, so the command works from any working directory. Use `--legacy` only to
+publish the frozen, stale built-in résumé; its PDF bytes are preserved.
+Exactly one of `--from <pdf>` or `--legacy` is required; running without a mode
+exits with an error.
 
 **Publishing.** Changes are not live until the site is deployed. Deployment
 copies the files onto the server that hosts the site. A daily workstation job

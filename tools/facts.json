@@ -1,8 +1,8 @@
 [
  {
   "id": "codegraph-issues-filed",
-  "value": 131,
-  "note": "Issues I filed upstream on colbymchenry/codegraph; source of truth is the case study stat block.",
+  "value": 143,
+  "note": "Issues I filed upstream on colbymchenry/codegraph; verified via GitHub API on 2026-11-27.",
   "occurrences": [
    {
     "file": "index.html",
@@ -22,60 +22,52 @@
    },
    {
     "file": "resume/index.html",
-    "pattern": "Filed <strong>([\\d,]+) issues</strong>"
-   },
-   {
-    "file": "tools/make-resume-pdf.py",
-    "pattern": "Filed ([\\d,]+) issues against codegraph"
+    "pattern": "and filed ([\\d,]+) issues against"
    }
   ]
  },
  {
   "id": "codegraph-issues-closed-completed",
-  "value": 81,
-  "note": "Issues the maintainer closed as completed.",
+  "value": 125,
+  "note": "Closed-as-completed issues; verified via GitHub API on 2026-11-27.",
   "occurrences": [
    {
-    "file": "index.html",
-    "pattern": "the maintainer closed ([\\d,]+) as completed"
-   },
-   {
-    "file": "portfolio/index.html",
-    "pattern": "\\d+ issues filed, ([\\d,]+) closed as completed"
-   },
-   {
     "file": "portfolio/codegraph/index.html",
-    "pattern": "closed as completed by the maintainer</span><span class=\"fv good\">([\\d,]+)<"
-   },
-   {
-    "file": "portfolio/codegraph/index.html",
-    "pattern": "The maintainer closed ([\\d,]+) as completed"
+    "pattern": "Of the closed issues, ([\\d,]+) were completed"
    }
   ]
  },
  {
   "id": "codegraph-issues-closed",
-  "value": 89,
-  "note": "All closed issues (completed, duplicates, closed by me).",
+  "value": 130,
+  "note": "All closed issues (125 completed, 3 duplicates, 2 not planned); verified via GitHub API on 2026-11-27.",
   "occurrences": [
+   {
+    "file": "index.html",
+    "pattern": "issues filed, ([\\d,]+) are closed"
+   },
+   {
+    "file": "portfolio/index.html",
+    "pattern": "\\d+ issues filed, ([\\d,]+) closed"
+   },
+   {
+    "file": "portfolio/codegraph/index.html",
+    "pattern": "issues closed</span><span class=\"fv good\">([\\d,]+)<"
+   },
    {
     "file": "portfolio/codegraph/index.html",
     "pattern": "Of the \\d+ issues, ([\\d,]+) are closed"
    },
    {
     "file": "resume/index.html",
-    "pattern": "([\\d,]+) have since been closed"
-   },
-   {
-    "file": "tools/make-resume-pdf.py",
-    "pattern": "\\(([\\d,]+) since closed"
+    "pattern": "\\(([\\d,]+) closed as of November 2026\\)"
    }
   ]
  },
  {
   "id": "codegraph-prs-merged",
   "value": 17,
-  "note": "My pull requests merged upstream (not the Now card's 30-day count).",
+  "note": "My pull requests merged upstream, verified via GitHub API on 2026-11-27 (not the Now card's 30-day count).",
   "occurrences": [
    {
     "file": "index.html",
@@ -91,15 +83,11 @@
    },
    {
     "file": "portfolio/codegraph/index.html",
-    "pattern": "Of my \\d+ pull requests, ([\\d,]+) were merged"
+    "pattern": "Of my 41 pull requests, ([\\d,]+) were merged"
    },
    {
     "file": "resume/index.html",
-    "pattern": "and ([\\d,]+) of my pull requests were merged"
-   },
-   {
-    "file": "tools/make-resume-pdf.py",
-    "pattern": "; ([\\d,]+) of my pull requests merged"
+    "pattern": "Contributed ([\\d,]+) merged pull requests"
    }
   ]
  },
@@ -122,11 +110,7 @@
    },
    {
     "file": "resume/index.html",
-    "pattern": "([\\d,]+)% fewer tokens on GitHub API payloads"
-   },
-   {
-    "file": "tools/make-resume-pdf.py",
-    "pattern": "([\\d,]+)% fewer tokens on GitHub API payloads"
+    "pattern": "cut GitHub API payloads by ([\\d,]+)%"
    },
    {
     "file": "assets/og.svg",
@@ -146,14 +130,6 @@
    {
     "file": "portfolio/index.html",
     "pattern": ">([\\d,]+)% of MCP cost"
-   },
-   {
-    "file": "resume/index.html",
-    "pattern": "put it at ([\\d,]+)% of MCP result cost"
-   },
-   {
-    "file": "tools/make-resume-pdf.py",
-    "pattern": "put it at ([\\d,]+)% of MCP result cost"
    }
   ]
  },
@@ -211,14 +187,6 @@
    {
     "file": "portfolio/runecho/index.html",
     "pattern": "nine confirmed hallucinated names, it caught (\\w+)"
-   },
-   {
-    "file": "resume/index.html",
-    "pattern": "nine confirmed invented names it caught (\\w+)"
-   },
-   {
-    "file": "tools/make-resume-pdf.py",
-    "pattern": "it caught (\\d+) of 9 confirmed"
    }
   ]
  },
@@ -238,14 +206,6 @@
    {
     "file": "portfolio/runecho/index.html",
     "pattern": "on a set of (\\w+) confirmed hallucinated names"
-   },
-   {
-    "file": "resume/index.html",
-    "pattern": "On (\\w+) confirmed invented names"
-   },
-   {
-    "file": "tools/make-resume-pdf.py",
-    "pattern": "it caught \\d+ of (\\d+) confirmed"
    }
   ]
  },
@@ -261,14 +221,6 @@
    {
     "file": "portfolio/frostline/index.html",
     "pattern": "well records</span><span class=\"fv\">([\\d,]+)<"
-   },
-   {
-    "file": "resume/index.html",
-    "pattern": "built on ([\\d,]+) well records"
-   },
-   {
-    "file": "tools/make-resume-pdf.py",
-    "pattern": "models on ([\\d,]+) well records"
    },
    {
     "file": "assets/og.svg",
