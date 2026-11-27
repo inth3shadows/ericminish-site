@@ -12,7 +12,7 @@
     <id>https://www.ericminish.com/writing/review-skills-benchmark/</id>
     <published>2026-11-11T00:00:00Z</published>
     <updated>2026-11-11T00:00:00Z</updated>
-    <summary>Skill packs for Claude Code promise better code review, but they are rarely measured on their users&#x27; own code. I ran 13 review bundles (bare Claude Code twice, the built-in review command, five public skill packs, my own dual-review skill with and without code-graph tools, and three exploratory…</summary>
+    <summary>I compared 13 Claude Code review bundles on 14 tasks from real commits, with three repetitions per task. The post reports defect detection, finding precision, estimated token cost and runtime.</summary>
   </entry>
   <entry>
     <title>What installed skills cost in context</title>
