@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Review skills on real code: a three-rep benchmark of Claude Code review setups | Eric Minish</title>
   <meta name="description" content="I compared 13 Claude Code review bundles on 14 tasks from real commits, with three repetitions per task. The post reports defect detection, finding precision, estimated token cost and runtime.">
-  <link rel="stylesheet" href="/assets/site.css?v=32fe1e29">
+  <link rel="stylesheet" href="/assets/site.css?v=20d5a2c1">
   <link rel="canonical" href="https://www.ericminish.com/writing/review-skills-benchmark/">
   <link rel="alternate" type="application/atom+xml" title="Eric Minish — Writing" href="/writing/feed.xml">
   <meta property="og:type" content="article">
@@ -204,66 +204,66 @@
         catalogue defects credited from the scored list; planted counts plants hit by location or by a mapped claim. Estimated cost is Claude Code's token-cost estimate at API prices.</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th class="num">Real / rep</th><th class="num">95% interval</th><th class="num">Minus Bare A</th><th class="num">95% interval</th><th class="num">Planted</th><th class="num">Other real</th><th class="num">of which pre-existing</th><th class="num">Precision</th><th class="num">Est. $ / review</th><th class="num">s / review</th></tr><tr><td>Dual review + code graph</td><td class="num">53.3</td><td class="num">41.7 to 67.7</td><td class="num">+18.0</td><td class="num">+10.3 to +26.7</td><td class="num">17.0</td><td class="num">36.3</td><td class="num">3.3</td><td class="num">0.59</td><td class="num">1.04</td><td class="num">232</td></tr><tr><td>Dual review</td><td class="num">53.0</td><td class="num">42.7 to 66.0</td><td class="num">+17.7</td><td class="num">+10.3 to +26.0</td><td class="num">17.0</td><td class="num">36.0</td><td class="num">4.0</td><td class="num">0.61</td><td class="num">0.80</td><td class="num">210</td></tr><tr><td>Superpowers</td><td class="num">44.0</td><td class="num">33.0 to 56.3</td><td class="num">+8.7</td><td class="num">+2.3 to +15.7</td><td class="num">16.7</td><td class="num">27.3</td><td class="num">1.3</td><td class="num">0.82</td><td class="num">0.58</td><td class="num">131</td></tr><tr><td>Hybrid: pair + verifier</td><td class="num">43.0</td><td class="num">30.3 to 59.7</td><td class="num">+7.7</td><td class="num">−1.7 to +19.3</td><td class="num">17.3</td><td class="num">25.7</td><td class="num">0.7</td><td class="num">0.82</td><td class="num">0.88</td><td class="num">177</td></tr><tr><td>Hybrid: parallel dual + verifier</td><td class="num">39.7</td><td class="num">28.0 to 53.0</td><td class="num">+4.3</td><td class="num">−2.0 to +11.7</td><td class="num">16.7</td><td class="num">23.0</td><td class="num">0.3</td><td class="num">0.89</td><td class="num">0.90</td><td class="num">286</td></tr><tr><td>Bare (A)</td><td class="num">35.3</td><td class="num">26.7 to 44.7</td><td class="num"></td><td class="num"></td><td class="num">16.3</td><td class="num">19.0</td><td class="num">0.0</td><td class="num">0.91</td><td class="num">0.24</td><td class="num">45</td></tr><tr><td>Trail of Bits</td><td class="num">33.7</td><td class="num">25.3 to 42.3</td><td class="num">−1.7</td><td class="num">−4.7 to +1.0</td><td class="num">16.7</td><td class="num">17.0</td><td class="num">0.0</td><td class="num">0.88</td><td class="num">0.30</td><td class="num">51</td></tr><tr><td>Caveman</td><td class="num">31.7</td><td class="num">25.0 to 38.0</td><td class="num">−3.7</td><td class="num">−7.3 to −0.3</td><td class="num">16.3</td><td class="num">15.3</td><td class="num">0.0</td><td class="num">0.90</td><td class="num">0.24</td><td class="num">41</td></tr><tr><td>Ponytail</td><td class="num">31.7</td><td class="num">23.7 to 39.7</td><td class="num">−3.7</td><td class="num">−7.0 to −0.7</td><td class="num">16.3</td><td class="num">15.3</td><td class="num">0.0</td><td class="num">0.88</td><td class="num">0.24</td><td class="num">43</td></tr><tr><td>Bare (B)</td><td class="num">30.7</td><td class="num">24.0 to 37.7</td><td class="num">−4.7</td><td class="num">−8.7 to −0.7</td><td class="num">16.0</td><td class="num">14.7</td><td class="num">0.0</td><td class="num">0.89</td><td class="num">0.23</td><td class="num">42</td></tr><tr><td>Hybrid: single loop</td><td class="num">29.3</td><td class="num">23.0 to 35.7</td><td class="num">−6.0</td><td class="num">−11.3 to −2.0</td><td class="num">15.7</td><td class="num">13.7</td><td class="num">0.0</td><td class="num">0.93</td><td class="num">0.29</td><td class="num">86</td></tr><tr><td>Built-in /code-review</td><td class="num">26.7</td><td class="num">21.0 to 32.3</td><td class="num">−8.7</td><td class="num">−16.0 to −1.7</td><td class="num">16.3</td><td class="num">10.3</td><td class="num">0.7</td><td class="num">0.81</td><td class="num">0.20</td><td class="num">31</td></tr><tr><td>ECC</td><td class="num">22.3</td><td class="num">16.7 to 28.0</td><td class="num">−13.0</td><td class="num">−20.3 to −6.3</td><td class="num">14.7</td><td class="num">7.7</td><td class="num">0.0</td><td class="num">0.82</td><td class="num">0.16</td><td class="num">38</td></tr></table></div></figure>
       <figure><figcaption>Figure 1. Real defects per rep, each arm minus Bare (A), with 95% intervals. Grey intervals
         include zero.</figcaption>
-<svg viewBox="0 0 680 430" role="img" aria-labelledby="t-forest" class="chart">
+<svg viewBox="0 0 800 430" role="img" aria-labelledby="t-forest" class="chart chart-wide">
 <title id="t-forest">Real defects per rep, difference from bare Claude Code (A)</title>
-<line class="c-zero" x1="408.3" x2="408.3" y1="10" y2="380"/>
-<text class="c-label" x="208" y="34" text-anchor="end">Dual review + code graph</text>
-<line class="c-clear" x1="495.4" x2="633.1" y1="30" y2="30"/>
-<circle class="c-clear" cx="560.0" cy="30" r="4.5"/>
-<text class="c-label" x="208" y="64" text-anchor="end">Dual review</text>
-<line class="c-clear" x1="495.4" x2="627.5" y1="60" y2="60"/>
-<circle class="c-clear" cx="557.3" cy="60" r="4.5"/>
-<text class="c-label" x="208" y="94" text-anchor="end">Superpowers</text>
-<line class="c-clear" x1="427.9" x2="540.4" y1="90" y2="90"/>
-<circle class="c-clear" cx="481.4" cy="90" r="4.5"/>
-<text class="c-label" x="208" y="124" text-anchor="end">Hybrid: pair + verifier</text>
-<line class="c-unclear" x1="394.2" x2="571.3" y1="120" y2="120"/>
-<circle class="c-unclear" cx="472.9" cy="120" r="4.5"/>
-<text class="c-label" x="208" y="154" text-anchor="end">Hybrid: parallel dual + verifier</text>
-<line class="c-unclear" x1="391.4" x2="506.7" y1="150" y2="150"/>
-<circle class="c-unclear" cx="444.8" cy="150" r="4.5"/>
-<text class="c-label" x="208" y="184" text-anchor="end">Trail of Bits</text>
-<line class="c-unclear" x1="368.9" x2="416.7" y1="180" y2="180"/>
-<circle class="c-unclear" cx="394.2" cy="180" r="4.5"/>
-<text class="c-label" x="208" y="214" text-anchor="end">Caveman</text>
-<line class="c-clear" x1="346.5" x2="405.5" y1="210" y2="210"/>
-<circle class="c-clear" cx="377.3" cy="210" r="4.5"/>
-<text class="c-label" x="208" y="244" text-anchor="end">Ponytail</text>
-<line class="c-clear" x1="349.3" x2="402.6" y1="240" y2="240"/>
-<circle class="c-clear" cx="377.3" cy="240" r="4.5"/>
-<text class="c-label" x="208" y="274" text-anchor="end">Bare (B)</text>
-<line class="c-clear" x1="335.2" x2="402.6" y1="270" y2="270"/>
-<circle class="c-clear" cx="368.9" cy="270" r="4.5"/>
-<text class="c-label" x="208" y="304" text-anchor="end">Hybrid: single loop</text>
-<line class="c-clear" x1="312.7" x2="391.4" y1="300" y2="300"/>
-<circle class="c-clear" cx="357.7" cy="300" r="4.5"/>
-<text class="c-label" x="208" y="334" text-anchor="end">Built-in /code-review</text>
-<line class="c-clear" x1="273.4" x2="394.2" y1="330" y2="330"/>
-<circle class="c-clear" cx="335.2" cy="330" r="4.5"/>
-<text class="c-label" x="208" y="364" text-anchor="end">ECC</text>
-<line class="c-clear" x1="236.9" x2="354.9" y1="360" y2="360"/>
-<circle class="c-clear" cx="298.7" cy="360" r="4.5"/>
-<line class="c-tick" x1="239.6" x2="239.6" y1="380" y2="385"/>
-<text class="c-axis" x="239.6" y="398" text-anchor="middle">-20</text>
-<line class="c-tick" x1="281.8" x2="281.8" y1="380" y2="385"/>
-<text class="c-axis" x="281.8" y="398" text-anchor="middle">-15</text>
-<line class="c-tick" x1="324.0" x2="324.0" y1="380" y2="385"/>
-<text class="c-axis" x="324.0" y="398" text-anchor="middle">-10</text>
-<line class="c-tick" x1="366.1" x2="366.1" y1="380" y2="385"/>
-<text class="c-axis" x="366.1" y="398" text-anchor="middle">-5</text>
-<line class="c-tick" x1="408.3" x2="408.3" y1="380" y2="385"/>
-<text class="c-axis" x="408.3" y="398" text-anchor="middle">+0</text>
-<line class="c-tick" x1="450.4" x2="450.4" y1="380" y2="385"/>
-<text class="c-axis" x="450.4" y="398" text-anchor="middle">+5</text>
-<line class="c-tick" x1="492.6" x2="492.6" y1="380" y2="385"/>
-<text class="c-axis" x="492.6" y="398" text-anchor="middle">+10</text>
-<line class="c-tick" x1="534.7" x2="534.7" y1="380" y2="385"/>
-<text class="c-axis" x="534.7" y="398" text-anchor="middle">+15</text>
-<line class="c-tick" x1="576.9" x2="576.9" y1="380" y2="385"/>
-<text class="c-axis" x="576.9" y="398" text-anchor="middle">+20</text>
-<line class="c-tick" x1="619.1" x2="619.1" y1="380" y2="385"/>
-<text class="c-axis" x="619.1" y="398" text-anchor="middle">+25</text>
-<text class="c-axis" x="435" y="418" text-anchor="middle">Difference in real defects per rep (arm minus Bare A)</text>
+<line class="c-zero" x1="468.3" x2="468.3" y1="10" y2="380"/>
+<text class="c-label" x="268" y="34" text-anchor="end">Dual review + code graph</text>
+<line class="c-clear" x1="555.4" x2="693.1" y1="30" y2="30"/>
+<circle class="c-clear" cx="620.0" cy="30" r="4.5"/>
+<text class="c-label" x="268" y="64" text-anchor="end">Dual review</text>
+<line class="c-clear" x1="555.4" x2="687.5" y1="60" y2="60"/>
+<circle class="c-clear" cx="617.3" cy="60" r="4.5"/>
+<text class="c-label" x="268" y="94" text-anchor="end">Superpowers</text>
+<line class="c-clear" x1="487.9" x2="600.4" y1="90" y2="90"/>
+<circle class="c-clear" cx="541.4" cy="90" r="4.5"/>
+<text class="c-label" x="268" y="124" text-anchor="end">Hybrid: pair + verifier</text>
+<line class="c-unclear" x1="454.2" x2="631.3" y1="120" y2="120"/>
+<circle class="c-unclear" cx="532.9" cy="120" r="4.5"/>
+<text class="c-label" x="268" y="154" text-anchor="end">Hybrid: parallel dual + verifier</text>
+<line class="c-unclear" x1="451.4" x2="566.7" y1="150" y2="150"/>
+<circle class="c-unclear" cx="504.8" cy="150" r="4.5"/>
+<text class="c-label" x="268" y="184" text-anchor="end">Trail of Bits</text>
+<line class="c-unclear" x1="428.9" x2="476.7" y1="180" y2="180"/>
+<circle class="c-unclear" cx="454.2" cy="180" r="4.5"/>
+<text class="c-label" x="268" y="214" text-anchor="end">Caveman</text>
+<line class="c-clear" x1="406.5" x2="465.5" y1="210" y2="210"/>
+<circle class="c-clear" cx="437.3" cy="210" r="4.5"/>
+<text class="c-label" x="268" y="244" text-anchor="end">Ponytail</text>
+<line class="c-clear" x1="409.3" x2="462.6" y1="240" y2="240"/>
+<circle class="c-clear" cx="437.3" cy="240" r="4.5"/>
+<text class="c-label" x="268" y="274" text-anchor="end">Bare (B)</text>
+<line class="c-clear" x1="395.2" x2="462.6" y1="270" y2="270"/>
+<circle class="c-clear" cx="428.9" cy="270" r="4.5"/>
+<text class="c-label" x="268" y="304" text-anchor="end">Hybrid: single loop</text>
+<line class="c-clear" x1="372.7" x2="451.4" y1="300" y2="300"/>
+<circle class="c-clear" cx="417.7" cy="300" r="4.5"/>
+<text class="c-label" x="268" y="334" text-anchor="end">Built-in /code-review</text>
+<line class="c-clear" x1="333.4" x2="454.2" y1="330" y2="330"/>
+<circle class="c-clear" cx="395.2" cy="330" r="4.5"/>
+<text class="c-label" x="268" y="364" text-anchor="end">ECC</text>
+<line class="c-clear" x1="296.9" x2="414.9" y1="360" y2="360"/>
+<circle class="c-clear" cx="358.7" cy="360" r="4.5"/>
+<line class="c-tick" x1="299.6" x2="299.6" y1="380" y2="385"/>
+<text class="c-axis" x="299.6" y="398" text-anchor="middle">-20</text>
+<line class="c-tick" x1="341.8" x2="341.8" y1="380" y2="385"/>
+<text class="c-axis" x="341.8" y="398" text-anchor="middle">-15</text>
+<line class="c-tick" x1="384.0" x2="384.0" y1="380" y2="385"/>
+<text class="c-axis" x="384.0" y="398" text-anchor="middle">-10</text>
+<line class="c-tick" x1="426.1" x2="426.1" y1="380" y2="385"/>
+<text class="c-axis" x="426.1" y="398" text-anchor="middle">-5</text>
+<line class="c-tick" x1="468.3" x2="468.3" y1="380" y2="385"/>
+<text class="c-axis" x="468.3" y="398" text-anchor="middle">+0</text>
+<line class="c-tick" x1="510.4" x2="510.4" y1="380" y2="385"/>
+<text class="c-axis" x="510.4" y="398" text-anchor="middle">+5</text>
+<line class="c-tick" x1="552.6" x2="552.6" y1="380" y2="385"/>
+<text class="c-axis" x="552.6" y="398" text-anchor="middle">+10</text>
+<line class="c-tick" x1="594.7" x2="594.7" y1="380" y2="385"/>
+<text class="c-axis" x="594.7" y="398" text-anchor="middle">+15</text>
+<line class="c-tick" x1="636.9" x2="636.9" y1="380" y2="385"/>
+<text class="c-axis" x="636.9" y="398" text-anchor="middle">+20</text>
+<line class="c-tick" x1="679.1" x2="679.1" y1="380" y2="385"/>
+<text class="c-axis" x="679.1" y="398" text-anchor="middle">+25</text>
+<text class="c-axis" x="495" y="418" text-anchor="middle">Difference in real defects per rep (arm minus Bare A)</text>
 </svg>
       </figure>
       <figure><figcaption>Table 3. Other comparisons.</figcaption><div class="table-scroll"><table><tr><th>Comparison</th><th class="num">Difference in real defects / rep</th><th class="num">95% interval</th></tr><tr><td>Dual review + code graph - Dual review</td><td class="num">+0.3</td><td class="num">−3.7 to +4.3</td></tr><tr><td>Bare (B) - Bare (A)</td><td class="num">−4.7</td><td class="num">−8.7 to −0.7</td></tr><tr><td>Superpowers - Bare (A)</td><td class="num">+8.7</td><td class="num">+2.3 to +15.7</td></tr><tr><td>Hybrid: pair - Superpowers</td><td class="num">−1.0</td><td class="num">−8.0 to +6.3</td></tr><tr><td>Hybrid: parallel dual (reported) - Dual review</td><td class="num">−1.3</td><td class="num">−6.0 to +3.7</td></tr><tr><td>Hybrid: pair (reported) - Dual review</td><td class="num">−5.0</td><td class="num">−10.3 to +0.7</td></tr><tr><td>Hybrid: single loop (reported) - Dual review</td><td class="num">−21.0</td><td class="num">−31.3 to −12.7</td></tr></table></div></figure>
@@ -341,7 +341,7 @@
         counted; estimated token cost at $100/h.</figcaption><div class="table-scroll"><table><tr><th>Step</th><th class="num">Δ real defects / review (95%)</th><th class="num">Δ serious / review</th><th class="num">Δ items to read / review</th><th class="num">Δ est. $ / review</th><th class="num">Δ wait, s</th><th class="num">Pays if a caught defect is worth (min), triage 1 min</th><th class="num">3 min</th><th class="num">10 min</th><th class="num">Serious only, 3 min</th></tr><tr><td>Superpowers vs Bare (A)</td><td class="num">+0.62 (+0.17 to +1.12)</td><td class="num">+0.33</td><td class="num">+0.9</td><td class="num">+0.34</td><td class="num">+86</td><td class="num">more than 2</td><td class="num">more than 5</td><td class="num">more than 15</td><td class="num">more than 9</td></tr><tr><td>Dual review vs Bare (A)</td><td class="num">+1.26 (+0.74 to +1.86)</td><td class="num">+0.48</td><td class="num">+4.4</td><td class="num">+0.56</td><td class="num">+165</td><td class="num">more than 4</td><td class="num">more than 11</td><td class="num">more than 35</td><td class="num">more than 28</td></tr><tr><td>Dual review vs Superpowers</td><td class="num">+0.64 (+0.31 to +0.98)</td><td class="num">+0.14</td><td class="num">+3.5</td><td class="num">+0.22</td><td class="num">+79</td><td class="num">more than 6</td><td class="num">more than 16</td><td class="num">more than 54</td><td class="num">no bound</td></tr><tr><td>Caveman vs Bare (A)</td><td class="num">−0.26 (−0.52 to −0.02)</td><td class="num">−0.12</td><td class="num">−0.2</td><td class="num">0.00</td><td class="num">−4</td><td class="num">less than 0.8</td><td class="num">less than 2</td><td class="num">less than 8</td><td class="num">no bound</td></tr><tr><td>Ponytail vs Bare (A)</td><td class="num">−0.26 (−0.50 to −0.05)</td><td class="num">−0.12</td><td class="num">+0.0</td><td class="num">0.00</td><td class="num">−2</td><td class="num">never</td><td class="num">never</td><td class="num">never</td><td class="num">no bound</td></tr><tr><td>Hybrid: single loop vs Bare (A)</td><td class="num">−0.43 (−0.81 to −0.14)</td><td class="num">−0.07</td><td class="num">+0.6</td><td class="num">+0.05</td><td class="num">+41</td><td class="num">never</td><td class="num">never</td><td class="num">never</td><td class="num">no bound</td></tr><tr><td>Built-in /code-review vs Bare (A)</td><td class="num">−0.62 (−1.14 to −0.12)</td><td class="num">−0.29</td><td class="num">−0.6</td><td class="num">−0.04</td><td class="num">−14</td><td class="num">less than 1</td><td class="num">less than 3</td><td class="num">less than 10</td><td class="num">less than 7</td></tr><tr><td>ECC vs Bare (A)</td><td class="num">−0.93 (−1.45 to −0.45)</td><td class="num">−0.33</td><td class="num">−1.0</td><td class="num">−0.08</td><td class="num">−8</td><td class="num">less than 1</td><td class="num">less than 3</td><td class="num">less than 11</td><td class="num">less than 9</td></tr></table></div></figure>
       <figure><figcaption>Figure 2. Break-even against triage minutes per finding. Above a line, the step pays. The band
         is the break-even of dual review over bare at the ends of the 95% interval of its extra defects.</figcaption>
-<svg viewBox="0 0 680 300" role="img" aria-labelledby="t-econ" class="chart">
+<svg viewBox="0 0 800 300" role="img" aria-labelledby="t-econ" class="chart chart-wide">
 <title id="t-econ">Break-even value of a caught defect against triage minutes per finding</title>
 <polygon points="60.0,249.3 520.0,158.4 520.0,20.0 60.0,248.2" style="fill: var(--accent); opacity: 0.15"/>
 <line class="c-tick" x1="60" x2="520" y1="250" y2="250"/>
@@ -377,7 +377,7 @@
 <line class="c-tick" x1="55" x2="60" y1="57.4" y2="57.4"/>
 <text class="c-axis" x="51" y="61.4" text-anchor="end">50</text>
 <text class="c-axis" x="290" y="288" text-anchor="middle">Minutes to triage one finding</text>
-<text class="c-axis" x="16" y="135" text-anchor="middle" transform="rotate(-90 16 135)">Break-even, minutes per caught defect</text>
+<text class="c-axis" x="16" y="150" text-anchor="middle" transform="rotate(-90 16 150)">Break-even, minutes per caught defect</text>
 </svg>
       </figure>
       <p><b>When dual review is worth it.</b> Over bare Claude Code it pays whenever a caught defect is worth more than
@@ -418,7 +418,7 @@
         adjudication packets. Intervals are from the same task bootstrap (10,000 resamples).
         The controls' values differ from Table 2 because the labels differ, so compare within Table 8 only.</p>
       <figure><figcaption>Table 8. The built-in command at high, judged in one round with its controls. Estimated cost is
-        Claude Code's token-cost estimate.</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th>Reps</th><th>Real / rep</th><th>95% interval</th><th>Precision</th><th>Est. $ / review</th><th>s / review</th></tr><tr><td>Built-in /code-review, low (as run)</td><td>1, 2</td><td>25.5</td><td>19.5 to 31.5</td><td>0.80</td><td>0.19</td><td>29</td></tr><tr><td>Built-in /code-review, high</td><td>3, 4, 5</td><td>54.3</td><td>44.3 to 66.0</td><td>0.69</td><td>0.47</td><td>113</td></tr><tr><td>Dual review</td><td>1, 2</td><td>59.0</td><td>46.0 to 75.5</td><td>0.67</td><td>0.79</td><td>213</td></tr></table></div></figure>
+        Claude Code's token-cost estimate.</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th class="num">Reps</th><th class="num">Real / rep</th><th class="num">95% interval</th><th class="num">Precision</th><th class="num">Est. $ / review</th><th class="num">s / review</th></tr><tr><td>Built-in /code-review, low (as run)</td><td class="num">1, 2</td><td class="num">25.5</td><td class="num">19.5 to 31.5</td><td class="num">0.80</td><td class="num">0.19</td><td class="num">29</td></tr><tr><td>Built-in /code-review, high</td><td class="num">3, 4, 5</td><td class="num">54.3</td><td class="num">44.3 to 66.0</td><td class="num">0.69</td><td class="num">0.47</td><td class="num">113</td></tr><tr><td>Dual review</td><td class="num">1, 2</td><td class="num">59.0</td><td class="num">46.0 to 75.5</td><td class="num">0.67</td><td class="num">0.79</td><td class="num">213</td></tr></table></div></figure>
       <p>At <code>high</code> the built-in command found 28.8 more real
         defects per rep than as run (+20.0 to +38.7). Dual review found
         4.7 more than the built-in command at high
