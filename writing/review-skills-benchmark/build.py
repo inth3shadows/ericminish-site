@@ -17,6 +17,7 @@ TITLE = "Review skills on real code: a three-rep benchmark of Claude Code review
 DATE = "2026-11-11"
 D = json.load(open(os.path.join(HERE, "data.json")))
 FU = json.load(open(os.path.join(HERE, "followup-builtin-high.json")))  # Section 5.7, a separate adjudication round
+F8 = json.load(open(os.path.join(HERE, "followups-2026-11.json")))  # Section 5.8, three more rounds, each with its own controls
 A, C = D["arms"], D["comparisons"]
 
 NAMES = {
@@ -357,6 +358,37 @@ def main():
           "<th>Precision</th><th>Est. $ / review</th><th>s / review</th></tr>"
           + fu_row("Built-in /code-review, low (as run)", fu_lo) + fu_row("Built-in /code-review, high", fu_hi)
           + fu_row("Dual review", fu_dn) + "</table></div>")
+
+    ln, vr, fl = F8["sonnet_lane"]["data"], F8["verify_round"]["data"], F8["filter"]["data"]
+    lnA, lnC = ln["arms"], ln["contrasts"]
+    rng = lambda c, f=f1: f"{f(c['ci95'][0])} to {f(c['ci95'][1])}"  # noqa: E731
+    t9 = table(["Arm", "Model", "Reps", "Real / rep", "95% interval", "Precision", "Est. $ / review", "s / review"],
+               [[lbl, mdl, ", ".join(str(r) for r in lnA[a]["reps"]), f1(lnA[a]["real_per_rep"]), rng(lnA[a]),
+                 f"{lnA[a]['precision']:.2f}", f"{lnA[a]['cost_per_review']:.2f}", lnA[a]["secs_per_review"]]
+                for a, lbl, mdl in (("builtin_high", "Built-in /code-review, high", "Opus 5.5"),
+                                    ("builtin_high_sonnet", "Built-in /code-review, high", "Sonnet 5.5"),
+                                    ("dual_nocg", "Dual review", "Opus 5.5 + Sonnet 5.5 agent"),
+                                    ("dual_sonnet", "Dual review", "Sonnet 5.5 throughout"))], num_from=2)
+    vm, vA, vn = vr["metrics"], vr["arms"], vr["tasks"]
+    sgi = lambda x: ("+" if x > 0 else "−" if x < 0 else "") + f"{abs(x):g}"  # noqa: E731
+    vrow = lambda k, lbl: [lbl, vm[k]["verify_full"]["value"], vm[k]["verify_agent"]["value"],  # noqa: E731
+                           f"{sgi(vm[k]['agent_minus_full']['value'])} ({rng(vm[k]['agent_minus_full'], sgi)})"]
+    t10 = table(["Real defects found", "Dual review round 2", "Agent alone", "Difference (95% interval)"],
+                [vrow("total", "All"), vrow("fix_introduced", "Introduced by the fix"),
+                 vrow("still_open", "Still open from round 1"), vrow("old", "Older, not in the change"),
+                 ["Est. $ / review", f"{vA['verify_full']['cost'] / vn:.2f}", f"{vA['verify_agent']['cost'] / vn:.2f}", ""],
+                 ["s / review", vA["verify_full"]["secs_per_review"], vA["verify_agent"]["secs_per_review"], ""]])
+    flA, flC = fl["arms"], fl["contrasts"]
+    t11 = table(["Arm", "Reviews", "Real / rep", "95% interval", "Not real in main list / rep", "Real only in Unconfirmed / rep",
+                 "S1+S2 / rep", "Est. $ / review", "s / review"],
+                [[lbl, flA[a]["cells"], f1(flA[a]["real_per_rep"]["value"]), rng(flA[a]["real_per_rep"]),
+                  f1(flA[a]["not_real_main_per_rep"]["value"]),
+                  "no Unconfirmed list" if a == "dual_nocg" else f1(flA[a]["demoted_per_rep"]["value"]),
+                  f1(flA[a]["S1S2_per_rep"]["value"]), f"{flA[a]['cost_per_review']:.2f}", flA[a]["secs_per_review"]]
+                 for a, lbl in (("dual_nocg", "Dual review (control)"), ("dual_filter", "Dual review + filter"),
+                                ("triple_filter2", "Filter + third reviewer (Opus)"))])
+    fc = lambda pair, m: f"{sg(flC[pair][m]['value'])} ({rng(flC[pair][m], sg)})"  # noqa: E731
+    nr_cut = lambda a: 100 * -flC[f"{a} - dual_nocg"]["not_real_main"]["value"] / flA["dual_nocg"]["not_real_main_per_rep"]["value"]  # noqa: E731
     abstract = (
         f"Skill packs for Claude Code promise better code review, but they are rarely measured on their users' own code. "
         f"I ran {narms} review bundles (bare Claude Code twice, the built-in review command, five public skill packs, "
@@ -394,8 +426,9 @@ def main():
       <div class="note"><p><b>Review.</b> Checked independently against the data by two models from other families
         over five review rounds, and Section 5.6 (economics) over two more; the headline difference moved from +22.0 to {sg(dn['minus_bare']['value'])} as
         attribution was tightened (<a href="protocol/changelog.md">changelog</a>). Every number on this page is
-        generated from <a href="data.json">data.json</a>, and Section 5.7's from
-        <a href="followup-builtin-high.json">followup-builtin-high.json</a>.</p></div>
+        generated from <a href="data.json">data.json</a>, Section 5.7's from
+        <a href="followup-builtin-high.json">followup-builtin-high.json</a>, and Section 5.8's from
+        <a href="followups-2026-11.json">followups-2026-11.json</a>.</p></div>
 
       <div class="summary"><p><b>Abstract.</b> {html.escape(abstract)}</p></div>
 
@@ -657,6 +690,49 @@ def main():
         running the same command at <code>high</code>. Whether dual review's second reviewer adds defects beyond
         that is not settled by these reps. This follow-up was not checked by the two reviewing models.</p>
 
+      <h3>5.8 Later follow-ups (November 2026)</h3>
+      <p>Three more questions were tested after publication. Each was adjudicated in its own round with its controls
+        judged again in that round, by the same protocol as Section 5.7: two blind Opus judges per task, one attribution
+        judge per task, and the task bootstrap ({ln['bootstrap']['B']:,} resamples). Labels move between rounds, so compare
+        within each table only. None of this section was checked by the two reviewing models.</p>
+      <p><b>A Sonnet review lane.</b> Could Sonnet 5.5 replace Opus 5.5 where dual review uses Opus? On the same
+        {ln['tasks']} tasks, three more reps each, the built-in command at <code>high</code> and the whole of dual review
+        were run on Sonnet and compared with their Opus versions (Table 9). On Sonnet the built-in command found
+        {f1(-lnC['builtin_high_sonnet - builtin_high']['value'])} fewer real defects per rep
+        (difference {rng(lnC['builtin_high_sonnet - builtin_high'], sg)}) and dual review
+        {f1(-lnC['dual_sonnet - dual_nocg']['value'])} fewer ({rng(lnC['dual_sonnet - dual_nocg'], sg)}), at well under half
+        the estimated cost. Both intervals exclude zero, so
+        dual review stays on Opus.</p>
+      <figure><figcaption>Table 9. Opus and Sonnet in the built-in command at high and in dual review, judged in one
+        round. Dual review's control is reps 1–2.</figcaption>{t9}</figure>
+      <p><b>A cheaper verify round.</b> Dual review's second round checks a fix against a ledger of the first round's
+        findings. I replayed {vn} second rounds from my own pull requests, one rep each, and compared dual review's round 2
+        with the code-review agent alone given the same ledger (Table 10). The agent alone found
+        {-vm['total']['agent_minus_full']['value']} fewer real defects in total (difference
+        {rng(vm['total']['agent_minus_full'], sgi)}), including {-vm['fix_introduced']['agent_minus_full']['value']} fewer among
+        the defects the fix introduced, at about a quarter of the estimated cost. Almost every defect in these tasks was graded S3, so severity could not separate the two.
+        Round 2 stays as it is.</p>
+      <figure><figcaption>Table 10. Verify round: dual review's round 2 against the agent alone, {vn} tasks, totals over
+        one rep.</figcaption>{t10}</figure>
+      <p><b>A precision filter and a third reviewer.</b> Two changes to dual review's merge step were tested together
+        with dual review as control (Table 11). The filter keeps a finding in the main list only when its reviewer gave a
+        concrete failing input and the wrong output, or two reviewers raised it independently, and moves the rest to an
+        Unconfirmed list. The second arm adds a third reviewer, the same agent and brief pinned to Opus. Only the main
+        list is scored. With the filter, real defects changed by {fc('dual_filter - dual_nocg', 'real')} per rep and S1+S2
+        defects by {fc('dual_filter - dual_nocg', 'S1S2')}, while findings that were not real fell by
+        {nr_cut('dual_filter'):.0f}% ({sg(flC['dual_filter - dual_nocg']['not_real_main']['value'])} per rep,
+        {rng(flC['dual_filter - dual_nocg']['not_real_main'], sg)}). That missed the one-third cut set
+        in advance, and about {f1(flA['dual_filter']['demoted_per_rep']['value'])} real defects per rep moved to the
+        Unconfirmed list, none graded S1 or S2. The third reviewer changed real defects by
+        {fc('triple_filter2 - dual_nocg', 'real')} at about {flA['triple_filter2']['cost_per_review'] / flA['dual_nocg']['cost_per_review']:.1f}
+        times the estimated cost. Neither change was adopted. {len(fl['excluded_cells'])} of the third reviewer's
+        {flA['triple_filter2']['cells'] + len(fl['excluded_cells'])} reviews are left out because the session wrote a
+        summary after its report and the harness scored the summary; its numbers here are from the rest. Severity in
+        this round was graded by Opus, and {f1(flA['dual_nocg']['credited_no_severity_per_rep']['value'])} credited defects
+        per rep (planted defects with no graded item) have no severity in every arm.</p>
+      <figure><figcaption>Table 11. The filter and the third reviewer against dual review, judged in one round; reps 3–5
+        for the new arms, 1–2 for the control.</figcaption>{t11}</figure>
+
       <h2 id="limits">6 Limitations <a class="anchor" href="#limits" aria-label="Link to this section">#</a></h2>
       <ul>
         <li><b>Judges from one family.</b> Adjudication and attribution were done by Claude Opus 5.5, grading Claude
@@ -728,7 +804,8 @@ def main():
         <a href="protocol/seeds/round2.json">round 2</a>, <a href="protocol/seeds/round2-hybrid-rep0.json">round 2
         hybrids, rep 0</a>. <a href="data.json">data.json</a> holds every figure on this page with its interval, and
         <a href="attribution.json">attribution.json</a> the defect catalogue and claim mappings behind them;
-        <a href="followup-builtin-high.json">followup-builtin-high.json</a> holds Section 5.7's figures.</p>
+        <a href="followup-builtin-high.json">followup-builtin-high.json</a> holds Section 5.7's figures and
+        <a href="followups-2026-11.json">followups-2026-11.json</a> Section 5.8's.</p>
 
       <h2 id="cite">How to cite <a class="anchor" href="#cite" aria-label="Link to this section">#</a></h2>
       <pre><code>@misc{{minish2026reviewskills,

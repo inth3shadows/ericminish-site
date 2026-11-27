@@ -61,15 +61,16 @@
         <p class="post-meta">
           <span>By <a href="/about/">Eric Minish</a></span>
           <span><time datetime="2026-11-11">11 November 2026</time></span>
-          <!-- auto:start readtime --><span>28 min read</span><!-- auto:end readtime -->
+          <!-- auto:start readtime --><span>31 min read</span><!-- auto:end readtime -->
         </p>
       </header>
 
       <div class="note"><p><b>Review.</b> Checked independently against the data by two models from other families
         over five review rounds, and Section 5.6 (economics) over two more; the headline difference moved from +22.0 to +17.7 as
         attribution was tightened (<a href="protocol/changelog.md">changelog</a>). Every number on this page is
-        generated from <a href="data.json">data.json</a>, and Section 5.7's from
-        <a href="followup-builtin-high.json">followup-builtin-high.json</a>.</p></div>
+        generated from <a href="data.json">data.json</a>, Section 5.7's from
+        <a href="followup-builtin-high.json">followup-builtin-high.json</a>, and Section 5.8's from
+        <a href="followups-2026-11.json">followups-2026-11.json</a>.</p></div>
 
       <div class="summary"><p><b>Abstract.</b> Skill packs for Claude Code promise better code review, but they are rarely measured on their users&#x27; own code. I ran 13 review bundles (bare Claude Code twice, the built-in review command, five public skill packs, my own dual-review skill with and without code-graph tools, and three exploratory hybrids) on 14 review tasks built from real commits in four of my repositories, three times each: 546 reviews. Two blind Claude Opus 5.5 judges adjudicated the findings that matched no planted defect, except 26 next to dropped plant candidates (Cohen&#x27;s κ 0.884 on the larger round); the planted and accepted defects were then listed per task, and each review was credited once for each listed defect it hit by location or identified in a claim. Dual review found 53.0 real defects per rep against 35.3 for bare Claude Code, a difference of +17.7 (95% interval +10.3 to +26.0), including +6.7 serious (S1–S2) defects per rep (+2.0 to +13.0). Its estimated token cost per review was about 3.3 times that of bare Claude Code and its elapsed time 4.7 times, and the two dual-review bundles had the lowest precision of those tested. Of the public packs and the built-in command, Superpowers scored above bare Claude Code, while Caveman, Ponytail, Built-in /code-review and ECC scored below it, all with 95% intervals that exclude zero; two identical bare arms also differed by −4.7 (−8.7 to −0.7), so differences of that size arise between reruns. The built-in command had run at the low level its agent chose; in a follow-up round at high it found 54.3 real defects per rep against 59.0 for dual review judged in the same round (difference +4.7, −2.0 to +12.3). These are comparisons of whole bundles, which differ in models, instructions and compute as well as in skill.</p></div>
 
@@ -428,6 +429,49 @@
         running the same command at <code>high</code>. Whether dual review's second reviewer adds defects beyond
         that is not settled by these reps. This follow-up was not checked by the two reviewing models.</p>
 
+      <h3>5.8 Later follow-ups (November 2026)</h3>
+      <p>Three more questions were tested after publication. Each was adjudicated in its own round with its controls
+        judged again in that round, by the same protocol as Section 5.7: two blind Opus judges per task, one attribution
+        judge per task, and the task bootstrap (10,000 resamples). Labels move between rounds, so compare
+        within each table only. None of this section was checked by the two reviewing models.</p>
+      <p><b>A Sonnet review lane.</b> Could Sonnet 5.5 replace Opus 5.5 where dual review uses Opus? On the same
+        14 tasks, three more reps each, the built-in command at <code>high</code> and the whole of dual review
+        were run on Sonnet and compared with their Opus versions (Table 9). On Sonnet the built-in command found
+        8.3 fewer real defects per rep
+        (difference −13.7 to −3.0) and dual review
+        8.3 fewer (−15.8 to −2.2), at well under half
+        the estimated cost. Both intervals exclude zero, so
+        dual review stays on Opus.</p>
+      <figure><figcaption>Table 9. Opus and Sonnet in the built-in command at high and in dual review, judged in one
+        round. Dual review's control is reps 1–2.</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th>Model</th><th class="num">Reps</th><th class="num">Real / rep</th><th class="num">95% interval</th><th class="num">Precision</th><th class="num">Est. $ / review</th><th class="num">s / review</th></tr><tr><td>Built-in /code-review, high</td><td>Opus 5.5</td><td class="num">3, 4, 5</td><td class="num">50.0</td><td class="num">39.0 to 62.3</td><td class="num">0.65</td><td class="num">0.47</td><td class="num">113</td></tr><tr><td>Built-in /code-review, high</td><td>Sonnet 5.5</td><td class="num">3, 4, 5</td><td class="num">41.7</td><td class="num">33.0 to 51.7</td><td class="num">0.57</td><td class="num">0.14</td><td class="num">53</td></tr><tr><td>Dual review</td><td>Opus 5.5 + Sonnet 5.5 agent</td><td class="num">1, 2</td><td class="num">55.0</td><td class="num">40.0 to 74.5</td><td class="num">0.61</td><td class="num">0.79</td><td class="num">213</td></tr><tr><td>Dual review</td><td>Sonnet 5.5 throughout</td><td class="num">3, 4, 5</td><td class="num">46.7</td><td class="num">31.7 to 65.0</td><td class="num">0.54</td><td class="num">0.30</td><td class="num">103</td></tr></table></div></figure>
+      <p><b>A cheaper verify round.</b> Dual review's second round checks a fix against a ledger of the first round's
+        findings. I replayed 31 second rounds from my own pull requests, one rep each, and compared dual review's round 2
+        with the code-review agent alone given the same ledger (Table 10). The agent alone found
+        55 fewer real defects in total (difference
+        −72 to −38), including 20 fewer among
+        the defects the fix introduced, at about a quarter of the estimated cost. Almost every defect in these tasks was graded S3, so severity could not separate the two.
+        Round 2 stays as it is.</p>
+      <figure><figcaption>Table 10. Verify round: dual review's round 2 against the agent alone, 31 tasks, totals over
+        one rep.</figcaption><div class="table-scroll"><table><tr><th>Real defects found</th><th class="num">Dual review round 2</th><th class="num">Agent alone</th><th class="num">Difference (95% interval)</th></tr><tr><td>All</td><td class="num">119</td><td class="num">64</td><td class="num">−55 (−72 to −38)</td></tr><tr><td>Introduced by the fix</td><td class="num">53</td><td class="num">33</td><td class="num">−20 (−31 to −9)</td></tr><tr><td>Still open from round 1</td><td class="num">51</td><td class="num">25</td><td class="num">−26 (−36 to −17)</td></tr><tr><td>Older, not in the change</td><td class="num">15</td><td class="num">6</td><td class="num">−9 (−16 to −3)</td></tr><tr><td>Est. $ / review</td><td class="num">1.38</td><td class="num">0.35</td><td class="num"></td></tr><tr><td>s / review</td><td class="num">396</td><td class="num">130</td><td class="num"></td></tr></table></div></figure>
+      <p><b>A precision filter and a third reviewer.</b> Two changes to dual review's merge step were tested together
+        with dual review as control (Table 11). The filter keeps a finding in the main list only when its reviewer gave a
+        concrete failing input and the wrong output, or two reviewers raised it independently, and moves the rest to an
+        Unconfirmed list. The second arm adds a third reviewer, the same agent and brief pinned to Opus. Only the main
+        list is scored. With the filter, real defects changed by −2.0 (−7.5 to +3.8) per rep and S1+S2
+        defects by −0.3 (−0.8 to 0.0), while findings that were not real fell by
+        28% (−9.8 per rep,
+        −15.2 to −4.3). That missed the one-third cut set
+        in advance, and about 4.0 real defects per rep moved to the
+        Unconfirmed list, none graded S1 or S2. The third reviewer changed real defects by
+        +2.3 (−2.3 to +6.8) at about 1.8
+        times the estimated cost. Neither change was adopted. 2 of the third reviewer's
+        42 reviews are left out because the session wrote a
+        summary after its report and the harness scored the summary; its numbers here are from the rest. Severity in
+        this round was graded by Opus, and 7.0 credited defects
+        per rep (planted defects with no graded item) have no severity in every arm.</p>
+      <figure><figcaption>Table 11. The filter and the third reviewer against dual review, judged in one round; reps 3–5
+        for the new arms, 1–2 for the control.</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th class="num">Reviews</th><th class="num">Real / rep</th><th class="num">95% interval</th><th class="num">Not real in main list / rep</th><th class="num">Real only in Unconfirmed / rep</th><th class="num">S1+S2 / rep</th><th class="num">Est. $ / review</th><th class="num">s / review</th></tr><tr><td>Dual review (control)</td><td class="num">28</td><td class="num">59.0</td><td class="num">46.0 to 74.0</td><td class="num">34.5</td><td class="num">no Unconfirmed list</td><td class="num">13.0</td><td class="num">0.79</td><td class="num">213</td></tr><tr><td>Dual review + filter</td><td class="num">42</td><td class="num">57.0</td><td class="num">42.7 to 73.3</td><td class="num">24.7</td><td class="num">4.0</td><td class="num">12.7</td><td class="num">0.80</td><td class="num">212</td></tr><tr><td>Filter + third reviewer (Opus)</td><td class="num">40</td><td class="num">61.3</td><td class="num">47.3 to 78.7</td><td class="num">31.0</td><td class="num">3.7</td><td class="num">12.7</td><td class="num">1.46</td><td class="num">208</td></tr></table></div></figure>
+
       <h2 id="limits">6 Limitations <a class="anchor" href="#limits" aria-label="Link to this section">#</a></h2>
       <ul>
         <li><b>Judges from one family.</b> Adjudication and attribution were done by Claude Opus 5.5, grading Claude
@@ -499,7 +543,8 @@
         <a href="protocol/seeds/round2.json">round 2</a>, <a href="protocol/seeds/round2-hybrid-rep0.json">round 2
         hybrids, rep 0</a>. <a href="data.json">data.json</a> holds every figure on this page with its interval, and
         <a href="attribution.json">attribution.json</a> the defect catalogue and claim mappings behind them;
-        <a href="followup-builtin-high.json">followup-builtin-high.json</a> holds Section 5.7's figures.</p>
+        <a href="followup-builtin-high.json">followup-builtin-high.json</a> holds Section 5.7's figures and
+        <a href="followups-2026-11.json">followups-2026-11.json</a> Section 5.8's.</p>
 
       <h2 id="cite">How to cite <a class="anchor" href="#cite" aria-label="Link to this section">#</a></h2>
       <pre><code>@misc{minish2026reviewskills,
