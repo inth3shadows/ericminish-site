@@ -354,7 +354,7 @@ def main():
     fu_row = lambda name, a: (f"<tr><td>{name}</td><td>{', '.join(str(r) for r in a['reps'])}</td>"  # noqa: E731
                               f"<td>{f1(a['real_per_rep'])}</td><td>{f1(a['ci95'][0])} to {f1(a['ci95'][1])}</td>"
                               f"<td>{a['precision']:.2f}</td><td>{a['cost_per_review']:.2f}</td><td>{a['secs_per_review']}</td></tr>")
-    t8 = ("<div class=\"table-scroll\"><table><tr><th>Arm</th><th>Reps</th><th>Real / rep</th><th>95% interval</th>"
+    builtin_high_table = ("<div class=\"table-scroll\"><table><tr><th>Arm</th><th>Reps</th><th>Real / rep</th><th>95% interval</th>"
           "<th>Precision</th><th>Est. $ / review</th><th>s / review</th></tr>"
           + fu_row("Built-in /code-review, low (as run)", fu_lo) + fu_row("Built-in /code-review, high", fu_hi)
           + fu_row("Dual review", fu_dn) + "</table></div>")
@@ -379,7 +379,7 @@ def main():
                  ["Est. $ / review", f"{vA['verify_full']['cost'] / vn:.2f}", f"{vA['verify_agent']['cost'] / vn:.2f}", ""],
                  ["s / review", vA["verify_full"]["secs_per_review"], vA["verify_agent"]["secs_per_review"], ""]])
     flA, flC = fl["arms"], fl["contrasts"]
-    t11 = table(["Arm", "Reviews", "Real / rep", "95% interval", "Not real in main list / rep", "Real only in Unconfirmed / rep",
+    t11 = table(["Arm", "Reviews", "Real / rep", "95% interval", "Not real defects in main list / rep", "Real defects only in Unconfirmed / rep",
                  "S1+S2 / rep", "Est. $ / review", "s / review"],
                 [[lbl, flA[a]["cells"], f1(flA[a]["real_per_rep"]["value"]), rng(flA[a]["real_per_rep"]),
                   f1(flA[a]["not_real_main_per_rep"]["value"]),
@@ -679,7 +679,7 @@ def main():
         adjudication packets. Intervals are from the same task bootstrap ({FU['bootstrap']['B']:,} resamples).
         The controls' values differ from Table 2 because the labels differ, so compare within Table 8 only.</p>
       <figure><figcaption>Table 8. The built-in command at high, judged in one round with its controls. Estimated cost is
-        Claude Code's token-cost estimate.</figcaption>{t8}</figure>
+        Claude Code's token-cost estimate.</figcaption>{builtin_high_table}</figure>
       <p>At <code>high</code> the built-in command found {f1(fu_c['builtin_high - builtin']['value'])} more real
         defects per rep than as run ({fu_ci('builtin_high - builtin')}). Dual review found
         {f1(fu_c['dual_nocg - builtin_high']['value'])} more than the built-in command at high
@@ -719,7 +719,7 @@ def main():
         concrete failing input and the wrong output, or two reviewers raised it independently, and moves the rest to an
         Unconfirmed list. The second arm adds a third reviewer, the same agent and brief pinned to Opus. Only the main
         list is scored. With the filter, real defects changed by {fc('dual_filter - dual_nocg', 'real')} per rep and S1+S2
-        defects by {fc('dual_filter - dual_nocg', 'S1S2')}, while findings that were not real fell by
+        defects by {fc('dual_filter - dual_nocg', 'S1S2')}, while findings that were not real defects fell by
         {nr_cut('dual_filter'):.0f}% ({sg(flC['dual_filter - dual_nocg']['not_real_main']['value'])} per rep,
         {rng(flC['dual_filter - dual_nocg']['not_real_main'], sg)}). That missed the one-third cut set
         in advance, and about {f1(flA['dual_filter']['demoted_per_rep']['value'])} real defects per rep moved to the
@@ -820,7 +820,9 @@ def main():
     head = tpl[:tpl.index("<body>")]
     chrome = tpl[tpl.index("<body>"):tpl.index('<main class="post-shell"')]
     footer = tpl[tpl.index("</article>"):]
-    desc = html.escape(abstract[:300].rsplit(" ", 1)[0] + "…", quote=True)
+    desc = html.escape(
+        f"I compared {narms} Claude Code review bundles on {ntask} tasks from real commits, with three repetitions per task. "
+        "The post reports defect detection, finding precision, estimated token cost and runtime.", quote=True)
     head = head.replace("Measuring coding agents by what happens to their code", html.escape(TITLE))
     head = head.replace("measuring-coding-agents", SLUG).replace("2026-11-01", DATE)
     head = re.sub(r'(<meta name="description" content=")[^"]*', r"\g<1>" + desc, head)
