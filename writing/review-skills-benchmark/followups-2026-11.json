@@ -1,0 +1,650 @@
+{
+ "_note": "Section 5.8. Each block is the scorer's output file, copied verbatim; each follow-up was adjudicated in its own round with in-round controls.",
+ "sonnet_lane": {
+  "source": "lane_score.py, 2026-11-25",
+  "data": {
+   "arms": {
+    "builtin_high": {
+     "reps": [
+      3,
+      4,
+      5
+     ],
+     "cells": 42,
+     "fired": 42,
+     "real_per_rep": 50.0,
+     "ci95": [
+      39.0,
+      62.33
+     ],
+     "by_rep": {
+      "3": 53,
+      "4": 50,
+      "5": 47
+     },
+     "precision": 0.65,
+     "cost_per_review": 0.47,
+     "secs_per_review": 113
+    },
+    "builtin_high_sonnet": {
+     "reps": [
+      3,
+      4,
+      5
+     ],
+     "cells": 42,
+     "fired": 42,
+     "real_per_rep": 41.67,
+     "ci95": [
+      33.0,
+      51.67
+     ],
+     "by_rep": {
+      "3": 40,
+      "4": 45,
+      "5": 40
+     },
+     "precision": 0.57,
+     "cost_per_review": 0.14,
+     "secs_per_review": 53
+    },
+    "dual_nocg": {
+     "reps": [
+      1,
+      2
+     ],
+     "cells": 28,
+     "fired": 28,
+     "real_per_rep": 55.0,
+     "ci95": [
+      40.0,
+      74.5
+     ],
+     "by_rep": {
+      "1": 54,
+      "2": 56
+     },
+     "precision": 0.61,
+     "cost_per_review": 0.79,
+     "secs_per_review": 213
+    },
+    "dual_sonnet": {
+     "reps": [
+      3,
+      4,
+      5
+     ],
+     "cells": 42,
+     "fired": 42,
+     "real_per_rep": 46.67,
+     "ci95": [
+      31.67,
+      65.0
+     ],
+     "by_rep": {
+      "3": 49,
+      "4": 46,
+      "5": 45
+     },
+     "precision": 0.54,
+     "cost_per_review": 0.3,
+     "secs_per_review": 103
+    }
+   },
+   "contrasts": {
+    "builtin_high_sonnet - builtin_high": {
+     "value": -8.33,
+     "ci95": [
+      -13.67,
+      -3.0
+     ]
+    },
+    "dual_sonnet - dual_nocg": {
+     "value": -8.33,
+     "ci95": [
+      -15.83,
+      -2.17
+     ]
+    },
+    "dual_sonnet - builtin_high": {
+     "value": -3.33,
+     "ci95": [
+      -11.0,
+      5.0
+     ]
+    }
+   },
+   "tasks": 14,
+   "attribution_tasks_missing": 0,
+   "bootstrap": {
+    "B": 10000,
+    "seed": 248
+   }
+  }
+ },
+ "verify_round": {
+  "source": "verify_score.py, 2026-11-26",
+  "data": {
+   "metrics": {
+    "total": {
+     "verify_full": {
+      "value": 119,
+      "ci95": [
+       90,
+       150
+      ]
+     },
+     "verify_agent": {
+      "value": 64,
+      "ci95": [
+       44,
+       88
+      ]
+     },
+     "agent_minus_full": {
+      "value": -55,
+      "ci95": [
+       -72,
+       -38
+      ]
+     }
+    },
+    "fix_introduced": {
+     "verify_full": {
+      "value": 53,
+      "ci95": [
+       31,
+       79
+      ]
+     },
+     "verify_agent": {
+      "value": 33,
+      "ci95": [
+       17,
+       53
+      ]
+     },
+     "agent_minus_full": {
+      "value": -20,
+      "ci95": [
+       -31,
+       -9
+      ]
+     }
+    },
+    "still_open": {
+     "verify_full": {
+      "value": 51,
+      "ci95": [
+       38,
+       65
+      ]
+     },
+     "verify_agent": {
+      "value": 25,
+      "ci95": [
+       15,
+       36
+      ]
+     },
+     "agent_minus_full": {
+      "value": -26,
+      "ci95": [
+       -36,
+       -17
+      ]
+     }
+    },
+    "old": {
+     "verify_full": {
+      "value": 15,
+      "ci95": [
+       7,
+       24
+      ]
+     },
+     "verify_agent": {
+      "value": 6,
+      "ci95": [
+       1,
+       13
+      ]
+     },
+     "agent_minus_full": {
+      "value": -9,
+      "ci95": [
+       -16,
+       -3
+      ]
+     }
+    },
+    "S1S2": {
+     "verify_full": {
+      "value": 5,
+      "ci95": [
+       1,
+       9
+      ]
+     },
+     "verify_agent": {
+      "value": 5,
+      "ci95": [
+       1,
+       9
+      ]
+     },
+     "agent_minus_full": {
+      "value": 0,
+      "ci95": [
+       0,
+       0
+      ]
+     }
+    },
+    "S1S2_fix_or_open": {
+     "verify_full": {
+      "value": 4,
+      "ci95": [
+       1,
+       8
+      ]
+     },
+     "verify_agent": {
+      "value": 4,
+      "ci95": [
+       1,
+       8
+      ]
+     },
+     "agent_minus_full": {
+      "value": 0,
+      "ci95": [
+       0,
+       0
+      ]
+     }
+    },
+    "later_hits": {
+     "verify_full": {
+      "value": 11,
+      "ci95": [
+       5,
+       18
+      ]
+     },
+     "verify_agent": {
+      "value": 8,
+      "ci95": [
+       2,
+       15
+      ]
+     },
+     "agent_minus_full": {
+      "value": -3,
+      "ci95": [
+       -9,
+       4
+      ]
+     }
+    }
+   },
+   "arms": {
+    "verify_full": {
+     "cost": 42.63,
+     "secs_per_review": 396,
+     "precision": 0.5,
+     "only_this_arm": 60
+    },
+    "verify_agent": {
+     "cost": 10.82,
+     "secs_per_review": 130,
+     "precision": 0.63,
+     "only_this_arm": 5
+    }
+   },
+   "defects_in_union": 124,
+   "defects_by_kind": {
+    "fix_introduced": 57,
+    "still_open": 51,
+    "old": 16
+   },
+   "severity_graded": 124,
+   "severity_grader": "opus",
+   "later_findings_with_location": 20,
+   "serious_fix_or_open_only_full_found": [],
+   "tasks": 31,
+   "attribution_missing": [],
+   "bootstrap": {
+    "B": 10000,
+    "seed": 248
+   }
+  }
+ },
+ "filter": {
+  "source": "filter_score.py at tooling 49dd995, 2026-11-27",
+  "data": {
+   "arms": {
+    "dual_nocg": {
+     "reps": [
+      1,
+      2
+     ],
+     "cells": 28,
+     "fired": 28,
+     "real_per_rep": {
+      "value": 59.0,
+      "ci95": [
+       46.0,
+       74.0
+      ]
+     },
+     "demoted_per_rep": {
+      "value": 0.0,
+      "ci95": [
+       0.0,
+       0.0
+      ]
+     },
+     "not_real_main_per_rep": {
+      "value": 34.5,
+      "ci95": [
+       24.5,
+       44.5
+      ]
+     },
+     "S1S2_per_rep": {
+      "value": 13.0,
+      "ci95": [
+       7.0,
+       19.0
+      ]
+     },
+     "S1S2_demoted_per_rep": {
+      "value": 0.0,
+      "ci95": [
+       0.0,
+       0.0
+      ]
+     },
+     "credited_no_severity_per_rep": {
+      "value": 7.0,
+      "ci95": [
+       3.0,
+       12.0
+      ]
+     },
+     "precision_main": 0.66,
+     "precision_unconfirmed": null,
+     "cost_per_review": 0.79,
+     "secs_per_review": 213
+    },
+    "dual_filter": {
+     "reps": [
+      3,
+      4,
+      5
+     ],
+     "cells": 42,
+     "fired": 42,
+     "real_per_rep": {
+      "value": 57.0,
+      "ci95": [
+       42.67,
+       73.33
+      ]
+     },
+     "demoted_per_rep": {
+      "value": 4.0,
+      "ci95": [
+       1.33,
+       7.0
+      ]
+     },
+     "not_real_main_per_rep": {
+      "value": 24.67,
+      "ci95": [
+       14.0,
+       36.67
+      ]
+     },
+     "S1S2_per_rep": {
+      "value": 12.67,
+      "ci95": [
+       7.0,
+       18.67
+      ]
+     },
+     "S1S2_demoted_per_rep": {
+      "value": 0.0,
+      "ci95": [
+       0.0,
+       0.0
+      ]
+     },
+     "credited_no_severity_per_rep": {
+      "value": 7.0,
+      "ci95": [
+       3.0,
+       12.0
+      ]
+     },
+     "precision_main": 0.72,
+     "precision_unconfirmed": 0.2,
+     "cost_per_review": 0.8,
+     "secs_per_review": 212
+    },
+    "triple_filter2": {
+     "reps": [
+      3,
+      4,
+      5
+     ],
+     "cells": 40,
+     "fired": 40,
+     "real_per_rep": {
+      "value": 61.33,
+      "ci95": [
+       47.33,
+       78.67
+      ]
+     },
+     "demoted_per_rep": {
+      "value": 3.67,
+      "ci95": [
+       1.33,
+       6.33
+      ]
+     },
+     "not_real_main_per_rep": {
+      "value": 31.0,
+      "ci95": [
+       17.0,
+       47.83
+      ]
+     },
+     "S1S2_per_rep": {
+      "value": 12.67,
+      "ci95": [
+       6.67,
+       19.0
+      ]
+     },
+     "S1S2_demoted_per_rep": {
+      "value": 0.33,
+      "ci95": [
+       0.0,
+       1.0
+      ]
+     },
+     "credited_no_severity_per_rep": {
+      "value": 7.33,
+      "ci95": [
+       3.0,
+       12.33
+      ]
+     },
+     "precision_main": 0.69,
+     "precision_unconfirmed": 0.23,
+     "cost_per_review": 1.46,
+     "secs_per_review": 208
+    }
+   },
+   "contrasts": {
+    "dual_filter - dual_nocg": {
+     "real": {
+      "value": -2.0,
+      "ci95": [
+       -7.5,
+       3.83
+      ]
+     },
+     "demoted": {
+      "value": 4.0,
+      "ci95": [
+       1.33,
+       7.0
+      ]
+     },
+     "not_real_main": {
+      "value": -9.83,
+      "ci95": [
+       -15.17,
+       -4.33
+      ]
+     },
+     "S1S2": {
+      "value": -0.33,
+      "ci95": [
+       -0.83,
+       0.0
+      ]
+     },
+     "S1S2_demoted": {
+      "value": 0.0,
+      "ci95": [
+       0.0,
+       0.0
+      ]
+     },
+     "credited_no_severity": {
+      "value": 0.0,
+      "ci95": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "triple_filter2 - dual_nocg": {
+     "real": {
+      "value": 2.33,
+      "ci95": [
+       -2.33,
+       6.83
+      ]
+     },
+     "demoted": {
+      "value": 3.67,
+      "ci95": [
+       1.33,
+       6.33
+      ]
+     },
+     "not_real_main": {
+      "value": -3.5,
+      "ci95": [
+       -12.5,
+       6.83
+      ]
+     },
+     "S1S2": {
+      "value": -0.33,
+      "ci95": [
+       -1.83,
+       1.17
+      ]
+     },
+     "S1S2_demoted": {
+      "value": 0.33,
+      "ci95": [
+       0.0,
+       1.0
+      ]
+     },
+     "credited_no_severity": {
+      "value": 0.33,
+      "ci95": [
+       0.0,
+       1.0
+      ]
+     }
+    },
+    "triple_filter2 - dual_filter": {
+     "real": {
+      "value": 4.33,
+      "ci95": [
+       -0.33,
+       9.0
+      ]
+     },
+     "demoted": {
+      "value": -0.33,
+      "ci95": [
+       -2.33,
+       1.67
+      ]
+     },
+     "not_real_main": {
+      "value": 6.33,
+      "ci95": [
+       -0.0,
+       13.17
+      ]
+     },
+     "S1S2": {
+      "value": 0.0,
+      "ci95": [
+       -1.33,
+       1.67
+      ]
+     },
+     "S1S2_demoted": {
+      "value": 0.33,
+      "ci95": [
+       0.0,
+       1.0
+      ]
+     },
+     "credited_no_severity": {
+      "value": 0.33,
+      "ci95": [
+       0.0,
+       1.0
+      ]
+     }
+    }
+   },
+   "tasks": 14,
+   "attribution_tasks_missing": 0,
+   "excluded_cells": [
+    {
+     "arm": "triple_filter2",
+     "task": "kb-mcp:C:1729bb943f",
+     "rep": 4,
+     "gate": "missing both"
+    },
+    {
+     "arm": "triple_filter2",
+     "task": "runecho:M:a8aded1a19",
+     "rep": 5,
+     "gate": "missing both"
+    }
+   ],
+   "severity_grader": "opus",
+   "severity_graded": 78,
+   "bootstrap": {
+    "B": 10000,
+    "seed": 248
+   }
+  }
+ }
+}
