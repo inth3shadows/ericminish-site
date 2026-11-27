@@ -356,7 +356,7 @@ def main():
     fu_row = lambda name, a: (f"<tr><td>{name}</td><td class=\"num\">{', '.join(str(r) for r in a['reps'])}</td>"  # noqa: E731
                               f"<td class=\"num\">{f1(a['real_per_rep'])}</td><td class=\"num\">{f1(a['ci95'][0])} to {f1(a['ci95'][1])}</td>"
                               f"<td class=\"num\">{a['precision']:.2f}</td><td class=\"num\">{a['cost_per_review']:.2f}</td><td class=\"num\">{a['secs_per_review']}</td></tr>")
-    t8 = ("<div class=\"table-scroll\"><table><tr><th>Arm</th><th class=\"num\">Reps</th><th class=\"num\">Real / rep</th><th class=\"num\">95% interval</th>"
+    builtin_high_table = ("<div class=\"table-scroll\"><table><tr><th>Arm</th><th class=\"num\">Reps</th><th class=\"num\">Real / rep</th><th class=\"num\">95% interval</th>"
           "<th class=\"num\">Precision</th><th class=\"num\">Est. $ / review</th><th class=\"num\">s / review</th></tr>"
           + fu_row("Built-in /code-review, low (as run)", fu_lo) + fu_row("Built-in /code-review, high", fu_hi)
           + fu_row("Dual review", fu_dn) + "</table></div>")
@@ -681,7 +681,7 @@ def main():
         adjudication packets. Intervals are from the same task bootstrap ({FU['bootstrap']['B']:,} resamples).
         The controls' values differ from Table 2 because the labels differ, so compare within Table 8 only.</p>
       <figure><figcaption>Table 8. The built-in command at high, judged in one round with its controls. Estimated cost is
-        Claude Code's token-cost estimate.</figcaption>{t8}</figure>
+        Claude Code's token-cost estimate.</figcaption>{builtin_high_table}</figure>
       <p>At <code>high</code> the built-in command found {f1(fu_c['builtin_high - builtin']['value'])} more real
         defects per rep than as run ({fu_ci('builtin_high - builtin')}). Dual review found
         {f1(fu_c['dual_nocg - builtin_high']['value'])} more than the built-in command at high
@@ -822,7 +822,9 @@ def main():
     head = tpl[:tpl.index("<body>")]
     chrome = tpl[tpl.index("<body>"):tpl.index('<main class="post-shell"')]
     footer = tpl[tpl.index("</article>"):]
-    desc = html.escape(abstract[:300].rsplit(" ", 1)[0] + "…", quote=True)
+    desc = html.escape(
+        f"I compared {narms} Claude Code review bundles on {ntask} tasks from real commits, with three repetitions per task. "
+        "The post reports defect detection, finding precision, estimated token cost and runtime.", quote=True)
     head = head.replace("Measuring coding agents by what happens to their code", html.escape(TITLE))
     head = head.replace("measuring-coding-agents", SLUG).replace("2026-11-01", DATE)
     head = re.sub(r'(<meta name="description" content=")[^"]*', r"\g<1>" + desc, head)

@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Review skills on real code: a three-rep benchmark of Claude Code review setups | Eric Minish</title>
-  <meta name="description" content="Skill packs for Claude Code promise better code review, but they are rarely measured on their users&#x27; own code. I ran 13 review bundles (bare Claude Code twice, the built-in review command, five public skill packs, my own dual-review skill with and without code-graph tools, and three exploratory…">
+  <meta name="description" content="I compared 13 Claude Code review bundles on 14 tasks from real commits, with three repetitions per task. The post reports defect detection, finding precision, estimated token cost and runtime.">
   <link rel="stylesheet" href="/assets/site.css?v=20d5a2c1">
   <link rel="canonical" href="https://www.ericminish.com/writing/review-skills-benchmark/">
   <link rel="alternate" type="application/atom+xml" title="Eric Minish — Writing" href="/writing/feed.xml">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Eric Minish">
   <meta property="og:title" content="Review skills on real code: a three-rep benchmark of Claude Code review setups">
-  <meta property="og:description" content="Skill packs for Claude Code promise better code review, but they are rarely measured on their users&#x27; own code. I ran 13 review bundles (bare Claude Code twice, the built-in review command, five public skill packs, my own dual-review skill with and without code-graph tools, and three exploratory…">
+  <meta property="og:description" content="I compared 13 Claude Code review bundles on 14 tasks from real commits, with three repetitions per task. The post reports defect detection, finding precision, estimated token cost and runtime.">
   <meta property="og:url" content="https://www.ericminish.com/writing/review-skills-benchmark/">
   <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
   <meta property="og:image:width" content="1200">
@@ -22,7 +22,7 @@
   <meta property="article:tag" content="Agent evaluation">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Review skills on real code: a three-rep benchmark of Claude Code review setups">
-  <meta name="twitter:description" content="Skill packs for Claude Code promise better code review, but they are rarely measured on their users&#x27; own code. I ran 13 review bundles (bare Claude Code twice, the built-in review command, five public skill packs, my own dual-review skill with and without code-graph tools, and three exploratory…">
+  <meta name="twitter:description" content="I compared 13 Claude Code review bundles on 14 tasks from real commits, with three repetitions per task. The post reports defect detection, finding precision, estimated token cost and runtime.">
   <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <script type="application/ld+json">
@@ -61,7 +61,7 @@
         <p class="post-meta">
           <span>By <a href="/about/">Eric Minish</a></span>
           <span><time datetime="2026-11-11">11 November 2026</time></span>
-          <!-- auto:start readtime --><span>31 min read</span><!-- auto:end readtime -->
+          <!-- auto:start readtime --><span>32 min read</span><!-- auto:end readtime -->
         </p>
       </header>
 
@@ -338,7 +338,7 @@
         (Section 5.1); the code-graph variant, whose break-even at 3 minutes (10) is
         close to dual review's; and Trail of Bits and the pair and parallel-dual hybrids, whose differences from bare
         include zero. Run time is not
-        counted; estimated token cost at $100/h.</figcaption><div class="table-scroll"><table><tr><th>Arm</th><th class="num">Reps</th><th class="num">Real / rep</th><th class="num">95% interval</th><th class="num">Precision</th><th class="num">Est. $ / review</th><th class="num">s / review</th></tr><tr><td>Built-in /code-review, low (as run)</td><td class="num">1, 2</td><td class="num">25.5</td><td class="num">19.5 to 31.5</td><td class="num">0.80</td><td class="num">0.19</td><td class="num">29</td></tr><tr><td>Built-in /code-review, high</td><td class="num">3, 4, 5</td><td class="num">54.3</td><td class="num">44.3 to 66.0</td><td class="num">0.69</td><td class="num">0.47</td><td class="num">113</td></tr><tr><td>Dual review</td><td class="num">1, 2</td><td class="num">59.0</td><td class="num">46.0 to 75.5</td><td class="num">0.67</td><td class="num">0.79</td><td class="num">213</td></tr></table></div></figure>
+        counted; estimated token cost at $100/h.</figcaption><div class="table-scroll"><table><tr><th>Step</th><th class="num">Δ real defects / review (95%)</th><th class="num">Δ serious / review</th><th class="num">Δ items to read / review</th><th class="num">Δ est. $ / review</th><th class="num">Δ wait, s</th><th class="num">Pays if a caught defect is worth (min), triage 1 min</th><th class="num">3 min</th><th class="num">10 min</th><th class="num">Serious only, 3 min</th></tr><tr><td>Superpowers vs Bare (A)</td><td class="num">+0.62 (+0.17 to +1.12)</td><td class="num">+0.33</td><td class="num">+0.9</td><td class="num">+0.34</td><td class="num">+86</td><td class="num">more than 2</td><td class="num">more than 5</td><td class="num">more than 15</td><td class="num">more than 9</td></tr><tr><td>Dual review vs Bare (A)</td><td class="num">+1.26 (+0.74 to +1.86)</td><td class="num">+0.48</td><td class="num">+4.4</td><td class="num">+0.56</td><td class="num">+165</td><td class="num">more than 4</td><td class="num">more than 11</td><td class="num">more than 35</td><td class="num">more than 28</td></tr><tr><td>Dual review vs Superpowers</td><td class="num">+0.64 (+0.31 to +0.98)</td><td class="num">+0.14</td><td class="num">+3.5</td><td class="num">+0.22</td><td class="num">+79</td><td class="num">more than 6</td><td class="num">more than 16</td><td class="num">more than 54</td><td class="num">no bound</td></tr><tr><td>Caveman vs Bare (A)</td><td class="num">−0.26 (−0.52 to −0.02)</td><td class="num">−0.12</td><td class="num">−0.2</td><td class="num">0.00</td><td class="num">−4</td><td class="num">less than 0.8</td><td class="num">less than 2</td><td class="num">less than 8</td><td class="num">no bound</td></tr><tr><td>Ponytail vs Bare (A)</td><td class="num">−0.26 (−0.50 to −0.05)</td><td class="num">−0.12</td><td class="num">+0.0</td><td class="num">0.00</td><td class="num">−2</td><td class="num">never</td><td class="num">never</td><td class="num">never</td><td class="num">no bound</td></tr><tr><td>Hybrid: single loop vs Bare (A)</td><td class="num">−0.43 (−0.81 to −0.14)</td><td class="num">−0.07</td><td class="num">+0.6</td><td class="num">+0.05</td><td class="num">+41</td><td class="num">never</td><td class="num">never</td><td class="num">never</td><td class="num">no bound</td></tr><tr><td>Built-in /code-review vs Bare (A)</td><td class="num">−0.62 (−1.14 to −0.12)</td><td class="num">−0.29</td><td class="num">−0.6</td><td class="num">−0.04</td><td class="num">−14</td><td class="num">less than 1</td><td class="num">less than 3</td><td class="num">less than 10</td><td class="num">less than 7</td></tr><tr><td>ECC vs Bare (A)</td><td class="num">−0.93 (−1.45 to −0.45)</td><td class="num">−0.33</td><td class="num">−1.0</td><td class="num">−0.08</td><td class="num">−8</td><td class="num">less than 1</td><td class="num">less than 3</td><td class="num">less than 11</td><td class="num">less than 9</td></tr></table></div></figure>
       <figure><figcaption>Figure 2. Break-even against triage minutes per finding. Above a line, the step pays. The band
         is the break-even of dual review over bare at the ends of the 95% interval of its extra defects.</figcaption>
 <svg viewBox="0 0 800 300" role="img" aria-labelledby="t-econ" class="chart chart-wide">
