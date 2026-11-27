@@ -46,13 +46,18 @@ class ResumePdfTest(unittest.TestCase):
                 resume.main()
         return output.getvalue()
 
-    def test_legacy_preserves_pdf_bytes_and_output(self):
+    def legacy_name(self):
+        # The legacy bytes depend on the local zlib build, so the expected name is
+        # computed in the same environment rather than pinned to one machine's hash.
+        data, pages = resume.build_pdf()
+        return f"eric-minish-resume-{hashlib.sha256(data).hexdigest()[:8]}.pdf", data, pages
+
+    def test_legacy_publishes_built_in_pdf_and_output(self):
+        name, data, pages = self.legacy_name()
         output = self.run_main("--legacy")
-        data = (self.directory / "eric-minish-resume-44adc3e0.pdf").read_bytes()
-        self.assertEqual(hashlib.sha256(data).hexdigest(),
-                         "44adc3e0bc468cda5e0c81a7c2a6a594475c59a5780f5a8fb73d42cc6854d57a")
-        self.assertEqual(output,
-                         "eric-minish-resume-44adc3e0.pdf — 2 pages, 5620 bytes (link updated)\n")
+        self.assertEqual((self.directory / name).read_bytes(), data)
+        self.assertEqual(pages, 2)
+        self.assertEqual(output, f"{name} — 2 pages, {len(data)} bytes (link updated)\n")
 
     def test_import_preserves_bytes_replaces_stale_files_and_is_repeatable(self):
         source = self.root / "reviewed resume.pdf"
@@ -134,7 +139,7 @@ class ResumePdfTest(unittest.TestCase):
         with mock.patch.object(pathlib.Path, "write_text", side_effect=OSError("write failed")):
             with self.assertRaises(OSError):
                 self.run_main("--legacy")
-        self.assertTrue((self.directory / "eric-minish-resume-44adc3e0.pdf").exists())
+        self.assertTrue((self.directory / self.legacy_name()[0]).exists())
         self.assertEqual((self.directory / "eric-minish-resume-old.pdf").read_bytes(), b"old")
         self.assertEqual((self.directory / "eric-minish-resume.pdf").read_bytes(), b"older")
         self.assertIn("eric-minish-resume-old.pdf", self.page.read_text())
