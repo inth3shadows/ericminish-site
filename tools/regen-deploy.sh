@@ -57,7 +57,7 @@ tar -C "$work" -cf - "${entries[@]}" | ssh "$SITE_SSH" "tar -x --no-same-owner -
 # Prune only the backups this job made; hand-made backups are left alone.
 ssh "$SITE_SSH" "ls -1d '$SITE_ROOT'.bak-auto-* | sort | head -n -$KEEP | xargs -r rm -rf"
 
-code=$(curl -s -o "$work/live.html" -w '%{http_code}' "https://www.ericminish.com/?cb=$stamp")
+code=$(curl -sS -m 30 --retry 2 -o "$work/live.html" -w '%{http_code}' "https://www.ericminish.com/?cb=$stamp") || code=000
 today="$(date +%-d) $(date +'%B %Y')"
 if [[ "$code" != 200 ]] || ! grep -q "API on" "$work/live.html" || ! tr -s ' \n' ' ' < "$work/live.html" | grep -q "$today"; then
   echo "deploy check FAILED: / returned $code or lacks today's regeneration date ($today)." >&2
