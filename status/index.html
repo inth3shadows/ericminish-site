@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Now | Eric Minish</title>
   <meta name="description" content="The projects Eric Minish is working on now and what changed in each recently.">
-  <link rel="stylesheet" href="/assets/site.css?v=20d5a2c1">
+  <link rel="stylesheet" href="/assets/site.css?v=04eeea9d">
   <link rel="canonical" href="https://www.ericminish.com/status/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
@@ -55,7 +55,7 @@
       </div>
 
       <aside class="note">
-        <p>Updated 17 November 2026. Each card has its own date.</p>
+        <p>Updated 28 November 2026. Rolling 30-day counts regenerate daily from the GitHub API; each card has its own date.</p>
       </aside>
     </section>
 
@@ -70,65 +70,71 @@
           <p>I am a Senior AI Engineer at a company whose sales, operations and partner teams run on software I build: a console that gathers a consultant&rsquo;s tools in one place, a partner portal, a lead-intake API for partners, Python services that sync call activity and clean CRM records, monitoring, and a call-compliance auditor. Two of these services use a language model as a judge; in the call auditor, rule-based checks run first and a person reviews every result.</p>
           <p>As of 4 November 2026 that work spans 60 repositories, and 29 of them changed in the last 30 days. I wrote about 95% of the commits since September.</p>
         </article>
-        <article class="timeline" data-card="codegraph" data-as-of="2026-11-17">
+        <article class="timeline" data-card="codegraph" data-as-of="2026-11-28">
           <h3><a href="/portfolio/codegraph/">codegraph</a></h3>
-          <!-- auto:start now-codegraph --><p class="fine">Last change 3 November 2026 · 17 pull requests merged in the last 30 days · <a href="https://github.com/colbymchenry/codegraph/pulls?q=is%3Apr+is%3Amerged+author%3Ainth3shadows">merged changes</a></p><!-- auto:end now-codegraph -->
+          <!-- auto:start now-codegraph --><p class="fine">Last change 27 November 2026 · 145 pull requests merged in the last 30 days · <a href="https://github.com/colbymchenry/codegraph/pulls?q=is%3Apr+is%3Amerged+author%3Ainth3shadows">merged changes</a></p><!-- auto:end now-codegraph -->
           <p>codegraph is an open-source tool that maps which functions call which, for coding agents. I check its map against type checkers and against freshly built indexes and send fixes upstream.</p>
-          <p>Since 3 November: the test tooling went public as graph-assay on 12 November, and the TypeScript grammar fork, checked against the TypeScript compiler, was published on crates.io on 15 November. Twenty more issues were filed upstream from 4 to 16 November. <a href="/portfolio/codegraph/">Case study</a>.</p>
+          <p>Late November: graph-assay expanded fixture tagging to C# and Swift, tightened oracle SPEC v6.0 rules, and added watch and replay checks for upstream issues. The TypeScript grammar fork reached v0.25.4 with automated weekly releases and npm trusted publishing. <a href="/portfolio/codegraph/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="terse" data-as-of="2026-11-17">
           <h3><a href="/portfolio/terse/">terse</a></h3>
-          <!-- auto:start now-terse --><p class="fine">Last change 30 October 2026 · 54 pull requests merged in the last 30 days · <a href="https://github.com/inth3shadows/terse/pulls?q=is%3Apr+is%3Amerged+author%3Ainth3shadows">merged changes</a></p><!-- auto:end now-terse -->
+          <!-- auto:start now-terse --><p class="fine">Last change 20 November 2026 · 35 pull requests merged in the last 30 days · <a href="https://github.com/inth3shadows/terse/pulls?q=is%3Apr+is%3Amerged+author%3Ainth3shadows">merged changes</a></p><!-- auto:end now-terse -->
           <p>terse compresses the output of MCP tools (the tools AI agents call) in a form that always restores exactly. In my own sessions it removes 23% of what MCP results cost, under 1% of the whole bill.</p>
           <p>12 November: terse passes through unchanged any data that loading would alter, such as a repeated key or an over-precise number, which its exactness check had missed. On 15 November, fixes stopped one bad input from crashing commands and masked API keys a status command showed. A test of how well models read compressed output passes only if each model&rsquo;s 95% error margin stays within the 5% tolerance. <a href="/portfolio/terse/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="runecho" data-as-of="2026-11-04">
           <h3><a href="/portfolio/runecho/">RunEcho</a></h3>
-          <!-- auto:start now-runecho --><p class="fine">Last change 1 November 2026 · 34 pull requests merged in the last 30 days · <a href="https://github.com/inth3shadows/runecho/pulls?q=is%3Apr+is%3Amerged+author%3Ainth3shadows">merged changes</a></p><!-- auto:end now-runecho -->
+          <!-- auto:start now-runecho --><p class="fine">Last change 20 November 2026 · 11 pull requests merged in the last 30 days · <a href="https://github.com/inth3shadows/runecho/pulls?q=is%3Apr+is%3Amerged+author%3Ainth3shadows">merged changes</a></p><!-- auto:end now-runecho -->
           <p>RunEcho checks each edit a coding agent makes against the names the repository declares, before the file changes.</p>
           <p>Late October: a setting that blocks a flagged edit instead of asking (28 October), and blocking by default under Cursor, which does not enforce the ask step (30 October). <a href="/portfolio/runecho/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="flight-recorder" data-as-of="2026-11-04">
           <h3><a href="/portfolio/flight-recorder/">flight-recorder</a></h3>
-          <!-- auto:start now-flight-recorder --><p class="fine">Last change 21 October 2026 · 10 pull requests merged in the last 30 days</p><!-- auto:end now-flight-recorder -->
+          <!-- auto:start now-flight-recorder --><p class="fine">Last change 20 November 2026 · 1 pull request merged in the last 30 days</p><!-- auto:end now-flight-recorder -->
           <p>flight-recorder scores each coding-agent session on what it cost and how much of its code was still in the repository when it was last scored.</p>
           <p>21 October: an evidence layer that rebuilds each request the agent sent from its transcript, and checks that every MCP tool call in the transcript appears in the wire log terse recorded. <a href="/portfolio/flight-recorder/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="modelbench" data-as-of="2026-11-17">
           <h3><a href="/portfolio/modelbench/">modelbench</a></h3>
-          <!-- auto:start now-modelbench --><p class="fine">Last change 3 November 2026 · 39 pull requests merged in the last 30 days</p><!-- auto:end now-modelbench -->
+          <!-- auto:start now-modelbench --><p class="fine">Last change 21 November 2026 · 20 pull requests merged in the last 30 days</p><!-- auto:end now-modelbench -->
           <p>modelbench replays real bug-fix commits against cheaper models and reports the cost per solved task.</p>
           <p>Early November: cached input (repeated context the provider stores), about 92% of what the tested model read, had been billed at zero, so recorded costs ran about 6x below the provider&rsquo;s bill. On 10 November came a pre-registered test (plan fixed before results) of a published coding-agent method, and runs cut off by a provider&rsquo;s usage limit are now retried and no longer count as failures. <a href="/portfolio/modelbench/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="testgraph" data-as-of="2026-11-04">
           <h3><a href="/portfolio/testgraph/">testgraph</a></h3>
-          <!-- auto:start now-testgraph --><p class="fine">Last change 30 October 2026 · 10 pull requests merged in the last 30 days · <a href="https://github.com/inth3shadows/testgraph/pulls?q=is%3Apr+is%3Amerged+author%3Ainth3shadows">merged changes</a></p><!-- auto:end now-testgraph -->
+          <!-- auto:start now-testgraph --><p class="fine">Last change 20 November 2026 · 14 pull requests merged in the last 30 days · <a href="https://github.com/inth3shadows/testgraph/pulls?q=is%3Apr+is%3Amerged+author%3Ainth3shadows">merged changes</a></p><!-- auto:end now-testgraph -->
           <p>Given a code change, testgraph names the user journeys it could have broken, from a static call graph, so it works on a repository that has never run its tests.</p>
           <p>30 October: CI now runs its verify step end to end with pytest and its tracing plugin, which records what each journey&rsquo;s tests execute, so the static selection can be scored against what ran. <a href="/portfolio/testgraph/">Case study</a>.</p>
         </article>
-        <article class="timeline" data-card="secret-broker" data-as-of="2026-11-04">
+        <article class="timeline" data-card="secret-broker" data-as-of="2026-11-28">
           <h3><a href="/portfolio/secret-broker/">secret-broker</a></h3>
-          <!-- auto:start now-secret-broker --><p class="fine">Last change 3 November 2026 · 17 pull requests merged in the last 30 days</p><!-- auto:end now-secret-broker -->
+          <!-- auto:start now-secret-broker --><p class="fine">Last change 27 November 2026 · 24 pull requests merged in the last 30 days</p><!-- auto:end now-secret-broker -->
           <p>secret-broker lets coding agents use credentials without receiving them, and writes a receipt for every call to a log that shows any later edit.</p>
-          <p>3 November: it can now rotate a credential it created, through a write route on the vault service, and only after a person approves the request. <a href="/portfolio/secret-broker/">Case study</a>.</p>
+          <p>Mid-to-late November: receipt hash v4 now attests the vault item on environment-injected and git-credential calls, a TOTP resolver hands out codes without exposing the seed, GitHub Actions secrets can be sealed straight from the vault, and the gitleaks scan extends default rules instead of replacing them. <a href="/portfolio/secret-broker/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="harness" data-as-of="2026-11-04">
           <h3><a href="/portfolio/harness/">harness</a></h3>
-          <!-- auto:start now-harness --><p class="fine">Last change 3 November 2026 · 5 pull requests merged in the last 30 days</p><!-- auto:end now-harness -->
+          <!-- auto:start now-harness --><p class="fine">Last change 20 November 2026 · 6 pull requests merged in the last 30 days</p><!-- auto:end now-harness -->
           <p>harness decides whether an agent&rsquo;s code change is acceptable with four fixed checks. No language model takes part, and nothing is committed automatically.</p>
           <p>The gate and the role runtime are done. Next is a set of tools that can write files, so the loop that produces changes runs inside harness. Early November: fixes to its mutation-testing tool. <a href="/portfolio/harness/">Case study</a>.</p>
         </article>
-        <article class="timeline" data-card="knowledge-base" data-as-of="2026-11-04">
+        <article class="timeline" data-card="knowledge-base" data-as-of="2026-11-28">
           <h3><a href="/portfolio/knowledge-base/">Knowledge base</a></h3>
-          <!-- auto:start now-knowledge-base --><p class="fine">Last change 30 October 2026 · 49 pull requests merged in the last 30 days</p><!-- auto:end now-knowledge-base -->
+          <!-- auto:start now-knowledge-base --><p class="fine">Last change 27 November 2026 · 35 pull requests merged in the last 30 days</p><!-- auto:end now-knowledge-base -->
           <p>Long-term memory for my coding agents. Agents can only propose an entry, and an AI reviewer approves, edits or rejects each proposal.</p>
-          <p>Late October: each session now records what it set out to do and how it ended, and the status command warns when the reviewer runs different code from the deployed tree. <a href="/portfolio/knowledge-base/">Case study</a>.</p>
+          <p>Late November: plan approvals and rejected designs are now indexed for retrieval, the reviewer records typed rejection reasons for duplicates and wrong-table proposals, pending database migrations are rehearsed before container swaps, and list merges run under a row lock. <a href="/portfolio/knowledge-base/">Case study</a>.</p>
         </article>
         <article class="timeline" data-card="soundings" data-as-of="2026-11-17">
           <h3>soundings</h3>
-          <!-- auto:start now-soundings --><p class="fine">Last change 4 November 2026 · 38 pull requests merged in the last 30 days</p><!-- auto:end now-soundings -->
+          <!-- auto:start now-soundings --><p class="fine">Last change 20 November 2026 · 30 pull requests merged in the last 30 days</p><!-- auto:end now-soundings -->
           <p>A store of US county economic data that keeps every published version of each number, so a backtest uses only the figures known at the time.</p>
           <p>14 November: the store now feeds a jobs-day companion, a private site that shows each monthly jobs report with how its figures were later revised, drawn from every published version. On 15 November it gained pay against prices, unemployment for fourteen groups and payroll changes in eleven industry sectors. On 16 November its data downloads stopped trusting a compromised issuer of web security certificates.</p>
+        </article>
+        <article class="timeline" data-card="inbox-triage" data-as-of="2026-11-28">
+          <h3><a href="/inbox-triage/">inbox-triage</a></h3>
+          <!-- auto:start now-inbox-triage --><p class="fine">Last change 20 November 2026 · 18 pull requests merged in the last 30 days</p><!-- auto:end now-inbox-triage -->
+          <p>A daily Gmail triage tool for my family that labels and archives promotions and newsletters while holding everything else in place.</p>
+          <p>November: added a watch list for senders that must never be archived, interactive review and replay commands to score rule changes against past decisions, per-day undo, and emailed daily and weekly digests. <a href="/inbox-triage/">Overview</a>.</p>
         </article>
       </div>
     </section>

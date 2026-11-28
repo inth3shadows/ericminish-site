@@ -730,6 +730,11 @@ h3 {
   margin-bottom: 0;
 }
 
+.contact-panel h2 {
+  font-size: var(--t-sub);
+  font-weight: 600;
+}
+
 .contact-list a {
   display: block;
   padding: 12px 0;
@@ -1381,6 +1386,68 @@ h3 {
 
 .node-detail p + p { margin-top: var(--s-8); }
 
+/* Portfolio cards: show a one-sentence summary and case-study link without
+   requiring a click; keep longer notes and repo trees in a quiet disclosure. */
+
+.node-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--s-12) var(--s-16) var(--s-16);
+}
+
+.node-card-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-4) var(--s-8);
+  flex-wrap: wrap;
+}
+
+.node-card .node-name {
+  margin: 0 auto 0 0;
+  font-size: var(--t-body);
+  line-height: 1.3;
+}
+
+.node-blurb {
+  margin: var(--s-8) 0 0;
+  color: var(--muted);
+  font-size: var(--t-body);
+  line-height: 1.55;
+}
+
+.node-blurb .node-read {
+  margin-left: var(--s-8);
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  white-space: nowrap;
+}
+
+.node-more {
+  margin-top: var(--s-8);
+}
+
+.node-more > summary {
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+
+.node-more > summary::-webkit-details-marker { display: none; }
+.node-more > summary:before { content: "+"; color: var(--accent); }
+.node-more[open] > summary:before { content: "\2212"; }
+.node-more > summary:hover { color: var(--text); }
+
+.node-more .node-detail {
+  padding: var(--s-12) 0 0;
+}
+
 .node-board {
   font-family: var(--mono);
   font-size: var(--t-micro);
@@ -1419,7 +1486,7 @@ h3 {
 
 @media print {
   body { background: #fff; color: #111; }
-  .site-header, .site-footer, .skip-link, .closing-line { display: none; }
+  .site-header, .site-footer, .skip-link, .closing-line, .resume-download-top { display: none; }
   .shell { max-width: none; padding: 0; }
   a { color: #111; text-decoration: none; }
   .hero-home .name { color: #444; border-color: #ccc; }

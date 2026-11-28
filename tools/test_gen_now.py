@@ -7,7 +7,7 @@ spec.loader.exec_module(g)
 
 U = g.USER
 FORKS = {f"{U}/forked-thing"}
-PRIVATE = {f"{U}/modelbench", f"{U}/secret-broker", f"{U}/harness", f"{U}/kb-mcp", f"{U}/soundings", f"{U}/hidden-thing"}
+PRIVATE = {f"{U}/modelbench", f"{U}/secret-broker", f"{U}/harness", f"{U}/kb-mcp", f"{U}/soundings", f"{U}/inbox-triage", f"{U}/hidden-thing"}
 
 
 def page(as_of="2026-11-04", only=None):
