@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Portfolio | Eric Minish</title>
   <meta name="description" content="Selected work by Eric Minish across public sites, workflow systems, and developer tooling.">
-  <link rel="stylesheet" href="/assets/site.css?v=20d5a2c1">
+  <link rel="stylesheet" href="/assets/site.css?v=04eeea9d">
   <link rel="canonical" href="https://www.ericminish.com/portfolio/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
@@ -58,191 +58,243 @@
 
     <section class="section">
       <div class="section-head"><div><h2>Case studies</h2></div></div>
-      <p class="fine" style="margin:-4px 0 16px">Open any row for the short version; the name links to the full write-up.</p>
+      <p class="fine" style="margin:-4px 0 16px">Each title opens the full case study; expand Details for the longer summary and repository layout.</p>
       <div class="node-group">
         <p class="node-group-label">Agent infrastructure</p>
         <div class="nodes">
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name"><a href="/portfolio/terse/">terse</a></span>
+        <article class="node node-card">
+          <div class="node-card-head">
+            <h3 class="node-name"><a href="/portfolio/terse/">terse</a></h3>
             <span class="node-spec">23% of MCP cost, under 1% of the bill</span>
             <span class="node-state">open</span>
-          </summary>
-          <div class="node-detail">
-            <p>MCP, the Model Context Protocol, is the standard that connects tools to AI agents. terse is a proxy that sits in front of MCP tool servers and compresses what they return without losing anything. If it cannot prove that a compressed payload rebuilds the original exactly, it forwards the original unchanged. On nine GitHub API payloads, its best case, the compressed form uses 59% fewer tokens. A replay of my own Claude Code sessions, priced at what each call was billed, found it removes 23% of what MCP results cost, under 1% of a session&rsquo;s bill, almost all of it from two tools in long sessions. The project is public under the MIT license, and the repository includes a benchmark harness so you can measure the saving on your own tools.</p>
-            <div class="tree">
-              <div class="tree-head"><span>terse</span><span>9bd5ad3 · 161 files</span></div>
-              <pre><code>src/terse/            the codec, proxy and policy
+          </div>
+          <p class="node-blurb">Lossless compression proxy in front of MCP tool servers that forwards the original unchanged unless exact decoding is proven. <a class="node-read" href="/portfolio/terse/">Case study</a></p>
+          <details class="node-more">
+            <summary>Details</summary>
+            <div class="node-detail">
+              <p>MCP, the Model Context Protocol, is the standard that connects tools to AI agents. terse is a proxy that sits in front of MCP tool servers and compresses what they return without losing anything. If it cannot prove that a compressed payload rebuilds the original exactly, it forwards the original unchanged. On nine GitHub API payloads, its best case, the compressed form uses 59% fewer tokens. A replay of my own Claude Code sessions, priced at what each call was billed, found it removes 23% of what MCP results cost, under 1% of a session&rsquo;s bill, almost all of it from two tools in long sessions. The project is public under the MIT license, and the repository includes a benchmark harness so you can measure the saving on your own tools.</p>
+              <div class="tree">
+                <div class="tree-head"><span>terse</span><span>9bd5ad3 · 161 files</span></div>
+                <pre><code>src/terse/            the codec, proxy and policy
 scripts/bench/        the TOON comparison in this page
 tests/                73 test files
 corpus/               pinned benchmark payloads
 BENCHMARKS.md         every figure, dated
 VERIFY.md             how to check the claims</code></pre>
-              <p class="tree-note">Generated automatically from the repository. <a href="https://github.com/inth3shadows/terse">Browse it</a>.</p>
+                <p class="tree-note">Generated automatically from the repository. <a href="https://github.com/inth3shadows/terse">Browse it</a>.</p>
+              </div>
             </div>
-          </div>
-        </details>
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name"><a href="/portfolio/runecho/">RunEcho</a></span>
+          </details>
+        </article>
+        <article class="node node-card">
+          <div class="node-card-head">
+            <h3 class="node-name"><a href="/portfolio/runecho/">RunEcho</a></h3>
             <span class="node-spec">~12 ms · 0 tokens</span>
             <span class="node-state">open</span>
-          </summary>
-          <div class="node-detail">
-            <p>Catches an agent writing a call to a function your repo does not have, before the edit is saved; on nine confirmed invented names it caught four. It runs as a hook (a step the agent loop triggers automatically) and checks every edit against the functions and other symbols the code declares. Each check takes about 12 ms. It uses no language model, no network and no build, and a passing check adds nothing to the agent&rsquo;s context. Its accuracy is measured against dated git history. Over 30 days, 406 flagged symbols could be rated: 62 (15.3%) were false positives, 137 (33.7%) were premature (the code was added later), and 207 (51.0%) were references to something that did not exist.</p>
-            <div class="tree">
-              <div class="tree-head"><span>RunEcho</span><span>b117ffc · 332 files</span></div>
-              <pre><code>cmd/                  runecho-guard, -ir, -mcp
+          </div>
+          <p class="node-blurb">Pre-edit hook in Go that checks agent edits against declared repository symbols with no model or network call. <a class="node-read" href="/portfolio/runecho/">Case study</a></p>
+          <details class="node-more">
+            <summary>Details</summary>
+            <div class="node-detail">
+              <p>Catches an agent writing a call to a function your repo does not have, before the edit is saved; on nine confirmed invented names it caught four. It runs as a hook (a step the agent loop triggers automatically) and checks every edit against the functions and other symbols the code declares. Each check takes about 12 ms. It uses no language model, no network and no build, and a passing check adds nothing to the agent&rsquo;s context. Its accuracy is measured against dated git history. Over 30 days, 406 flagged symbols could be rated: 62 (15.3%) were false positives, 137 (33.7%) were premature (the code was added later), and 207 (51.0%) were references to something that did not exist.</p>
+              <div class="tree">
+                <div class="tree-head"><span>RunEcho</span><span>b117ffc · 332 files</span></div>
+                <pre><code>cmd/                  runecho-guard, -ir, -mcp
 internal/             the guard, the IR and the oracle — 168 files
 bench/                TOKEN-COST.md, FPAUDIT.md, FINDINGS.md
 plugins/              the agent-side hook packaging
 scripts/              enrolment and release tooling
 docs/                 architecture and the scope statement</code></pre>
-              <p class="tree-note">Generated automatically from the repository. <a href="https://github.com/inth3shadows/runecho">Browse it</a>.</p>
+                <p class="tree-note">Generated automatically from the repository. <a href="https://github.com/inth3shadows/runecho">Browse it</a>.</p>
+              </div>
             </div>
-          </div>
-        </details>
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name"><a href="/portfolio/testgraph/">testgraph</a></span>
+          </details>
+        </article>
+        <article class="node node-card">
+          <div class="node-card-head">
+            <h3 class="node-name"><a href="/portfolio/testgraph/">testgraph</a></h3>
             <span class="node-spec">names journeys at risk</span>
             <span class="node-state">open</span>
-          </summary>
-          <div class="node-detail">
-            <p>Given a diff (a set of line changes to the code), it answers which user journeys (user-facing flows through a product, such as &ldquo;claimant submits a signed form&rdquo;) the change could have broken, and in what order to test them. Test-impact tools usually answer with a list of tests, and they need coverage data (a record of which code each test ran) from a previous run. testgraph walks a static call graph (a map of which code calls which) backwards from the changed lines, so it works on a repo that has never run its test suite. It is tuned to catch every journey that broke, so it will sometimes flag one that turned out fine.</p>
-            <div class="tree">
-              <div class="tree-head"><span>testgraph</span><span>a4baa9a · 68 files</span></div>
-              <pre><code>testgraph/            graph traversal, integrity guard, registry, CLI
+          </div>
+          <p class="node-blurb">Walks a static call graph backwards from a diff to list the user journeys at risk without prior test coverage data. <a class="node-read" href="/portfolio/testgraph/">Case study</a></p>
+          <details class="node-more">
+            <summary>Details</summary>
+            <div class="node-detail">
+              <p>Given a diff (a set of line changes to the code), it answers which user journeys (user-facing flows through a product, such as &ldquo;claimant submits a signed form&rdquo;) the change could have broken, and in what order to test them. Test-impact tools usually answer with a list of tests, and they need coverage data (a record of which code each test ran) from a previous run. testgraph walks a static call graph (a map of which code calls which) backwards from the changed lines, so it works on a repo that has never run its test suite. It is tuned to catch every journey that broke, so it will sometimes flag one that turned out fine.</p>
+              <div class="tree">
+                <div class="tree-head"><span>testgraph</span><span>a4baa9a · 68 files</span></div>
+                <pre><code>testgraph/            graph traversal, integrity guard, registry, CLI
 harness/              accuracy, selectivity and seeded-mutation evals
 hooks/                the pre-push hook that runs it on every push
 journeys/             three hand-authored journey registries
 maps/                 generated symbol to journey maps
 skills/               the agent skill that reads a map pre-commit</code></pre>
-              <p class="tree-note">Generated automatically from the repository. <a href="https://github.com/inth3shadows/testgraph">Browse it</a>.</p>
+                <p class="tree-note">Generated automatically from the repository. <a href="https://github.com/inth3shadows/testgraph">Browse it</a>.</p>
+              </div>
             </div>
-          </div>
-        </details>
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name"><a href="/portfolio/harness/">harness</a></span>
+          </details>
+        </article>
+        <article class="node node-card">
+          <div class="node-card-head">
+            <h3 class="node-name"><a href="/portfolio/harness/">harness</a></h3>
             <span class="node-spec">4 mechanical checks</span>
             <span class="node-state">private</span>
-          </summary>
-          <div class="node-detail">
-            <p>A harness for coding agents, built for a single developer, in two parts. The first is a gate that gives a fixed-rule verdict on a code change. It runs four checks that keep no state: the test suite, a symbol contract (which fails when a change leaves its declared scope or removes a symbol without opting in), a scan for staged secrets, and a scan for reachable vulnerabilities (ones the project&rsquo;s code can trigger, as opposed to ones that are only listed). A pass leaves the branch for a human to commit. Nothing is committed automatically, and no language model makes the judgment. The second part is a runtime that assigns a model to each role (consult, scout, builder, reviewer or scribe) and runs the loop of request, tool call and result against read-only tools. It cannot yet edit files or run commands.</p>
           </div>
-        </details>
+          <p class="node-blurb">Fixed-rule verification gate and role runtime for coding agents where no model judges the diff and nothing auto-commits. <a class="node-read" href="/portfolio/harness/">Case study</a></p>
+          <details class="node-more">
+            <summary>Details</summary>
+            <div class="node-detail">
+              <p>A harness for coding agents, built for a single developer, in two parts. The first is a gate that gives a fixed-rule verdict on a code change. It runs four checks that keep no state: the test suite, a symbol contract (which fails when a change leaves its declared scope or removes a symbol without opting in), a scan for staged secrets, and a scan for reachable vulnerabilities (ones the project&rsquo;s code can trigger, as opposed to ones that are only listed). A pass leaves the branch for a human to commit. Nothing is committed automatically, and no language model makes the judgment. The second part is a runtime that assigns a model to each role (consult, scout, builder, reviewer or scribe) and runs the loop of request, tool call and result against read-only tools. It cannot yet edit files or run commands.</p>
+            </div>
+          </details>
+        </article>
         </div>
       </div>
       <div class="node-group">
         <p class="node-group-label">Measurement</p>
         <div class="nodes">
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name"><a href="/portfolio/modelbench/">modelbench</a></span>
+        <article class="node node-card">
+          <div class="node-card-head">
+            <h3 class="node-name"><a href="/portfolio/modelbench/">modelbench</a></h3>
             <span class="node-spec">cost per solved task</span>
             <span class="node-state">private</span>
-          </summary>
-          <div class="node-detail">
-            <p>A personal benchmark that takes bug-fix commits from my own repositories and replays them against lower-cost models, three times per model by default, so a gap between two models can be told apart from noise. Its headline figure is cost per solved task. In one comparison of fifteen tasks, the small tier (Claude Haiku) solved 10 at $0.51 per solved task, and the large tier (Claude Opus) solved 15 at $2.09. It also publishes its own corrections: one defective task had made all three tiers look worse than they were, and four published claims were corrected.</p>
           </div>
-        </details>
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name"><a href="/portfolio/flight-recorder/">flight-recorder</a></span>
+          <p class="node-blurb">Replays bug-fix commits from my repositories three times per model and scores each tier on cost per solved task. <a class="node-read" href="/portfolio/modelbench/">Case study</a></p>
+          <details class="node-more">
+            <summary>Details</summary>
+            <div class="node-detail">
+              <p>A personal benchmark that takes bug-fix commits from my own repositories and replays them against lower-cost models, three times per model by default, so a gap between two models can be told apart from noise. Its headline figure is cost per solved task. In one comparison of fifteen tasks, the small tier (Claude Haiku) solved 10 at $0.51 per solved task, and the large tier (Claude Opus) solved 15 at $2.09. It also publishes its own corrections: one defective task had made all three tiers look worse than they were, and four published claims were corrected.</p>
+            </div>
+          </details>
+        </article>
+        <article class="node node-card">
+          <div class="node-card-head">
+            <h3 class="node-name"><a href="/portfolio/flight-recorder/">flight-recorder</a></h3>
             <span class="node-spec">11,179 sessions scored</span>
             <span class="node-state">private</span>
-          </summary>
-          <div class="node-detail">
-            <p>Scores each coding-agent session on two things, kept separate: what it cost, from the transcript, and how much of its code was still in the repository when it was last scored, from git. A session is re-scored until it is seven days old. It has scored 11,179 sessions. Every average comes with a 95% confidence interval (a range that shows how precise the average is), and models are compared only on similar work, so a hard repository does not make a model look weak.</p>
           </div>
-        </details>
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name"><a href="/portfolio/lodestone/">Lodestone</a></span>
+          <p class="node-blurb">Scores coding-agent sessions on transcript cost and seven-day git code survival with 95% confidence intervals. <a class="node-read" href="/portfolio/flight-recorder/">Case study</a></p>
+          <details class="node-more">
+            <summary>Details</summary>
+            <div class="node-detail">
+              <p>Scores each coding-agent session on two things, kept separate: what it cost, from the transcript, and how much of its code was still in the repository when it was last scored, from git. A session is re-scored until it is seven days old. It has scored 11,179 sessions. Every average comes with a 95% confidence interval (a range that shows how precise the average is), and models are compared only on similar work, so a hard repository does not make a model look weak.</p>
+            </div>
+          </details>
+        </article>
+        <article class="node node-card">
+          <div class="node-card-head">
+            <h3 class="node-name"><a href="/portfolio/lodestone/">Lodestone</a></h3>
             <span class="node-spec">5 of 10 at full scale</span>
             <span class="node-state">open</span>
-          </summary>
-          <div class="node-detail">
-            <p>Local retrieval over my own notes: Claude Code session transcripts, a ChatGPT export, planning documents and repository markdown. The notes are split into chunks (short passages of text). Semantic search (matching by meaning) beat keyword search on a 1,222-chunk development set and lost to it on the full collection of 57,562 chunks, and the write-up starts with that result. On the development set&rsquo;s seven paraphrased questions, semantic search scored 0.731 nDCG@10 (a ranking score, higher is better) against 0.436 for keyword search. On ten test questions asked against the full collection, the default setup returned something useful in its top three results for five. The experiment set a kill gate in advance (a stated condition for stopping the project). The re-ranker passed it, so the project continued. It also used negative controls (cases where the right answer is known to be nothing) and blind judging of pooled results, where results are graded without the judge knowing which method returned them.</p>
           </div>
-        </details>
+          <p class="node-blurb">Local hybrid retrieval over 57,562 note chunks, published with the full-scale evaluation showing where semantic search lost to keyword search. <a class="node-read" href="/portfolio/lodestone/">Case study</a></p>
+          <details class="node-more">
+            <summary>Details</summary>
+            <div class="node-detail">
+              <p>Local retrieval over my own notes: Claude Code session transcripts, a ChatGPT export, planning documents and repository markdown. The notes are split into chunks (short passages of text). Semantic search (matching by meaning) beat keyword search on a 1,222-chunk development set and lost to it on the full collection of 57,562 chunks, and the write-up starts with that result. On the development set&rsquo;s seven paraphrased questions, semantic search scored 0.731 nDCG@10 (a ranking score, higher is better) against 0.436 for keyword search. On ten test questions asked against the full collection, the default setup returned something useful in its top three results for five. The experiment set a kill gate in advance (a stated condition for stopping the project). The re-ranker passed it, so the project continued. It also used negative controls (cases where the right answer is known to be nothing) and blind judging of pooled results, where results are graded without the judge knowing which method returned them.</p>
+            </div>
+          </details>
+        </article>
         </div>
       </div>
       <div class="node-group">
         <p class="node-group-label">Data and operations</p>
         <div class="nodes">
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name"><a href="/portfolio/frostline/">Frostline</a></span>
+        <article class="node node-card">
+          <div class="node-card-head">
+            <h3 class="node-name"><a href="/portfolio/frostline/">Frostline</a></h3>
             <span class="node-spec">50,083 well records</span>
             <span class="node-state">open</span>
-          </summary>
-          <div class="node-detail">
-            <p>Spatial models over the public Michigan well record. Depth is predictable from location because nearby wells have similar depths. Moran&rsquo;s I measures how strongly nearby wells resemble each other: near 0 means no spatial pattern, and higher values mean a stronger one. It is 0.393 for depth and 0.089 for yield. The aquifer interval (the top and bottom depths of the water-bearing layer) looked like a promising target and was dropped: against a baseline computed from well depth, it was about 96% a restatement of depth.</p>
-            <div class="tree">
-              <div class="tree-head"><span>frostline</span><span>8ef8a4d · 145 files</span></div>
-              <pre><code>template/scripts/     the Track B pipeline — export, backtest,
+          </div>
+          <p class="node-blurb">Spatial models over public Michigan well records, including dropping a promising target after a depth baseline exposed it as redundant. <a class="node-read" href="/portfolio/frostline/">Case study</a></p>
+          <details class="node-more">
+            <summary>Details</summary>
+            <div class="node-detail">
+              <p>Spatial models over the public Michigan well record. Depth is predictable from location because nearby wells have similar depths. Moran&rsquo;s I measures how strongly nearby wells resemble each other: near 0 means no spatial pattern, and higher values mean a stronger one. It is 0.393 for depth and 0.089 for yield. The aquifer interval (the top and bottom depths of the water-bearing layer) looked like a promising target and was dropped: against a baseline computed from well depth, it was about 96% a restatement of depth.</p>
+              <div class="tree">
+                <div class="tree-head"><span>frostline</span><span>8ef8a4d · 145 files</span></div>
+                <pre><code>template/scripts/     the Track B pipeline — export, backtest,
                       calibration audit, brief generation
 template/src/         the estimator surface itself
 plans/                the planning record, including the
                       negative results that closed a line of work
 docs/                 architecture
 site/                 the public build</code></pre>
-              <p class="tree-note">Generated from the repository. Two directories are withheld: the lead and outreach trees hold live business data.</p>
+                <p class="tree-note">Generated from the repository. Two directories are withheld: the lead and outreach trees hold live business data.</p>
+              </div>
             </div>
-          </div>
-        </details>
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name"><a href="/portfolio/origin-sentinel/">Origin Sentinel</a></span>
+          </details>
+        </article>
+        <article class="node node-card">
+          <div class="node-card-head">
+            <h3 class="node-name"><a href="/portfolio/origin-sentinel/">Origin Sentinel</a></h3>
             <span class="node-spec">report-only, repairs staged</span>
             <span class="node-state">open</span>
-          </summary>
-          <div class="node-detail">
-            <p>Checks the health of services reached through a tunnel (a Cloudflare connection that exposes a machine without opening ports). It catches the failure where the public edge looks healthy but the service behind it is down. It runs report-only: it proposes the fix for a stale origin and applies none. Repairs stay switched off until its classifications have held up in the field.</p>
           </div>
-        </details>
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name"><a href="/portfolio/llm-gateway/">Multi-provider LLM gateway</a></span>
+          <p class="node-blurb">Detects services down behind a healthy Cloudflare tunnel edge and stages repair actions without applying them automatically. <a class="node-read" href="/portfolio/origin-sentinel/">Case study</a></p>
+          <details class="node-more">
+            <summary>Details</summary>
+            <div class="node-detail">
+              <p>Checks the health of services reached through a tunnel (a Cloudflare connection that exposes a machine without opening ports). It catches the failure where the public edge looks healthy but the service behind it is down. It runs report-only: it proposes the fix for a stale origin and applies none. Repairs stay switched off until its classifications have held up in the field.</p>
+            </div>
+          </details>
+        </article>
+        <article class="node node-card">
+          <div class="node-card-head">
+            <h3 class="node-name"><a href="/portfolio/llm-gateway/">Multi-provider LLM gateway</a></h3>
             <span class="node-spec">cost tracked against a budget</span>
             <span class="node-state">open</span>
-          </summary>
-          <div class="node-detail">
-            <p>Routes one coding agent across several large language model (LLM) providers by task, and tracks cost against a budget as it accrues. Secrets are kept out of the environment: keys are pulled from a secret broker at process start and held only in memory.</p>
           </div>
-        </details>
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name"><a href="/portfolio/knowledge-base/">Knowledge base for agents</a></span>
+          <p class="node-blurb">Routes coding agents across multiple LLM providers by task while tracking spend against a budget and pulling keys from a secret broker. <a class="node-read" href="/portfolio/llm-gateway/">Case study</a></p>
+          <details class="node-more">
+            <summary>Details</summary>
+            <div class="node-detail">
+              <p>Routes one coding agent across several large language model (LLM) providers by task, and tracks cost against a budget as it accrues. Secrets are kept out of the environment: keys are pulled from a secret broker at process start and held only in memory.</p>
+            </div>
+          </details>
+        </article>
+        <article class="node node-card">
+          <div class="node-card-head">
+            <h3 class="node-name"><a href="/portfolio/knowledge-base/">Knowledge base for agents</a></h3>
             <span class="node-spec">92.0% of 238 proposals accepted</span>
             <span class="node-state">private</span>
-          </summary>
-          <div class="node-detail">
-            <p>Long-term memory for my coding agents. Agents can only propose a fact; an AI reviewer approves, edits or rejects each proposal before it is stored. Over the last 30 days the reviewer accepted 92.0% of 238 decided proposals. On hand-built vague rules it caught 63.0% of the short ones and 27.8% of the long ones, and the write-up measures that weakness alongside the search quality.</p>
           </div>
-        </details>
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name"><a href="/portfolio/secret-broker/">secret-broker</a></span>
+          <p class="node-blurb">Shared long-term memory for coding agents where every proposed entry passes an independent AI reviewer before storage. <a class="node-read" href="/portfolio/knowledge-base/">Case study</a></p>
+          <details class="node-more">
+            <summary>Details</summary>
+            <div class="node-detail">
+              <p>Long-term memory for my coding agents. Agents can only propose a fact; an AI reviewer approves, edits or rejects each proposal before it is stored. Over the last 30 days the reviewer accepted 92.0% of 238 decided proposals. On hand-built vague rules it caught 63.0% of the short ones and 27.8% of the long ones, and the write-up measures that weakness alongside the search quality.</p>
+            </div>
+          </details>
+        </article>
+        <article class="node node-card">
+          <div class="node-card-head">
+            <h3 class="node-name"><a href="/portfolio/secret-broker/">secret-broker</a></h3>
             <span class="node-spec">2,568 receipts, chain intact</span>
             <span class="node-state">private</span>
-          </summary>
-          <div class="node-detail">
-            <p>A local MCP server (MCP is the standard that connects tools to AI agents) that lets coding agents use credentials without receiving them. Every call writes a hash-chained receipt, so a later edit to the log is detectable; 2,568 receipts over six months verify intact. Entropy-based secret detection caught 5 of 13 of the broker's own credentials and flagged 566 harmless tokens on one clean response before it was fixed.</p>
           </div>
-        </details>
-        <details class="node">
-          <summary class="node-head">
-            <span class="node-name"><a href="/portfolio/codegraph/">codegraph correctness</a></span>
+          <p class="node-blurb">Local MCP server that executes credentialed calls on an agent&rsquo;s behalf without revealing secret values, logging hash-chained receipts. <a class="node-read" href="/portfolio/secret-broker/">Case study</a></p>
+          <details class="node-more">
+            <summary>Details</summary>
+            <div class="node-detail">
+              <p>A local MCP server (MCP is the standard that connects tools to AI agents) that lets coding agents use credentials without receiving them. Every call writes a hash-chained receipt, so a later edit to the log is detectable; 2,568 receipts over six months verify intact. Entropy-based secret detection caught 5 of 13 of the broker's own credentials and flagged 566 harmless tokens on one clean response before it was fixed.</p>
+            </div>
+          </details>
+        </article>
+        <article class="node node-card">
+          <div class="node-card-head">
+            <h3 class="node-name"><a href="/portfolio/codegraph/">codegraph correctness</a></h3>
             <span class="node-spec">143 issues filed, 17 PRs merged</span>
             <span class="node-state">open</span>
-          </summary>
-          <div class="node-detail">
-            <p>Checks codegraph, an open-source code-intelligence tool, against compiler type checkers and against freshly built indexes, and reports the differences upstream. The checks are public as graph-assay. 143 issues filed, 130 closed, and 17 of my pull requests merged. A replay of 2,979 index updates found 12 places where the updated index differed from a fresh one.</p>
           </div>
-        </details>
+          <p class="node-blurb">Checks an open-source call-graph tool against compiler type checkers and fresh index replays, reporting reproducible defects upstream. <a class="node-read" href="/portfolio/codegraph/">Case study</a></p>
+          <details class="node-more">
+            <summary>Details</summary>
+            <div class="node-detail">
+              <p>Checks codegraph, an open-source code-intelligence tool, against compiler type checkers and against freshly built indexes, and reports the differences upstream. The checks are public as graph-assay. 143 issues filed, 130 closed, and 17 of my pull requests merged. A replay of 2,979 index updates found 12 places where the updated index differed from a fresh one.</p>
+            </div>
+          </details>
+        </article>
         </div>
       </div>
     </section>

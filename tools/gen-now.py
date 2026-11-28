@@ -54,11 +54,12 @@ PORTFOLIO_MIN = 8
 IGNORE_PORTFOLIO = {f"{USER}/{r}" for r in ("ericminish-site", "tooling")}
 IGNORE_UNCOVERED = {f"{USER}/{r}" for r in (
     "ericminish-site", "job-scout", "tooling", "codegraph-qa", "comp-intel", "competitive-intel",
-    "linkedin-writer", "shared-terminal", "litellm", "homelab-media-stack")}
+    "linkedin-writer", "shared-terminal", "litellm", "homelab-media-stack", "event-scout")}
 CARDS = {
     "day-job": {"sources": [], "max_age_days": 90},
     "codegraph": {"sources": [{"repo": "colbymchenry/codegraph", "author": USER}, {"repo": f"{USER}/codegraph", "count": False},
-                             {"repo": f"{USER}/graph-assay"}, {"repo": f"{USER}/tree-sitter-typescript"}]},
+                             {"repo": f"{USER}/graph-assay"}, {"repo": f"{USER}/tree-sitter-typescript"},
+                             {"repo": f"{USER}/codeshot"}]},
     "terse": {"sources": [{"repo": f"{USER}/terse"}]},
     "runecho": {"sources": [{"repo": f"{USER}/runecho"}]},
     "modelbench": {"sources": [{"repo": f"{USER}/modelbench"}]},
@@ -68,6 +69,7 @@ CARDS = {
     "harness": {"sources": [{"repo": f"{USER}/harness"}]},
     "knowledge-base": {"sources": [{"repo": f"{USER}/kb-mcp"}]},
     "soundings": {"sources": [{"repo": f"{USER}/soundings"}]},
+    "inbox-triage": {"sources": [{"repo": f"{USER}/inbox-triage"}]},
 }
 CARD_RE = re.compile(r'<article class="timeline" data-card="([a-z0-9-]+)" data-as-of="(\d{4}-\d{2}-\d{2})">')
 

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>About | Eric Minish</title>
   <meta name="description" content="Eric Minish builds infrastructure for AI agents and data work, after years in operational systems.">
-  <link rel="stylesheet" href="/assets/site.css?v=20d5a2c1">
+  <link rel="stylesheet" href="/assets/site.css?v=04eeea9d">
   <link rel="canonical" href="https://www.ericminish.com/about/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Eric Minish">
@@ -60,6 +60,30 @@
     </section>
 
     <section class="section">
+      <div class="section-head"><div><h2>Background</h2></div></div>
+      <div class="prose">
+        <p>
+          I started in customer success before moving into engineering. At Geotix I supported partners
+          and end customers and reproduced bugs before escalating them to product. At Transactly I moved
+          into customer-success operations, owning reporting, CRM workflows and risk scoring that cut
+          client churn from 30% to under 10%.
+        </p>
+        <p>
+          Since 2023 I have worked as a Senior AI Engineer at Transactly, building and maintaining
+          internal tools, partner integrations, CRM automation and AI services across more than 50
+          repositories.
+        </p>
+        <p>
+          Operational systems and AI agents fail in similar ways: unclear status, missing records of
+          what ran, and no defined response when a step fails. Most of my independent work focuses on
+          deciding what an agent may read, what it may change, and how to measure whether its output
+          holds up. I run these systems on my <a href="/homelab/">homelab</a>, ten machines of my own
+          that handle routing, monitoring and recovery, and test how they fail on that hardware.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
       <div class="section-head"><div><h2>My design rule</h2></div></div>
       <div class="prose">
         <p>
@@ -73,26 +97,6 @@
         <div><span class="st">Frostline, a well-depth model</span><span class="sx">In this <a href="/portfolio/frostline/">well-depth model</a>, one candidate prediction target scored 38.8% better than its baseline. Measured against the right baseline, the target only repeated a variable the model already had, so I dropped it.</span></div>
         <div><span class="st">terse, a compression proxy</span><span class="sx">This <a href="/portfolio/terse/">compression proxy</a> sits between my AI agent and the servers that run its tools. When it cannot prove that the compressed output decodes back exactly, it sends the original, uncompressed output. Sending the original is slower, but the agent never receives a damaged copy.</span></div>
         <div><span class="st">kb, an agent knowledge base</span><span class="sx">This knowledge base for AI agents accepts proposed entries from agents and reviews each one before saving it. Saving everything unreviewed was the cheaper option. I rejected it because past about 2,000 entries the important ones became hard to find.</span></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head"><div><h2>Background</h2></div></div>
-      <div class="prose">
-        <p>
-          My professional work has been in operational systems: tracking the state of workflows,
-          handling events, automating CRM (customer relationship management) processes, and building the reports that show afterwards
-          what happened.
-        </p>
-        <p>
-          AI agents need the same things: a record of what they did and a defined response when a step
-          fails. An agent acts on information it cannot check directly, so most of my work on agents is
-          deciding what an agent may read, what it may change, and what happens when one of those steps fails.
-        </p>
-        <p>
-          I run these systems on my <a href="/homelab/">homelab</a>, ten machines of my own that handle routing,
-          monitoring and recovery, and I test how the systems fail on that hardware.
-        </p>
       </div>
     </section>
 
