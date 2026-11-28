@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Where a model belongs — case study | Eric Minish</title>
+  <meta name="description" content="Case study: four internal tools I build at work, one of which uses a language model. How I decided what the model judges and what code decides, and what the measurements showed.">
+  <link rel="stylesheet" href="/assets/site.css?v=50fd2b93">
+  <link rel="canonical" href="https://www.ericminish.com/portfolio/work-tools/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Eric Minish">
+  <meta property="og:title" content="Where a model belongs — Eric Minish">
+  <meta property="og:description" content="A call auditor where an LLM judges 15 of 21 criteria and code decides the rest, and three tools that use no model at all.">
+  <meta property="og:url" content="https://www.ericminish.com/portfolio/work-tools/">
+  <meta property="og:image" content="https://www.ericminish.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Where a model belongs — Eric Minish">
+  <meta name="twitter:description" content="A call auditor where an LLM judges 15 of 21 criteria and code decides the rest, and three tools that use no model at all.">
+  <meta name="twitter:image" content="https://www.ericminish.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-row">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/mark.svg" alt=""></span>
+        <span class="brand-copy">
+          <strong>Eric Minish</strong>
+          <span>Personal site</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/portfolio/" aria-current="page">Portfolio</a>
+        <a href="/writing/">Writing</a>
+        <a href="/homelab/">Homelab</a>
+        <a href="/status/">Now</a>
+        <a href="/about/">About</a>
+        <a href="/resume/">Resume</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell" id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="entry-stamp"><b>Entry 15</b><span>Applied AI · production tools</span><span>2026</span></div>
+        <h1>Deciding where a language model belongs in the tools I build at work</h1>
+        <p class="lede">
+          At work I build the internal software a sales and operations team runs on: a service that
+          audits recorded sales calls for compliance, a tracker that counts calls for each customer, a
+          console that gathers a consultant&rsquo;s tools in one place, and services that clean up records
+          in the CRM (the customer database). The auditor uses a language model to judge transcripts and
+          a speech-recognition model to make them. The console reads a lead score from a model another
+          team owns. Everything that matches or changes a customer record uses explicit rules. This page
+          describes where I drew those lines and what the measurements showed.
+        </p>
+      </div>
+      <aside class="note">
+        <p><strong>What it is</strong>: production services in Python and TypeScript on managed cloud infrastructure. I wrote 219 of the auditor&rsquo;s 219 commits, 456 of the tracker&rsquo;s 462 and 774 of the console&rsquo;s 795.</p>
+        <p><strong>Status</strong>: in production. Figures come from the repositories and their design notes, checked on 4 November 2026. Company, vendor and colleague names are left out.</p>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="facts">
+        <div><span class="fk">criteria the model judges</span><span class="fv">15 of 21</span></div>
+        <div><span class="fk">self-contradicting verdicts, before and after a fix</span><span class="fv good">45.3% &rarr; 0.0%</span></div>
+        <div><span class="fk">paired human labels for any one criterion</span><span class="fv bad">at most 4</span></div>
+        <div><span class="fk">two models disagreeing on one criterion</span><span class="fv bad">52%</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The rule I work from</h2></div></div>
+      <div class="prose">
+        <p>
+          Code decides anything that has one right answer, anything a person will be held to, and
+          anything where a wrong guess would corrupt a record without anyone noticing. A model gets the
+          parts that need reading language. Where code can check the model&rsquo;s output, it does, and I
+          compare the model with people&rsquo;s judgments; that comparison produced this page&rsquo;s main
+          finding.
+        </p>
+        <p>
+          Other people set the requirements. Compliance owners signed off the audit rubric, two
+          reviewers labelled the calls used to test it, and a colleague on the data team owns the
+          lead-score model the console reads.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>The call auditor</h2></div></div>
+      <div class="prose">
+        <p>
+          Before the auditor, two auditors spent about 22 to 24 hours a week reviewing calls by hand.
+          The service transcribes each call and scores it against a rubric of 21 criteria. A language
+          model judges 15 of them and code decides the other 6. Results are advisory: a person verifies
+          them and reps can dispute them.
+        </p>
+      </div>
+      <div class="nodes nodes-wide">
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name">Card and Social Security numbers stay with code</span>
+            <span class="node-spec">rule-based</span>
+          </summary>
+          <div class="node-detail">
+            <p>Reps must pause the recording while a customer reads out payment or identity details, and the critical criteria check that they did. Detection is rule-based (a checksum test for card numbers, structural rules for Social Security numbers) and runs before anything reaches the model. It alone decides those criteria. Redaction masks only the copy of the transcript sent to the model.</p>
+            <p>A pause that worked looks the same as a stray one, because the number it protected never reached the transcript. My first rule read a pause as non-compliance, so it failed every compliant call that paused: 43 of 222 audits (19%). The fix on 4 September 2026 scores a pause with no spoken card or identity number as a pass, and a comment in the code says why the old rule must not come back.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name">A model removed from transcription</span>
+            <span class="node-spec">replaced 8 Jul 2026</span>
+          </summary>
+          <div class="node-detail">
+            <p>The first version used a multimodal language model as the transcriber. On long recordings it looped and gave unreliable timestamps. I replaced it with faster-whisper (the large-v3 model), an open-source speech-recognition model, on an L4 GPU in the company&rsquo;s own cloud account, so the audio does not leave it.</p>
+            <p>A minimum talk time keeps very short calls out of the audit. Its first version joined bursts of speech less than 30 seconds apart, so eight one-second sounds 30 seconds apart, such as hold music, measured as 211 seconds of talk. Narrowing the gap to 5 seconds moved the problem: 100 one-second sounds 5 seconds apart measured as 595 seconds. The gate now uses the longest unbroken stretch of speech. On 14 calls that had already been scored it rejected none, and it rejected the hold-music cases.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name">Verdicts that contradicted themselves</span>
+            <span class="node-spec">81 of 179 &rarr; 0 of 184</span>
+          </summary>
+          <div class="node-detail">
+            <p>Six criteria apply only when something is sold on the call. A verdict that marks a call as no sale and still fails one of those criteria is wrong on its face, so a script can count these without a human. Before the fix, 45.3% of verdicts (81 of 179) did this.</p>
+            <p>The fix, merged on 18 September 2026, has the model decide the call type before the criteria that depend on it, and makes every verdict quote the part of the transcript it relies on. Code checks that the quote is in the transcript. After the fix the rate was 0.0% (0 of 184). This measures whether verdicts agree with each other and the quote exists; it says nothing about whether a verdict is right.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name">The test set could not measure what I was tuning</span>
+            <span class="node-spec">18 paired labels</span>
+          </summary>
+          <div class="node-detail">
+            <p>Three rubric revisions moved agreement between the model and the human reviewers from 5 of 10 to 4 of 10 and then 4 of 10. When I looked at why, the test set turned out to be unable to show whether a revision helped. Its 15 calls had been chosen to test specific disputed claims, so each call asked only a few criteria. Across the set there were 18 observations where both reviewers labelled the same criterion, never more than 4 for any one criterion, and only 7 of the 15 model-judged criteria had any. It was too sparse to give a reliable accuracy for any single criterion, at any rubric version.</p>
+            <p>The reviewers disagreed with each other on 12 of those 18. Eleven of the 12 were about whether a criterion applied to the call at all, and one was pass against fail. On the overall pass, needs-correction or fail result, their agreement was a Cohen&rsquo;s kappa of 0.436 (agreement corrected for chance, where 1 is perfect). The disagreement points to defining when each criterion applies before tuning the prompts again.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name">A criterion the model should not judge</span>
+            <span class="node-spec">52% disagreement</span>
+          </summary>
+          <div class="node-detail">
+            <p>One criterion asks whether the rep created follow-up tasks. That fact lives in the CRM, and the transcript can only hint at it. When two different models judged the same 132 calls, they disagreed on this criterion for 69 (52%), more than twice the rate of any other criterion. Three criteria of the same kind were already marked for a person to check by hand. My recommendation was to do the same here or check the CRM directly. That change has not been made yet.</p>
+          </div>
+        </details>
+        <details class="node">
+          <summary class="node-head">
+            <span class="node-name">A place where the model replaced a rule</span>
+            <span class="node-spec">customer-experience score</span>
+          </summary>
+          <div class="node-detail">
+            <p>A second score rates the customer&rsquo;s experience of the call. A keyword-based sentiment rule was tried first, and it missed problems that reading the transcripts found. The score now comes from the model, in a separate call so it cannot change any compliance verdict. Its plan calls for comparing it with about 20 human ratings.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Matching that leaves a record alone when unsure</h2></div></div>
+      <div class="prose">
+        <p>
+          The tracker and the CRM services write to customer records, and a wrong match there is worse
+          than no match. Neither uses a model.
+        </p>
+        <ul>
+          <li>Not every call from the dialer (the calling system) reaches the CRM. To attach a call to a contact, the tracker matches the last 10 digits of the phone number, re-checks every candidate, and leaves the call unattributed when no contact or several contacts match, because a wrong match would silently change another customer&rsquo;s call counts.</li>
+          <li>Phone numbers are cleaned by a classifier with no network access, which replaced older custom code inside a CRM workflow. It formats US numbers, keeps international numbers in their own field, flags duplicate contacts for a person to merge, and leaves a number it cannot classify unchanged. It has 38 tests.</li>
+          <li>Apartment and suite numbers typed into the street line are split into their own field using the US Postal Service list of unit words. The parser flags ambiguous input and leaves it alone, and never overwrites a unit field that holds more detail. It ran read-only on 5,000 contacts before it wrote anything. After launch, a street name ending in &ldquo;Ct&rdquo; lost that word to the unit field; a fix on 3 November 2026 stops two-letter street suffixes being read as units.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>A model&rsquo;s score used as one input</h2></div></div>
+      <div class="prose">
+        <p>
+          The console orders a consultant&rsquo;s call queue partly by a lead score from the data
+          team&rsquo;s model. Before using it, I measured how well it separated outcomes in each group. For
+          contacts, the share who became customers rose in every one of the four score bands, and the
+          highest band converted at more than five times the rate of the lowest, so contacts are ordered
+          by band. For deals, won rates across the bands differed by less than 10 percentage points, so
+          for deals the score only breaks ties after the service date. A check of 300 contacts found no
+          score changed after it was assigned, and the tracker has a test that fails if the 5% holdout
+          group ever receives a score.
+        </p>
+        <p>
+          The console also reads order confirmation numbers off a vendor&rsquo;s web page. I chose to read
+          the page text in the browser extension. The alternative, capturing the screen and extracting
+          the numbers from the image, needed a sharing prompt every time, was less accurate than the
+          text, and could send an image holding card or Social Security numbers out of the browser.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>What is not measured</h2></div></div>
+      <article class="note">
+        <ul>
+          <li>The hours the auditor saves are not measured. The 22 to 24 hours a week is the manual baseline from before it was built.</li>
+          <li>The model&rsquo;s per-criterion accuracy against people is not established. The 4 to 5 of 10 agreement figures came from a test set too sparse to measure single criteria.</li>
+          <li>There is no record that a model was tried for phone or address cleanup. The choice was made at design time, and neither tool has a measured match rate.</li>
+          <li>The console&rsquo;s adoption is not measured yet.</li>
+        </ul>
+      </article>
+      <div class="tag-row" style="margin-top:20px">
+        <span class="tag">LLM evaluation</span><span class="tag">Applied AI</span>
+        <span class="tag">Python</span><span class="tag">TypeScript</span>
+      </div>
+    </section>
+
+    <p class="closing-line">
+      Questions about the design? Email <a href="mailto:hi@ericminish.com">hi@ericminish.com</a> · <a href="/portfolio/">Back to portfolio</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p>Eric Minish · Central Lake, Michigan</p>
+      <div class="footer-links">
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/contact/">Contact</a>
+
+        <a href="https://github.com/inth3shadows">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
